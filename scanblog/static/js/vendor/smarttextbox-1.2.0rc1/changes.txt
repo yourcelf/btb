@@ -1,0 +1,62 @@
+CHANGES
+=======
+
+1.2.0-rc1
+
+    * new features
+    
+- new 'autocompleteUrl' option : can now load list of autocomplete values from an json ajax call (static, one time load)
+    
+- new 'onlyAutocomplete' option (default to false). When set to true, The SmartTextBox will only accept labels added from the autocompletion list.
+    
+- new 'uniqueValues' option (default to true). When set to true, the SmartTextBox will only accept the labels once (that mean a label cannot be added more than once). Also, when this mode is active, the autocompletion will not propose already-added labels.
+    
+- autocompletion search mode can now be choosen between 'start of word' and 'full text search' ( see the 'fullSearch' autocomplete option )
+
+    * changes
+
+- major change in the autocomplete configuration : autocompleteOptions map has been remove, now autocomplete configuration is made directly in the SmartTextBox options.
+      options rename : 
+        minLength renamed to minSearchLength
+
+    * bug fixes
+
+- deleting elements using keyboard now correctly focus previous or next element.
+    
+- autocomplete options are now correctly used at SmartTextBox initialization.
+    
+- autocomplete results are now correctly highlighted.
+
+1.1.2 – 2010-08-12
+
+    * Bug fixes
+
+- backspace key now works back as intended when typing text in boxes
+
+1.1.1 – 2010-08-12
+
+    * Bug fixes
+
+- fix plugin for IE6 ( stupid comma… )
+
+- use of backspace key to delete boxes now longer cause the browser to go to last page
+
+1.1 – 2010-08-03
+
+    * New features
+
+- added custom event wiring capability
+
+    * API Changes
+
+- the method “values” renamed to “load”
+
+    * Bug fixes
+
+- the API methods “load” and “autocomplete” can now work with lists as intended
+
+- the API method “remove” can now work with an index as intended
+
+1.0 – 2010-08-02
+
+- Initial public release.

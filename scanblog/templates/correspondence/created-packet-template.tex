@@ -1,0 +1,53 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% block opening %}Greetings and welcome,{% endblock %}
+{% block body %}
+We have received your signed consent form and have created a blog for you on
+our web site. You can tell anybody with access to the Internet how to visit
+your blog by giving them the following ``URL'' or Internet address:
+
+\begin{quote}
+\url{ {{ letter.recipient.profile.get_blog_url|absolute_url|tex_escape }} }
+\end{quote}
+
+As we explained in our introductory materials, we will publish all
+material that you send to us.
+
+There is no single style or form for blog posts and every blog is
+different. That said, blog posts should be things you have written
+yourself.  Most blog posts tend to be between 1 and 5 pages long but
+can be longer or very short. Authors of blogs usually write about
+their own thoughts or experiences but some use their blogs to share
+artwork, poetry, fiction, public ``diary'' entries. Others share open
+letters to world about issues they care about. Keeping in mind the
+very public nature of the venue, you should feel free to send us
+whatever you wish to share.
+
+To show you how the post appears on the web, we will send you a
+printout of your first post.  However, we will \emph{not} send you
+written confirmation each time we receive and post material you send
+us. If we cannot publish material you send for any reason, or if we
+must remove material you have published, we will always contact you to
+tell you. Unless we contact you to tell you otherwise, we have
+published your material on the Internet.
+
+Visitors who read your blog will have the opportunity to leave public
+``comments.'' These comments will be visible to any other visitor on
+the website. Periodically and as frequently as possible -- probably
+every 1-2 weeks -- we will mail you any new comments that visitors
+leave on material you have published. If no new comments are left, we
+will not contact you to tell you.  Keep in mind that most viewers will
+not leave comments and a lack of comments does not mean a lack of
+people reading the posts you have shared.
+
+We cannot provide you with any means to contact or ``email'' people
+leaving comments either privately or directly. Of course, you are
+welcome to send us new material that responds to comments you
+receive. Commenters may, or may not, return to your blog to view your
+responses.
+
+Please remember that these exchanges, like all information published
+using our service, will be completely public and listed under your
+full name.
+{% endblock %}
+{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

@@ -1,0 +1,24 @@
+{% load i18n %}
+    <div class='post-link-line'>
+        <a href='{{post.get_absolute_url}}' class='read-more'>{% trans "Read more &raquo;" %}</a>
+        {% with post.comments.count as comment_count %}
+        <a href='{{post.get_absolute_url}}#comments'>{% spaceless %}
+        {% if comment_count == 0 %}
+            {% if comments_open %}
+                Leave a reply!
+            {% endif %}
+        {% else %}{% if comment_count == 1 %}
+            {{ comment_count }} reply
+        {% else %}
+            {{ comment_count }} replies
+        {% endif %}{% endif %}
+        {% endspaceless %}</a>
+        {% endwith %}
+        |
+        <span class='author'>
+            {% if post.author.profile.blog_name %}
+                From <a href='{{post.author.profile.get_blog_url}}'>{{post.author.profile.blog_name}}</a>
+            {% endif %}
+            {% trans "by" %} <a href='{{post.author.profile.get_blog_url}}'>{{post.author.profile}}</a>
+        </span>
+    </div>

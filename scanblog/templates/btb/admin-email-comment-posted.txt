@@ -1,0 +1,18 @@
+A comment has been posted on {{ comment.document.get_title }}:
+
+View on site:
+http://{{ site.domain }}{{ comment.get_absolute_url }}
+
+{{ comment.user.profile }}
+----
+{{ comment.comment }}
+----
+
+Moderation functions:
+Delete: http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete
+Edit: http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/
+
+Admin functions:
+Edit user: http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/
+Delete user: http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete
+{# Can't use base_url here because we can't get RequestContext #}

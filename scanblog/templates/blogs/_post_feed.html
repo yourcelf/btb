@@ -1,0 +1,10 @@
+{% load i18n %}
+
+{% if not post.adult and post.status == "published" %}
+    {% include "blogs/_post_highlight.html" %}
+{% else %}
+    {% trans "This post must be viewed on " %} {{ site.name }}.
+ {% endif %}
+<div>
+    <a href='{{ post.get_absolute_url }}'>{% trans "Read more" %}</a>.
+</div>

@@ -1,0 +1,37 @@
+{% load tex_tags %}
+\documentclass[11pt]{letter}
+
+%\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{url}
+\renewcommand{\rmdefault}{pplx}
+\renewcommand{\sfdefault}{phv}
+
+\usepackage[letterpaper,left=1.3in,right=1.3in,top=0.8in,bottom=0.8in]{geometry}
+
+\begin{document}
+
+\begin{letter}{ {{ letter.recipient.profile.display_name|tex_escape }}\\
+{{ letter.recipient.profile.mailing_address|tex_escape }} }
+
+\address{ {{ letter.org.mailing_address|tex_escape }} }
+{% if letter.send_anonymously %}
+\signature{ {% block anonymous_signature %}{{ letter.org.name|tex_escape }} staff{% endblock %} }
+{% else %}
+\signature{ {% block signature %}{{ letter.sender.profile.display_name|tex_escape }}{% endblock %} }
+{% endif %}
+\location{ {{ letter.org.mailing_address|tex_escape }} }
+
+\opening{ {% block opening %}Greetings,{% endblock %} }
+\setlength\parindent{0.25in}
+
+{% block body %}
+{{ letter.body|safe }}
+{% endblock %}
+
+\closing{ {% block closing %}Kind Regards,{% endblock %} }
+
+\end{letter}
+
+\end{document}
+

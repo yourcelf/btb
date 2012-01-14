@@ -1,0 +1,26 @@
+<script type='text/template' id="pagination">
+    <% if (pagination.pages > 1) { %>
+        <%= pagination.count %> results. Page:
+        <% var prevPage = 0; %>
+        <% for (var i = 0; i < pageLinksToShow.length ; i++) { %>
+            <% var p = pageLinksToShow[i]; %>
+            <% if ((p - prevPage) > 1) { %>
+                ...
+            <% } %>
+            <% prevPage = p; %>
+            <% if (p == pagination.page) { %>
+                <b><%= p %></b>
+            <% } else { %>
+                <span class='pagelink link-like'><%= p %></span>
+            <% } %>
+        <% } %>
+    <% } %>
+    <img src='{{ STATIC_URL }}img/spinner.gif' class='pagination-loading' style='display: none;' />
+</script>
+<script type='text/template' id="editInPlace"><span class='edit-in-place'><%= field !== null && field !== undefined && field !== "" ? field : "-- click to add --" %></span></script>
+<script type='text/template' id="editorInPlace">
+    <span class='editor-in-place'>
+        <span class='edit-tag'></span><br />
+        <input type='button' value='Save' class='save' /><span class='link-like cancel'>cancel</span>
+    </span>
+</script>

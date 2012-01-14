@@ -1,0 +1,11 @@
+{% load i18n %}
+{% load public_url %}
+    {% if post.scan_id %}
+        <div class='highlight-img-container' onclick='window.location.href="{{ post.get_absolute_url }}"'>
+            <a href='{{post.get_absolute_url}}'>
+                <img src='{{ post.highlight.url|public_url }}' alt='{{ post.title }}' />
+            </a>
+        </div>
+    {% else %}
+        <p class='story'>{{post.body|truncatewords:100}}</p>
+    {% endif %}

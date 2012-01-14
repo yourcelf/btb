@@ -1,0 +1,12 @@
+{% extends "site_base.html" %}
+{% block nav_upload_active %}active{% endblock %}
+{% block title %}Upload scans{% endblock %}
+{% block body %}
+    <h1>Upload Scans</h1>
+    <p>Upload individual PDF files, or zip files containing multiple PDFs.</p>
+    <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+        {{ form }}
+        <p><input type='submit' value='Upload' class='upload-submit' /></p>
+    </form>
+{% endblock %}
+

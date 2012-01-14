@@ -1,0 +1,22 @@
+{% extends "about/legal_base.html" %}
+
+{% block title %}Copyright policy{% endblock %}
+{% block body %}
+<div class='terms'>
+<h2>Between the Bars Copyright Policy</h2>
+<p>
+The {{ site.name }} site, design, and content is copyrighted 
+&copy;{% now "Y" %}&nbsp;Between&nbsp;the&nbsp;Bars, all rights reserved.
+</p>
+<p>
+All blog posts and transcriptions of blog posts are owned and copyrighted by
+the blog post authors, who retain all rights.  If you wish to reproduce any
+blog post, you should seek permission of the original author by contacting them
+directly. 
+</p>
+<p>
+All comments are owned by the people who submit them, in accordance with the 
+<a href='{% url about.terms %}'>Terms of Use</a>.
+</p>
+</div>
+{% endblock body %}

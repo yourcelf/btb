@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load public_url %}
+{% load humanize %}
+    <script type='text/javascript'>
+        function load_more_pages(page_num, link) {
+            var new_group = $(
+                document.createElement("div")
+            ).attr(
+                "class", "scan-page-group"
+            ).html(
+                "<img src='{{ STATIC_URL }}/img/spinner.gif' alt='Loading...' />Loading..."
+            );
+            $(".scan-page-group:last").after(new_group);
+            $.ajax({
+                url: "{% url blogs.more_pages post.pk %}", 
+                type: "GET",
+                data: {
+                    'minorder': page_num,
+                }, 
+                success: function(data) {
+                    new_group.html(data);
+                    $(link).remove();
+                },
+                error: function() {
+                    new_group.html("<div class='error'>Error loading pages.</div>");
+                }
+            });
+            return false;
+        }
+    </script>
+
+    <div class='scan-pages'>
+        <div class='scan-original-link'>
+            {% trans "uploaded" %} {{ post.created|naturalday }}. 
+            &nbsp;<a href='{{ post.pdf.url|public_url }}'>{% trans "Original (PDF)" %}<img src='{{STATIC_URL}}img/pdfreaders-f-22px.png' alt='pdf' /></a>
+        </div>
+        <div style='clear: both;'></div>
+
+        <div class='scan-page-group'>
+            {% include "blogs/_post_pagegroup.html" %}
+        </div>
+    </div>
+    <div style='clear: both;'></div>
+

@@ -1,0 +1,51 @@
+<div class='feeds'>
+    <h2>Subscribe</h2>
+    <p>Get notifications when new letters or replies are posted!
+    <table class='form'>
+        {% if feed_author %}
+        <tr>
+            <th>
+                Posts by {{ feed_author.profile }}:
+            </th>
+            <td>
+                <a href='{% url blogs.blog_feed feed_author.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+            </td>
+            <td>
+                <a href='{% url subscriptions.author feed_author.pk %}'>email me</a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if comment_feed_obj %}
+        <tr>
+            <th>
+                Comments on &#147;{{ comment_feed_obj }}&#148;:
+            </th>
+            <td>
+                <a href='{% url blogs.post_comments_feed comment_feed_obj.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
+            </td>
+            <td>
+
+                <a href='{% url subscriptions.document comment_feed_obj.pk %}'>email me</a>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Featured posts:</th>
+            <td>
+                <a href='{% url blogs.tagged_posts_feed "featured" %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+            </td>
+            <td>
+                <a href='{% url subscriptions.tag "featured" %}'>email me</a>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                All posts:
+            </th>
+            <td>
+                <a href='{% url blogs.all_posts_feed %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
+            </td>
+        </tr>
+    </table>
+    </p>
+</div>

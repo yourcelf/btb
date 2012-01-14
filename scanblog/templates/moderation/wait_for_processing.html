@@ -1,0 +1,56 @@
+{% extends "moderation/base.html" %}
+{% block title %}Processing{% endblock %}
+
+{% block body %}
+
+
+<h2>Processing</h2>
+<p class='info ui-state-highlight' style='padding: 1em;'>
+<span class="dots" style="display: none;">...</span>
+Waiting for processing to finish
+<span class="dots">...</span>
+<br />
+You will be redirected when we are finished.
+</p>
+
+{% endblock %}
+{% block scripts %}
+
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery.min.js'></script>
+<script type='text/javascript'>
+    function poll() {
+        $.ajax({
+            type: 'GET',
+            url: "{% url celery-task_status task_id %}", 
+            success: function(data) {
+                if (data.task.status == "SUCCESS") {
+                    if (data.task.result) {
+                        window.location.href = data.task.result;
+                    } else {
+                        $(".info").html("Invalid task.");
+                    }
+                } else if (data.task.status == "STARTED" || data.task.status == "PENDING") {
+                    window.setTimeout(poll, 2000);
+                    $(".dots").toggle();
+                } else if (data.task.status == "FAILURE") {
+                    $(".info").addClass("error");
+                    $('.info').removeClass('ui-state-highlight');
+                    $(".info").html("Task exited with errors.");
+                    {% if perms.scanning.change_scan %}
+                        $(".info").append("<a href='{% url moderation.manage_tasks %}'>View task</a>.")
+                    {% endif %}
+                    document.title = "FAIL";
+                    $("h2").html("FAIL");
+                }
+            },
+            error: function() {
+                $(".info").addClass("error");
+                $(".info").removeClass("ui-state-highlight");
+                $(".info").html("Error communicating with server.  Refresh page to retry.");
+            }
+        });
+    }
+    poll();
+</script>
+
+{% endblock %}

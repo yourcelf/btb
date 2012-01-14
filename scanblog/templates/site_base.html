@@ -1,0 +1,135 @@
+{% load i18n %}
+{% load compress %}
+<!DOCTYPE html>
+<html>
+    <head>
+    {% block head %}
+        <title>{% if site.name %}{{ site.name }} : {% endif %}{% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% compress css %}
+        <link rel="stylesheet" href="{{STATIC_URL}}css/style.css" type="text/css" media="screen, projection">
+        <link rel="stylesheet" href="{{STATIC_URL}}css/print.css" type="text/css" media="print">
+        {% endcompress %}
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="{{STATIC_URL}}css/ie.css" type="text/css" media="screen, projection">
+        <![endif]-->
+        {% block css %}{% endblock %}
+        {% block extra_head %}{% endblock %}
+        {% include "feeds/_feeds.html" %}
+    {% endblock %}
+    </head>
+    <body>
+        <div id='root'>
+            <div id="navbar">
+                <div id="nav">
+                    {% block nav %}
+                        <div class='nav-left'>
+                            {% block nav_logo_icon %}
+                            <a class='logo' href="{% url home %}"><img src='{{ STATIC_URL}}img/v2-icon-cd.png' alt='{{ site.name }}' /></a>
+                            {% endblock %}
+                            <a class='home {% block nav_home_active %}{% endblock %}' href="{% url home %}">{% block nav_home_text %}{{ site.name }}{% endblock %}</a>
+                            <a class='blogs {% block nav_blogs_active %}{% endblock %}' href="{% url blogs.home %}">{% trans "Blogs" %}</a>
+                            <a class='blogs {% block nav_people_active %}{% endblock %}' href="{% url profiles.profile_list %}">{% trans "People" %}</a>
+                            {# <a class='groups {% block nav_groups_active %}{% endblock %}' href="{% url profiles.org_list %}">{% trans "Groups" %}</a> #}
+                            <a class='about {% block nav_about_active %}{% endblock %}' href="{% url about %}">{% trans "About" %}</a>
+
+                            {# Authenticated nav #}
+                            {% if perms.scanning.add_scan or perms.blogs.cahnge_post or perms.correspondence.manage_correspondence %}
+                                |
+                            {% endif %}
+                            {% if perms.scanning.change_scan %}
+                                <a class="{% block nav_moderation_active %}{% endblock %} authenticated" href="{% url moderation.home %}">{% trans "Moderation" %}</a>
+                            {% endif %}
+                            {% if perms.scanning.add_scan %}
+                                <a class="{% block nav_upload_active %}{% endblock %} authenticated" href="{% url scanning.scan_add %}">{% trans "Upload" %}</a>
+                            {% endif %}
+                        </div>
+                        <div class='auth'>
+                            {% if user.is_authenticated %}
+                                <div class='menu-trigger'>
+                                    {% if notice_unseen_count > 0 %}
+                                    <a class='notice-unseen-count' 
+                                       href='{% url notification_notices %}' 
+                                       title='{{ notice_unseen_count}} unread notification{{ notice_unseen_count|pluralize }}'
+                                       >{{ notice_unseen_count }}</a>
+                                    {% endif %}
+                                    <b>{{ user.profile }}</b>
+                                    <div class='menu'>
+                                        <ul>
+                                            {% if notice_unseen_count > 0 %}
+                                                <li>
+                                                <a class='notice-unseen-count' 
+                                                   href='{% url notification_notices %}' 
+                                                   title='{{ notice_unseen_count}} unread notification{{ notice_unseen_count|pluralize }}'
+                                                   >{{ notice_unseen_count }} message{{ notice_unseen_count|pluralize }}</a>
+                                                <div style='clear: both;'></div>
+                                                </li>
+                                            {% endif %}
+                                            <li><a href="{% url profiles.own_profile_show %}">{% trans "Profile" %}</a></li>
+                                            {% if user.is_staff %}<li><a href="{% url admin:index %}">{% trans "Admin" %}</a></li>
+                                    {% endif %}
+                                            <li><a href="{% url auth_logout %}?next={% url home %}">{% trans "Logout" %}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <a href="{% url auth_login %}?next={% url home %}">{% trans "Sign in" %}</a> {% trans "or" %} 
+                                <a href="{% url registration_register %}"><b>{% trans "Join" %}</b></a>
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+                </div>
+                <div style='clear: both;'></div>
+            </div>
+            <div id="subnavbar">
+                <div id="subnav">{% block subnav %}{% endblock %}</div>
+            </div>
+            <div id='page'>
+                {% if messages %}
+                    <ul id="messages">
+                        {% for message in messages %}
+                        <li class='message'>
+                            {{ message }}
+                            <span style='float: right; cursor: pointer;'
+                                onclick='$(this).parent().remove();'
+                                >&#10006;</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% block body %}{% endblock %}
+                {% block after_body %}{% endblock %}
+            </div>
+            <div style='clear: both;'></div>
+            <div id='rootfooter'></div>
+        </div>
+        <div id="footerbar">
+            <div id="footer">
+                <div id="footerborder"></div>
+                <div id='footercontent'>
+                {% block footer %}
+                <div class="legal">
+                    <ul>
+                        <li><a href='mailto:info@betweenthebars.org'>{% trans "Contact us" %}</a></li>
+                        <li><a href='{% url about.copyright %}'>{% trans "Copyrights" %}</a></li>
+                        <li><a href='{% url about.terms %}'>{% trans "Terms of Use" %}</a></li>
+                        <li><a href='{% url about.privacy %}'>{% trans "Privacy Policy" %}</a></li>
+                        <li><a href='{% url about.dmca %}'>{% trans "DMCA" %}</a></li>
+                    </ul>
+                </div>
+                <div class='sponsor'><a href='http://civic.mit.edu'><img src='{{STATIC_URL}}img/C4FCM_Logo_small_light.png' alt='Center for Civic Media'/></a></div>
+                <div style='clear: both;'></div>
+                {% endblock %}
+                </div>
+            </div>
+        </div>
+
+{% compress js %}
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery.min.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery.cookie.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/frontend.js'></script>
+{% endcompress %}
+{% block scripts %}{% endblock %}
+{% include "analytics.html" %}
+</body>
+</html>

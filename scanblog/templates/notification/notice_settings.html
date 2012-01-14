@@ -1,0 +1,59 @@
+{% extends "notification/base.html" %}
+
+{% block title %}Notification preferences{% endblock %}
+
+{% block body %}
+<form method='post' action=''>{% csrf_token %}
+<div class='preferences'>
+    <h2>Communication preferences</h2>
+    {% if user.email %}
+        <p>Your email address: <b>{{ user.email }}</b>.  <a href='{{ user.profile.get_user_edit_url }}'>edit</a></p>
+    {% else %}
+        <p>You have no email address in your profile, so will receive no email notifications.  <a href='{{ user.profile.get_user_edit_url }}'>Add an email address</a>?</p>
+    {% endif %}
+    <p>Send email notifications for:</p>
+        <table class='form'>
+            {% for row in notice_settings.rows %}
+            <tr>
+                <th>{{ row.notice_type.description }}</th>
+                {% for cell in row.cells %}
+                    <td>
+                        <label for='id_{{ cell.0 }}'>Email</label>
+                        <input type='checkbox' value='on' {% if cell.1 %}checked='checked'{% endif %} id='id_{{ cell.0 }}' name='{{ cell.0 }}' />
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            <tr><td colspan='2' style='text-align: right;'><input type='submit' value='Save preferences' /></td></tr>
+        </table>
+        <p>To ensure our emails are not delivered to your spam folder, please add <b><a href='mailto:{{ from_email }}'>{{ from_email }}</a></b> to your address book.</p>
+</div>
+<h2>Subscriptions</h2>
+<p>Notifications appear on the site, and according to the preferences above.</p>
+{% if subscription_settings %}
+    <table class='form'>
+        {% for label, sub in subscription_settings %}
+            <tr>
+                <td>
+                    <input type='checkbox' name='{{ label }}' value='on' checked='checked' />
+                </td>
+                <td>
+                    {% if sub.document_id %}
+                        Replies to &ldquo;{{ sub.document.get_title }}&rdquo; by {{ sub.document.author.profile }}
+                    {% endif %}
+                    {% if sub.author_id %}
+                        Posts by {{ sub.author.profile }}
+                    {% endif %}
+                    {% if sub.tag_id %}
+                        Posts tagged &ldquo;{{ sub.tag }}&rdquo;
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        <tr><td colspan='2'><input type='submit' value='Save preferences' /></td></tr>
+    </table>
+{% else %}
+    <p>You have no subscriptions.</p>
+{% endif %}
+</form>
+{% endblock %}

@@ -1,0 +1,65 @@
+<script type='text/template' id='noteEditor'>
+    <% if (note) {%>
+        <div class='note-editor'>
+            <h2>Add Note</h2>
+            <textarea name='text'><%= note.text %></textarea>
+            <br />
+            <input 
+                type='checkbox' 
+                <%= note.important ? "checked='checked'" : "" %>
+                name='important' 
+                id='noteImportant<%= note.id %>' 
+                />
+            <label for='noteImportant<%= note.id %>'>Mark important?</label>
+            <br />
+
+            <input 
+                type='checkbox' 
+                <%= !note.resolved && note.id ? "checked='checked'" : "" %>
+                name='needsResolution'
+                id='noteNeedsResolution<%= note.id %>'
+                />
+            <label for='noteNeedsResolution<%= note.id %>'>Needs further attention?</label>
+            <br />
+            <input type='button' value='Save' class='save-note' />
+            <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
+            <span class='link-like cancel-add'>Cancel</span>
+        </div>
+    <% } else if (addable) { %>
+        <input type='button' value='Add Note/Ticket' class='add-note' />
+    <% } %>
+</script>
+<script type='text/template' id='noteRow'>
+    <div class='note'>
+        <div class='body<%= note.important ? " important" : "" %>'>
+            <% if (!note.resolved) { %>
+                <span class='ui-icon ui-icon-notice'></span><span class='status'>NEEDS ATTENTION</span>
+            <% } %>
+            <% if (note.important) { %>
+                <span class='ui-icon ui-icon-alert'></span> 
+            <% } %>
+            <%= note.text %>
+            <% if (note.object) { %>
+                <a class='note-obj-link' href='<%= note.object.edit_url %>'><%= note.object_type %></a>
+            <% } %>
+        </div>
+        <div class='byline'>
+            <% if (note.assigned) { %>
+                Assigned to: <%= note.assigned.display_name %>; 
+            <% } %>
+            By 
+            <% if (note.creator.email) { %>
+                <a href='mailto:<%= note.creator.email %>?subject=Note:%20<%= encodeURIComponent(btb.formatDate(note.created) + " " + note.text.substring(0, 50) + "...") %>&body=<%= encodeURIComponent("{{ base_url }}" + note.object.edit_url) + "%0A%0A" + encodeURIComponent(note.text) %>'><%= note.creator.display_name %></a>, 
+            <% } else { %>
+                <%= note.creator.display_name %>, 
+            <% } %>
+            <%= btb.formatDate(note.created) %>
+            <span class='ui-icon ui-icon-pencil edit-note link-like' title='Edit note'></span>
+            <span class='ui-icon ui-icon-trash delete-note link-like' title='Delete note'></span>
+            <% if (!note.resolved) { %>
+                <span class='mark-resolved'>Mark resolved</span>
+            <% } %>
+            <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
+        </div>
+    </div>
+</script>

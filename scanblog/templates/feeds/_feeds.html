@@ -1,0 +1,8 @@
+{% include "feeds/_all.html" %}
+{% include "feeds/_featured.html" %}
+{% if feed_author %}
+    {% include "feeds/_author.html" %}
+{% endif %}
+{% if comment_feed_obj %}
+    {% include "feeds/_comments.html" %}
+{% endif %}

@@ -1,0 +1,154 @@
+{% extends "correspondence/base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load blogs_extras %}
+
+{% block title %}{% trans "Manage correspondence" %}{% endblock %}
+
+{% block body %}
+<script type='text/javascript'>
+{% include "moderation/_moderation_user_js.js" %}
+
+function post_letter_sent(letter_id, checked) {
+    jQuery.post("{% url correspondence.edit_letter_sent %}", {
+            'letter_id': letter_id,
+            'checked': checked,
+    }, function() {
+        message("{% trans 'Changed letter sent status.' %}");
+    });
+}
+
+</script>
+<div id='dialog' style='display: none;'></div>
+<div id='message'></div>
+
+{% block header %}{% endblock %}
+
+<style type='text/css'>
+    .comment-group {
+        padding: 1em;
+        background-color: #eff;
+    }
+    table td, table th {
+        border: 1px solid #eee;
+        vertical-align: top;
+    }
+    table th {
+        background-color: #ddd;
+        text-align: center;
+    }
+    .ui-icon {
+        float: left;
+    }
+</style>
+<table>
+    <tr>
+        <th>Recipient</th>
+        <th>Sent</th>
+        <th>Letters</th>
+        <th>Date created</th>
+        <th>Sender</th>
+    </tr>
+{% for letter in letters %}
+    {% with u=letter.recipient name=letter.recipient_name %}
+        <tr class='user'>
+            <th>
+                {% ifchanged name %}
+                    {% if u %}
+                        {% if u.profile.mailing_address %}
+                            <a href='{% url correspondence.print_envelope u.id %}'><span class='ui-icon ui-icon-mail-closed' title='envelope'></span></a>
+                        {% else %}
+                            Address missing &ndash; <a href='{% url profiles.profile_edit u.id %}'>Add one?</a>
+                        {% endif %}
+                        <a href='{{ letter.recipient.profile.get_blog_url }}'>{{ letter.recipient.profile }}</a>
+                    {% else %}
+                    <a href='{% url correspondence.print_envelope %}?address={{ letter.recipient_address|iriencode }}'><span class='ui-icon ui-icon-mail-closed' title='envelope'></span></a>
+                        {{ name }}
+                    {% endif %}
+                {% endifchanged %}
+            </th>
+            <td>
+                <input type='checkbox' onclick='post_letter_sent({{ letter.pk }}, this.checked);' 
+                 {% if letter.sent %}checked='checked'{% endif %} />
+            </td>
+            <td>
+                {% if letter.type == "consent_form" %}
+                    <div style='clear: both;'>
+                        <span style='float: left;'>Consent form: joined {{ letter.recipient.date_joined|date:"Y-m-j" }}</span>
+                    </div>
+                {% endif %}
+                {% if letter.type == "signup_complete" %}
+                    <div style='clear: both;'>
+                        <a href='{% url correspondence.show_letter letter.pk %}'><span class='ui-icon ui-icon-document'></span></a>
+                        <span style='float: left;'>Signup complete</span>
+                    </div>
+                {% endif %}
+                {% if letter.type == "first_post" %}
+                    <div style='clear: both;'>
+                        <a href='{% url correspondence.show_letter letter.pk %}'><span class='ui-icon ui-icon-script'></span></a>
+                        <span style='float: left;'>First post</span>
+                    </div>
+                {% endif %}
+                {% if letter.type == "letter" %}
+                    <div style='clear: both;'>
+                        <a href='{% url correspondence.show_letter letter.pk %}'><span class='ui-icon ui-icon-script'></span></a>
+                        <a href='{% url correspondence.edit_generic_letter letter.pk %}'><span class='ui-icon ui-icon-pencil'></span></a>
+                        <span style='float: left;'>Letter</span>
+                    </div>
+                    <div style='clear: both;'>
+                        {{ letter.body|truncatewords:100 }}
+                    </div>
+                {% endif %}
+                {% if letter.type == "comments" %}
+                    <table>
+                    {% with comments=letter.sorted_comments %}
+                        {% for comment in comments %}
+                            {% with post=comment.commentpost.post profile=post.author.profile %}
+                            {% ifchanged post.author %}
+                                <tr class='comment-group'><td colspan='7'>
+                                    <a href='{% url correspondence.show_letter letter.pk %}'><span class='ui-icon ui-icon-script' title='Build comment mailing (PDF)'></span></a>
+                                    <span style='float: left;'>Comments</span>
+                                </td></tr>
+                            {% endifchanged %}
+                            <tr>
+                                <td>{% ifchanged post.title %}<a href='{{ post.get_absolute_url }}'>{% firstof post.title post.id %}</a>{% endifchanged %}</td>
+                                <td>
+                                    {% ifchanged comment.user.profile %}
+                                    {{ comment.user.profile }}
+                                    {% endifchanged %}
+                                </td>
+                                <td>{{ comment.comment }}</td>
+                                <td class='comment-id'>{{ comment.id }}</td>
+                                <td>{{ comment.submit_date|naturalday }}</td>
+                                <td>{% if perms.comments.can_moderate %}
+                                    <a href='#' onclick='remove("{{ comment.id }}", "{{comment.comment|escapejs}}", this); return false;'>Remove</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    {% endwith %}
+                    </table>
+                {% endif %}
+                {% if letter.type == "waitlist" %}
+                    <div>
+                        <a href='{% url correspondence.show_waitlist_postcard letter.pk %}'><span class='ui-icon ui-icon-contact' title='Show waitlist postcard'></span></a><span style='float: left;'>Waitlist</span>
+                    </div>
+                    <div style='clear: both;'></div>
+                {% endif %}
+            </td>
+            <td>
+                {{ letter.created|naturalday }}
+            </td>
+            <td>
+                {{ letter.sender_name }}
+            </td>
+        </tr>
+    {% endwith %}
+{% endfor %}
+</table>
+
+{% block footer %}{% endblock %}
+
+{% endblock %}

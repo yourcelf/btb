@@ -1,0 +1,32 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% block body %}
+Please find enclosed a printout of recent comments visitors have left on your
+blog.  NEW: You can now reply directly to these comments, and the commenters
+will get notified that you have replied.  Each set of comments has a unique
+``reply ID'' which is included in the printout.  To respond directly, print the
+reply ID of the comments you are responding to clearly at the top of your
+letter.  Please remember that your responses are still public -- anyone on the
+Internet can read them.  We also can't guarantee that the comment writers will
+read or see your response; but we will do what we can to let them know that you
+have responded.
+
+Please keep in mind that we don't filter or censor these comments; nor
+do we endorse them -- we just forward them on to you.  If there are comments
+that you disagree with, please remember that there are all kinds of people on
+the Internet, and while most are well intentioned, some may be less so.  The
+best response to negative comments is usually no response.  
+
+Please remember that all information published using our service will be
+completely public and listed under your full name; we ask you not to send us
+anything illegal, incriminatory, or which might negatively affect your chances
+for parole.
+
+You can share the following Internet address (``URL'') to direct people to your
+blog:
+
+\begin{quote}
+\url{ {{ letter.recipient.profile.get_blog_url|absolute_url|tex_escape }} }
+\end{quote}
+{% endblock %}
+{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

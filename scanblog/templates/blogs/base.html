@@ -1,0 +1,54 @@
+{% extends "site_base.html" %}
+{% block nav_blogs_active %}active{% endblock %}
+
+{% block css %}
+    {% if perms.scanning.tag_post %}
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/jquery-tagit/css/tagit-simple-blue.css" />
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if perms.scanning.tag_post %}
+    <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-ui.min.js'></script>
+    <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-tagit/js/tagit.js'></script>
+    <script type='text/javascript'>
+        $(".tagform ul.tags").tagit({
+            tagSource: "{% url blogs.post_tag_list %}",
+            triggerKeys: ['enter', 'comma', 'tab'],
+            allowNewTags: false,
+            select: true
+        });
+        $(".tagform form").submit(function() {
+            var form = this;
+            var tags = ($("select", form).val() || []).join(",");
+            $("input[type=submit]", form).addClass("loading");
+            $.ajax({
+                url: $(form).attr("action"),
+                success: function() {
+                    $("input[type=submit]", form).removeClass("loading");
+                    $(form).parent().hide();
+                },
+                error: function() {
+                    alert("Server error");
+                    $("input[type=submit]", form).removeClass("loading");
+                },
+                type: "POST",
+                data: {
+                    tags: tags 
+                }
+            });
+            return false;
+        });
+        $(".tagform .close").click(function() {
+            $(this).parent().hide();
+        });
+        $(".tag-top-button").click(function() {
+            var tagform = $(this).parent().find(".tagform");
+            tagform.toggle();
+            if (tagform.is(":visible")) {
+                tagform.find("input[type=text]").focus();
+            }
+        });
+    </script>
+{% endif %}
+{% endblock %}

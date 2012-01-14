@@ -1,0 +1,105 @@
+{% extends "blogs/base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{{document.title}} {% trans "revisions" %}{% endblock %}
+
+{% block body %}
+
+<div class='revision-list'>
+    <h2>{% trans "Transcription revisions" %}</h2>
+    <h3><a href='{{ document.get_absolute_url }}'>{% firstof document.title "Untitled" %}</a>, by {{ document.author.profile }}</h3>
+    {% if perms.scanning.change_transcription and not document.transcription.locked and transcription_open %}
+    <p><a href='{% url scanning.transcribe_document document.id %}'>edit transcription</a></p>
+    {% endif %}
+
+    <style type='text/css'>
+        #diffs td {
+            vertical-align: top;
+        }
+    </style>
+    {% if revisions %}   
+        {% if revisions|length > 1 %}
+        <table>
+            <tr>
+                <th>Revision</th>
+                <th colspan='2'>Compare</th>
+                <th>Editor</th>
+                <th>Date</th>
+        {% for rev in revisions %}
+            <tr>
+                <td>{{ rev.revision }}</td>
+                <td>
+                    <input class="diff" type="radio" name="from_rev" value="{{ rev.revision }}" {% if forloop.counter == 2 %}checked="yes"{% endif %}/>
+                </td>
+                <td>
+                    <input class="diff" type="radio" name="to_rev" value="{{ rev.revision }}" {% if forloop.counter == 1 %}checked="yes"{% endif %}/>
+                </td>
+                <td>
+                    {{ rev.editor.profile }}
+                </td>
+                <td>
+                    {{ rev.modified|timesince }} ago
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div id='diffs'></div>
+        {% else %}
+        <div id='diffs'>
+            {% with revisions.0 as earliest %}{% with earliest as latest %}
+                {% include "scanning/_column_diff.html" %}
+            {% endwith %}{% endwith %}
+        </div>
+        {% endif %}
+    {% else %}
+        No transcription yet.  Add one!
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block scripts %}
+    <script type='text/javascript'>
+        function updateRadios() {
+            var from = $("input[name=from_rev]:checked(yes)");
+            var to = $("input[name=to_rev]:checked(yes)");
+            var maxFromRev = parseInt(to.val()) - 1;
+            var minToRev = parseInt(from.val()) + 1;
+            $("input[name=from_rev]").each(function(i, el) {
+                if (parseInt($(el).val()) > maxFromRev) {
+                    $(el).hide();
+                } else {
+                    $(el).show();
+                }
+            });
+            $("input[name=to_rev]").each(function(i, el) {
+                if (parseInt($(el).val()) < minToRev) {
+                    $(el).hide();
+                } else {
+                    $(el).show();
+                }
+
+            });
+
+        }
+        function getDiffs() {
+            updateRadios();
+            $.get("{% url scanning.revision_compare document.pk %}", {
+                'earliest': $("input[name=from_rev]:checked(yes)").val(),
+                'latest': $("input[name=to_rev]:checked(yes)").val()
+            }, function(data) {
+                $("#diffs").html(data);
+            });
+        };
+        $(document).ready(function() {
+            $("input.diff").change(getDiffs);
+            {% if revisions|length > 1 %}
+                getDiffs();
+            {% endif %}
+            $("#diffs").ajaxError(function() {
+                $("#diffs").html("<div class='error'>Oops!  Error communicating with the server.  We've been notified and are working on it.  Please try again later.</div>");
+            });
+        });
+    </script>
+{% endblock %}
+

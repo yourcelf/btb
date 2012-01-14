@@ -1,0 +1,21 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% block body %}
+Thanks for sending your first post or profile.  Please find enclosed a printout
+showing how it looks on the Internet.  From this point forward, we won't send
+additional printouts of each post you send; however, we will periodically send
+back any comments that visitors leave on your blog.
+
+You can share the following Internet address (``URL'') to direct people to your
+blog:
+
+\begin{quote}
+\url{ {{ letter.recipient.profile.get_blog_url|absolute_url|tex_escape }} }
+\end{quote}
+
+Please remember that all information published using our service will be
+completely public and listed under your full name; we ask you not to send us
+anything illegal, incriminatory, or which might negatively affect your chances
+for parole.
+{% endblock %}
+{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

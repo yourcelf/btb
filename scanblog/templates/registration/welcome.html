@@ -1,0 +1,29 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Welcome" %}{% endblock %}
+{% block body %}
+
+<h1>{% trans "Welcome" %}</h1>
+
+{% url blogs.posts_needing_transcription as transcribe_list %}
+{% url about.community_guidelines as community_guidelines %}
+{% with user.profile.get_absolute_url as edit_profile %}
+
+<p>
+
+{% blocktrans %}
+Registration successful.  You may now leave comments, 
+transcribe posts, and 
+<a href='{{ edit_profile }}'>edit your profile</a>.
+{% endblocktrans %}
+</p>
+<p>
+{% blocktrans %}
+If you haven't yet, please look over the 
+<a href='{{ community_guidelines }}'>community guidelines</a> 
+for comments and transcriptions.
+{% endblocktrans %}
+</p>
+
+{% endwith %}
+{% endblock %}

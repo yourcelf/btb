@@ -1,0 +1,93 @@
+.user-chooser, .pending-scans, .user-detail
+  .mailing-address, .special-mail-handling
+    white-space: pre
+    font-family: $mono
+    font-size: 12px
+    line-height: 1em
+  .results
+    .result
+      cursor: pointer
+      &:hover, &.chosen
+        background-color: #ffe
+
+.in-place-user-chooser
+  .user-name
+    font-weight: bold
+    font-size: 18px
+    &:hover
+      background-color: #ffe
+      border: 1px inset gray
+
+
+.user-detail
+  .state
+    font-size: 14px
+    background-color: #eef
+    @include border-radius(5px)
+    padding: 5px
+  div.left-column
+    float: left
+    width: 48%
+  div.right-column
+    float: right
+    width: 48%
+  table
+    th
+      background-color: #ddd
+    th,td
+      font-size: 12px
+      border: 1px solid #eee
+      padding: 0.1em 0.5em 0.1em 0.5em
+  .queue-printout
+    +link-like
+
+.user-chooser, .add-user
+  background-color: #eff
+  border: 1px solid black
+  padding: 5px 10px 5px 10px
+  .highlight
+    background-color: #ffe
+    font-weight: bold
+  span.add-user-link
+    +link-like
+
+.compact-user
+  text-align: left
+  position: relative
+  width: 350px
+  margin: 5px
+  border: 1px dotted #ddd
+  .state
+    padding-left: 5px
+    padding-right: 5px
+    background-color: #eef
+    font-size: 12px
+    line-height: 1.4em 
+  .name-and-details
+    width: 45%
+    padding-left: 5px
+    padding-right: 5px
+    display: inline-block
+    float: left
+    font-size: 12px
+    line-height: 1.2em
+    .blog-name
+      font-style: italic
+    .display-name
+      font-size: 14px
+    .user-id
+      font-family: $mono
+    .user-id, .organizations
+      font-size: 10px
+  .mailing-address
+    width: 45%
+    margin-left: 0.5em
+    display: inline-block
+    +clearfix
+  +clearfix
+  &.not-enrolled
+    opacity: 0.5
+  &.inactive
+    opacity: 0.5
+    .display-name
+      text-decoration: line-through

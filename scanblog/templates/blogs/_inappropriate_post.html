@@ -1,0 +1,18 @@
+{% load humanize %}
+<div class='post-snippet'>
+    <div class='post-title-line'>
+        <div class='date'>{{post.date_written|naturalday}}</div>
+        {% if post.title %}
+            <h2>{{ post.title }}</h2>
+        {% endif %}
+    </div>
+    <div class='post-warning'>
+        <p>
+            {% url profiles.own_profile_edit as edit_profile_url %}
+            This post contains adult content.
+            To view this post, please enable &#147;show adult content&#148;
+            <a href='{{ edit_profile_url }}'>in your profile</a>.
+        </p>
+    </div>
+    {% include "blogs/_post_bottom_line.html" %}
+</div>

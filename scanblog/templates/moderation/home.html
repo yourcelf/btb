@@ -1,0 +1,64 @@
+{% extends "moderation/base.html" %}
+{% load compress %}
+{% block title %}Scans and Moderation{% endblock %}
+
+{% block css %}
+{% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/moderation.css" />
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/jquery-ui-theme/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/Jcrop/css/jquery.Jcrop.css" />
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/smarttextbox/SmartTextBox.css" />
+{% endcompress %}
+{% endblock %}
+
+{% block subnav %}
+    <a href='#'>Dashboard</a>
+    <a href='#/pending'>Incoming mail</a>
+    <!--<a href='#/process'>Process scans</a>-->
+    <a href='#/users'>Manage users</a>
+    <a href='#/mail'>Outgoing mail</a>
+{% endblock %}
+{% block body %}
+    <div id='app'>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script type='text/javascript'>
+    if (typeof window.btb == "undefined") { window.btb = {}; }
+    btb.ORGANIZATIONS = {{ organizations_json|safe }};
+</script>
+
+{# BtB app templates #}
+{% include "moderation/_common.html" %}
+{% include "moderation/_dashboard.html" %}
+{% include "moderation/_pendingscans.html" %}
+{% include "moderation/_scans.html" %}
+{% include "moderation/_documents.html" %}
+{% include "moderation/_users.html" %}
+{% include "moderation/_correspondence.html" %}
+{% include "moderation/_notes.html" %}
+
+{% compress js %}
+{# Third party scripts #}
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-ui.min.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/Jcrop/js/jquery.Jcrop.min.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/smarttextbox/SmartTextBox.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/underscore-min.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/backbone-min.js'></script>
+
+{# Our own third party scripts #}
+<script type='text/javascript' src='{{STATIC_URL}}js/underscore-autoescape.js'></script>
+
+{# BtB app scripts #}
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/common.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/users.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/pendingscans.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/correspondence.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/scans.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/documents.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/dashboard.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/notes.js'></script>
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/dispatch.js'></script>
+{% endcompress %}
+
+{% endblock %}

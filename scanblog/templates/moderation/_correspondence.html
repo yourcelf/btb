@@ -1,0 +1,331 @@
+<script type="text/template" id="letterMenu">
+        Add letter: <select class='type-chooser'>
+            <option value="">--------</option>
+            <option value="letter">Letter</option>
+            <option value="consent_form">Invitation to join</option>
+            <option value="waitlist">Waitlist postcard</option>
+            <option value="signup_complete">Enrollment confirmation</option>
+            <option value="first_post">First post</option>
+            <option value="comments">Recent comments</option>
+        </select><img class='loading' style='display: none;' href='{{ STATIC_URL }}img/spinner.gif' />
+        <span class='org-chooser'>
+            Return:
+            <select class='org_id'>
+                <% for (var i = 0; i < recipient.organizations.length; i++) { %>
+                    <option value="<%= recipient.organizations[i].id %>">
+                        <%= recipient.organizations[i].name %>
+                    </option>
+                <% } %>
+            </select>
+        </span>
+</script>
+<script type='text/template' id='letterOrgChooser'>
+    <select class='org_id'>
+        <% if (letter.recipient) { %>
+            <% for (var i = 0; i < letter.recipient.organizations.length; i++) { %>
+                <option value="<%= letter.recipient.organizations[i].id %>"
+                    <%| letter.org_id == letter.recipient.organizations[i].id ? 'checked="checked"' : '' %>
+                ><%= letter.recipient.organizations[i].name %></option>
+            <% } %>
+        <% } %>
+    </select>
+</script>
+<script type='text/template' id='letterEditor'>
+    <div class='custom-letter'>
+        <h2>Write a letter</h2>
+        <div class='letter-error'></div>
+        <form method='post' action='{% url correspondence.preview_letter %}'>{% csrf_token %}
+            Return address: <span class='org-chooser'></span><br />
+
+            <textarea class='letter-body' name='body'><%= letter.body || "" %></textarea><br />
+            <input type='hidden' name='recipient_id' value='<%= letter.recipient_id %>' />
+            <span class='link-like cancel'>Cancel</span>
+            <input type='submit' value='Preview' class='preview-letter' />
+            <input type='button' value='Save' class='enqueue-letter' />
+            <img class='loading' style='display: none;' href='{{ STATIC_URL }}img/spinner.gif' />
+            <input type='checkbox' <% if (!letter.send_anonymously) { %> checked='checked'<% } %> name='signed' class='not-anonymous' /> Sign letter with your name
+        </form>
+    </div>
+</script>
+<script type='text/template' id='correspondenceControlsScan'>
+    <%= scan.author.display_name %><br />
+    <%= btb.formatDate(scan.order_date) %>
+</script>
+<script type='text/template' id='letterTableHeading'>
+    <div class='fetch-loading' style='display: none;'>
+        <img src='{{ STATIC_URL }}img/spinner.gif' />
+    </div>
+</script>
+<script type='text/template' id='letterRow'>
+<div class='row <%= letter.sent ? "sent" : "unsent" %>'>
+    <div class='control-line'>
+        <span class='date'>
+            <% if (letter.sent) { %>
+                <%= btb.formatDate(letter.sent) %>
+            <% } else { %>
+                <span class='unsent'>Unsent</span> &ndash;
+                <%= btb.formatDate(letter.created) %>
+            <% } %>
+        </span>
+        <div class='controls'>
+            <div class='trigger'>
+                <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
+                <span class='ui-icon ui-icon-gear not-loading'></span>
+            </div>
+            <div class='overlay'>
+                <ul>
+                    <% if (letter.type == "letter") { %>
+                        <li class='edit-letter'><span class='ui-icon ui-icon-pencil'></span>Edit</li>
+                    <% } %>
+                    <% if (letter.recipient && letter.recipient.special_mail_handling) { %>
+                        <li class='special-handling' style='color: red;'>
+                            Special mail handling
+                        </li>
+                    <% } %>
+                    <% if (letter.type != "") { %>
+                        <li class='print-letter' 
+                            onclick="window.location.href='{% url correspondence.show_letter %}<%= letter.id %>'"
+                            ><span class='ui-icon ui-icon-script'></span>Print</li>
+                    <% } %>
+                    <% if (letter.is_postcard == false) { %>
+                        <li class='print-envelope'
+                            onclick="window.location.href='{% url correspondence.print_envelope %}<%= letter.recipient ? letter.recipient.id : "?address=" + letter.recipient_address %>'" 
+                            ><span class='ui-icon ui-icon-mail-closed'></span>Envelope</li>
+                    <% } %>
+                    <% if (letter.sent) { %>
+                        <% if (letter.type != "") { %>
+                            <li class='resend-letter'><span class='ui-icon ui-icon-refresh'></span>Resend</li>
+                        <% } %>
+                        <li class='mark-letter-unsent'><span class='ui-icon ui-icon-close'></span>Mark unsent</li>
+                    <% } else { %>
+                        <li class='mark-letter-sent'><span class='ui-icon ui-icon-check'></span>Mark sent</li>
+                        <li class='delete-letter'><span class='ui-icon ui-icon-trash'></span>Delete</li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+        <span title='<%= letter.send_anonymously ? "Sending anonymously" : "" %>'>enqueued by
+            <%= letter.sender.display_name %><%= letter.send_anonymously ? "*" : "" %>
+        </span>
+        <span class='recipient'>
+            ; to 
+            <% if (letter.recipient) { %>
+                <a href='#/users/<%= letter.recipient.id %>'><%= letter.recipient.display_name %></a>
+            <% } else { %>
+                <%= letter.recipient_address %>
+            <% } %>
+        </span>
+    </div>
+    <div class='body'>
+        <% if (letter.type == "letter") { %>
+            <%| btb.ellipsisWithMore(_.escapeHTML(letter.body)) %>
+        <% } else if (letter.type == "waitlist") {%>
+            Waitlist
+        <% } else if (letter.type == "consent_form") { %>
+            Invitation to Join
+        <% } else if (letter.type == "signup_complete") { %>
+            Enrolled confirmation
+        <% } else if (letter.type == "first_post") { %>
+            First post or profile
+        <% } else if (letter.type == "printout") { %>
+            Printout of <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
+        <% } else if (letter.type == "comments") { %>
+            <div class='comments-table'></div>
+        <% } else {%>
+            unknown letter, type: '<%= letter.type %>'
+        <% } %>
+    </div>
+    <div class='return'>Return:
+        <% if (letter.org) { %>
+            <% console.log(commaddress); %>
+            <i><%= letter.org.name %></i>: <%= commaddress %>
+        <% } else { %>
+            "None!"
+        <% } %>
+</div>
+</script>
+<script type='text/template' id='specialHandlingDialog'>
+    <div>
+        <a href='#/users/<%= letter.recipient.id %>'><%= letter.recipient.display_name %><span class='ui-icon ui-icon-person'></span></a><br />
+        <pre><%= letter.recipient.special_mail_handling %></pre>
+    </div>
+</script>
+<script type='text/template' id='commentHeading'><span class='comment-head'>Comments</span></script>
+<script type='text/template' id='commentRow'>
+    <div class='comment-row'>
+        <div class='byline'>
+            <span class='user'><a href='#/users/<%= comment.user.id %>'><%= comment.user.display_name %></a></span>
+            <span class='date'><%= btb.formatDate(comment.created) %></span>
+        </div>
+        <div class='body'>
+            <span class='body'><%| btb.ellipsisWithMore(_.escapeHTML(comment.comment)) %></span>
+        </div>
+    </div>
+</script>
+<script type='text/template' id='correspondenceScanRow'>
+<div class='row scan'>
+    &larr;
+    <span class='date'><%= btb.formatDate(scan.order_date) %></span>
+    <a href='<%= scan.url %>'><img 
+        src='<%= scan.pages[0].image %>?thumbnail=15' 
+        style='width: 15px' />
+        Scan from <a href='#/users/<%= scan.author.id %>'><%= scan.author.display_name %></a>, 
+    (<%= scan.pages.length %> pages)
+</div>
+</script>
+<script type='text/template' id='buildMailing'>
+    <div class='build-mailing'>
+        <h2>Prepare new mailing</h2>
+        <div class='filters'>
+            <span class='choice waitlist'>
+                <input checked="checked"  type='checkbox' name='waitlist' id='waitlist' 
+                /><label for='waitlist'>Waitlist (<span class='count'></span>)</label>
+            </span>
+
+            <span class='choice consent_form'>
+                <input checked="checked"  type='checkbox' name='consent_form' id='consent_form' 
+                /><label for='consent_form'>Invitations (<span class='count'></span>)</label>
+                (Cutoff <input name='consent_form_cutoff' class='consent-form-cutoff'>)
+            </span>
+
+            <span class='choice signup_complete'>
+                <input checked="checked"  type='checkbox' name='signup_complete' id='signup_complete' 
+                /><label for='signup_complete'>Enrollment (<span class='count'></span>)</label>
+            </span>
+
+            <span class='choice first_post'>
+                <input checked="checked"  type='checkbox' name='first_post' id='first_post' 
+                /><label for='first_post'>First Post (<span class='count'></span>)</label>
+            </span>
+
+            <span class='choice comments'>
+                <input checked="checked"  type='checkbox' name='comments' id='comments' />
+                <label for='comments'>Comments (<span class='count'></span>)</label>
+            </span>
+            
+            <span class='choice enqueued'>
+                <input checked="checked"  type='checkbox' name='enqueued' id='enqueued' />
+                <label for='enqueued'>Enqueued (<span class='count'></span>)</label>
+            </span>
+        </div>
+
+        <div class='build-mailing-button'>
+            Total: <span class='total-count'></span><br />
+            <input type='button' name='build_mailing' value='Build mailing &raquo;' />
+            <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />
+        </div>
+    </div>
+</script>
+<script type='text/template' id='outgoingMail'>
+<div class='outgoing-mail'>
+    <div style='float: left; margin-right: 1.5em;'>
+        <h1>Outgoing Mail</h1>
+    </div>
+    <div style='float: left; margin-top: 1.5em;'>
+        <a href='{% url correspondence.mass_mailing_spreadsheet "" %}'>Address spreadsheet</a>
+    </div>
+    <div style='clear: both;'></div>
+    <div class='build-mailing'></div>
+    <div class='mail-search'>
+        <div class='sidebar'>
+            <div class='mailing-filter'></div>
+        </div>
+        <div class='main'>
+            <div class='letter-filter'></div>
+            <div class='letters'></div>
+        </div>
+    </div>
+</div>
+</script>
+<script type='text/template' id='mailingFilters'>
+    <div class='mailing-filters'>
+        <img src='{{ STATIC_URL }}img/spinner.gif' class='loading' />
+        <h2>All letters</h2>
+        <ul>
+            <li class='all'><div class='item'>All</div></li>
+            <li class='all-sent'><div class='item'> - sent</div></li>
+            <li class='all-unsent'><div class='item'> - unsent</div></li>
+        </ul>
+        <h2>Mailings</h2>
+        <ul class='mailings'>
+            <li class='enqueued'><div class='item'>Enqueued</div></li>
+        </ul>
+        <div class='pagination'></div>
+    </div>
+</script>
+<script type='text/template' id='mailingFilterItem'>
+    <div class='controls'>
+        <div class='trigger'>
+            <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
+            <span class='ui-icon ui-icon-gear not-loading'></span>
+        </div>
+        <div class='overlay'>
+            <ul>
+                <li class='download' 
+                    onclick="window.location.href='{% url correspondence.collate_mailing %}<%= mailing.id %>'"
+                    ><span class='ui-icon ui-icon-note'></span>Download all</li>
+                <% if (mailing.date_finished) { %>
+                    <li class='mark-unsent'><span class='ui-icon ui-icon-close'></span>Mark unsent</li>
+                <% } else { %>
+                    <li class='mark-sent'><span class='ui-icon ui-icon-check'></span>Mark sent</li>
+                    <li class='clear-cache'><span class='ui-icon ui-icon-refresh'></span>Clear files</li>
+                    <li class='delete'><span class='ui-icon ui-icon-trash'></span>Delete</li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+    <div class='item'>
+        <%= mailing.date_finished ? "" : "*" %>
+        <%= btb.formatDate(mailing.date_finished || mailing.created) %> 
+        <%= mailing.editor.display_name %> 
+        (<%= mailing.letter_count %>)
+    </div>
+</script>
+<script type='text/template' id='letterFilters'>
+<div class='filters'>
+    <div style='float: left;'>
+        <span class='choice waitlist'>
+            <input checked="checked"  type='checkbox' name='waitlist' id='waitlist' 
+            /><label for='waitlist'>Waitlist (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice consent_form'>
+            <input checked="checked"  type='checkbox' name='consent_form' id='consent_form' 
+            /><label for='consent_form'>Invitations (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice signup_complete'>
+            <input checked="checked"  type='checkbox' name='signup_complete' id='signup_complete' 
+            /><label for='signup_complete'>Enrollment (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice first_post'>
+            <input checked="checked"  type='checkbox' name='first_post' id='first_post' 
+            /><label for='first_post'>First Post (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice printout'>
+            <input checked="checked"  type='checkbox' name='printout' id='printout' 
+            /><label for='printout'>Printouts (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice comments'>
+            <input checked="checked"  type='checkbox' name='comments' id='comments' 
+            /><label for='comments'>Comments (<span class='count'></span>)</label>
+        </span>
+        
+        <span class='choice letter'>
+            <input checked="checked"  type='checkbox' name='letter' id='letter' 
+            /><label for='letter'>Letters (<span class='count'></span>)</label>
+        </span>
+
+        <span class='choice other'>
+            <input checked="checked" type='checkbox' name='other' id='other'
+            /><label for='letter'>Other (<span class='count'></span>)</label>
+        </span>
+
+        <input type='text' name='search' id='search' />
+    </div>
+    <div style='clear: both;'></div>
+</div>
+</script>

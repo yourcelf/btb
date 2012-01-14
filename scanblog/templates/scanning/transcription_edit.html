@@ -1,0 +1,151 @@
+{% load i18n %}
+<!DOCTYPE html>
+{# This does not use the regular site base, because we want to maximize space for transcribing. #}
+<html>
+<head>
+    <title>{{ site.name }}: Transcription</title>
+    <link rel='stylesheet' href='{{STATIC_URL}}js/vendor/jquery-ui-theme/jquery-ui.css' />
+    <style type='text/css'>
+        html, body, #transcription_form, #transcription_form form {
+            height: 100%;
+            width: 100%;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #form {
+            width: 100%;
+            height: 100%;
+        }
+        #transcription_form textarea {
+            width: 100%;
+            height: 90% !important;
+            clear: both;
+        }
+
+        .arrange-widgets div {
+            float: left;
+            margin-left: 1em; 
+        }
+        .arrange-widgets .button {
+            height: 16px;
+            cursor: pointer;
+        }
+        /**
+        *  jquery-ui.layout.js Basic Layout Theme
+        * 
+        *  This theme uses the default layout class-names for all classes
+        *  Add any 'custom class-names', from options: paneClass, resizerClass, togglerClass
+        */
+
+        .ui-layout-pane { /* all 'panes' */ 
+            background: #FFF; 
+            border: 1px solid #BBB; 
+            padding: 10px; 
+            overflow: auto;
+        } 
+
+        .ui-layout-resizer { /* all 'resizer-bars' */ 
+            background: #DDD; 
+        } 
+
+        .ui-layout-toggler { /* all 'toggler-buttons' */ 
+            background: #AAA; 
+        } 
+        .scan-original-link {
+            float: right;
+            font-family: sans-serif;
+            font-size: 85%;
+            color: #999;
+        }
+        .scan-page-number {
+            text-transform: uppercase;
+            font-size: 85%;
+            color: #bbb;
+        }
+        .scan-page {
+            border: 1px dotted gray;
+        }
+        a img {
+            border: none;
+        }
+        .sugar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id='transcription_form'>
+    <div class='ui-layout-north'>
+        <div class='arrange-widgets'>
+            <div><b>{% trans "Transcription editor" %}</b></div>
+            <div style='text-align: center;'>{% block heading %}{% endblock %}</div>
+            <div>{% trans "Arrange:" %}</div>
+            <div class='ui-state-default button' onclick='arrange("horizontal");'>
+                <img src='{{STATIC_URL}}img/top_bottom_arrange.png' alt="{% trans 'Arrange horizontally' %}"/>
+            </div>
+            <div class='ui-state-default button' onclick='arrange("vertical");'>
+                <img src='{{STATIC_URL}}img/side_side_arrange.png' alt="{% trans 'Arrange vertically' %}"/>
+            </div>
+        </div>
+        <div style='clear: both;'></div>
+    </div>
+
+    <div id='scan'>
+        {% include "blogs/_post_pagegroup.html" %}
+    </div>
+    <div id='form'>
+        <div style='float: left;'>
+            <label style='float: left; margin-right: 1em;' for='id_body'><b>{% trans "Transcription:" %}</b></label>
+        </div>
+        <div style='float: left;'>
+            <a href='{% block revisions_link %}{% endblock %}' style='float: left;'>revisions</a>
+        </div>
+        <div style='clear: both;'></div>
+        <form action='' method='post' style='width: 100%; height: 100%;'>{% csrf_token %}
+            <div style='width: 100%; height: 90%; border: 0; margin: 0; padding: 0;'>
+                {{ form.body.errors }}
+                {{ form.body }}
+                {{ lockform }}
+                <textarea class='sugar' name='sugar'></textarea>
+                <label for='id_complete'>{{ form.complete.help_text }}</label>
+                {{ form.complete }}
+                <input type='submit' value='{% trans "Save" %}' /> 
+                <a href='{{ cancel_link }}'>{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="{{STATIC_URL}}js/vendor/jquery.min.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/vendor/jquery-ui.min.js" type="text/javascript"></script>
+<script src='{{STATIC_URL}}js/vendor/jquery.layout.js' type='text/javascript'></script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        arrange("horizontal");
+    });
+    function arrange(dir) {
+        if (dir == "vertical") {
+            $('#scan').addClass("ui-layout-west");
+            $('#form').addClass("ui-layout-center");
+            $('#scan').removeClass("ui-layout-center");
+            $('#form').removeClass("ui-layout-south");
+            $('div#transcription_form').layout({
+                west__size: "600"
+            });
+        } else if (dir == "horizontal") {
+            $('#scan').removeClass("ui-layout-west");
+            $('#form').removeClass("ui-layout-center");
+            $('#scan').addClass("ui-layout-center");
+            $('#form').addClass("ui-layout-south");
+            $('#transcription_form').layout({
+                south__size: "300"
+            });
+        }
+    }
+</script>
+</body>
+</html>

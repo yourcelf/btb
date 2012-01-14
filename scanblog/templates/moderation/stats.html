@@ -1,0 +1,128 @@
+{% extends "moderation/base.html" %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/moderation.css" />
+{% endblock %}
+
+{% block body %}
+    <h1>{{ site.name }} Stats</h1>
+
+    <div class='stats-block'>
+        <h2>Users</h2>
+
+        <h3>Current breakdown</h3>
+        <div class='treemap' id='usersTreemap' style='width: 100%; height: 240px;'></div>
+        <div class='about'>
+            A treemap showing various user statuses, with the number of users
+            in each group in parentheses. Click to zoom in, right-click to zoom
+            out.
+        </div>
+
+        <h3>New users per week</h3>
+        <div class='stackedarea' id='usersStackedArea'></div>
+        <div class='about'>
+            The number of new users that are added per week.  Spikes in comment
+            count probably indicate spam bot signups.  We have been inviting and
+            enrolling fewer writers since June when we reached capacity.
+        </div>
+    </div>
+
+    <div class='stats-block'>
+        <h2>Posts</h2>
+
+        <h3>Totals</h3>
+        <table class='stats'>
+            <tr><th></th><th>Total</th><th>Published</th><th>Ready to publish</th>
+            <tr><th>Posts</th><td class='total-posts'></td><td class='published-posts'></td><td class='ready-posts'></td></tr>
+            <tr><th>Profiles</th><td class='total-profiles'></td><td class='published-profiles'></td><td class='ready-profiles'></td></tr>
+        </table>
+        <div id='postsTotals'></div>
+
+
+        <h3>Timeline (by week)</h3>
+        <div class='stackedarea' id='postsStackedArea'></div>
+        <div class='about'>
+            The timeline shows the number of requests, posts, and profiles
+            received in total per week.  We only started tracking requests on Oct
+            1.
+        </div>
+
+        <h3>Impact: Posts</h3>
+        <div class='impact' id='postsImpact'></div>
+        <div class='about'>
+            This graph shows the number of posts ordered by author, to
+            demonstrate the portion of all posts that top contributors make.
+        </div>
+
+        <h3>Impact: Pages</h3>
+        <div class='impact' id='pagesImpact'></div>
+        <div class='about'>
+            This graph shows the contribution by page count.  Some authors
+            post a lot of pages, where others send short form pieces.
+        </div>
+    </div>
+
+    <div class='stats-block'>
+        <h2>Comments</h2>
+        <h3>Totals</h3>
+        <table class='stats'>
+            <tr><th>Comments published</th><td class='total-comments'></td></tr>
+        </table>
+        <h3>Comments posted per week</h3>
+        <div class='stackedarea' id='commentsStackedArea'></div>
+        <div class='about'>
+            This graph shows the number of new comments posted per week.
+        </div>
+
+        <h3>Commenter Impact</h3>
+        <div class='impact' id='commenterImpact'></div>
+        <div class='about'>
+            This graph shows the number of comments posted by particular users.
+            Around 1/4 of the comments posted are from the top 5 contributors.
+        </div>
+    </div>
+
+    <div class='stats-block'>
+        <h2>Letters</h2>
+        <h3>Sent per week</h3>
+        <div class='stackedarea' id='lettersStackedArea'></div>
+        <div class='about'>
+            This shows the breakdown of letters that we send per week.  Over
+            the summer of 2011, we had a spike in signup requests (and hence
+            waitlist notifications) due to being advertised in a prison
+            newsletter.
+        </div>
+
+        <h3>Impact</h3>
+        <div class='impact' id='lettersImpact'></div>
+        <div class='about'>
+            This shows the breakdown of recipients of letters we send, showing
+            which users receive the largest portion of mail.
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+<script type='text/javascript' src='{{STATIC_URL}}js/vendor/jit.js'></script>
+{{ block.super }}
+<script type='text/javascript' src='{{STATIC_URL}}js/moderation/stats.js'></script>
+
+<script type='text/javascript'>
+    var data = {{ stats|safe }};
+    btb.stats.treeMap("usersTreemap", data.users.counts)
+    var legend = btb.stats.stackedData("usersStackedArea", data.users.time_series);
+    btb.stats.stackedData("postsStackedArea", data.documents.time_series);
+    btb.stats.stackedData("lettersStackedArea", data.letters.time_series);
+    btb.stats.stackedData("commentsStackedArea", data.comments.time_series);
+    $(".total-posts").html(data.documents.posts.total)
+    $(".published-posts").html(data.documents.posts.published)
+    $(".ready-posts").html(data.documents.posts.ready_to_publish)
+    $(".total-profiles").html(data.documents.profiles.total)
+    $(".published-profiles").html(data.documents.profiles.published)
+    $(".ready-profiles").html(data.documents.profiles.ready_to_publish)
+    $(".total-comments").html(data.comments.total)
+    btb.stats.impactChart("commenterImpact", data.comments.impact, "username", "users", "comments")
+    btb.stats.impactChart("postsImpact", data.documents.post_impact, "display_name", "users", "posts")
+    btb.stats.impactChart("pagesImpact", data.documents.page_impact, "display_name", "users", "pages")
+    btb.stats.impactChart("lettersImpact", data.letters.impact, "display_name", "users", "letters")
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "about/about_base.html" %}
+
+{% load i18n %}
+{% block title %}{% trans "Frequently Asked Questions" %}{% endblock %}
+
+{% block body %}
+<h1>Frequently Asked Questions</h1>
+<p>Please also see the 
+<a href='{% url about.community_guidelines %}'>community guidelines</a> 
+for commenting and transcribing posts.
+</p>
+<dl>
+    <dt>Who is behind this?</dt>
+    <dd><p>
+    Between the Bars was founded by Charlie DeTar and Benjamin Mako Hill.  It is operated by Charlie DeTar and volunteers and staff in the <a href='http://civic.mit.edu'>Center for Civic Media</a> at MIT.
+    </p></dd>
+    <dt>Why blogging?</dt>
+    <dd><p>
+        <blockquote><p> "It's his lifeline really. He gets printouts back. The
+        other inmates get copies as well and they're quite pleased.
+        It's a link, not just for him to the outside world, but for his
+        inmate friends as well; a lifeline to the outside world."<br />
+        <span style='font-style: normal; color: #000'>
+        &ndash; Derick Attwood, father of imprisoned Shaun Attwood, speaking
+        about his son's blog, 
+        <a href='http://jonsjailjournal.blogspot.com'>Jon's Jail Journal</a>.</p>
+        </span>
+        </blockquote>
+        <blockquote><p>
+             I think what it really has to do is being listened to.... These
+             people are saying 'please don't presume to speak for me'.
+             We have a fascinating backdoor open with blogs... it really is
+             diverse and complicated.<br />
+             <span style='font-style: normal; color: #000'>
+             &ndash; Ethan Zuckerman, speaking about "bridge blogs" that
+             service communities without access to other forms broadcast
+             media. 
+             (<a href='http://jonsjailjournal.blogspot.com/2005/08/28-july-05-bridge-blogs-give-voice-to.html'>source</a>)
+             </span>
+        </p></blockquote>
+        <p>
+        Blogging can not only let people in prison tell their stories and
+        report on their conditions, but it can also provide an instrumental
+        role in maintaining "weak-tie" social networks (acquaintances and
+        friends of friends), which are important for helping people 
+        <a href='http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.128.7760&rep=rep1&type=pdf'>to find jobs and communities in which to live</a>.  This can reduce recidivism.
+        </p>
+    </dd>
+    <dt>How often do prisoners receive comments that I leave?</dt>
+    <dd><p>
+    We currently print and mail new comments about once per week.
+    </p></dd>
+    <dt>What does it cost?</dt>
+    <dd><p>
+    Aside from the postage to send us letters, the service is free.
+    Maintenance expenses are handled through donations and grants, and time to
+    scan letters is donated by volunteers.  It is very important to us that
+    this service always be free.
+    </p></dd>
+    <dt>How long will this last?</dt>
+    <dd><p>
+    We will keep the service running as long as we are able to secure the
+    funding and volunteer energy necessary for it to continue.
+    </p></dd>
+    <dt>Isn't this dangerous?</dt>
+    <dd><p>
+    We don't believe so.  People in prison already have the ability to send letters,
+    which are read and censored by prison officials on the way in and out.
+    Prisoners blogging is not new &ndash; it is something
+    <a href='http://prisonerben.blogspot.com/'>many</a>
+    <a href='http://jonsjailjournal.blogspot.com/'>people</a>
+    <a href='http://prisonpete.blogspot.com/'>have</a>
+    <a href='http://supportdaniel.org/blog/'>been</a>
+    <a href='http://www.spin.com/articles/lil-wayne-starts-blog-prison'>doing</a> 
+    for a long time.  However, it has previously only been accessible to people
+    who have tech-savvy friends or family with enough time on their hands to
+    transcribe letters.  Prison blogging has been
+    <a href='http://www.ethanzuckerman.com/blog/2007/08/31/prison-blogging/'>widely</a>
+    <a href='http://www.guardian.co.uk/commentisfree/libertycentral/2009/sep/09/prison-blogging'>discussed</a>,
+    <a href='http://www.ojr.org/ojr/law/1082592378.php'>challenged in court</a>
+    (and found legal), and is fundamentally no more risky than
+    <a rel='nofollow' href='http://www.prisonpenpals.com/'>prison</a>
+    <a rel='nofollow' href='http://www.outlawsonline.com/'>penpal</a>
+    <a rel='nofollow' href='http://www.writeaprisoner.com/'>services</a> 
+    which
+    <a rel='nofollow' href='http://www.conpals.com'>abound</a>.
+    </p>
+    </dd>
+    <dt>I'd like to republish a prisoner's writing.  Can I do that?</dt>
+    <dd><p>
+    Prisoners maintain the copyrights to all of their writing.  If you'd like
+    to republish it, you should ask them for permission.  You can do so by
+    leaving a comment or, if they have provided an address, contacting them
+    directly.
+    </p></dd>
+    <dt>I want to run Between the Bars in another country.  Can you help?</dt>
+    <dd><p>
+    We'd love to talk to you.  Please <a href='mailto:info@betweenthebars.org'>contact us</a>.
+    </p></dd>
+</dl>
+<p>Have a question that isn't answered here?  Feel free to <a href='mailto:info@betweenthebars.org'>ask us</a>.</p>
+{% endblock %}

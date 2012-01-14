@@ -1,0 +1,18 @@
+The transcription for {{ document.type }} by {{ document.author.profile }} was edited by user: {{ revision.editor.profile }}
+
+Actions:
+
+Diff:
+http://{{ site.domain }}{% url scanning.revision_list document.id %}
+Edit transcription:
+http://{{ site.domain }}{% url scanning.transcribe_document document.id %}
+View document:
+http://{{ site.domain }}{{ document.get_absolute_url }}
+
+Admin functions:
+Edit user: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/
+Delete user: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/delete
+
+----
+{{ revision.body|safe }}
+----

@@ -1,0 +1,27 @@
+.dashboard
+  .scans, .docs, .tickets, .mail
+    background: white
+    margin-bottom: 1em
+    border: 1px solid #eee
+
+  .open-tickets
+    +clearfix
+  .doc-chooser, .scan-chooser
+    float: right
+    .needs-attention, .ready, .published
+      +flat-button
+    .needs-attention
+      +flat-button-position(left)
+    .ready
+      +flat-button-position(middle)
+    .published
+      +flat-button-position(right)
+    .chosen
+      background-color: #fed
+  
+
+div.loading
+  min-height: 100px
+  background-image: url("../img/spinner.gif")
+  background-repeat: no-repeat
+  background-position: left top

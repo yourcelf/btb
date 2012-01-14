@@ -1,0 +1,111 @@
+site:
+  domain: "localhost:8000"
+  name: "LocalHost"
+admins:
+ - username: admin
+   password: admin
+orgs:
+ - name: Blog Crew
+   personal_contact: John Moderator Dough
+   public: true
+   moderators:
+    - username: blogcrewmod
+      password: blogcrewmod
+   mailing_address: "Blog Crew\nPO Box 123\nCambridge, MA  12345"
+   about: "<p>We are a crew of bloggers that blogs.  Crewfully!</p>"
+   footer: "<p>Buy our prints at how does this work?</p>"
+
+ - name: Other Crew
+   personal_contact: Jane Moderator Dough
+   public: false
+   moderators:
+    - username: othermod
+      password: othermod
+   mailing_address: "Other Crew\nPO Box 123\nCambridge, MA  12345"
+   outgoing_mail_handled_by: Blog Crew
+ 
+users:
+ - name: František Loukianos
+   orgs: [Blog Crew]
+   in_prison: true
+   consent_form_received: true
+   blog_name: Franny Lou 
+   correspondence:
+    - received:
+        date: 2011-11-01
+        parts:
+         - type: ignore
+           pages: 1
+         - type: request
+           pages: 2
+    - sent:
+        type: consent_form
+        date: 2011-11-03
+    - received:
+        date: 2011-11-15
+        parts:
+         - type: post
+           pages: 3
+           comments:
+            - date: 2011-11-18
+            - date: 2011-11-19
+         - type: profile
+           pages: 2
+         - type: license
+           pages: 2
+    - sent:
+        type: signup_complete
+        date: 2011-11-17
+    - sent:
+        type: first_post
+        date: 2011-11-17
+    - received:
+        date: 2011-11-25
+        parts: 
+         - type: post
+           pages: 3
+    - sent:
+        type: comments
+        date: 2011-11-26
+ - name: Valentin Rosemary
+   orgs: [Other Crew]
+   in_prison: true
+   consent_form_received: true
+   blog_name:
+   correspondence:
+    - received:
+        date: 2011-10-28
+        parts:
+         - type: request
+           pages: 2
+    - sent:
+        type: consent_form
+        date: 2011-11-05
+    - received:
+        date: 2011-11-11
+        parts:
+         - type: post
+           pages: 2
+         - type: license
+           pages: 2
+         - type: ignore
+           pages: 2
+    - sent:
+        type: signup_complete
+        date: 2011-11-13
+    - received:
+        date: 2011-11-18
+        parts:
+         - type: post
+           pages: 3
+    - received:
+        date: 2011-11-25
+        parts:
+         - type: post
+           pages: 1
+           comments:
+            - date: 2011-11-30
+            - date: 2011-12-01
+    - sent:
+        type: comments
+        date: 2011-12-05

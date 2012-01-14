@@ -1,0 +1,226 @@
+<!-- User management -->
+
+<script type='text/template' id="userAdd">
+    <form class='add-user'>
+        <h2 style='float: left;'><span class='ui-icon ui-icon-circle-triangle-w cancel-add-user-link link-like'></span>Create new user</h2>
+        <table style='clear: both;'>
+            <tr>
+                <th>Full name*</th>
+                <td><input type='text' value='<%= defaults.display_name %>' name='display_name' 
+                     placeholder="e.g., John Smith (Do not include number here)" /></td>
+            </tr>
+            <tr>
+                <th>
+                    Mailing address*<br /><br />
+                </th>
+                <td class='<%= errors.mailing_address ? "ui-state-error" : "" %>'>
+                    <%= errors.mailing_address ? errors.mailing_address + "<br />" : "" %>
+                    <textarea name='mailing_address'
+                    placeholder="Prisoner number as first line.  Full address on next."><%= defaults.mailing_address %></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>In prison?*</th>
+                <td><input type='checkbox' 
+                        <% if (defaults.in_prison) { %>checked='checked'<% } %> 
+                        name='in_prison' /></td>
+            </tr>
+            <tr>
+                <th>Email&nbsp;</th>
+                <td><input type='text' name='email' value='<%= defaults.email %>' placeholder='e.g., johnsmith@yahoo.com' /></td>
+            </tr>
+            <tr>
+                <th>Blog name&nbsp;</th>
+                <td class='<%= errors.blog_name ? "ui-state-error" : "" %>'>
+                    <%= errors.blog_name ? errors.blog_name + "<br />" : "" %>
+                    <input type='text' name='blog_name' 
+                           value='<%= defaults.blog_name %>' placeholder='leave blank unless specified by user' />
+                </td>
+            </tr>
+            <tr>
+                <th>Organization</th>
+                <td>
+                    <select class='org' name='org_id'>
+                        <% for (var i = 0; i < orgs.length; i++) { %>
+                            <option value='<%= orgs[i].id %>'><%= orgs[i].name %></option>
+                        <% } %>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><span class='link-like cancel-add-user-link'>Cancel</span></td>
+                <td><input type='submit' value='Create new user' onclick='return false;' class='save-new-user'/></td>
+            </tr>
+        </table>
+    </form>
+</script>
+<script type='text/template' id='userSearch'>
+    <input type='text' class='user-chooser-trigger' placeholder='e.g., Jane Dough' />
+    <div class='user-chooser' style='display: none;'>
+        <form onsubmit='return false;'>
+            <span class='ui-icon ui-icon-circle-triangle-w cancel-user-search link-like'></span>
+            <input type='text' class='user-search' value='<%= term %>' maxlength='50' />
+            <span class='add-user-link'><span class='ui-icon ui-icon-plus'></span>Create new user?</span>
+        </form>
+        <div class='pagination'></div>
+        <div class='results'></div>
+        <div class='pagination'></div>
+    </div>
+</script>
+<script type='text/template' id="userSearchResultEmpty">
+    <div class='noresult'>No results.</div>
+</script>
+<script type="text/template" id="inPlaceUserChooser">
+    <span class='user-name'></span>
+    <div class='user-chooser-holder'></div>
+</script>
+<script type='text/template' id="userManage">
+    <table>
+        <tr>
+            <th><label>Select user:</label> </th>
+            <td>
+                <div class='user-chooser-holder'></div>
+            </td>
+        </tr>
+    </table>
+    <div class='user-detail'>
+    </div>
+</script>
+<script type='text/template' id='userState'>
+    <%/* state */%>
+    <% if (!user.is_active) { %>
+        Inactive
+    <% } %>
+    <% if (user.in_prison) { %>
+        Blogger:
+        <% if (user.consent_form_received) { %>
+            <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
+        <% } else if (user.invited) { %>
+            invited
+        <% } else if (user.waitlisted) { %>
+            waitlisted
+        <% } else if (user.waitlistable) { %>
+            waitlistable
+        <% } %>
+    <% } else { %>
+        Commenter
+    <% } %>
+</script>
+<script type='text/template' id='compactUser'>
+    <div class='compact-user <%= user.is_active ? "active" : "inactive" %> <%= user.consent_form_received ? "enrolled" : "not-enrolled" %>'>
+        <input type='hidden' value='<%= user.id_raw %>' class='user-id-raw' />
+        <div class='state'></div>
+        <div class='name-and-details'>
+            <div class='display-name'>
+                <%| user.display_name %>
+                <a href='#/users/<%= user.id %>' title='Edit user'><span class='ui-icon ui-icon-person'></span></a>
+            </div>
+            <% if (user.blog_name) { %><div class='blog-name'><%= user.blog_name %></div><% } %>
+            <div class='date-joined'>Joined: <%= btb.formatDate(user.date_joined) %></div>
+            <% if (user.in_prison) { %>
+                <%= user.scans_authored != null ? user.scanns_authored + " letters" : "" %>
+                <a href='<%= user.blog_url %>'>blog</a>
+                <a href='<%= user.profile_url %>'>profile</a>
+            <% } %>
+            <span class='user-id'><%| user.id %></span>
+            <br />
+            <span class='organizations'>
+                <%= _.map(user.organizations, function(o) { return '“' + o.name + '"' }).join(", ") %>
+            </span>
+        </div>
+        <div class='mailing-address'><%| user.mailing_address %></div>
+    </div>
+</script>
+<script type='text/template' id="userStatusTable">
+    <table>
+        <tr>
+            <th>Active</th>
+            <th>In prison</th>
+            <th>License signed</th>
+        </tr>
+        <tr>
+            <td class='is-active'></td>
+            <td class='in-prison'></td>
+            <td class='consent-form-received'></td>
+        </tr>
+    </table>
+</script>
+<script type='text/template' id="userDetail">
+    <div class='user-detail'>
+        <div class='left-column'>
+            <h1><%= user.display_name %> <span class='state'></span></h1>
+            <table class='user-info'>
+                <tr>
+                    <th>Name</th><td class='display-name'></td>
+                </tr>
+                <tr>
+                    <th>
+                        Address
+                        <% if (user.mailing_address) { %>
+                            <a href='{% url correspondence.print_envelope %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
+                        <% } %>
+                    </th>
+                    <td class='mailing-address'></td>
+                </tr><tr>
+                    <th>Special mail handling</th>
+                    <td class='special-mail-handling'></td>
+                </tr><tr>
+                    <th>Blog name</th><td class='blog-name'></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td class='user-status-table'></td>
+                </tr>
+                <tr>
+                    <th>Joined</th>
+                    <td><%= btb.formatDate(user.date_joined) %></td>
+                </tr>
+            </table>
+            <h2>Profiles</h2>
+            <div class='profilelist'></div>
+            <h2>Posts</h2>
+            <div class='postlist'></div>
+            <h2>Requests</h2>
+            <div class='requestlist'></div>
+            <h2>Photos</h2>
+            <div class='photolist'></div>
+        </div>
+        <div class='right-column'>
+            <h2>Notes</h2>
+            <div class='notelist'></div>
+            <h2>Correspondence</h2>
+            <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='letter-saving' />
+            <div class='correspondencelist'></div>
+            <h2>Missing Scans</h2>
+            <div class='missingscanlist'></div>
+            <h2>License Agreement</h2>
+            <div class='licenselist'></div>
+        </div>
+    </div>
+</script>
+<script type='text/template' id='userDetailDocumentThumbnails'>
+    <a href='<%= edit_url %>'>edit</a><br />
+    <% for (var i = 0; i < pages.length; i++) { %>
+        <a href='<%= show_url %>'><img src='<%= pages[i].image %>?thumbnail=85' style='width: 85px' /></a>
+    <% } %>
+</script>
+<script type='text/template' id="userDetailDocumentStatus">
+    <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />
+    <div class='error' style='display: none;'>
+        Server error! Changes not saved.  </div>
+    <form>
+        <select class='status'>
+            {% for state in document_states %}
+                <option value='{{ state.0 }}'>{{ state.1 }}</option>
+            {% endfor %}
+        </select><br />
+        Adult: <input type='checkbox' class='adult' <%| adult ? "checked: 'checked'" : "" %> />
+    </form>
+    <span class='queue-printout'>Queue printout</span>
+</script>
+<script type='text/template' id="missingCheckbox">
+    <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />
+    <input type='checkbox' <%| checked ? "checked='checked'" : "" %> 
+           class="pending-scan-missing"
+           data-id="<%= psid %>" />
+</script>

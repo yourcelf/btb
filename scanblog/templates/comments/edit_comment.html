@@ -1,0 +1,18 @@
+{% extends "site_base.html" %}
+{% block title %}Edit comment {% endblock %}
+{% block body %}
+<h2>Edit comment</h2>
+<p>Please consider our <a href='{% url about.community_guidelines %}'>guidelines</a> while writing.</p>
+    <form method='post' action=''>{% csrf_token %}
+        <div style='float: left;'>
+            {% if form.comment.errors %}
+                <p>{{ form.comment.errors }}</p>
+            {% endif %}
+            {{ form.comment }}
+            <div style='text-align: right;'>
+                <input type='submit' value='Save changes' />
+            </div>
+            <div style='clear: both;'></div>
+        </div>
+    </form>
+{% endblock %}

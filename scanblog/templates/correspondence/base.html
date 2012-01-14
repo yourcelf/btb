@@ -1,0 +1,13 @@
+{% extends "site_base.html" %}
+
+{% block tab_correspondence_class %}{{ui_tab_active}}{% endblock %}
+
+{% block subnav %}
+<ul>
+    {% if perms.correspondence.manage_correspondence %}
+        <li><a href='{% url correspondence.home %}'>Pending</a></li>
+        <li><a href='{% url correspondence.sent %}'>Sent</a></li>
+        <li><a href='{% url correspondence.edit_generic_letter %}'>Write a letter</a></li>
+    {% endif %}
+</ul>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Registration" %}{% endblock %}
+{% block body %}
+<h1>{% trans "New user registration" %}</h1>
+
+{% url about.community_guidelines as community_guidelines %}
+{% url about.terms as terms %}
+{% url about.privacy as privacy %}
+
+<p>
+{% blocktrans %}
+Registered users may leave comments and transcribe posts.  By registering, you
+are agreeing to abide by the 
+<a href='{{ terms }}'>Terms of Service</a> and 
+<a href='{{ privacy }}'>Privacy Policy</a>.
+{% endblocktrans %}
+</p>
+<p>
+
+<form action='' method='post'>{% csrf_token %}
+    <table class='form'>
+        {{ form }}
+        <tr><td></td><td><input type='submit' value='{% trans "Register" %}' /></td></tr>
+    </table>
+</form>
+{% endblock %}

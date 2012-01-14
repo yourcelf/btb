@@ -1,0 +1,40 @@
+{% extends "profiles/base.html" %}
+{% block title %}Delete account{% endblock %}
+{% block body %}
+<h2>Delete account permanently?</h2>
+<p>
+Are you sure you want to delete your account?  This cannot be undone.  You will
+no longer be able to log in and all information about your profile will be
+removed.
+</p>
+
+<form method='post' action=''>{% csrf_token %}
+    <p>
+        If you wish to also delete comments you have left, check the following
+        box.
+    </p>
+    <p>
+        <label for='delete_comments'>Delete comments</label>
+        <input type='checkbox' name='delete_comments' id='delete_comments' /><br />
+        <p>
+        Note: Once things are on the Internet, it's nearly impossible for them
+        to be removed completely.  Search engines and other sites may retain
+        copies of the comments, and they may have been printed and mailed to
+        the authors of blog posts.  However, we will make a good faith effort
+        to remove your information.
+        </p>
+        <p>
+        Once you delete your account, you will be unable to later delete
+        comments if you don't delete them now.  Either way, your profile
+        information will no longer be associated with the comments.
+        </p>
+        <p>
+        If you have any questions or concerns about this, please contact
+        <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.
+        </p>
+
+    <p>
+        <input type='submit' value='Delete account permanently' />
+    </p>
+</form>
+{% endblock body %}

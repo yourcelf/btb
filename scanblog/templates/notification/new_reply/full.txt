@@ -1,0 +1,11 @@
+{{ comment.user.profile }} has replied to "{{ comment.document.get_title }}" by {{ comment.document.author.profile }}, which you are following.
+
+View the reply online:
+http://{{ current_site.domain }}{{ comment.get_absolute_url }}
+
+{% if not comment.comment_doc_id %}
+{{ comment.user.profile }} wrote:
+-----------------------------------------
+{{ comment.comment }}
+----------------------------------------
+{% endif %}

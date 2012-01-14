@@ -1,0 +1,75 @@
+{% extends "moderation/base.html" %}
+{% block title %}Manage tasks{% endblock %}
+{% block body %}
+<script type='text/javascript'>
+    function toggle_traceback(link) {
+        var em = $(link).next();
+        $(em).toggle();
+    }
+</script>
+<style type='text/css'>
+    .SUCCESS {
+        color: green;
+    }
+    .FAILURE {
+        color: red;
+    }
+    .STARTED {
+        color: blue;
+    }
+    table {
+        width: 100%;
+    }
+    th {
+        background-color: #eee;
+        border: 1px solid white;
+    }
+    th,td {
+        padding: 0.5em;
+        font-size: 12px;
+    }
+    td + td + td + td + td {
+        font-family: monospace;
+    }
+</style>
+<h1>Tasks</h1>
+<div id='message'></div>
+<small>
+Restrict to: <a href='?status=PENDING'>PENDING</a> <a href='?status=SUCCESS'>SUCCESS</a> <a href='?status=FAILURE'>FAILURE</a>
+</small>
+<table style='position: relative;'>
+    <tr>
+        <th>Link</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Result</th>
+        <th>Traceback</th>
+    </tr>
+    {% for task in page.object_list %}
+    <tr class='task' style='psoition: relative;'>
+        <td><a href='{% url moderation.wait_for_processing task.task_id %}' title='waiting page for task'>link</a></td>
+        <td>{{ task.date_done }}</td>
+        <td>
+            <span class='{{ task.status }}'>{{ task.status }}</span>
+        </td>
+        <td>{{ task.result }}</td>
+        <td style='position: relative;'>
+            {% if task.traceback %}
+                <a href='#' onclick='toggle_traceback(this); return false;'>Traceback</a>
+                <div style='position: relative; display: none;'>
+                <div style='position: absolute; top: 0; right: 0; background-color: #fdd; white-space: pre; scroll: auto; z-index: 1;' class='traceback'>{{ task.traceback }}</div></div>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% if page.paginator.num_pages > 1 %}
+{% for p in page.paginator.page_range %}
+    {% if p == page.number %}
+        {{ p }}
+    {% else %}
+        <a href='?page={{p}}&status={{status}}'>{{ p }}</a>
+    {% endif %}
+{% endfor %}
+{% endif %}
+{% endblock %}

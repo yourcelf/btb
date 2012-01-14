@@ -1,0 +1,8 @@
+Greetings,
+
+{{ body }}
+
+Sincerely,
+{% if not send_anonymously %}
+{{ from_name }}{% endif %}
+{{ letter.org.mailing_address }}

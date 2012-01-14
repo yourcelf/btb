@@ -1,0 +1,9 @@
+http_path    = "/css/"
+project_path = "." 
+css_dir      = ".." 
+sass_dir     = "."
+images_dir   = "/img/" 
+output_style = :expanded
+line_numbers = false
+line_comments = false
+load_paths = false

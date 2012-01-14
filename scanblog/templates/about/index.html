@@ -1,0 +1,71 @@
+{% extends "about/about_base.html" %}
+
+{% load i18n %}
+{% block title %}{% trans "About" %}{% endblock %}
+
+{% block body %}
+    {% blocktrans %}
+    <style type='text/css'>
+        blockquote {
+            font-size: 11px;
+            font-style: italic;
+            color: #333;
+            text-align: center
+        }
+    </style>
+    <div style='float: right; width: 420px; margin-left: 2em'>
+        <img src='{{ STATIC_URL }}img/US_correctional_populations.png' alt='US Correctional Populations' />
+        <br />
+        <blockquote>
+            Source: <a href='http://www.soc.umn.edu/~uggen/Uggen_Manza_Thompson_ANNALS_06.pdf'>Citizenship, Democracy, and the Civic Reintegration of Criminal Offenders</a>
+        </blockquote>
+        <br />
+        <img src='{{ STATIC_URL }}img/when_prisoners_come_home.png' alt='When Prisoners Come Home' />
+        <br />
+        <blockquote>
+            Source: <a href='http://books.google.com/books?id=cv_Qc2dpL8AC&lpg=PA119&ots=JAxPkPWv0F&dq=prisoner%20long%20term%20earning%20trajectories&pg=PA118#v=onepage&q=&f=false'>When prisoners come home: parole and prisoner reentry</a> by Joan Petersilia
+        </blockquote>
+        <br />
+    </div>
+    <h1>About {{ site.name }}</h1>
+    <p><a href='/'>{{ site.name }}</a> is a weblog platform for people in
+    prison, through which the 1% of America which is behind bars can tell their
+    stories.  Since people in prison are routinely denied access to the
+    Internet, we enable them to blog by scanning letters.  We aim to provide a
+    positive outlet for creativity, a tool to assist in the maintenance of
+    social safety nets, an opportunity to forge connections between people
+    inside and outside of prison, and a means to promote non-criminal
+    identities and personal expression.  We hope to improve prisoner's lives,
+    and help to reduce recidivism.
+    </p>
+    {% endblocktrans %}
+    
+    <h2>Leave comments</h2>
+    <p>
+        Registered users can comment on blog posts.  We periodically mail
+        comment feeds back to the authors so they can hear from their fans and
+        continue the discussion.  
+        <a href="{% url registration_register %}">Sign up</a> and 
+        <a href="{% url auth_login %}">log in</a> today!
+    </p>
+    <h2>Transcribe posts</h2>
+    <p>
+        {{ site.name }} relies on visitors to transcribe its bloggers' posts.
+        You can help us out by 
+        <a href="{% url registration_register %}">signing up</a> and 
+        <a href="{% url auth_login %}">logging in</a>, 
+        and starting to transcribe posts that interest you.  Transcriptions
+        make the blogs more accessible to search engines, translators and
+        visitors.
+    </p>
+    <br />
+    <br />
+    <br />
+    <div style='float: left; margin-right: 2em;'>
+        <a href='http://civic.mit.edu'><img src='{{STATIC_URL}}img/C4FCM_Logo_small.png' alt='Center for Civic Media' /></a>
+    </div>
+    <p><br />{{ site.name }} is supported by generous sponsorship from the
+    <a href='http://civic.mit.edu'>Center for Civic Media</a> at MIT.</p>
+    <br class='clear' />
+    
+{% endblock %}

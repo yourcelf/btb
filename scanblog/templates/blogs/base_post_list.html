@@ -1,0 +1,30 @@
+{% extends "blogs/base.html" %}
+{# Base post list to be overridden by particular post lists #}
+{% block body %}
+
+{% block heading %}{# Override with title, etc. #}{% endblock %}
+
+{% if page.number != 1 and page.paginator.num_pages > 1 %}Pages: {% include "_pagination.html" %}{% endif %}
+
+{% for post in page.object_list %}
+    {% if not post.adult or user.profile.show_adult_content %}
+        <div class='post-snippet'>
+            {% include "blogs/_post_title_line.html" %}
+            {% include "blogs/_post_highlight.html" %}
+            {% include "blogs/_post_bottom_line.html" %}
+        </div>
+    {% else %}
+        {% include "blogs/_inappropriate_post.html" %}
+    {% endif %}
+{% endfor %}
+
+{% if page.paginator.num_pages > 1 %}
+
+More posts:
+{% include "_pagination.html" %}
+{% include "blogs/_related.html" %}
+
+{% endif %}
+
+{% include "feeds/_subscriptions.html" %}
+{% endblock %}

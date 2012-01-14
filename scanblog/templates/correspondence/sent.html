@@ -1,0 +1,12 @@
+{% extends "correspondence/base_letter_list.html" %}
+{% load pagination_tags %}
+{% load i18n %}
+{% block title %}{% trans "Sent correspondence" %}{% endblock %}
+
+{% block body %}
+    {% autopaginate letters 100 %}
+    <h2>{% trans "Sent correspondence" %}</h2>
+    {% paginate %}
+    {{ block.super }}
+    {% paginate %}
+{% endblock %}

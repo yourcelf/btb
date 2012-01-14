@@ -1,0 +1,6 @@
+{{ document.author.profile }} has sent a new letter to {{ current_site }}!
+
+You can read the letter here:
+http://{{ current_site }}{{ document.get_absolute_url }}
+{% with document.tags.all as tags %}{% if tags %}
+Post categories: {{tags|join:", "}}{% endif %}{% endwith %}

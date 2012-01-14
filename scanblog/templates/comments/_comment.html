@@ -1,0 +1,55 @@
+        <div class='comment'>
+            <a name='c{{ comment.id }}'></a>
+            <div class='commentbyline'>
+                <table>
+                    <tr>
+                        <td>
+                        {% if comment.user.has_public_profile %}
+                            <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
+                        {% else %}
+                            {{ comment.user.profile }}
+                        {% endif %}
+                        </td>
+                        <td>
+                            <span class='comment-date'>Posted {{ comment.created|timesince }} ago.</span>
+                            {% if comment.letter_sent %}
+                                <span class='comment-date-mailed'>
+                                    &check;
+                                    Mailed {{ comment.letter_sent|timesince }} ago
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perms.change_comment or user == comment.user and not comment.letter_sent %}
+                                <a href='{% url comments.edit_comment comment.pk %}' 
+                                    class='comment-edit'
+                                    title ='Edit comment'>edit</a
+                                ><a href='{% url comments.delete_comment comment.pk %}' 
+                                    class='comment-delete'
+                                    title='Delete comment'>delete</a>
+                           {% endif %}
+                            {% if user != comment.user %}
+                                <a href='{% url comments.flag_comment comment.pk %}' 
+                                   class='comment-flag'
+                                   title='Flag comment'>&nbsp;</a>
+                           {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class='commentbody'>
+                {% if comment.comment_doc_id %}
+                    {% with post=comment.comment_doc %}
+                        (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
+                        {% with documentpages=post.documentpage_set.all %}
+                            {% with documentpage_count=documentpages.count %}
+                                {% include "blogs/_post_pages.html" %} 
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                {% else %}
+                    {{comment.comment|linebreaksbr}}
+                {% endif %}
+            </div>
+            <br style='clear: both;' />
+        </div>

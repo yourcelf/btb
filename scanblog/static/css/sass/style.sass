@@ -1,0 +1,44 @@
+// We require some workarounds in order to avoid loading @font-face for the
+// print environment.  
+//
+// WKHTMLTOPDF, which we depend on to produce PDFs, does not load the font
+// if it is declared via font-face (it must be a system font).
+//
+// style.sass declares full font family variables and @font-face, for media screen.
+// print.sass declares only the font-name, with no @font-face.
+
+$serif: 'IM Fell DW Pica',georgia,"times new roman",serif
+$sans: 'IM FELL DW Pica',"Lucida Grande",Verdana,Helvetica,Arial,sans-serif
+$mono: monospace
+
+@font-face
+  font-family: 'IM FELL DW Pica'
+  font-style: italic
+  font-weight: normal
+  // IE 6-7-8:
+  src: url(../fonts/IMFePIit28P.eot)
+  // Everyone else:
+  src: local('IM FELL DW Pica Italic'), local('IM_FELL_DW_Pica_Italic'), url('../fonts/IMFePIit28P.ttf') format('truetype')
+
+@font-face
+  font-family: 'IM FELL DW Pica'
+  font-style: normal
+  font-weight: normal
+  // IE 6-7-8:
+  src: url(../fonts/IMFePIrm28P.eot) 
+  // Everyone else:
+  src: local('IM FELL DW Pica Roman'), local('IM_FELL_DW_Pica_Roman'), url('../fonts/IMFePIrm28P.ttf') format('truetype')
+
+// for Android
+@media screen and (max-device-width: 480px)
+  @font-face
+    font-family: "IM FELL DW Pica"
+    font-style: normal
+    src: url('../fonts/IMFePIrm28P.ttf') format('truetype')
+@media screen and (max-device-width: 480px)
+  @font-face
+    font-family: "IM FELL DW Pica"
+    font-style: italic
+    src: url('../fonts/IMFePIit28P.ttf') format('truetype')
+
+@import common

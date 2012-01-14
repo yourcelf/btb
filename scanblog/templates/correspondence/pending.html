@@ -1,0 +1,63 @@
+{% extends "correspondence/base_letter_list.html" %}
+{% load i18n %}
+{% block title %}{% trans "Manage correspondence" %}{% endblock %}
+
+{% block header %}
+<h2>Pending correspondence</h2>
+<p>
+    <form method='post'  action="{% url correspondence.generate_process_letters %}">{% csrf_token %}
+        <input type='submit' value='Update pending correspondence' /><br />
+    </form>
+    Refreshes all 'automatic' pending correspondence.
+</p>
+<p>
+    <form method='post' action='{% url correspondence.add_unconsented_to_waitlist %}'>{% csrf_token %}
+        <input type='submit' value='Waitlist consent requests' /><br />
+    </form>
+    Generates "waitlist" postcards for all consent requests that haven't received them.
+</p>
+
+<form method='get' action='{% url correspondence.collate_mailing %}'>
+    <table>
+        <tr>
+            <th colspan='2'>Collated mailings:</th>
+        </tr>
+        <tr>
+            <td><label for='id_consent'>Include consent envelopes?</label></td>
+            <td>
+                <input id='id_consent' type='checkbox' name='consent' checked='checked' />
+                <label for='id_consent_cutoff'>Before date:</label> <input type='text' name='consent_cutoff' id='id_consent_cutoff' />
+                <script type='text/javascript'>
+                    $("#id_consent_cutoff").datepicker({"dateFormat": "yy-mm-dd"});
+                </script>
+            </td>
+
+        </tr>
+        <tr>
+            <td><label for='id_consent'>Include waitlist postcards?</label></td>
+            <td><input id='id_consent' type='checkbox' name='waitlist' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_complete'>Include "signup complete" letters?</label></td>
+            <td><input id='id_complete' type='checkbox' name='complete' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_first_post'>Include first posts?</label></td>
+            <td><input id='id_first_post' type='checkbox' name='first_post' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_comments'>Include comments?</label></td>
+            <td><input id='id_comments' type='checkbox' name='comments' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_letters'>Include personal letters?</label></td>
+            <td><input id='id_letters' type='checkbox' name='letters' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td></td><td><input type='submit' name='collate' value='Build collated mailing' /></td>
+        </tr>
+    </table>
+</form>
+
+<h2>Mailings:</h2>
+{% endblock %}

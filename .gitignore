@@ -1,0 +1,31 @@
+# Editor trash/compiled files
+*.pyc
+*.swp
+.sass-cache
+.DS_Store*
+doc_data.txt
+
+# Local settings
+settings.py
+fabfile.py
+django.log
+dev.db
+*.htpasswd
+scanblog/bin/
+scanblog/deploy/
+!scanblog/deploy/.gitkeep
+
+
+# Production files
+scanblog/media/cache
+scanblog/media/uploads/
+scanblog/media/thumbnails/
+scanblog/media/incoming/
+scanblog/media/letters/
+scanblog/media/mailings/
+scanblog/media/public/uploads/
+!scanblog/media/public/.gitkeep
+!scanblog/media/mailings/.gitkeep
+!scanblog/media/letters/.gitkeep
+scanblog/site_static/
+docs/_build/

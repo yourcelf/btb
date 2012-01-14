@@ -1,0 +1,15 @@
+{% load scanning_text_diffs %}
+
+<table id='diffs'>
+    <tr>
+        <th id='heading1'>Revision {{ earliest.revision }}: {{ earliest.editor.profile }}, {{ earliest.modified|timesince }} ago</th>
+        {% if earliest != latest %}
+            <th id='heading2'>Revision {{ latest.revision }}: {{ latest.editor.profile }}, {{ latest.modified|timesince }} ago</th>
+        {% endif %}
+    </tr>
+    {% if earliest != latest %}
+        {% column_diff earliest.body latest.body %}
+    {% else %}
+        <tr><td>{{ earliest.body|linebreaksbr }}</td></tr>
+    {% endif %}
+</table>

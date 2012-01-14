@@ -1,0 +1,10 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block body %}
+<h1>Welcome!</h1>
+<p>
+Your registration is now complete.  You may now <a href='{% url auth_login %}'>login</a>.
+</p>
+
+{% endblock %}
