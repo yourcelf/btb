@@ -493,7 +493,8 @@ def preview_letter(request):
     if request.method == "POST":
         letter = Letter.objects.create(
             type="letter",
-            recipient=utils.mail_filter_or_404(requets.user, Profile, pk=request.POST.get("recipient_id")).user,
+            recipient=utils.mail_filter_or_404(request.user, Profile, pk=request.POST.get("recipient_id")).user,
+            org=utils.mail_filter_or_404(request.user, Organization, pk=request.POST.get("org_id")),
             body=request.POST.get("body"),
             sender=request.user,
             send_anonymously=not request.POST.get("signed"),

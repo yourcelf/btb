@@ -10,7 +10,8 @@
         </select><img class='loading' style='display: none;' href='{{ STATIC_URL }}img/spinner.gif' />
         <span class='org-chooser'>
             Return:
-            <select class='org_id'>
+            {# NB: Duplicated below, grep org_id #}
+            <select class='org_id' name='org_id'>
                 <% for (var i = 0; i < recipient.organizations.length; i++) { %>
                     <option value="<%= recipient.organizations[i].id %>">
                         <%= recipient.organizations[i].name %>
@@ -20,7 +21,8 @@
         </span>
 </script>
 <script type='text/template' id='letterOrgChooser'>
-    <select class='org_id'>
+    {# NB: Duplicated above, grep org_id #}
+    <select class='org_id' name='org_id'>
         <% if (letter.recipient) { %>
             <% for (var i = 0; i < letter.recipient.organizations.length; i++) { %>
                 <option value="<%= letter.recipient.organizations[i].id %>"
@@ -38,7 +40,7 @@
             Return address: <span class='org-chooser'></span><br />
 
             <textarea class='letter-body' name='body'><%= letter.body || "" %></textarea><br />
-            <input type='hidden' name='recipient_id' value='<%= letter.recipient_id %>' />
+            <input type='hidden' name='recipient_id' value='<%= letter.recipient.id %>' />
             <span class='link-like cancel'>Cancel</span>
             <input type='submit' value='Preview' class='preview-letter' />
             <input type='button' value='Save' class='enqueue-letter' />
@@ -137,7 +139,6 @@
     </div>
     <div class='return'>Return:
         <% if (letter.org) { %>
-            <% console.log(commaddress); %>
             <i><%= letter.org.name %></i>: <%= commaddress %>
         <% } else { %>
             "None!"
