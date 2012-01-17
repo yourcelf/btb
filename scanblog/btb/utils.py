@@ -52,7 +52,7 @@ class OrgQuerySet(QuerySet):
         moderator.
         """
         q = self._build_org_q(moderator)
-        return self.filter(q, *args, **kwargs)
+        return self.filter(q, *args, **kwargs).distinct()
 
     def mail_filter(self, moderator, *args, **kwargs):
         """
@@ -70,7 +70,7 @@ class OrgQuerySet(QuerySet):
                 else:
                     mail_mods = self.mail_mod_suffix
                 q = q | Q(**{mail_mods: moderator})
-        return self.filter(q, *args, **kwargs)
+        return self.filter(q, *args, **kwargs).distinct()
 
 
 def org_contains(editor, user_id):
