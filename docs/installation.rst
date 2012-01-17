@@ -10,7 +10,7 @@ BtB should work on unix systems; it has been tested on Linux and OS X.
 
 System requirements:
  
- * Python 2.6 or 2.7 (Python 3 not supported)
+ * Python 2.6 or 2.7 (Python 3 not supported), and development headers
  * `poppler-utils <http://poppler.freedesktop.org/>`_
  * `pdftk <http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/>`_
  * `imagemagick <http://www.imagemagick.org>`_
@@ -25,7 +25,7 @@ System-specific instructions:
  
  * Ubuntu::
 
-    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server
+    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev
 
     cd /tmp
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-i386.tar.bz2

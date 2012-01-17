@@ -11,6 +11,8 @@ DISABLE_NOTIFICATIONS = True
 DISABLE_ADMIN_NOTIFICATIONS = True
 ROOT_URLCONF = "urls"
 
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'W^X~>p2j+u9XmNfNyt<9;ffaIVo{2vsfI-?_o8z893V8t$<[7\\'
 
 DATABASES = {
     'default': {

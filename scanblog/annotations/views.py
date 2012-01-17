@@ -35,22 +35,27 @@ class Notes(JSONView):
         # organization membership and type.
         #
         if 'user_id' in kw:
-            qs = Profile.objects.org_filter(request.user, pk=kw.pop('user_id'))
-        elif 'document_id' in kw:
-            qs = Document.objects.org_filter(request.user, pk=kw.pop('document_id'))
-        elif 'scan_id' in kw:
-            qs = Scan.objects.org_filter(request.user, pk=kw.pop('scan_id'))
-        else:
-            qs = None
-        if qs is not None:
             try:
-                rel_obj = qs[0]
-            except IndexError:
-                # We don't recognize the user_id, document_id or scan_id, or
-                # request.user lacks permission to moderate them.
+                rel_obj = Profile.objects.org_filter(
+                        request.user, pk=kw.pop('user_id')
+                ).get().user
+            except Profile.DoesNotExist:
+                raise Http404
+        elif 'document_id' in kw:
+            try:
+                rel_obj = Document.objects.org_filter(
+                        request.user, pk=kw.pop('document_id')
+                ).get()
+            except Document.DoesNotExist:
+                raise Http404
+        elif 'scan_id' in kw:
+            try:
+                rel_obj = Scan.objects.org_filter(
+                        request.user, pk=kw.pop('scan_id')
+                ).get()
+            except Scan.DoesNotExist:
                 raise Http404
         else:
-            # No user_id, document_id or scan_id present.
             rel_obj = None
 
         #
