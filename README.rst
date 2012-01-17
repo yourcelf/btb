@@ -9,7 +9,7 @@ corresponding with writers who blog on paper.
  * `Get involved <http://betweenthebars.org/about>`_ with Between the
    Bars, and its mission to improve communication and visibility for people in
    prison.
- * `Development documentation and installation instructions <http://readthedocs.org/docs/btb>`_
+ * `Development documentation and installation instructions <http://readthedocs.org/docs/between-the-bars/en/latest/>`_
 
 Copying: AGPLv3
 ===============
