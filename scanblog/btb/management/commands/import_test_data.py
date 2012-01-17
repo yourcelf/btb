@@ -21,7 +21,6 @@ from profiles.models import Profile, Organization
 from scanning.models import Scan, Document, DocumentPage
 from comments.models import Comment
 from correspondence.models import Letter
-from btb.models import MailDrop
 
 BACKGROUNDS = {
     'post': [
@@ -57,7 +56,8 @@ def build_pdf(parts, profile):
     for i,line in enumerate([profile.display_name] + profile.mailing_address.split("\n")):
         c.drawString(0.5 * inch, (7.5 - i * 0.2) * inch, line)
     # To address
-    for i,line in enumerate(MailDrop.objects.get_current().address.split("\n")):
+    to_address = profile.user.organization_set.get().mailing_address
+    for i,line in enumerate(to_address.split("\n")):
         c.drawString(4 * inch, (6 - i * 0.2) * inch, line)
     c.showPage()
 

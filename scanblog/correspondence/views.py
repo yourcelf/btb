@@ -21,7 +21,6 @@ from correspondence import utils, tasks
 from profiles.models import Profile, Organization
 from scanning.models import Scan
 from btb.utils import args_method_decorator, JSONView
-from btb.models import MailDrop
 
 class Letters(JSONView):
     """
@@ -478,7 +477,7 @@ def print_envelope(request, user_id=None, reverse=None, address=None):
         to_address = request.GET.get('address', address)
     if not to_address:
         raise Http404
-    from_address = MailDrop.objects.get_current().address
+    from_address = user.organization_set.get()
     if reverse:
         from_address, to_address = to_address, from_address
 

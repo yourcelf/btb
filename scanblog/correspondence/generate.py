@@ -13,7 +13,6 @@ from django.conf import settings
 from scanning.models import Document
 from scanning.utils import get_pdf_page_count
 from correspondence import utils
-from btb.models import MailDrop
 
 def generate_file(letter):
     methods = {
