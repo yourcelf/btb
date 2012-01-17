@@ -6,7 +6,7 @@ for people in prison.  It provides a sophisticated blogging system, which
 includes management of scanning, publishing, printing, transcribing, and
 corresponding with writers who blog on paper.
 
- * `Get involved <http://betweenthebars.org/getinvolved>`_ with Between the
+ * `Get involved <http://betweenthebars.org/about>`_ with Between the
    Bars, and its mission to improve communication and visibility for people in
    prison.
  * `Development documentation and installation instructions <http://readthedocs.org/docs/btb>`_
