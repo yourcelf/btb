@@ -19,11 +19,11 @@ urlpatterns = patterns('',
     # Public
     url(r'^notifications/', include('subscriptions.urls')),
     url(r'^accounts/', include('accounts.urls')),
+    url(r'^people/', include('profiles.urls')),
 
     url(r'', 'btb.views.sopastrike'),
 
     url(r'^about/', include('about.urls')),
-    url(r'^people/', include('profiles.urls')),
     url(r'^comments/', include('comments.urls')),
     url(r'^r/', include('urlcrypt.urls')),
     url(r'^$',  'btb.views.home', name='home'),
