@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from django.views.static import serve
 from django.conf import settings
+from django.http import HttpResponse
 
 from sorl.thumbnail import get_thumbnail
 
@@ -30,3 +31,6 @@ def private_media(request, path):
     return serve(request, path=path, document_root=settings.MEDIA_ROOT)
 
 
+def sopastrike(request):
+    with open(os.path.join(settings.SETTINGS_ROOT, "templates", "strike.html")) as fh:
+        return HttpResponse(fh.read(), status=503)
