@@ -17,11 +17,6 @@ class NoteManager(OrgManager):
         return self.filter(resolved__isnull=False)
 
 class Note(models.Model):
-    """
-    Uses a generic foreign key rather than remoteforeignkey, because we
-    usually want tickets first, but then need to know what type of thing
-    they're attached to, in order to retrieve it.
-    """
     resolved = models.DateTimeField(blank=True, null=True)
     important = models.BooleanField()
     text = models.TextField()
