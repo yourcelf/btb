@@ -34,21 +34,21 @@ class Notes(JSONView):
         # Get the related object for which we are fetching notes.  Filter by
         # organization membership and type.
         #
-        if 'user_id' in kw:
+        if kw.get('user_id', None):
             try:
                 rel_obj = Profile.objects.org_filter(
                         request.user, pk=kw.pop('user_id')
                 ).get().user
             except Profile.DoesNotExist:
                 raise Http404
-        elif 'document_id' in kw:
+        elif kw.get('document_id', None):
             try:
                 rel_obj = Document.objects.org_filter(
                         request.user, pk=kw.pop('document_id')
                 ).get()
             except Document.DoesNotExist:
                 raise Http404
-        elif 'scan_id' in kw:
+        elif kw.get('scan_id', None):
             try:
                 rel_obj = Scan.objects.org_filter(
                         request.user, pk=kw.pop('scan_id')
@@ -86,7 +86,6 @@ class Notes(JSONView):
             scan_id=<id>:      notes attached to a particular scan.
             unresolved:        notes with a null resolution.
             important:         notes with 'important == True'
-            assigned_to=<id>:  notes assigned to user <id>
         """
         note_id = note_id or request.GET.get('id')
         if note_id:
@@ -116,8 +115,6 @@ class Notes(JSONView):
             notes = notes.filter(resolved__isnull=False)
         if 'important' in request.GET:
             notes = notes.filter(important=True)
-        if 'assigned_to' in request.GET:
-            notes = notes.filter(assigned_id=request.GET.get(assigned_to))
         if 'sort' in request.GET:
             notes = notes.order_by(*request.GET['sort'].split(","))
         return self.paginated_response(request, notes)
@@ -140,7 +137,7 @@ class Notes(JSONView):
         if rel_obj is None:
             raise Http404
         kwargs = {}
-        for field in ("assigned", "resolved", "important", "text", "handle"):
+        for field in ("resolved", "important", "text"):
             setattr(note, field, kw[field])
         note.save()
         return self.json_response(note.to_dict())
