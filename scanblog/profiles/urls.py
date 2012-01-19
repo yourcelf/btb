@@ -1,7 +1,6 @@
 from django.conf.urls.defaults import *
 
 from profiles.views import UsersJSON, OrganizationsJSON
-from btb.views import sopastrike
 
 user_id = "(?P<user_id>\d+)"
 org_slug = "(?P<org_slug>[-a-z]+)"
