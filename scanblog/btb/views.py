@@ -30,7 +30,3 @@ def private_media(request, path):
         path = im.name
     return serve(request, path=path, document_root=settings.MEDIA_ROOT)
 
-
-def sopastrike(request):
-    with open(os.path.join(settings.SETTINGS_ROOT, "templates", "strike.html")) as fh:
-        return HttpResponse(fh.read(), status=503)

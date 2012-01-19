@@ -9,9 +9,6 @@ org_slug = "(?P<org_slug>[-a-z]+)"
 urlpatterns = patterns('profiles.views',
     url(r'^users.json(/(?P<obj_id>\d+))?$', UsersJSON.as_view()),
     url(r'^organizations.json$', OrganizationsJSON.as_view()),
-
-    url(r'', sopastrike),
-
     url(r'^$', 'list_profiles', name='profiles.profile_list'),
     url(r'^groups$', 'list_orgs', name='profiles.org_list'),
     url(r'^groups/{0}$'.format(org_slug), 'org_detail', 
