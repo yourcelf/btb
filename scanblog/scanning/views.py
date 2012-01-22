@@ -373,9 +373,11 @@ class PendingScans(JSONView):
     
     @args_method_decorator(permission_required, "scanning.add_pendingscan")
     def post(self, request, obj_id=None):
-        params = json.loads(request.POST.keys()[0])
+        params = json.loads(request.raw_post_data)
         try:
-            org = request.user.organizations_moderated.get(pk=params["org_id"])
+            org = Organization.objects.org_filter(
+                    request.user, pk=params["org_id"]
+            ).get()
         except Organization.DoesNotExist:
             raise PermissionDenied
         try:
