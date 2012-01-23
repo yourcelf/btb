@@ -151,6 +151,7 @@ def show_profile(request, user_id):
     return render(request, "profiles/profile_detail.html", {
             'document': document,
             'profile': profile,
+            'org': profile.user.organization_set.get(),
             'can_edit': can_edit,
         })
 

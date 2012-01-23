@@ -34,7 +34,9 @@
             {% if post.author.profile.has_public_profile %} 
                 (author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>)
             {% endif %}
+            {% if org.public %}{{ org.footer|safe }}{% endif %}
         </div>
+
         {% if post.in_reply_to %}
             <div class='in-reply-to'>
                 {% with in_reply_to=post.in_reply_to.document %}
@@ -51,6 +53,7 @@
                 {% endwith %}
             </div>
         {% endif %}
+
         <div style='position: relative;'>
             {% if post.body %}
                 <div id='body{{post.id}}'>{{post.body|linebreaks}}</div>
@@ -84,6 +87,7 @@
     {% endwith %}
 {% endif %}
 </div>
+{% if org.public %}{{ org.footer|safe }}{% endif %}
 
 {# comments #}
 <div class='comments'>

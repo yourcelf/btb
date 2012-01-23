@@ -241,6 +241,7 @@ def post_detail(request, post_id=None, slug=None):
 
     return render(request, "blogs/post_detail.html", {
             'post': post,
+            'org': post.author.organization_set.get(),
             'documentpages': documentpages,
             'documentpage_count': documentpage_count,
             'remaining': remaining,
