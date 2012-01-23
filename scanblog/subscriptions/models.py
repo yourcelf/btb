@@ -7,6 +7,7 @@ from django.conf import settings
 from scanning.models import Document
 from annotations.models import Tag
 from comments.models import Comment
+from profiles.models import Organization
 
 from notification import models as notification
 
@@ -18,7 +19,9 @@ class Subscription(models.Model):
     author = models.ForeignKey(User, related_name="author_subscriptions",
             blank=True, null=True)
     tag = models.ForeignKey(Tag, related_name="tag_subscriptions",
-            blank=True, null=True,)
+            blank=True, null=True)
+    organization = models.ForeignKey(Organization, related_name="organization_subscriptions",
+            blank=True, null=True)
 
     def __unicode__(self):
         return "%s -> %s" % (self.subscriber, 
@@ -60,7 +63,9 @@ if not settings.DISABLE_NOTIFICATIONS:
         document = instance
         if not document.is_public():
             return
-        subs = Subscription.objects.filter(author=document.author)
+        subs = Subscription.objects.filter(Q(author=document.author))
+        for org in document.author.organization_set.all():
+            subs |= Subscription.objects.filter(organization=org)
         for tag in document.tags.all():
             subs |= Subscription.objects.filter(tag=tag)
         recipients = []

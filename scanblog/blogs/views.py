@@ -15,8 +15,8 @@ from annotations.models import Tag
 from scanning.models import Document, DocumentPage
 from comments.models import Comment
 from comments.forms import CommentForm
-from blogs.feeds import posts_feed, comments_feed
-from profiles.models import Profile
+from blogs import feeds
+from profiles.models import Profile, Organization
 
 #
 # Displaying posts
@@ -76,8 +76,8 @@ def author_post_list(request, author_id=None, slug=None):
         context['author'] = context['page'].object_list[0].author
     except IndexError:
         raise Http404
-    context['feed_author'] = context['author']
-
+    context['org'] = author.organization_set.get()
+    context['feed_author'] = author
     context['related'] = {
         'title': "Most recent posts from this author:",
         'items': DocumentPage.objects.filter(order=0,
@@ -92,34 +92,15 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
-def legacy_author_post_feed(request, author_id, slug):
-    # We're stripping out author slugs from feed URLs, so feed readers don't
-    # get borked if the display name changes.
-    return redirect("blogs.author_post_feed", author_id)
-
-def author_post_feed(request, author_id):
-    try:
-        author = Profile.objects.enrolled().filter(pk=author_id)[0].user
-    except IndexError:
-        raise Http404
-    posts = author.documents_authored.public().filter(type="post")
-    return posts_feed(request, {
-        'title': "Posts by %s" % unicode(author.profile),
-        'posts': posts,
-    })
-
-#
-# Posts by everyone
-#
-
-def group_post_list(request):
+def all_posts_list(request):
     """
-    Show a list of posts.  If "feed" isn't None, output as a syndication feed.
+    Show a list of posts.
     """
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
     )
     context = _paginate(request, posts)
+    pnum = context['page'].number
     context['related'] = {
         'items': DocumentPage.objects.filter(
                     order=0,
@@ -130,35 +111,47 @@ def group_post_list(request):
                     document__adult=False,
             ).select_related(
                     'document'
-            ).order_by('-document__date_written')[context['page'].number * 10:context['page'].number * 10 + 7]
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
     }
-    return render(request, "blogs/group_post_list.html", 
-                  context)
-def group_post_feed(request):
-    return posts_feed(request, {
-        'title': "Recent posts from all authors",
-        'posts': Document.objects.safe().filter(type="post")
-    })
+    return render(request, "blogs/all_posts_list.html", context)
 
-#
-# Posts by tag
-#
+def org_post_list(request, slug):
+    """
+    Show posts per org.
+    """
+    org = get_object_or_404(Organization, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(
+            type="post",
+            author__organization=org
+    ).distinct()
+    context = _paginate(request, posts)
+    context['org'] = org
+    pnum = context['page'].number
+    context['related'] = {
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__status="published",
+                    document__type="post",
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__author__organization=org,
+                    document__adult=False,
+            ).distinct().select_related(
+                    'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
+    return render(request, "blogs/org_post_list.html", context)
+
 
 def tagged_post_list(request, tag):
     posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
     context = _paginate(request, posts)
     context['tag'] = tag.capitalize()
     return render(request, "blogs/tag_post_list.html", context)
-
-def tagged_post_feed(request, tag):
-    return posts_feed(request, {
-        'title': "%s posts" % escape(tag.capitalize()),
-        'posts': Document.objects.public().filter(tags__name=tag.lower())
-    })
-
-#
-# Individual post
-#
 
 def post_detail(request, post_id=None, slug=None):
     try:
@@ -271,10 +264,6 @@ def more_pages(request, post_id):
         'remaining': 0,
     })
 
-def post_comments_feed(request, post_id):
-    document = get_object_or_404(Document, pk=post_id)
-    return comments_feed(request, document)
-
 def post_tag_list(request):
     term = request.GET.get("term", "")
     vals = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
@@ -296,3 +285,54 @@ def save_tags(request, post_id):
     return HttpResponse("success")
         
 
+#
+# Feeds
+#
+
+def all_posts_feed(request):
+    return feeds.posts_feed(request, {
+        'title': "Recent posts from all authors",
+        'posts': Document.objects.safe().filter(type="post")
+    })
+
+def org_post_feed(request, slug, filtered=True):
+    org = get_object_or_404(Organization, slug=slug, public=True)
+    docs = Document.objects.public().filter(
+            author__organization=org,
+            type="post"
+     ).distinct()
+    if filtered:
+        docs = docs.filter(adult=False)
+    return feeds.posts_feed(request, {
+        'title': "Recent posts from %s" % org.name,
+        'posts': docs,
+    })
+
+def all_comments_feed(request):
+    comments = Comment.objects.public().order_by('-created')[0:10]
+    return feeds.all_comments_feed(request, comments)
+
+def post_comments_feed(request, post_id):
+    document = get_object_or_404(Document, pk=post_id)
+    return feeds.post_comments_feed(request, document)
+
+def tagged_post_feed(request, tag):
+    return feeds.posts_feed(request, {
+        'title': "%s posts" % escape(tag.capitalize()),
+        'posts': Document.objects.public().filter(tags__name=tag.lower())
+    })
+def legacy_author_post_feed(request, author_id, slug):
+    # We're stripping out author slugs from feed URLs, so feed readers don't
+    # get borked if the display name changes.
+    return redirect("blogs.author_post_feed", author_id)
+
+def author_post_feed(request, author_id):
+    try:
+        author = Profile.objects.enrolled().filter(pk=author_id)[0].user
+    except IndexError:
+        raise Http404
+    posts = author.documents_authored.public().filter(type="post")
+    return feeds.posts_feed(request, {
+        'title': "Posts by %s" % unicode(author.profile),
+        'posts': posts,
+    })

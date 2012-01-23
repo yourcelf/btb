@@ -12,6 +12,8 @@ urlpatterns = patterns('subscriptions.views',
         name='subscriptions.tag'),
     url(r'^subscribe/author/(?P<author_id>\d+)$', 'subscribe_to_author',
         name='subscriptions.author'),
+    url(r'^subscribe/org/(?P<org_id>\d+)$', 'subscribe_to_org',
+        name='subscriptions.org'),
     url(r'^subscribe/document/(?P<document_id>\d+)$', 'subscribe_to_document',
         name='subscriptions.document'),
 

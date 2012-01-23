@@ -34,6 +34,7 @@
             {% if post.author.profile.has_public_profile %} 
                 (author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>)
             {% endif %}
+            {% if org.public %}, writing for <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
             {% if org.public %}{{ org.footer|safe }}{% endif %}
         </div>
 

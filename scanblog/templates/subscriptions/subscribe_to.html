@@ -9,6 +9,7 @@
 {% if tag %}posts tagged &ldquo;{{ tag }}&rdquo;?{% endif %}
 {% if author %}posts by {{ author.profile }}?{% endif %}
 {% if document %}comments on &ldquo;{{ document.get_title }}&rdquo; by {{ document.author.profile }}?{% endif %}
+{% if org %}posts from <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em> authors{% endif %}
 <form method='post' action=''>{% csrf_token %}<input type='submit' value='Sign me up!' /></form>
 <a href='{% url subscriptions.settings %}'>Subscription settings</a>
 </p>

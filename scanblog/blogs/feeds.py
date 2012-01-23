@@ -64,9 +64,27 @@ def posts_feed(request, context):
     feed.write(response, 'utf-8')
     return response
 
-def comments_feed(request, obj):
+def all_comments_feed(request, comments):
+    feed = _feed(request, title=_("All comments on %s" % Site.objects.get_current().name))
+    for comment in comments:
+        descr = render_to_string("comments/_comment.html", {
+                'comment': comment,
+            }, context_instance=RequestContext(request))
+        feed.add_item(
+            title=_("Comment"),
+            link=feed.site_base + comment.document.get_absolute_url()[1:] + "#comments",
+            description=descr,
+            author_name=force_unicode(comment.user.profile),
+            author_link=comment.user.profile.get_absolute_url(),
+            pubdate=comment.created,
+        )
+    response = HttpResponse(mimetype=feed.mime_type)
+    feed.write(response, 'utf-8')
+    return response
+
+def post_comments_feed(request, obj):
     feed = _feed(request, title=_("Comments on '%s'") % force_unicode(obj))
-    comments = obj.comments.filter(removed=False)
+    comments = obj.comments.filter(removed=False).order_by('-created')
     for comment in comments:
         descr = render_to_string("comments/_comment.html", {
                 'comment': comment

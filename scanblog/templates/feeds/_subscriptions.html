@@ -15,6 +15,19 @@
             </td>
         </tr>
         {% endif %}
+        {% if org and org.public %}
+        <tr>
+            <th>
+                Posts from <em>{{ org.name }}</em>:
+            </th>
+            <td>
+                <a href='{% url blogs.org_feed org.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
+            </td>
+            <td>
+                <a href='{% url subscriptions.org org.pk %}'>email me</a>
+            </td>
+        </tr>
+        {% endif %}
         {% if comment_feed_obj %}
         <tr>
             <th>
@@ -40,7 +53,7 @@
         </tr>
         <tr>
             <th>
-                All posts:
+                All <em>{{ site.name }}</em> posts:
             </th>
             <td>
                 <a href='{% url blogs.all_posts_feed %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>

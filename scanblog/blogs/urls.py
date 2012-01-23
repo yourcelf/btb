@@ -7,14 +7,20 @@ revision_id = "(?P<revision_id>\d+)"
 
 urlpatterns = patterns('blogs.views',
     # Post lists
-    url(r'^blogs/$', 'group_post_list', name='blogs.home'),
+    url(r'^blogs/$', 'all_posts_list', name='blogs.home'),
     url(r'^blogs/tag/(?P<tag>.+)/$', 'tagged_post_list', name='blogs.tagged_posts'),
     url(r'^blogs/{0}/{1}/?$'.format(author_id, slug), 'author_post_list', name='blogs.blog_show'),
-    url(r'^blogs/feed/$', 'group_post_feed', name='blogs.all_posts_feed'),
-    url(r'^blogs/{0}/{1}/feed/$'.format(author_id, slug), 'legacy_author_post_feed'),
+    url(r'^blogs/{0}/$'.format(slug), 'org_post_list', name='blogs.org_post_list'),
+    url(r'^blogs/feed/$', 'all_posts_feed', name='blogs.all_posts_feed'),
     url(r'^blogs/feed/{0}/$'.format(author_id), 'author_post_feed', name='blogs.blog_feed'),
+    url(r'^blogs/feed/comments/$', 'all_comments_feed', name='blogs.all_comments_feed'),
+    url(r'^blogs/feed/{0}/$'.format(slug), 'org_post_feed', name='blogs.org_feed'),
+    url(r'^blogs/feed/{0}/unfiltered$'.format(slug), 'org_post_feed', 
+        kwargs={'filtered': False},
+        name='blogs.org_feed_unfiltered'),
     url(r'^blogs/tag/(?P<tag>.+)/feed$', 'tagged_post_feed', name='blogs.tagged_posts_feed'),
 
+    url(r'^blogs/{0}/{1}/feed/$'.format(author_id, slug), 'legacy_author_post_feed'),
 
     # Individual posts
     url(r"^posts/{0}/{1}/?$".format(post_id, slug), 'post_detail', name='blogs.post_show'),

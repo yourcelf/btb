@@ -12,6 +12,20 @@ from notification.models import Notice, NoticeType, NoticeSetting, NOTICE_MEDIA,
 from subscriptions.models import Subscription
 from scanning.models import Document
 from annotations.models import Tag
+from profiles.models import Organization
+
+@login_required
+def subscribe_to_org(request, org_id):
+    org = get_object_or_404(Organization, pk=org_id, public=True)
+    if request.method == "POST":
+        sub, created = Subscription.objects.get_or_create(
+                subscriber=request.user,
+                organization=org,
+        )
+        return redirect("subscriptions.settings")
+    return render(request, "subscriptions/subscribe_to.html", {
+        'org': org,
+    })
 
 @login_required
 def subscribe_to_author(request, author_id):

@@ -6,7 +6,7 @@
 <h2>{{ chosen_org.name }}</h2>
 
 {% if chosen_org.slug == "independent" %}
-    <p>The following are independent writers, supported by independent volunteers and staff for {{ site.name }}:</p>
+    <p>The following are independent writers, supported by volunteers and staff for {{ site.name }}:</p>
 {% else %}
     {{ chosen_org.about|safe }}
     <p>The following writers are represented by {{ chosen_org.name }}:</p>
@@ -27,6 +27,8 @@
     </li>
 {% endfor %}
 </ul>
+
+<a href='{% url blogs.org_post_list chosen_org.slug %}'>All <em>{{ chosen_org.name }}</em> posts</a>
 
 {{ chosen_org.footer|safe }}
 
