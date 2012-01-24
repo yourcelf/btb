@@ -226,6 +226,9 @@ class Profile(models.Model):
     def get_blog_url(self):
         return reverse('blogs.blog_show', args=[self.pk, self.get_blog_slug()])
 
+    def get_bare_blog_url(self):
+        return reverse('blogs.blog_show', args=[self.pk, ""])
+
     def get_blog_slug(self):
         return slugify(self.display_name)
 

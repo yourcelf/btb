@@ -1,4 +1,4 @@
-{% extends "profiles/groups_base.html" %}
+{% extends "profiles/base.html" %}
 {% load humanize %}
 {% block title %}People{% if chosen_org %} : {{ chosen_org.name }}{% endif %}{% endblock %}
 {% block body %}
@@ -8,12 +8,12 @@
     <tr>
         <td class='group-links'>
             <ul>
-                <li {% if chosen_org.name == site.name %}class='active'{% endif %}><a href='{% url profiles.profile_list %}'>{{ site.name }}</a></li>
+                <li class='org{% if chosen_org.name == site.name %} active{% endif %}'><a href='{% url profiles.profile_list %}'>{{ site.name }}</a></li>
             {% if orgs %}
                 <li>Partners:</li>
             {% endif %}
             {% for org in orgs %}
-                <li {% if org.name == chosen_org.name %}class='active'{% endif %}>
+                <li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
                     {# We don't use get_absolute_url here because independent org doesn't have one #}
                     <a href='{% url profiles.profile_list org.slug %}'>{{ org.name }}</a>
                 </li>
@@ -54,9 +54,10 @@
                 {% endif %}
                 <ul class='partners-user-list'>
                 {% for profile in profiles %}
-                    <li>
+                    <li class='person'>
                         {% if profile.authored_posts_count > 0 %}
-                            <a href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
+                            <a class='bloglink' 
+                               href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
                             {{ profile.authored_posts_count }} posts; 
                             latest {{ profile.latest_post|naturalday }}.
                         {% else %}

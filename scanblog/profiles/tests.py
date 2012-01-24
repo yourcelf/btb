@@ -12,6 +12,17 @@ from profiles.models import Profile, Organization
 from scanning.models import Document, Scan
 from annotations.models import Note
 
+class TestUrls(TestCase):
+    def testAbsoluteUrls(self):
+        u = User.objects.create(username="hoopla", pk=12345)
+        u.profile.display_name = "Test User"
+        u.profile.in_prison = True
+        u.save()
+        self.assertEquals(u.profile.get_absolute_url(), "/people/show/12345")
+        self.assertEquals(u.profile.get_blog_url(), "/blogs/12345/test-user")
+        self.assertEquals(u.profile.get_bare_blog_url(), "/blogs/12345/")
+
+
 class TestProfileManager(TestCase):
     def setUp(self):
         # Remove default user from fixture.

@@ -14,7 +14,9 @@
             {% if profile.authored_posts_count > 0 %}
                 <a class='bloglink' 
                    href='{{ profile.get_blog_url }}'>{{ profile.display_name }}</a>
-                ({{ profile.authored_posts_count }} post{{ profile.authored_posts_count|pluralize }}, latest {{ profile.latest_post|naturalday }})
+                   ({{ profile.authored_posts_count }} 
+                    post{{ profile.authored_posts_count|pluralize }}, 
+                    latest {{ profile.latest_post|naturalday }})
             {% else %}
                 {{ profile.display_name }} &mdash;
             {% endif %}

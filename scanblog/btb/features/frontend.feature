@@ -15,7 +15,7 @@ Feature: Pages display correctly
     Scenario: Access the people page
         Given I access the url "/"
         And I follow "People"
-        Then I see the header "All authors"
+        Then I see a list of orgs
         And I see a list of people
 
     Scenario: Access an author's posts

@@ -31,7 +31,12 @@ def i_see_a_reply_form(step):
 
 @step(u'I see a list of people')
 def i_see_a_list_of_people(step):
-    assert len(world.browser.find_elements_by_css_selector("li.person")) > 1
+    assert len(world.browser.find_elements_by_css_selector("li.person")) > 0
+
+@step(u'I see a list of orgs')
+def i_see_a_list_of_orgs(step):
+    assert len(world.browser.find_elements_by_css_selector("li.org")) > 0
+
 
 @step(u'I follow a person link')
 def i_follow_a_person_link(step):
