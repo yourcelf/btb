@@ -12,6 +12,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.db.models import Count
 
 from btb.utils import args_method_decorator, JSONView, can_edit_user, can_edit_profile
@@ -21,24 +22,17 @@ from scanning.models import Scan, Document
 from scanning.tasks import process_scan_to_profile, move_scan_file
 from annotations.models import Note
 
-INDEPENDENT_ORG = {
-    'name': 'Independent',
-    'slug': 'independent',
-}
-
 def list_profiles(request):
     return render(request, "profiles/profiles_list.html", {
         'authors': Profile.objects.bloggers_with_published_content()
     })
 
-def list_orgs(request):
-    return render(request, "profiles/groups_list.html", {
-        'orgs': list(Organization.objects.public()) + [INDEPENDENT_ORG]
-    })
-
-def org_detail(request, org_slug):
-    if org_slug == "independent":
-        org = INDEPENDENT_ORG
+def list_orgs(request, org_slug):
+    if org_slug is None:
+        org = {
+            'name': Site.objects.get_current().name,
+            'slug': '',
+        }
         profiles = sorted(
              # NB: Exclude doesn't get the right result here; but the
              # unexpected could happen if someone is in multiple groups, one or
@@ -50,6 +44,12 @@ def org_detail(request, org_slug):
              ),
              key=lambda p: p.display_name
         )
+    elif org_slug == "join":
+        org = {
+            'name': 'Join',
+            'slug': org_slug,
+        }
+        profiles = []
     else:
         org = get_object_or_404(Organization, slug=org_slug, public=True)
         profiles = sorted(
@@ -63,11 +63,12 @@ def org_detail(request, org_slug):
                     )
                  )
                 ), key=lambda p: p.display_name)
-    return render(request, "profiles/group_detail.html", {
-        'orgs': list(Organization.objects.public()) + [INDEPENDENT_ORG],
+    return render(request, "profiles/groups_list.html", {
+        'orgs': list(Organization.objects.public()),
         'chosen_org': org,
         'profiles': profiles,
     })
+
 
 @login_required
 def delete(request, user_id):
