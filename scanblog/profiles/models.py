@@ -270,9 +270,10 @@ class Organization(models.Model):
         help_text="Additional text that will appear at the bottom of each post by a member of this organization.",
     )
 
-    members = models.ManyToManyField(User)
-    moderators = models.ManyToManyField(User, 
-        related_name="organizations_moderated"
+    members = models.ManyToManyField(User, blank=True)
+    moderators = models.ManyToManyField(User,
+        related_name="organizations_moderated",
+        blank=True
     )
 
     objects = OrganizationManager()

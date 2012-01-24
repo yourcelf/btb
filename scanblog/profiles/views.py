@@ -148,10 +148,14 @@ def show_profile(request, user_id):
                 status="published").order_by('-modified')[0]
     except IndexError:
         document = None
+    try:
+        org = profile.user.organization_set.get()
+    except Organization.DoesNotExist:
+        org = None
     return render(request, "profiles/profile_detail.html", {
             'document': document,
             'profile': profile,
-            'org': profile.user.organization_set.get(),
+            'org': org,
             'can_edit': can_edit,
         })
 
