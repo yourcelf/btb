@@ -257,7 +257,10 @@ def edit_profile(request, user_id=None):
 class UsersJSON(JSONView):
     @args_method_decorator(permission_required, "auth.change_user")
     def get(self, request, obj_id=None):
-        profiles = Profile.objects.select_related('user')
+        if 'in_org' in request.GET:
+            profiles = Profile.objects.org_filter(request.user).select_related('user')
+        else:
+            profiles = Profile.objects.select_related('user')
         
         obj_id = obj_id or request.GET.get("id", None)
         if obj_id:
@@ -353,7 +356,7 @@ class UsersJSON(JSONView):
     @args_method_decorator(permission_required, "auth.change_user")
     def put(self, request, obj_id):
         params = json.loads(request.raw_post_data)
-        user = User.objects.select_related('profile').get(pk=params['id'])
+        user = Profile.objects.org_filter(request.user).get(pk=params['id']).user
         dirty = False
         for param in ('is_active', 'username', 'email'):
             if param in params:

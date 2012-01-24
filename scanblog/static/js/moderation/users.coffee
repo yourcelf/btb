@@ -534,7 +534,7 @@ class btb.UserDetail extends Backbone.View
 
     render: =>
         $(@el).html @template()
-        userChooser = new btb.UserSearch
+        userChooser = new btb.UserSearch(filter: {in_org: 1})
         userChooser.bind "chosen", (user) => @chooseUser(user)
         $(".user-chooser-holder", @el).html userChooser.render().el
         if not @user?

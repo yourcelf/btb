@@ -978,7 +978,11 @@
       var correspondence, licenses, list, photos, posts, profiles, requests, userChooser, userFields, userId, _i, _len, _ref,
         _this = this;
       $(this.el).html(this.template());
-      userChooser = new btb.UserSearch;
+      userChooser = new btb.UserSearch({
+        filter: {
+          in_org: 1
+        }
+      });
       userChooser.bind("chosen", function(user) {
         return _this.chooseUser(user);
       });

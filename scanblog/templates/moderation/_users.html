@@ -175,6 +175,9 @@
                     <th>Joined</th>
                     <td><%= btb.formatDate(user.date_joined) %></td>
                 </tr>
+                <tr>
+                    <th>Organization</th>
+                    <td><%= _.map(user.organizations, function(o) { return o.name }).join(", ") %>
             </table>
             <h2>Profiles</h2>
             <div class='profilelist'></div>
