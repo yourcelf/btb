@@ -9,7 +9,9 @@
         <td class='group-links'>
             <ul>
                 <li {% if chosen_org.name == site.name %}class='active'{% endif %}><a href='{% url profiles.profile_list %}'>{{ site.name }}</a></li>
+            {% if orgs %}
                 <li>Partners:</li>
+            {% endif %}
             {% for org in orgs %}
                 <li {% if org.name == chosen_org.name %}class='active'{% endif %}>
                     {# We don't use get_absolute_url here because independent org doesn't have one #}
