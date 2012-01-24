@@ -31,7 +31,6 @@
                             <a class='home {% block nav_home_active %}{% endblock %}' href="{% url home %}">{% block nav_home_text %}{{ site.name }}{% endblock %}</a>
                             <a class='blogs {% block nav_blogs_active %}{% endblock %}' href="{% url blogs.home %}">{% trans "Blogs" %}</a>
                             <a class='blogs {% block nav_people_active %}{% endblock %}' href="{% url profiles.profile_list %}">{% trans "People" %}</a>
-                            {# <a class='groups {% block nav_groups_active %}{% endblock %}' href="{% url profiles.org_list %}">{% trans "Groups" %}</a> #}
                             <a class='about {% block nav_about_active %}{% endblock %}' href="{% url about %}">{% trans "About" %}</a>
 
                             {# Authenticated nav #}

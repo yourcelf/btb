@@ -296,7 +296,7 @@ class Organization(models.Model):
         return ", ".join(unicode(u.profile) for u in self.moderators.all())
 
     def get_absolute_url(self):
-        return reverse("profiles.org_detail", kwargs={'org_slug': self.slug})
+        return reverse("profiles.org_list", kwargs={'org_slug': self.slug})
 
     def __unicode__(self):
         return self.name
