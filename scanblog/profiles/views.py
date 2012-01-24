@@ -320,7 +320,7 @@ class UsersJSON(JSONView):
             return HttpResponseBadRequest("Missing required params: {0}".format(", ".join(missing)))
 
         try:
-            org = request.user.organizations_moderated.get(pk=params['org_id'])
+            org = Organization.objects.org_filter(request.user, pk=params['org_id']).get()
         except Organization.DoesNotExist:
             raise PermissionDenied
 
