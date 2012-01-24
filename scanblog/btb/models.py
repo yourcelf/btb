@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models import signals
 from django.dispatch import receiver
-from django.core.mail import mail_admins
+from django.core.mail import mail_managers
 from django.utils.translation import ugettext_noop as _
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
@@ -39,7 +39,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
         if instance.author.groups.filter(name='moderators').exists():
             return
         if instance.author.profile.in_prison == False:
-            mail_admins("Visitor profile document added", render_to_string(
+            mail_managers("Visitor profile document added", render_to_string(
                 "btb/admin-visitor-profile-notification.txt", {
                     'document': instance,
                     'site': Site.objects.get_current(),
@@ -49,7 +49,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def transcription_notification(sender, instance, *args, **kwargs):
         if instance.editor.groups.filter(name='moderators').exists():
             return
-        mail_admins("Transcription edited", render_to_string(
+        mail_managers("Transcription edited", render_to_string(
             "btb/admin-email-transcription-edited.txt", {
                 'document': instance.transcription.document,
                 'transcription': instance.transcription,
@@ -62,7 +62,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
         if instance.user.groups.filter(name='moderators').exists():
             return
         subject = "New comment" if 'created' in kwargs else "Comment edited"
-        mail_admins(subject, render_to_string(
+        mail_managers(subject, render_to_string(
             "btb/admin-email-comment-posted.txt", {
                 'comment': instance,
                 'site': Site.objects.get_current(),
@@ -73,7 +73,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
         if 'created' in kwargs and instance.important and "FLAG" in instance.text:
             if instance.creator.groups.filter(name='moderators').exists():
                 return
-            mail_admins("Content flagged", render_to_string(
+            mail_managers("Content flagged", render_to_string(
                 "btb/admin-content-flagged.txt", {
                     'note': instance,
                     'site': Site.objects.get_current(),
