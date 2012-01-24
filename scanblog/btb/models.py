@@ -61,6 +61,8 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def comment_notification(sender, instance, *args, **kwargs):
         if instance.user.groups.filter(name='moderators').exists():
             return
+        if instance.comment_doc:
+            return
         subject = "New comment" if 'created' in kwargs else "Comment edited"
         mail_managers(subject, render_to_string(
             "btb/admin-email-comment-posted.txt", {
