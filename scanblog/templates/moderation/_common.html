@@ -18,9 +18,10 @@
     <img src='{{ STATIC_URL }}img/spinner.gif' class='pagination-loading' style='display: none;' />
 </script>
 <script type='text/template' id="editInPlace"><span class='edit-in-place'><%= field !== null && field !== undefined && field !== "" ? field : "-- click to add --" %></span></script>
-<script type='text/template' id="editorInPlace">
+<script type='text/template' id="editorInPlace">{% spaceless %}
     <span class='editor-in-place'>
         <span class='edit-tag'></span><br />
-        <input type='button' value='Save' class='save' /><span class='link-like cancel'>cancel</span>
+        <input type='button' value='Save' class='save' />
+        <span class='link-like cancel'>cancel</span>
     </span>
-</script>
+{% endspaceless %}</script>
