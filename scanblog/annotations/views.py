@@ -15,6 +15,7 @@ from profiles.models import Profile
 class ReplyCodes(JSONView):
     @args_method_decorator(permission_required, "scanning.change_document")
     def get(self, request):
+        codes = ReplyCode.objects.all()
         if "code" in request.GET:
             codes = codes.filter(code=request.GET['code'])
         else:
