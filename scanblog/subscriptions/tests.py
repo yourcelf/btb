@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.models import User, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -177,6 +179,32 @@ class TestSubscriptions(BtbTestCase):
         res = c.get(reverse("subscriptions.unsubscribe"))
         self.assertNoNotificationsFor(self.commenter)
 
+    def test_unsubscribe_link(self):
+        c = self.client
+        c.logout()
+        doc = Document.objects.create(author=self.author, editor=self.editor, 
+                status="published", type="post")
+        # Create a subscription...
+        Comment.objects.create(user=self.commenter, comment="foo", document=doc)
+        # ... trigger a notification ...
+        Comment.objects.create(user=self.commenter2, comment="foo", document=doc)
+        for msg in mail.outbox:
+            if self.commenter.email in msg.to:
+                body = msg.message().get_payload(None, True)
+                break
+        else:
+            self.fail("Expected notification for %s, got none." % self.commenter.email)
+
+        self.clear_outbox()
+
+        match = re.search("^<https?://[^/]*(/r/.*)>$", body, re.MULTILINE)
+        if match:
+            link = match.group(1)
+            res = c.get(link, follow=True)
+            self.assertNoNotificationsFor(self.commenter)
+        else:
+            self.fail("Unsubscribe link not found.")
+
     def test_blacklist(self):
         """
         Test the NotificationBlacklist, a table of email addresses to which we
@@ -209,4 +237,14 @@ class TestSubscriptions(BtbTestCase):
 
         # (just outbox)
         self.assertOutboxContains(['%sNew comment' % self.admin_prefix] * 2)
+
+    def test_comment_notification_escaping(self):
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        comment = Comment.objects.create(comment="yah", user=self.commenter, document=doc)
+        self.clear_outbox()
+        text = """Isn't that & that nice. >.<"""
+        comment = Comment.objects.create(comment=text, user=self.commenter2, document=doc)
+
+        for msg in mail.outbox:
+            self.assertTrue(text in unicode(msg.message()))
 

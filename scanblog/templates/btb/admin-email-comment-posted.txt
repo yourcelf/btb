@@ -5,14 +5,14 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 
 {{ comment.user.profile }}
 ----
-{{ comment.comment }}
+{{ comment.comment|safe }}
 ----
 
 Moderation functions:
-Delete: http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete
-Edit: http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/
+Delete: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete>
+Edit: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/>
 
 Admin functions:
-Edit user: http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/
-Delete user: http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete
+Edit user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
+Delete user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete>
 {# Can't use base_url here because we can't get RequestContext #}
