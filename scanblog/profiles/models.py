@@ -255,12 +255,11 @@ class OrganizationManager(OrgManager):
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    personal_contact = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
+    personal_contact = models.CharField(max_length=255)
     public = models.BooleanField(
         help_text="Check to make this organization appear in the 'Groups' tab"
     )
-
     mailing_address = models.TextField()
     outgoing_mail_handled_by = models.ForeignKey('self', blank=True, null=True)
 
