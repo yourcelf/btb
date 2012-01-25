@@ -15,7 +15,7 @@ class CommentManager(OrgManager):
         return self.public().filter(
             document__isnull=False,
             document__author__is_active=True,
-            document__author__profile__in_prison=True,
+            document__author__profile__managed=True,
             letter__isnull=True,
         )
 

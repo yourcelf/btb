@@ -7,8 +7,8 @@ THUMBNAIL_DEBUG = DEBUG
 LETTUCE_SERVER_PORT = 8001 # Port for lettuce tests
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-DISABLE_NOTIFICATIONS = True
-DISABLE_ADMIN_NOTIFICATIONS = True
+DISABLE_NOTIFICATIONS = False
+DISABLE_ADMIN_NOTIFICATIONS = False
 ROOT_URLCONF = "urls"
 
 # Make this unique, and don't share it with anybody.

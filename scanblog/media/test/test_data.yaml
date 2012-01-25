@@ -27,7 +27,8 @@ orgs:
 users:
  - name: František Loukianos
    orgs: [Blog Crew]
-   in_prison: true
+   blogger: true
+   managed: true
    consent_form_received: true
    blog_name: Franny Lou 
    correspondence:
@@ -69,7 +70,8 @@ users:
         date: 2011-11-26
  - name: Valentin Rosemary
    orgs: [Other Crew]
-   in_prison: true
+   blogger: true
+   managed: true
    consent_form_received: true
    blog_name:
    correspondence:

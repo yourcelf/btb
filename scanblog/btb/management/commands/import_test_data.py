@@ -145,7 +145,7 @@ def load_test_data():
         user, created = User.objects.get_or_create(
                 username=slugify(user_data['name'])
         )
-        if user_data.get('in_prison', False):
+        if user_data.get('managed', False):
             random_mailing_address = "\n".join([
                 # Prisoner number
                 "#%s" % "".join(random.choice(string.digits) for a in range(8)),
@@ -163,7 +163,8 @@ def load_test_data():
 
         user.profile.display_name = user_data['name']
         user.profile.mailing_address = random_mailing_address
-        user.profile.in_prison = user_data.get('in_prison', False)
+        user.profile.blogger = user_data.get('blogger', False)
+        user.profile.managed = user_data.get('managed', False)
         user.profile.consent_form_received = user_data.get('consent_form_received', False)
         user.profile.blog_name = user_data.get('blog_name', None) or ''
         user.profile.save()

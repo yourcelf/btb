@@ -20,10 +20,16 @@
                 </td>
             </tr>
             <tr>
-                <th>In prison?*</th>
+                <th>Blogger?*</th>
                 <td><input type='checkbox' 
-                        <% if (defaults.in_prison) { %>checked='checked'<% } %> 
-                        name='in_prison' /></td>
+                        <% if (defaults.blogger) { %>checked='checked'<% } %> 
+                        name='blogger' /></td>
+            </tr>
+            <tr>
+                <th>Managed?*</th>
+                <td><input type='checkbox' 
+                        <% if (defaults.blogger) { %>checked='checked'<% } %> 
+                        name='managed' /></td>
             </tr>
             <tr>
                 <th>Email&nbsp;</th>
@@ -91,10 +97,16 @@
     <% if (!user.is_active) { %>
         Inactive
     <% } %>
-    <% if (user.in_prison) { %>
+    <% if (user.blogger) { %>
         Blogger:
         <% if (user.consent_form_received) { %>
-            <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
+            <% if (user.managed) { %>
+                <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
+                Managed
+            <% } else { %>
+                <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
+                Unmanaged
+            <% } %>
         <% } else if (user.invited) { %>
             invited
         <% } else if (user.waitlisted) { %>
@@ -117,7 +129,7 @@
             </div>
             <% if (user.blog_name) { %><div class='blog-name'><%= user.blog_name %></div><% } %>
             <div class='date-joined'>Joined: <%= btb.formatDate(user.date_joined) %></div>
-            <% if (user.in_prison) { %>
+            <% if (user.blogger) { %>
                 <%= user.scans_authored != null ? user.scanns_authored + " letters" : "" %>
                 <a href='<%= user.blog_url %>'>blog</a>
                 <a href='<%= user.profile_url %>'>profile</a>
@@ -135,12 +147,14 @@
     <table>
         <tr>
             <th>Active</th>
-            <th>In prison</th>
+            <th>Blogger</th>
+            <th>Managed</th>
             <th>License signed</th>
         </tr>
         <tr>
             <td class='is-active'></td>
-            <td class='in-prison'></td>
+            <td class='blogger'></td>
+            <td class='managed'></td>
             <td class='consent-form-received'></td>
         </tr>
     </table>

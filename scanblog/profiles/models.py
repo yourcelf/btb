@@ -29,18 +29,18 @@ class ProfileManager(OrgManager):
         return self.filter(user__is_active=False)
 
     def inactive_commenters(self):
-        return self.filter(user__is_active=False, in_prison=False)
+        return self.filter(user__is_active=False, blogger=False)
 
     def inactive_bloggers(self):
-        return self.filter(user__is_active=False, in_prison=True)
+        return self.filter(user__is_active=False, blogger=True)
 
     def commenters(self):
         """ They are not in prison. """
-        return self.active().filter(in_prison=False)
+        return self.active().filter(blogger=False)
 
     def bloggers(self): 
         """ They are in prison. """
-        return self.active().filter(in_prison=True)
+        return self.active().filter(blogger=True)
 
     def bloggers_with_posts(self):
         return self.bloggers().select_related('user').filter(
@@ -164,7 +164,9 @@ class Profile(models.Model):
         help_text=_('Show posts and comments that have been marked as adult?')
     )
 
-    in_prison = models.BooleanField()
+    blogger = models.BooleanField()
+    managed = models.BooleanField()
+
     blog_name = models.CharField(blank=True, default="", max_length=255)
     mailing_address = models.TextField(blank=True, default="")
     special_mail_handling = models.TextField(blank=True, default="")
@@ -184,7 +186,8 @@ class Profile(models.Model):
             'email': self.user.email,
             'is_active': self.user.is_active,
             'date_joined': self.user.date_joined.isoformat(),
-            'in_prison': self.in_prison,
+            'blogger': self.blogger,
+            'managed': self.managed,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,
@@ -239,7 +242,7 @@ class Profile(models.Model):
         ))
 
     def is_public(self):
-        return self.user.is_active and ((not self.in_prison) or self.consent_form_received)
+        return self.user.is_active and ((not self.blogger) or self.consent_form_received)
 
     def has_public_profile(self):
         return Document.objects.filter(author__pk=self.pk, type="profile",
