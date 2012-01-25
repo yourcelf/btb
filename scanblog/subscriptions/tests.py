@@ -137,12 +137,11 @@ class TestSubscriptions(BtbTestCase):
         """
         doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
         comment = Comment.objects.create(user=self.commenter, document=doc)
+        self.clear_outbox()
         reply = Document.objects.create(author=self.author, editor=self.editor,
                 status="published", in_reply_to=doc.reply_code)
-        self.assertOutboxContains([
-            "%sNew comment" % self.admin_prefix,
-            "%sNew reply" % self.user_prefix,
-        ])
+        # No admin notification for document.
+        self.assertOutboxContains(["%sNew reply" % self.user_prefix])
 
     def test_no_duplicate_document_notifications(self):
         """
