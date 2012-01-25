@@ -23,7 +23,8 @@ def get_profile_form(editor):
         exclude_list += [
             'mailing_address', 
             'special_mail_handling',
-            'in_prison', 
+            'blogger', 
+            'managed', 
             'consent_form_received'
         ]
     if not editor.has_perm('blogs.change_own_post'):

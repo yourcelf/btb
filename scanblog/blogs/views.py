@@ -49,9 +49,6 @@ def _paginate(request, qs, count=10):
             return _paginate(request, qs, count)
 
     return {'page': page, 'page_links': page_links}
-#
-# Posts by an author
-#
 
 def author_post_list(request, author_id=None, slug=None):
     # We do show adult posts when looking at individual user's blog; but
@@ -336,3 +333,10 @@ def author_post_feed(request, author_id):
         'title': "Posts by %s" % unicode(author.profile),
         'posts': posts,
     })
+
+#
+# Textual posts, edited by author
+#
+
+def post_edit(request, post_id=None):
+    pass

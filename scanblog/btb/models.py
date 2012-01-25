@@ -38,7 +38,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def profile_notification(sender, instance, *args, **kwargs):
         if instance.author.groups.filter(name='moderators').exists():
             return
-        if instance.author.profile.in_prison == False:
+        if instance.author.profile.managed == False:
             mail_managers("Visitor profile document added", render_to_string(
                 "btb/admin-visitor-profile-notification.txt", {
                     'document': instance,

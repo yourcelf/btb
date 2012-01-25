@@ -45,7 +45,7 @@ def add_test_users():
     # Author
     u, created = User.objects.get_or_create(username='testauthor')
     u.profile.display_name = "Test Author"
-    u.profile.in_prison = True
+    u.profile.blogger = True
     u.profile.consent_form_received = True
     u.profile.save()
     o.members.add(u)

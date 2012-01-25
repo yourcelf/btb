@@ -58,7 +58,7 @@
         <p>
             <a class='read-more' href='{{profile.get_blog_url}}'>Read more from {{ profile }}'s blog{% if profile.blog_name %}: {{ profile.blog_name }}{% endif %} &raquo;</a>
         </p>
-    {% else %}{% if not profile.in_prison %}
+    {% else %}{% if not profile.managed %}
         <h3>Comments</h3>
         <ul class='bullets'>
         {% for comment in profile.user.comment_set.public %}

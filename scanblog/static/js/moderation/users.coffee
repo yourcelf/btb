@@ -25,7 +25,8 @@ class btb.UserAdd extends Backbone.View
         'click span.cancel-add-user-link': 'cancel'
         'click input.save-new-user': 'saveNewUser'
     defaults:
-        in_prison: true
+        blogger: true
+        managed: true
     errors: {}
     initialize: (options) ->
         if options? and options.initial?
@@ -43,7 +44,8 @@ class btb.UserAdd extends Backbone.View
         properties =
             display_name: $("input[name=display_name]", scope).val()
             mailing_address: $("textarea[name=mailing_address]", scope).val()
-            in_prison: $("input[name=in_prison]", scope).is(":checked")
+            blogger: $("input[name=blogger]", scope).is(":checked")
+            managed: $("input[name=managed]", scope).is(":checked")
             email: $("input[name=email]", scope).val()
             blog_name: $("input[name=blog_name]", scope).val()
             org_id: $("[name=org_id]", scope).val()
@@ -88,7 +90,7 @@ class btb.UserSearch extends btb.PaginatedView
     delay: 100
     defaultFilter:
         per_page: 6
-        in_prison: true
+        blogger: true
     events:
         'keyup input.user-chooser-trigger': 'openUserSearch'
         'keyup input.user-search': 'keyUp'
@@ -514,7 +516,8 @@ class btb.UserStatusTable extends Backbone.View
     render: =>
         $(@el).html @template()
         btb.EditInPlace.factory [
-            [@user, "in_prison", $(".in-prison", @el), "checkbox"]
+            [@user, "blogger", $(".blogger", @el), "checkbox"]
+            [@user, "managed", $(".managed", @el), "checkbox"]
             [@user, "consent_form_received", $(".consent-form-received", @el), "checkbox"]
             [@user, "is_active", $(".is-active", @el), "checkbox"]
         ]

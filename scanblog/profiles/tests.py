@@ -16,7 +16,7 @@ class TestUrls(TestCase):
     def testAbsoluteUrls(self):
         u = User.objects.create(username="hoopla", pk=12345)
         u.profile.display_name = "Test User"
-        u.profile.in_prison = True
+        u.profile.blogger = True
         u.save()
         self.assertEquals(u.profile.get_absolute_url(), "/people/show/12345")
         self.assertEquals(u.profile.get_blog_url(), "/blogs/12345/test-user")
@@ -59,7 +59,8 @@ class TestProfileManager(TestCase):
                                     username=",".join(str(k) for k in key),
                                     is_active=active)
                             user.profile.consent_form_received = consented
-                            user.profile.in_prison = True
+                            user.profile.blogger = True
+                            user.profile.managed = True
                             user.profile.save()
                             if consent_form or unsent_letters:
                                 create_letter(user, 'consent_form', 
@@ -271,7 +272,8 @@ class TestOrgPermissions(TestCase):
             org = Organization.objects.create(name="Org %s" % i, slug="org-%s" % i)
             member = User.objects.create(username="org%smember" % i)
             member.profile.display_name = "Org %s Member" % i
-            member.profile.in_prison = True
+            member.profile.blogger = True
+            member.profile.managed = True
             member.profile.consent_form_received = True
             member.profile.save()
             org.members.add(member)

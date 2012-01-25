@@ -20,7 +20,8 @@ class TestSubscriptions(BtbTestCase):
         self.editor.save()
         self.editor.groups.add(Group.objects.get(name='moderators'))
         self.author = User.objects.create(username='author')
-        self.author.profile.in_prison = True
+        self.author.profile.blogger = True
+        self.author.profile.managed = True
         self.author.profile.consent_form_received = True
         self.author.profile.save()
         self.org = Organization.objects.create(name='org')
