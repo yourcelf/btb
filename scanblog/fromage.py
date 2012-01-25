@@ -29,7 +29,7 @@ if __name__ == "__main__":
     if runtests:
         try:
             unittests = subprocess.Popen(
-                    [MANAGE_PATH, "test", "btb", "about", "profiles"])
+                    [MANAGE_PATH, "test", "btb", "about", "profiles", "annotations", "subscriptions"])
             unittests.communicate()
             assert unittests.returncode == 0
             integration = subprocess.Popen([MANAGE_PATH, "harvest"])

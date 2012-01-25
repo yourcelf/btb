@@ -22,7 +22,7 @@ class ReplyCodes(JSONView):
             raise Http404
         if "document" in request.GET:
             dict_method = "doc_dict"
-            codes = codes.org_filter(request.user)
+            codes = codes.org_filter(request.user).exclude(document__isnull=True)
         else:
             dict_method = "to_dict"
         return self.paginated_response(request, codes, dict_method=dict_method)

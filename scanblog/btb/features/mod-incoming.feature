@@ -8,7 +8,7 @@ Feature: Incoming mail
         And I access the url "/moderation/"
         And I follow "Incoming mail"
         Then I see the incoming mail form
-        Given I type "te" in the user search form
+        Given I type "test author" in the user search form
         Then I see choices for users
         Given I click the first user choice
         Then a pendingscan entry for that choice is created

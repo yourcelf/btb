@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.core.exceptions import ObjectDoesNotExist
 
 from btb.utils import date_to_string, OrgQuerySet, OrgManager
 
@@ -137,20 +138,28 @@ class ReplyCode(models.Model):
         }
 
     def doc_dict(self):
-        document = self.document
+        try:
+            document = self.document
+        except ObjectDoesNotExist:
+            document = None
+        finally:
+            if document:
+                dd = {
+                    'id': document.pk,
+                    'title': unicode(document.get_title()),
+                    'author': document.author.profile.to_dict(),
+                    'type': document.type,
+                    'date_written': document.date_written.isoformat(),
+                    'url': document.get_absolute_url(),
+                    'edit_url': document.get_edit_url(),
+                    'comment_count': document.comments.count(),
+                }
+            else:
+                dd = None
         return {
             'id': self.pk,
             'code': self.code,
-            'document': {
-                'id': document.pk,
-                'title': unicode(document.get_title()),
-                'author': document.author.profile.to_dict(),
-                'type': document.type,
-                'date_written': document.date_written.isoformat(),
-                'url': document.get_absolute_url(),
-                'edit_url': document.get_edit_url(),
-                'comment_count': document.comments.count(),
-            }
+            'document': dd,
         }
 
     def __unicode__(self):

@@ -63,7 +63,7 @@ if not settings.DISABLE_NOTIFICATIONS:
         document = instance
         if not document.is_public():
             return
-        subs = Subscription.objects.filter(Q(author=document.author))
+        subs = Subscription.objects.filter(author=document.author)
         for org in document.author.organization_set.all():
             subs |= Subscription.objects.filter(organization=org)
         for tag in document.tags.all():

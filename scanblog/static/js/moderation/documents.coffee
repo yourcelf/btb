@@ -315,7 +315,6 @@ class btb.EditDocumentView extends Backbone.View
             clearTimeout(@replyCodeTimeout)
         setTimeout(update, 100)
 
-
 #
 # View for a single page in a document.
 #
