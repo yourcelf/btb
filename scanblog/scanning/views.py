@@ -243,7 +243,7 @@ class Documents(JSONView):
 
     @args_method_decorator(permission_required, "scanning.change_document")
     def get(self, request, obj_id=None):
-        docs = Document.objects.org_filter(request.user)
+        docs = Document.objects.org_filter(request.user, author__profile__managed=True)
         g = request.GET.get
         if g("author_id", None):
             docs = docs.filter(author__pk=g("author_id"))
@@ -566,6 +566,8 @@ def transcribe_document(request, document_id):
     if not settings.TRANSCRIPTION_OPEN:
         raise Http404
     document = get_object_or_404(Document, pk=document_id)
+    if not document.scan_id:
+        raise Http404
     can_lock = request.user.has_perm('scanning.change_locked_transcription')
 
     try:

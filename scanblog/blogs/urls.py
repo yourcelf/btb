@@ -33,4 +33,9 @@ urlpatterns = patterns('blogs.views',
 
     # Post actions
     url(r"^posts/more_pages/{0}$".format(post_id), 'more_pages', name='blogs.more_pages'),
+
+    # Editing posts from the web
+    url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),
+    url(r'^posts/edit/{0}?$'.format(post_id), 'edit_post', name='blogs.edit_post'),
+    url(r'^posts/delete/{0}?$'.format(post_id), 'delete_post', name='blogs.delete_post'),
 )

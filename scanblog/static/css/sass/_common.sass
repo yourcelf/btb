@@ -254,6 +254,8 @@ small
 
 #navbar, .auth .menu
   //background-color: #ECECEC
+  min-width: 140px
+  text-align: right
   border-bottom: 2px dotted #6E5E44 + #555
   position: relative
   z-index: 0
@@ -781,6 +783,25 @@ textarea.sugar, input.sugar
       list-style-type: disc
       margin-left: 2em
 
-      
-      
-      
+table.my-posts
+  min-width: 400px
+  th
+    background-color: #ddd
+  td
+    background-color: white
+  td,th
+    border: 1px solid #eee
+    padding: 0.5em
+
+a.delete-post-button
+  +flat-button
+  +flat-button-sprite(delete)
+
+input.save-post-button
+  +flat-button(big)
+  +flat-button-sprite(save, big)
+
+.post-body
+  background-color: white
+  padding: 2em
+  border: 1px dotted #999

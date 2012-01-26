@@ -7,9 +7,12 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.contrib.auth.views import redirect_to_login
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.html import escape
+from django import forms
 
 from annotations.models import Tag
 from scanning.models import Document, DocumentPage
@@ -41,7 +44,7 @@ def _paginate(request, qs, count=10):
 
     # XXX failsafe for missing highlight bug.  Ideally, this would never get invoked.
     for post in page.object_list:
-        if post.type == "post" and not post.highlight:
+        if post.type == "post" and not post.body and not post.highlight:
             post.status = "unknown"
             post.save()
             logger = logging.getLogger('django.request')
@@ -338,5 +341,57 @@ def author_post_feed(request, author_id):
 # Textual posts, edited by author
 #
 
-def post_edit(request, post_id=None):
-    pass
+def _assert_can_manage_posts(request):
+    if not (request.user.profile.blogger and (not request.user.profile.managed)):
+        raise PermissionDenied
+
+class PostForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea, required=True)
+    status = forms.ChoiceField(choices=(('unknown', 'Draft'), ('published', 'Publish')))
+    class Meta:
+        model = Document
+        fields = ('title', 'body', 'status')
+
+@login_required
+def edit_post(request, post_id=None):
+    _assert_can_manage_posts(request)
+    if post_id:
+        post = get_object_or_404(Document, pk=post_id, author=request.user)
+    else:
+        post = Document(author=request.user, editor=request.user, type="post")
+    form = PostForm(request.POST or None, instance=post)
+    if form.is_valid() and not post.scan_id:
+        post = form.save()
+        tag_names = [t.lower().strip() for t in request.POST.getlist('tags')]
+        tag_objs = [Tag.objects.get_or_create(name=name)[0] for name in tag_names if name]
+        post.tags = set(tag_objs)
+        if post.status == "published":
+            messages.info(request, "Post saved and published.")
+            return redirect("blogs.post_show", post_id=post.pk, slug=post.get_slug())
+        else:
+            messages.info(request, "Post saved as a draft.")
+            return redirect("blogs.manage_posts")
+    return render(request, "blogs/edit_post.html", {
+        'post': post,
+        'form': form,
+    })
+
+@login_required
+def manage_posts(request):
+    _assert_can_manage_posts(request)
+    posts = Document.objects.filter(type='post', author=request.user)
+    return render(request, "blogs/manage_posts.html", {
+        'posts': posts,
+    })
+
+@login_required
+def delete_post(request, post_id):
+    _assert_can_manage_posts(request)
+    post = get_object_or_404(Document, pk=post_id, author=request.user)
+    if request.method == 'POST':
+        post.full_delete()
+        messages.info(request, "Post deleted.")
+        return redirect("blogs.manage_posts")
+    return render(request, "blogs/delete_post.html", {
+        'post': post,
+    })

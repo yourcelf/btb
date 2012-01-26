@@ -7,6 +7,13 @@
     {% endif %}
 {% endblock %}
 
+{% block subnav %}
+{% if user.profile.blogger and not user.profile.managed %}
+    <a href='{% url blogs.manage_posts %}'>&#9776; My Blog Posts</a>
+    <a href='{% url blogs.edit_post %}'>&#9997; Compose</a>
+{% endif %}
+{% endblock %}
+
 {% block scripts %}
 {% if perms.scanning.tag_post %}
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-ui.min.js'></script>

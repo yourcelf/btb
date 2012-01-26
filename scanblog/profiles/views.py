@@ -301,8 +301,10 @@ class UsersJSON(JSONView):
         tf = lambda key: request.GET.get(key) == "true"
         if request.GET.get("is_active", "null") != "null":
             profiles = profiles.filter(user__is_active=tf('is_active'))
-        if request.GET.get("in_prison", "null") != "null":
-            profiles = profiles.filter(in_prison=tf('in_prison'))
+        if request.GET.get("blogger", "null") != "null":
+            profiles = profiles.filter(blogger=tf('blogger'))
+        if request.GET.get("managed", "null") != "null":
+            profiles = profiles.filter(managed=tf('managed'))
         if request.GET.get("consent_form_received", "null") != "null":
             profiles = profiles.filter(consent_form_received=tf('consent_form_received'))
         if request.GET.get("in_org", "null") != "null":
@@ -316,7 +318,8 @@ class UsersJSON(JSONView):
     def post(self, request, obj_id=None):
         missing = set()
         params = json.loads(request.raw_post_data)
-        for key in ("display_name", "mailing_address", "in_prison", "email", "blog_name", "org_id"):
+        for key in ("display_name", "mailing_address", "blogger", "managed", 
+                    "email", "blog_name", "org_id"):
             if not key in params:
                 missing.add(key)
         if missing:
@@ -346,7 +349,8 @@ class UsersJSON(JSONView):
         p.display_name = params["display_name"]
         p.mailing_address = params["mailing_address"]
         p.blog_name = params["blog_name"]
-        p.in_prison = params["in_prison"]
+        p.blogger = params["blogger"]
+        p.managed = params["managed"]
         p.save()
 
         org.members.add(user)
@@ -365,8 +369,8 @@ class UsersJSON(JSONView):
                     setattr(user, param, params[param])
 
         for param in ('display_name', 'mailing_address', 
-                'special_mail_handling', 'consent_form_received', 'in_prison',
-                'blog_name'):
+                'special_mail_handling', 'consent_form_received', 
+                'blogger', 'managed', 'blog_name'):
             if param in params:
                 if params[param] != getattr(user.profile, param):
                     dirty = True

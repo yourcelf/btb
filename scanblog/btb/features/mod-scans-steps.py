@@ -122,6 +122,7 @@ def the_pending_scan_is_marked_complete(step):
 
 @step(u'I see the document editing form with (\d+) documents')
 def i_see_the_document_editing_form_with(step, num_docs):
+    time.sleep(1)
     for el in csss("h2"):
         match = re.match("Document \d of (\d) \(\d pages?\)", el.text)
         if match:

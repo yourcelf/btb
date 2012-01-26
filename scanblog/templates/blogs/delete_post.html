@@ -1,0 +1,17 @@
+{% extends "blogs/base.html" %}
+{% block title %}Delete post?{% endblock %}
+{% block body %}
+    <p>
+    Delete the post <em>{{ post.get_title }}</em> and remove it from the site?
+    This can't be undone.
+    </p>
+
+    <p>
+    <form method='post' action=''>{% csrf_token %}
+        <input type='submit' value='Delete post'>
+    </form>
+    </p>
+    <p>
+    <a href='{% url blogs.edit_post post.pk %}'>Cancel</a>
+    </p>
+{% endblock %}

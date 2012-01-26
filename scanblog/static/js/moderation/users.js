@@ -108,7 +108,8 @@
     };
 
     UserAdd.prototype.defaults = {
-      in_prison: true
+      blogger: true,
+      managed: true
     };
 
     UserAdd.prototype.errors = {};
@@ -135,7 +136,8 @@
       properties = {
         display_name: $("input[name=display_name]", scope).val(),
         mailing_address: $("textarea[name=mailing_address]", scope).val(),
-        in_prison: $("input[name=in_prison]", scope).is(":checked"),
+        blogger: $("input[name=blogger]", scope).is(":checked"),
+        managed: $("input[name=managed]", scope).is(":checked"),
         email: $("input[name=email]", scope).val(),
         blog_name: $("input[name=blog_name]", scope).val(),
         org_id: $("[name=org_id]", scope).val()
@@ -207,7 +209,7 @@
 
     UserSearch.prototype.defaultFilter = {
       per_page: 6,
-      in_prison: true
+      blogger: true
     };
 
     UserSearch.prototype.events = {
@@ -945,7 +947,7 @@
 
     UserStatusTable.prototype.render = function() {
       $(this.el).html(this.template());
-      btb.EditInPlace.factory([[this.user, "in_prison", $(".in-prison", this.el), "checkbox"], [this.user, "consent_form_received", $(".consent-form-received", this.el), "checkbox"], [this.user, "is_active", $(".is-active", this.el), "checkbox"]]);
+      btb.EditInPlace.factory([[this.user, "blogger", $(".blogger", this.el), "checkbox"], [this.user, "managed", $(".managed", this.el), "checkbox"], [this.user, "consent_form_received", $(".consent-form-received", this.el), "checkbox"], [this.user, "is_active", $(".is-active", this.el), "checkbox"]]);
       return this;
     };
 
@@ -992,7 +994,7 @@
       $(".user-detail", this.el).html(this.detailTemplate({
         user: userFields
       }));
-      btb.EditInPlace.factory([[this.user, "display_name", $(".display-name", this.el)], [this.user, "mailing_address", $(".mailing-address", this.el), "textarea"], [this.user, "special_mail_handling", $(".special-mail-handling", this.el), "textarea"], [this.user, "blog_name", $(".blog-name", this.el)]]);
+      btb.EditInPlace.factory([[this.user, "display_name", $(".display-name", this.el)], [this.user, "mailing_address", $(".mailing-address", this.el), "textarea"], [this.user, "special_mail_handling", $(".special-mail-handling", this.el), "textarea"], [this.user, "blog_name", $(".blog-name", this.el)], [this.user, "email", $(".email", this.el)]]);
       $(".user-status-table", this.el).html(new btb.UserStatusTable({
         user: this.user
       }).render().el);

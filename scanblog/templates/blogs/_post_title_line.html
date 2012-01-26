@@ -20,19 +20,26 @@
             <a class='flag-top-button' 
                href='{% url scanning.flag_document post.id %}'
                title='Flag post'>&nbsp;</a>
-            {% with tx=post.transcription %}
-                {% if tx %}
-                    {% if tx.complete %}
-                        <a class='transcribe-top-button' href='{{ post.get_absolute_url }}#transcription' title='Click to read the transcription'>&#9997; Transcribed</a>
+            {% if post.scan_id %}
+                {% with tx=post.transcription %}
+                    {% if tx %}
+                        {% if tx.complete %}
+                            <a class='transcribe-top-button' href='{{ post.get_absolute_url }}#transcription' title='Click to read the transcription'>&#9997; Transcribed</a>
+                        {% else %}
+                            <a class='transcribe-top-button' href='{{ post.get_absolute_url }}#transcription'>&#9997; Partially transcribed</a>
+                        {% endif %}
                     {% else %}
-                        <a class='transcribe-top-button' href='{{ post.get_absolute_url }}#transcription'>&#9997; Partially transcribed</a>
+                        {% if transcription_open %}
+                            <a class='transcribe-top-button' href='{% url scanning.transcribe_document post.id %}'>&#9997; Add transcription</a>
+                        {% endif %}
                     {% endif %}
-                {% else %}
-                    {% if transcription_open %}
-                        <a class='transcribe-top-button' href='{% url scanning.transcribe_document post.id %}'>&#9997; Add transcription</a>
-                    {% endif %}
-                {% endif %}
-             {% endwith %}
+                 {% endwith %}
+             {% endif %}
+             {% if user.profile.blogger and not user.profile.managed and user.pk = post.author.pk %}
+                 <a class='edit-top-button' 
+                     href='{% url blogs.edit_post post.pk %}'
+                     >Edit</a>
+             {% endif %}
         {% endspaceless %}
         {% if perms.scanning.change_scan %}
             <a class='edit-top-button' 

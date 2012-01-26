@@ -28,8 +28,11 @@ if __name__ == "__main__":
 
     if runtests:
         try:
+            collectstatic = subprocess.Popen([MANAGE_PATH, "collectstatic", "--noinput"])
+            collectstatic.communicate()
             unittests = subprocess.Popen(
-                    [MANAGE_PATH, "test", "btb", "about", "profiles", "annotations", "subscriptions"])
+                    [MANAGE_PATH, "test", "btb", "about", "profiles", 
+                        "annotations", "subscriptions", "blogs"])
             unittests.communicate()
             assert unittests.returncode == 0
             integration = subprocess.Popen([MANAGE_PATH, "harvest"])

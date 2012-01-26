@@ -57,7 +57,7 @@
 
         <div style='position: relative;'>
             {% if post.body %}
-                <div id='body{{post.id}}'>{{post.body|linebreaks}}</div>
+                <div id='body{{post.id}}' class='post-body'>{{post.body|linebreaks}}</div>
             {% else  %}
                 {% if post.scan_id %}
                     <div id='scan{{post.id}}'>

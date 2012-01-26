@@ -1,6 +1,13 @@
-{{ document.author.profile }} has sent a new letter to {{ current_site }}!
+{% if document.scan_id %}{{ document.author.profile }} has sent a new letter to {{ current_site }}!
 
 You can read the letter here:
 http://{{ current_site }}{{ document.get_absolute_url }}
-{% with document.tags.all as tags %}{% if tags %}
+{% else %}
+{{ document.author.profile }} has added a new blog post:
+
+{{ document.body|truncatewords:100 }}
+
+Read more here:
+<http://{{current_site }}{{ document.get_absolute_url }}
+{% endif %}{% with document.tags.all as tags %}{% if tags %}
 Post categories: {{tags|join:", "}}{% endif %}{% endwith %}

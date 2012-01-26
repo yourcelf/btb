@@ -1,28 +1,30 @@
 {% load thumbnail %}
 {% load public_url %}
-{% if related.title %}
-    <h3>{{ related.title }}</h3>
-{% endif %}
-
-<table class='related-posts'>
-<tr>
-    {% for page in related.items %}
-        {% thumbnail page.image.path "100" as im %}
-        <td>
-            <div class='date'>{{ page.document.date_written|date:"Y b j" }}</div>
-            <a href='{% url blogs.post_show page.document.pk page.document.get_slug %}'
-            ><img src='{{ im.url|public_url }}' 
-                  width='{{ im.x }}' 
-                  height='{{ im.y }}' 
-                  title='{{ page.document.get_title }}'
-                  alt='{{ page.document.get_title }}' /></a>
-        </td>
-        {% endthumbnail %}
-    {% endfor%}
-    {% if related.more %}
-        <td class='more'>
-            <a href='{{ related.more }}'>More...</a>
-        </td>
+{% if related.items %}
+    {% if related.title %}
+        <h3>{{ related.title }}</h3>
     {% endif %}
-</tr>
-</table>
+
+    <table class='related-posts'>
+    <tr>
+        {% for page in related.items %}
+            {% thumbnail page.image.path "100" as im %}
+            <td>
+                <div class='date'>{{ page.document.date_written|date:"Y b j" }}</div>
+                <a href='{% url blogs.post_show page.document.pk page.document.get_slug %}'
+                ><img src='{{ im.url|public_url }}' 
+                      width='{{ im.x }}' 
+                      height='{{ im.y }}' 
+                      title='{{ page.document.get_title }}'
+                      alt='{{ page.document.get_title }}' /></a>
+            </td>
+            {% endthumbnail %}
+        {% endfor%}
+        {% if related.more %}
+            <td class='more'>
+                <a href='{{ related.more }}'>More...</a>
+            </td>
+        {% endif %}
+    </tr>
+    </table>
+{% endif %}

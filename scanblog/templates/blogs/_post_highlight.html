@@ -7,5 +7,5 @@
             </a>
         </div>
     {% else %}
-        <p class='story'>{{post.body|truncatewords:100}}</p>
+        <p class='post-body'>{{post.body|linebreaksbr|truncatewords:100}}</p>
     {% endif %}

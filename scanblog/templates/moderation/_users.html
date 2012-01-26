@@ -23,13 +23,15 @@
                 <th>Blogger?*</th>
                 <td><input type='checkbox' 
                         <% if (defaults.blogger) { %>checked='checked'<% } %> 
-                        name='blogger' /></td>
+                        name='blogger' />
+                </td>
             </tr>
             <tr>
                 <th>Managed?*</th>
                 <td><input type='checkbox' 
-                        <% if (defaults.blogger) { %>checked='checked'<% } %> 
-                        name='managed' /></td>
+                        <% if (defaults.managed) { %>checked='checked'<% } %> 
+                        name='managed' />
+                    </td>
             </tr>
             <tr>
                 <th>Email&nbsp;</th>
@@ -180,6 +182,9 @@
                     <td class='special-mail-handling'></td>
                 </tr><tr>
                     <th>Blog name</th><td class='blog-name'></td>
+                </tr>
+                <tr>
+                    <th>Email</th><td class='email'></td>
                 </tr>
                 <tr>
                     <th>Status</th>

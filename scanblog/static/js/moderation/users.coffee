@@ -551,6 +551,7 @@ class btb.UserDetail extends Backbone.View
             [@user, "mailing_address", $(".mailing-address", @el), "textarea"]
             [@user, "special_mail_handling", $(".special-mail-handling", @el), "textarea"]
             [@user, "blog_name", $(".blog-name", @el)]
+            [@user, "email", $(".email", @el)]
         ]
         $(".user-status-table", @el).html(
             new btb.UserStatusTable(user: @user).render().el

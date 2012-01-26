@@ -1,0 +1,49 @@
+{% extends "blogs/base.html" %}
+{% load humanize %}
+
+{% block title %}My posts{% endblock %}
+
+{% block body %}
+    <a href='{% url blogs.edit_post %}'>&#9997; Compose new post</a>
+    <table class='my-posts'>
+        {% if posts %}
+            <tr>
+                <th>Title</th>
+                <th>Tags</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        {% endif %}
+        {% for post in posts %}
+            <tr {% if post.status == "unknown " %}class='draft'{% endif %}>
+                <td><a href='{% url blogs.edit_post post.pk %}'>{{ post.get_title }}</a></td>
+                <td>{{ post.tags.all|join:", " }}</td>
+                <td>
+                    {% if post.status == "unknown" %}
+                        Draft
+                    {% endif %}
+                    {% if post.status == "ready_to_publish" %}
+                        Ready to publish
+                    {% endif %}
+                    {% if post.status == "published" %}
+                        Published
+                    {% endif %}
+                    {% if post.status == "unpublishable" %}
+                        Can't be published
+                    {% endif %}
+                </td>
+                <td>{{ post.date_written|naturalday }}</td>
+                <td>
+                    {% if post.status == "published" %}
+                        <a href='{{ post.get_absolute_url }}'>View on site &raquo;</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>No posts yet.</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
