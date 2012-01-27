@@ -227,8 +227,10 @@ def stats(request):
 def page_picker(request):
     pages = DocumentPage.objects.filter(
             document__status="published",
-            author__is_active=True,
-            author__profile__blogger=True)
+            document__author__is_active=True,
+            document__author__profile__blogger=True,
+            document__author__profile__consent_form_received=True)
+        
     return render(request, "moderation/page_picker.html", {
         'pages': pages,
     })
