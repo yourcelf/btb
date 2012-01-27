@@ -225,7 +225,10 @@ def stats(request):
 
 @permission_required("scanning.add_scan")
 def page_picker(request):
-    pages = DocumentPage.objects.filter(document__status="published")
+    pages = DocumentPage.objects.filter(
+            document__status="published",
+            author__is_active=True,
+            author__profile__blogger=True)
     return render(request, "moderation/page_picker.html", {
         'pages': pages,
     })
