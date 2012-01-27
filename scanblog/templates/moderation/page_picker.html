@@ -57,9 +57,9 @@
     var document_ids = [];
     var document_page_ids = [];
     $("#readpageids").click(function() {
-        var ids = $("#document_page_ids").val().split(",");
-        for (var i = 0; i < ids.length; i++) {
-            $("[data-page-id=" + i + "]").addClass("selected");
+        document_page_ids = $("#document_page_ids").val().split(",");
+        for (var i = 0; i < document_page_ids.length; i++) {
+            $("[data-page-id=" + document_page_ids[i] + "]").addClass("selected");
         }
     });
     $(".page").click(function() {
@@ -75,7 +75,7 @@
             }
         } else {
             removeA(document_ids, doc_id);
-            removeA(document_page_ids, doc_id);
+            removeA(document_page_ids, doc_page_id);
         }
         $("#document_page_ids").val(document_page_ids.join(','));
         $("#document_ids").val(document_ids.join(','));
