@@ -6,7 +6,7 @@ from django.core import paginator
 from django.db.models import Count
 from djcelery.models import TaskMeta
 
-from scanning.models import Document, Scan
+from scanning.models import Document, Scan, DocumentPage
 from profiles.models import Profile, Organization
 from django.contrib.auth.models import User
 from correspondence.models import Letter
@@ -221,4 +221,11 @@ def stats(request):
     }
     return render(request, "moderation/stats.html", {
         'stats': json.dumps(stats, default=dthandler)
+    })
+
+@permission_required("scanning.add_scan")
+def page_picker(request):
+    pages = DocumentPage.objects.filter(document__status="published")
+    return render(request, "moderation/page_picker.html", {
+        'pages': pages,
     })
