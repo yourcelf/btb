@@ -23,7 +23,7 @@ scanblog/media/thumbnails/
 scanblog/media/incoming/*
 scanblog/media/letters/*
 scanblog/media/mailings/*
-scanblog/media/public/uploads/
+scanblog/media/public/
 !scanblog/media/public/.gitkeep
 !scanblog/media/mailings/.gitkeep
 !scanblog/media/letters/.gitkeep
