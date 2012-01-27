@@ -4,6 +4,8 @@ from lettuce.django import django_url
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 
+from comments.models import Comment
+
 @step(u'I am not signed in')
 def i_am_not_signed_in(step):
     world.browser.get(django_url("/accounts/logout/?next=/"))
@@ -22,6 +24,22 @@ def i_put_text_in_the_transcription_form(step, value):
 def the_transcription_text_reads(step, value):
     tx = world.browser.find_element_by_class_name("transcription")
     assert tx.text.strip() == value
+
+@step(u'I have previously left (no )?comments on that post')
+def i_have_no_comments_on_that_post(step, no):
+    url = world.browser.current_url
+    pk = url.split("/")[-1]
+    comments = Comment.objects.filter(document__pk=pk,
+                                      user__username='testuser')
+    if no:
+        assert not comments.exists()
+    else:
+        assert comments.exists()
+
+@step(u"I am redirected to the after transcribe comment page")
+def redirect_to_after_transcribe_page(step):
+    textarea = world.browser.find_element_by_id("id_comment")
+    assert "Thanks for writing" in textarea.text
 
 @step(u'I am redirected to the post page')
 def redirected_to_post_page(step):

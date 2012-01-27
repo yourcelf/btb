@@ -51,6 +51,17 @@ def add_test_users():
     u.profile.save()
     o.members.add(u)
 
+    # Unmanaged author
+    u, created = User.objects.get_or_create(username='testunmanaged')
+    u.set_password("testunmanaged")
+    u.save()
+    u.profile.display_name = "Test Unmanaged"
+    u.profile.blogger = True
+    u.profile.managed = False
+    u.profile.consent_form_received = True
+    u.profile.save()
+    o.members.add(u)
+
 def clear_test_users():
     try:
         User.objects.get(username="testuser").delete()
@@ -62,6 +73,10 @@ def clear_test_users():
         pass
     try:
         User.objects.get(username="testauthor").delete()
+    except User.DoesNotExist:
+        pass
+    try:
+        User.objects.get(username="testunmanaged").delete()
     except User.DoesNotExist:
         pass
     try:
@@ -113,7 +128,7 @@ def i_am_redirected_to_login(step):
     # ... and login form exists (e.g. page rendered properly)
     world.browser.find_element_by_class_name('login-form')
 
-@step('I am signed in( as a moderator for "([^"]*)")?')
+@step('I am signed in( as a moderator for "([^"]*)")?$')
 def i_am_signed_in(step, moderator, org):
     access_url(step, "/accounts/login/?next=/")
     if not moderator:
@@ -122,6 +137,12 @@ def i_am_signed_in(step, moderator, org):
         u = User.objects.filter(organizations_moderated__name=org)[0]
         # Assume username is password for test users.
         i_login_as(step, u.username, u.username)
+    assert world.browser.current_url == django_url("/"), "Login failed."
+
+@step('I am signed in as an unmanaged blogger$')
+def i_am_signed_in_as_unmanaged_blogger(step):
+    access_url(step, "/accounts/login/?next=/")
+    i_login_as(step, "testunmanaged", "testunmanaged")
     assert world.browser.current_url == django_url("/"), "Login failed."
 
 @step('I login as "([^:]*):([^"]*)"')

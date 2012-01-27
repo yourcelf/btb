@@ -22,6 +22,7 @@ from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
 from annotations.models import Tag, Note, ReplyCode
 from profiles.models import Organization, Profile
+from comments.forms import CommentForm
 
 def get_boolean(val):
     return bool(val == "true" or val == "1")
@@ -611,11 +612,15 @@ def transcribe_document(request, document_id):
                         body=form.cleaned_data['body'],
                         editor=request.user
                     )
+
         messages.success(request, _("Thanks for your attention to detail.  Transcription updated."))
+
+        if document.type == "post":
+            return redirect("scanning.after_transcribe_comment", document_id=document.pk)
+
         return redirect(document.get_absolute_url() + "#transcription")
 
     pages = document.documentpage_set.all()
-
     return render(request, "scanning/transcription_edit.html", {
         'lockform': lockform,
         'transcription': transcription,
@@ -624,6 +629,42 @@ def transcribe_document(request, document_id):
         'documentpage_count': pages.count(),
         'form': form,
         'cancel_link': document.get_absolute_url(),
+    })
+
+@permission_required("scanning.change_transcription")
+def after_transcribe_comment(request, document_id):
+    """
+    Prompt for a comment after a transcription is done.
+    """
+    document = get_object_or_404(Document, pk=document_id, 
+                                 type="post",
+                                 scan__isnull=False,
+                                 transcription__isnull=False)
+
+    # Don't prompt for comment if they've already commented on this post.
+    if document.comments.filter(user=request.user).exists() or (not settings.COMMENTS_OPEN):
+        return redirect(document.get_absolute_url() + "#transcription")
+
+    if document.transcription.complete:
+        prompt_text = "Thanks for writing! I finished the transcription for your post."
+    else:
+        prompt_text = "Thanks for writing! I worked on the transcription for your post."
+    form = CommentForm(request.POST or None, initial={
+        'comment': prompt_text
+    })
+    if form.is_valid():
+        comment, created = Comment.objects.get_or_create(
+            document=document,
+            comment=form.cleaned_data['comment'],
+            user=request.user,
+        )
+        if created:
+            comment.document = document
+        return redirect("%s#%s" % (request.path, comment.pk))
+    
+    return render(request, "scanning/after_transcribe_comment.html", {
+        'document': document,
+        'form': form,
     })
 
 def revision_list(request, document_id):

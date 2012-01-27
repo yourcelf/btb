@@ -23,4 +23,6 @@ urlpatterns = patterns('scanning.views',
     url(r'^transcribe/{0}$'.format(document_id), 'transcribe_document', name='scanning.transcribe_document'),
     url(r'^transcribe/{0}/list$'.format(document_id), 'revision_list', name='scanning.revision_list'), 
     url(r'^transcribe/{0}/compare$'.format(document_id), 'revision_compare', name='scanning.revision_compare'), 
+    url(r'^transcribe/{0}/comment$'.format(document_id), 
+        'after_transcribe_comment', name='scanning.after_transcribe_comment'),
 )

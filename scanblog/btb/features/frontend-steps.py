@@ -23,7 +23,7 @@ def see_x_post_snippets(step, amount):
 
 @step(u'I see a full post')
 def i_see_a_full_post(step):
-    pagegroup = world.browser.find_element_by_class_name("scan-page-group")
+    pagegroup = world.browser.find_element_by_class_name("post-detail")
 
 @step(u'I see a reply form')
 def i_see_a_reply_form(step):

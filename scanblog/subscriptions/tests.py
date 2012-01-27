@@ -248,3 +248,28 @@ class TestSubscriptions(BtbTestCase):
         for msg in mail.outbox:
             self.assertTrue(text in unicode(msg.message()))
 
+    def test_visitor_profile(self):
+        doc = Document.objects.create(
+                author=self.commenter, 
+                editor=self.commenter,
+                type="profile")
+        self.assertOutboxContains(["%sProfile uploaded" % self.admin_prefix])
+
+    def test_unmanaged_author_notifications(self):
+        self.author.profile.managed = False
+        self.author.profile.save()
+        doc = Document.objects.create(
+                author=self.author, 
+                editor=self.author, 
+                type="post",
+                body="This is my fun body text", 
+                title="This is the title.",
+                status="published")
+
+        msg = mail.outbox.pop()
+        self.assertEquals(msg.subject, "%sNew post" % self.admin_prefix)
+        self.assertEquals(msg.to, [m[1] for m in settings.MANAGERS])
+        self.assertTrue("This is my fun body text" in msg.message().get_payload(None, True))
+        self.assertEquals(mail.outbox, [])
+        
+

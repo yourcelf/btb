@@ -17,7 +17,7 @@
         {% endif %}
         {% for post in posts %}
             <tr {% if post.status == "unknown " %}class='draft'{% endif %}>
-                <td><a href='{% url blogs.edit_post post.pk %}'>{{ post.get_title }}</a></td>
+                <td><a class='edit-post' href='{% url blogs.edit_post post.pk %}'>{{ post.get_title }}</a></td>
                 <td>{{ post.tags.all|join:", " }}</td>
                 <td>
                     {% if post.status == "unknown" %}

@@ -39,11 +39,18 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
         if instance.author.groups.filter(name='moderators').exists():
             return
         if instance.author.profile.managed == False:
-            mail_managers("Visitor profile document added", render_to_string(
-                "btb/admin-visitor-profile-notification.txt", {
-                    'document': instance,
-                    'site': Site.objects.get_current(),
-                }))
+            if instance.type == "profile":
+                mail_managers("Profile uploaded", render_to_string(
+                    "btb/admin-visitor-profile-notification.txt", {
+                        'document': instance,
+                        'site': Site.objects.get_current(),
+                    }))
+            elif instance.status in ("published", "ready_to_publish"):
+                mail_managers("New post", render_to_string(
+                    "btb/admin-unmanaged-post-notification.txt", {
+                        'document': instance,
+                        'site': Site.objects.get_current(),
+                    }))
 
     @receiver(signals.post_save, sender=TranscriptionRevision)
     def transcription_notification(sender, instance, *args, **kwargs):
