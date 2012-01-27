@@ -1,5 +1,6 @@
 import os
 import json
+import tempfile
 import subprocess
 
 from django.core.management.base import BaseCommand
@@ -13,6 +14,11 @@ class Command(BaseCommand):
     help = "Re-save all documents.  Useful for correcting public/private permissions."
 
     def handle(self, *args, **kwargs):
+        tmpdir = "/tmp/thumbdir"
+        try:
+            os.makedirs(tmpdir)
+        except OSError:
+            pass
         dp = DocumentPage.objects.filter(
                 document__status="published",
                 document__author__is_active=True,
@@ -40,7 +46,16 @@ class Command(BaseCommand):
             page_images = []
             page_data = []
             for page in dp[i:i + num_thumbs]:
-                page_images.append(page.image.path)
+                thumb_dest = os.path.join(tmpdir, "%s.jpg" % page.pk)
+                if not os.path.exists(thumb_dest):
+                    proc = subprocess.Popen(["nice", "convert",
+                        "-background", "white",
+                        "-resize", "{0}x{1}".format(*thumb_size),
+                        page.image.path,
+                        thumb_dest])
+                    proc.communicate()
+                    page_images.append(thumb_dest)
+
                 page_data.append({
                     'img_url': public_url(page.image.url),
                     'x': page.image.width,
@@ -54,7 +69,7 @@ class Command(BaseCommand):
             img_name = "pagepicker%s.jpg" % i
             data_file_name = "pagepicker%s.json" % i
 
-            subprocess.Popen(["nice", "montage", 
+            proc = subprocess.Popen(["nice", "montage", 
                     "-background", "#FFFFFF",
                     "-tile", "{0}x1".format(len(page_images)),
                     "-geometry", "{0}x{1}+0+0".format(
@@ -64,6 +79,7 @@ class Command(BaseCommand):
                 ] + page_images + [
                     os.path.join(dir_path, img_name)
                 ])
+            proc.communicate()
             with open(os.path.join(dir_path, data_file_name), 'w') as fh:
                 json.dump({'data': page_data}, fh)
 
@@ -80,3 +96,5 @@ class Command(BaseCommand):
 
         with open(os.path.join(dir_path, "manifest.json"), 'w') as fh:
             json.dump({'images': manifest}, fh)
+
+        #os.system("rm -r %s" % tmpdir)

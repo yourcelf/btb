@@ -19,6 +19,7 @@
 </noscript>
 <h1>Every page</h1>
 <div id='pagepicker'></div>
+<div class='pagepicker-loading'><img src='{{ STATIC_URL }}img/spinner.gif'> Loading...</div>
 {% endblock %}
 
 {% block scripts %}
@@ -27,6 +28,7 @@
     var pageData = [];
 
     function loadImages() {
+        $(".pagepicker-loading").show();
         (function(manifestIndex) {
             var dataset = manifest[manifestIndex];
             for (var i = 0; i < dataset.num_images; i++) {
@@ -51,6 +53,9 @@
             }
             $.get(dataset.datafile, function(data) {
                 pageData[manifestIndex] = data; 
+                window.setTimeout(function() {
+                    $(".pagepicker-loading").hide();
+                }, 1000);
             });
         })(manifestIndex);
     }
@@ -59,6 +64,12 @@
         manifest = data.images;
         manifestIndex = 0;
         loadImages();
+    });
+    $(window).scroll(function() {
+        if (manifestIndex < manifest.length &&
+                $(window).scrollTop() == $(document).height() - $(window).height()) {
+            loadImages();
+        }
     });
 
 </script>

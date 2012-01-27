@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 post_id = "(?P<post_id>\d+)"
 author_id = "(?P<author_id>\d+)"
-slug = "(?P<slug>[-a-z0-9]*)"
+slug = "(?P<slug>[-_a-z0-9]*)"
 revision_id = "(?P<revision_id>\d+)"
 
 urlpatterns = patterns('blogs.views',
