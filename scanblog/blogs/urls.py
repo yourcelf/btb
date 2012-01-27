@@ -33,6 +33,7 @@ urlpatterns = patterns('blogs.views',
 
     # Post actions
     url(r"^posts/more_pages/{0}$".format(post_id), 'more_pages', name='blogs.more_pages'),
+    url(r"^posts/pagepicker/$", 'page_picker', name='blogs.page_picker'),
 
     # Editing posts from the web
     url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),

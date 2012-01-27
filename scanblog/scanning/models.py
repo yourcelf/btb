@@ -26,7 +26,7 @@ def public_path(private_path):
 
 def public_url(private_url):
     return "%s%s" % (settings.PUBLIC_MEDIA_URL,
-            private_url.lstrip(settings.MEDIA_URL))
+            private_url[len(settings.MEDIA_URL):])
 
 #
 # Models and managers

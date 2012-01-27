@@ -337,6 +337,11 @@ def author_post_feed(request, author_id):
         'posts': posts,
     })
 
+def page_picker(request):
+    return render(request, "blogs/page_picker.html", {
+        'PUBLIC_MEDIA_URL': settings.PUBLIC_MEDIA_URL
+    })
+
 #
 # Textual posts, edited by author
 #
