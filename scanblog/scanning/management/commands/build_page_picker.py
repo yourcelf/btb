@@ -54,16 +54,21 @@ class Command(BaseCommand):
                         page.image.path,
                         thumb_dest])
                     proc.communicate()
-                    page_images.append(thumb_dest)
+                page_images.append(thumb_dest)
+
+                if page.document.type == "profile":
+                    title = "Profile"
+                else:
+                    title = unicode(page.document.get_title())
 
                 page_data.append({
                     'img_url': public_url(page.image.url),
-                    'x': page.image.width,
-                    'y': page.image.height,
                     'url': page.document.get_absolute_url(),
                     'author': unicode(page.document.author.profile),
                     'author_url': page.document.author.get_absolute_url(),
-                    'date': page.document.date_written.isoformat(),
+                    'title': title,
+                    'date': page.document.date_written.strftime("%Y %b %d"),
+                    'page_count': page.document.documentpage_set.count(),
                 })
 
             img_name = "pagepicker%s.jpg" % i

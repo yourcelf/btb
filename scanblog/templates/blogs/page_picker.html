@@ -12,7 +12,19 @@
     .pagepick:hover {
         border: 1px solid green;
     }
-
+    .page-overlay {
+        position: absolute;
+        background-color: white;
+        opacity: 0.8;
+        padding: 10px;
+        border: 1px solid #030;
+        top: 0;
+        left: 0;
+        width: 200px;
+    }
+    .page-overlay .pagepick:hover {
+        border: 1px solid white;
+    }
 </style>
 <noscript>
     This page requires javsacript.  To browse Between the Bars without javascript, try <a href='{% url blogs.home %}'>blogs</a>.
@@ -37,21 +49,58 @@
             var dataset = manifest[manifestIndex];
             for (var i = 0; i < dataset.num_images; i++) {
                 (function(i) {
-                    $("#pagepicker").append($("<div>").attr(
-                        "class", "pagepick" 
-                    ).css({
-                        backgroundPosition: (-i * dataset.image_size[0]) + "px 0px",
-                        backgroundImage: "url(" + dataset.image + ")",
-                        width: dataset.image_size[0] + "px",
-                        height: dataset.image_size[1] + "px"
-                    }).attr({
-                        "data-dataset": manifestIndex,
-                        "data-index": i
-                    }).click(function() {
+                    var buildPage = function() {
+                        return $("<div>").attr(
+                            'class', 'pagepick'
+                        ).css({
+                            backgroundPosition: (-i * dataset.image_size[0]) + "px 0px",
+                            backgroundImage: "url(" + dataset.image + ")",
+                            width: dataset.image_size[0] + "px",
+                            height: dataset.image_size[1] + "px"
+                        }).attr({
+                            "data-dataset": manifestIndex,
+                            "data-index": i
+                        });
+                    }
+                    var overTimeout = null;
+                    var showOverlay = function(event) {
                         var data = pageData[manifestIndex].data[i];
-                        console.log(data);
-                        document.location.href = data.url;
-                    }));
+                        var overlay = $("<div>").attr(
+                            "class", "page-overlay"
+                        ).append(
+                            buildPage().click(function() {
+                                document.location.href = data.url; 
+                            })
+                        ).append([
+                            "<a href='", data.url, "'>", data.title, "</a>",
+                            "<br />",
+                            "(", data.page_count, " page", 
+                                 data.page_count == 1 ? "" : "s", ")", 
+                            "<br />",
+                            "<b>",
+                                "<a href='", data.author_url, "'>", data.author, "</a>",
+                            "</b><br />",
+                            data.date
+                        ].join("")).hover(function() {}, function() {
+                            $(this).remove();
+                        });
+                        var pos = $(event.currentTarget).offset();
+                        $("body").append(overlay.fadeIn());
+                        $(overlay).css({
+                            left: Math.min(pos.left - 11,
+                                $("#pagepicker").offset().left + $("#pagepicker").width() - overlay.width() - 22) + "px",
+                            top: (pos.top - 11)+ "px"
+                        });
+                    };
+                    $("#pagepicker").append(
+                        buildPage().click(showOverlay).mouseover(function(event) {
+                            overTimeout = window.setTimeout(function() {
+                                showOverlay(event);
+                            }, 500);
+                        }).mouseout(function() { 
+                            clearTimeout(overTimeout); 
+                        })
+                    );
 
                 })(i);
             }
