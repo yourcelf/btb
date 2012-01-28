@@ -20,11 +20,15 @@
 <h1>Every page</h1>
 <div id='pagepicker'></div>
 <div class='pagepicker-loading'><img src='{{ STATIC_URL }}img/spinner.gif'> Loading...</div>
+<div class='helpusgrow' style='display: none; clear: both;'>
+    That's all so far &ndash; <a href='{% url profiles.profile_list "join" %}'>help us grow</a>.
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script type='text/javascript'>
-    var manifest, manifestIndex;
+    var manifestIndex = 0;
+    var manifest;
     var pageData = [];
 
     function loadImages() {
@@ -57,19 +61,23 @@
                     $(".pagepicker-loading").hide();
                 }, 1000);
             });
+            return manifestIndex;
         })(manifestIndex);
+        manifestIndex++;
     }
 
     $.get("{{ PUBLIC_MEDIA_URL }}pagepicker/manifest.json", function(data) {
         manifest = data.images;
-        manifestIndex = 0;
         loadImages();
     });
     $(window).scroll(function() {
-        if (manifestIndex < manifest.length &&
+        if (manifest && manifestIndex < manifest.length &&
                 $(window).scrollTop() == $(document).height() - $(window).height()) {
             loadImages();
+        } else if (manifest && manifestIndex >= manifest.length) {
+            $(".helpusgrow").show();
         }
+
     });
 
 </script>
