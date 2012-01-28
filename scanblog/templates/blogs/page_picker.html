@@ -15,15 +15,17 @@
     .page-overlay {
         position: absolute;
         background-color: white;
-        opacity: 0.8;
         padding: 10px;
-        border: 1px solid #030;
+        border: 1px solid #aaa;
         top: 0;
         left: 0;
-        width: 200px;
     }
     .page-overlay .pagepick:hover {
         border: 1px solid white;
+    }
+    .page-overlay td {
+        vertical-align: top;
+        padding: 5px;
     }
 </style>
 <noscript>
@@ -67,20 +69,22 @@
                         var data = pageData[manifestIndex].data[i];
                         var overlay = $("<div>").attr(
                             "class", "page-overlay"
-                        ).append(
-                            buildPage().click(function() {
-                                document.location.href = data.url; 
-                            })
                         ).append([
+                            "<table><tr><td>",
+                            "<a href='", data.url, "'>",
+                                "<img style='float: left; width: 100px;' src='", data.larger, "'>",
+                            "</a>",
+                            "</td><td>",
                             "<a href='", data.url, "'>", data.title, "</a>",
                             "<br />",
-                            "(", data.page_count, " page", 
-                                 data.page_count == 1 ? "" : "s", ")", 
+                            "<nobr>(", data.page_count, " page", 
+                                 data.page_count == 1 ? "" : "s", ")</nobr>", 
                             "<br />",
                             "<b>",
-                                "<a href='", data.author_url, "'>", data.author, "</a>",
+                                "<a href='", data.author_url, "'><nobr>", data.author, "</nobr></a>",
                             "</b><br />",
-                            data.date
+                            data.date,
+                            "</td></tr></table>"
                         ].join("")).hover(function() {}, function() {
                             $(this).remove();
                         });

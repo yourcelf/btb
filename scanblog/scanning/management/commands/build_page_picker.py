@@ -8,6 +8,7 @@ from django.conf import settings
 from django.db.models import Q
 
 from scanning.models import DocumentPage, public_url
+from sorl.thumbnail import get_thumbnail
 
 class Command(BaseCommand):
     args = ''
@@ -65,10 +66,13 @@ class Command(BaseCommand):
                     'img_url': public_url(page.image.url),
                     'url': page.document.get_absolute_url(),
                     'author': unicode(page.document.author.profile),
-                    'author_url': page.document.author.get_absolute_url(),
+                    'author_url': page.document.author.profile.get_absolute_url(),
                     'title': title,
                     'date': page.document.date_written.strftime("%Y %b %d"),
                     'page_count': page.document.documentpage_set.count(),
+                    'larger': public_url(
+                        get_thumbnail(page.image.path, "100").url
+                    ),
                 })
 
             img_name = "pagepicker%s.jpg" % i
