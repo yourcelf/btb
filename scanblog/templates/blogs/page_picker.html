@@ -20,6 +20,18 @@
         top: 0;
         left: 0;
     }
+    .page-overlay img {
+        width: 38px;
+    }
+    .page-overlay.fullwidth img {
+        -moz-transition-property: width;
+        -webkit-transition-property: width;
+        transition-property: width;
+        -moz-transition-duration: 0.2s;
+        -webkit-transition-duration: 0.2s;
+        transition-delay: 0.2s;
+        width: 100px !important;
+    }
     .page-overlay .pagepick:hover {
         border: 1px solid white;
     }
@@ -70,9 +82,9 @@
                         var overlay = $("<div>").attr(
                             "class", "page-overlay"
                         ).append([
-                            "<table><tr><td>",
+                            "<table><tr><td style='width: 100px; min-height: 129px;'>",
                             "<a href='", data.url, "'>",
-                                "<img style='float: left; width: 100px;' src='", data.larger, "'>",
+                                "<img style='float: left;' src='", data.larger, "'>",
                             "</a>",
                             "</td><td>",
                             "<a href='", data.url, "'>", data.title, "</a>",
@@ -90,11 +102,13 @@
                         });
                         var pos = $(event.currentTarget).offset();
                         $("body").append(overlay.fadeIn());
+                        //overlay.addClass("fullwidth") // start css transition
                         $(overlay).css({
-                            left: Math.min(pos.left - 11,
+                            left: Math.min(pos.left - 12,
                                 $("#pagepicker").offset().left + $("#pagepicker").width() - overlay.width() - 22) + "px",
-                            top: (pos.top - 11)+ "px"
+                            top: (pos.top - 12)+ "px"
                         });
+                        $(overlay).addClass("fullwidth");
                     };
                     $("#pagepicker").append(
                         buildPage().click(showOverlay).mouseover(function(event) {
@@ -110,9 +124,6 @@
             }
             $.get(dataset.datafile, function(data) {
                 pageData[manifestIndex] = data; 
-                window.setTimeout(function() {
-                    $(".pagepicker-loading").hide();
-                }, 1000);
             });
             return manifestIndex;
         })(manifestIndex);
@@ -125,10 +136,11 @@
     });
     $(window).scroll(function() {
         if (manifest && manifestIndex < manifest.length &&
-                $(window).scrollTop() == $(document).height() - $(window).height()) {
+                $(window).scrollTop() >= $(document).height() - $(window).height() - $(".pagepicker-loading").offset().top) {
             loadImages();
         } else if (manifest && manifestIndex >= manifest.length) {
             $(".helpusgrow").show();
+            $(".pagepicker-loading").hide();
         }
 
     });
