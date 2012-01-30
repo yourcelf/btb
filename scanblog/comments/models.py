@@ -13,6 +13,7 @@ class CommentManager(OrgManager):
 
     def unmailed(self):
         return self.public().filter(
+            comment_doc__isnull=True,
             document__isnull=False,
             document__author__is_active=True,
             document__author__profile__managed=True,
