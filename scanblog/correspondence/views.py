@@ -471,13 +471,13 @@ def get_mailing_file(request, mailing_id):
 @permission_required('correspondence.manage_correspondence')
 def print_envelope(request, user_id=None, reverse=None, address=None):
     if user_id:
-        user = utils.mail_filter_or_404(request.user, User, id=user_id) 
+        user = utils.mail_filter_or_404(request.user, Profile, pk=user_id).user
         to_address = user.profile.full_address()
     else:
         to_address = request.GET.get('address', address)
     if not to_address:
         raise Http404
-    from_address = user.organization_set.get()
+    from_address = user.organization_set.get().mailing_address
     if reverse:
         from_address, to_address = to_address, from_address
 
