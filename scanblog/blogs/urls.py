@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 post_id = "(?P<post_id>\d+)"
 author_id = "(?P<author_id>\d+)"
-slug = "(?P<slug>[-a-z0-9]*)"
+slug = "(?P<slug>[-_a-z0-9]*)"
 revision_id = "(?P<revision_id>\d+)"
 
 urlpatterns = patterns('blogs.views',
@@ -33,6 +33,7 @@ urlpatterns = patterns('blogs.views',
 
     # Post actions
     url(r"^posts/more_pages/{0}$".format(post_id), 'more_pages', name='blogs.more_pages'),
+    url(r"^posts/pagepicker/$", 'page_picker', name='blogs.page_picker'),
 
     # Editing posts from the web
     url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),
