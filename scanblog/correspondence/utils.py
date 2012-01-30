@@ -217,7 +217,7 @@ def write_address_csv(addresses, filename):
             writer.writerow(cols)
 
 def write_csv(rows, filename):
-    with codecs.open(filename, 'w', 'utf-8') as fh:
+    with open(filename, 'w') as fh:
         writer = UnicodeWriter(fh, encoding='utf-8', quoting=csv.QUOTE_ALL)
         for row in rows:
             writer.writerow(row)
