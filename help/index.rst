@@ -8,7 +8,7 @@ Between the Bars Moderation
 
 This page is documentation for moderators and partner organizations of *Between the Bars*.  It describes the various processes involved in logging, scanning, uploading, processing and publishing blog posts from paper mail.  (For optimal quality, change the resolution on the videos below to 480p or higher!)
 
-Interested in becoming a moderator? `Find out more <http://betweenthebars.org/people/join/>`_.
+Interested in becoming a moderator? `Find out more <http://betweenthebars.org/people/join>`_.
 
 Please send any questions or suggestions for improvements to this documentation to partners@lists.betweenthebars.org.
 
@@ -115,28 +115,38 @@ menu in the top right again, and select "Admin".  You'll see a set of editable
 content types.  Click on "Organizations", and then chose your organization.
 Fields you can edit are:
 
- * Name: Whatever you like. :)
- * Personal contact: this is the default name that goes at the
-   bottom of form letters.  It should be either a person's name,
-   or something like "My Org Name Staff".
- * Slug: This is the short name that goes into URLs for the org,
-         e.g. http://betweenthebars.org/blogs/my-org-name/
-   Think carefully about changing this; it'll break inbound links.
- * Public: This means the organization will be listed on the
-   people page.  If it's unchecked, all of your users would just be
-   listed under "Between the Bars" (but you'll still be managing
-   them), and there would be no organization-specific pages.
- * Mailing address: Should be your organization's address.
- * About: This is HTML that will go on the "about your
-   organization" page.
- * Footer: This is HTML that will go at the top and bottom of each
-   post by a member in your organization -- something generic like
-   "This author is writing for My Org name.  Buy prints at
-   <a>...</a>"
- * Members: Don't bother with this -- it should be handled in the
-   moderation site.
- * Moderators: If you add a new volunteer as a moderator, you'll
-   need to assign them that role here.
+ * Name: 
+     Whatever you like. :)
+ * Personal contact: 
+     this is the default name that goes at the
+     bottom of form letters.  It should be either a person's name,
+     or something like "My Org Name Staff".
+ * Slug: 
+     This is the short name that goes into URLs for the org,
+     e.g. http://betweenthebars.org/blogs/my-org-name/
+
+     Think carefully about changing this; it'll break inbound links.
+ * Public: 
+     This means the organization will be listed on the people page.  If it's
+     unchecked, all of your users would just be listed under "Between the Bars"
+     (but you'll still be managing them), and there would be no
+     organization-specific pages.
+ * Mailing address: 
+     Should be your organization's address.
+ * About: 
+     This is HTML that will go on the "about your
+     organization" page.
+ * Footer: 
+     This is HTML that will go at the top and bottom of each
+     post by a member in your organization -- something generic like
+     "This author is writing for My Org name.  Buy prints at
+     <a>...</a>"
+ * Members: 
+     Don't bother with this -- it should be handled in the
+     moderation site.
+ * Moderators: 
+     If you add a new volunteer as a moderator, you'll
+     need to assign them that role here.
 
 Managing moderators
 ~~~~~~~~~~~~~~~~~~~
