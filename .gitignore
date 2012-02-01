@@ -29,3 +29,4 @@ scanblog/media/public/
 !scanblog/media/letters/.gitkeep
 scanblog/site_static/
 docs/_build/
+help/_build/
