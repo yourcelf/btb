@@ -1,11 +1,12 @@
 unless window.btb?
   window.btb = {}
+btb = window.btb
 
 btb.strToDate = (dateOrStr) ->
     if _.isString dateOrStr
-        parts = [parseInt(part) for part in dateOrStr.split(/[^0-9]+/)][0]
+        parts = [parseInt(part, 10) for part in dateOrStr.split(/[^0-9]+/g)][0]
         # Months are rendered as 0-11 in javascript
-        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4])
+        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5])
     return dateOrStr
 
 btb.formatDate = (dateOrStr) ->
@@ -98,7 +99,7 @@ class btb.FilteredPaginatedCollection extends Backbone.Collection
         @fetch options
 
 class btb.PaginatedView extends Backbone.View
-    paginationTemplate: _.template $("#pagination").html()
+    paginationTemplate: _.template $("#pagination").html() or ""
 
     renderPagination: (collection, el) ->
         p = collection.pagination
@@ -193,8 +194,8 @@ class btb.LiveCheckbox extends Backbone.View
 
 class btb.EditInPlace extends Backbone.View
     tagName: 'span'
-    template: _.template $("#editInPlace").html()
-    editorTemplate: _.template $("#editorInPlace").html()
+    template: _.template $("#editInPlace").html() or ""
+    editorTemplate: _.template $("#editorInPlace").html() or ""
     events:
         'click span.cancel': 'render'
         'click span.edit-in-place': 'renderEditor'
