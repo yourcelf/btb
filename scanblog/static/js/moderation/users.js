@@ -1,125 +1,84 @@
 (function() {
-  var __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-  btb.User = (function(_super) {
-
-    __extends(User, _super);
-
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  btb.User = (function() {
+    __extends(User, Backbone.Model);
     function User() {
       User.__super__.constructor.apply(this, arguments);
     }
-
     User.prototype.url = "/people/users.json";
-
     return User;
-
-  })(Backbone.Model);
-
-  btb.UserList = (function(_super) {
-
-    __extends(UserList, _super);
-
+  })();
+  btb.UserList = (function() {
+    __extends(UserList, btb.FilteredPaginatedCollection);
     function UserList() {
       UserList.__super__.constructor.apply(this, arguments);
     }
-
     UserList.prototype.model = btb.User;
-
     UserList.prototype.baseUrl = btb.User.prototype.url;
-
     return UserList;
-
-  })(btb.FilteredPaginatedCollection);
-
-  btb.Letter = (function(_super) {
-
-    __extends(Letter, _super);
-
+  })();
+  btb.Letter = (function() {
+    __extends(Letter, Backbone.Model);
     function Letter() {
       Letter.__super__.constructor.apply(this, arguments);
     }
-
     return Letter;
-
-  })(Backbone.Model);
-
-  btb.LetterList = (function(_super) {
-
-    __extends(LetterList, _super);
-
+  })();
+  btb.LetterList = (function() {
+    __extends(LetterList, btb.FilteredPaginatedCollection);
     function LetterList() {
       LetterList.__super__.constructor.apply(this, arguments);
     }
-
     LetterList.prototype.model = btb.Letter;
-
     LetterList.prototype.baseUrl = "/correspondence/letters.json";
-
     return LetterList;
-
-  })(btb.FilteredPaginatedCollection);
-
-  btb.Organization = (function(_super) {
-
-    __extends(Organization, _super);
-
+  })();
+  btb.Organization = (function() {
+    __extends(Organization, Backbone.Model);
     function Organization() {
       Organization.__super__.constructor.apply(this, arguments);
     }
-
     return Organization;
-
-  })(Backbone.Model);
-
-  btb.OrganizationList = (function(_super) {
-
-    __extends(OrganizationList, _super);
-
+  })();
+  btb.OrganizationList = (function() {
+    __extends(OrganizationList, btb.FilteredPaginatedCollection);
     function OrganizationList() {
       OrganizationList.__super__.constructor.apply(this, arguments);
     }
-
     OrganizationList.prototype.model = btb.Organization;
-
     OrganizationList.prototype.url = "/people/organizations.json";
-
     return OrganizationList;
-
-  })(btb.FilteredPaginatedCollection);
-
-  btb.UserAdd = (function(_super) {
-
-    __extends(UserAdd, _super);
-
+  })();
+  btb.UserAdd = (function() {
+    __extends(UserAdd, Backbone.View);
     function UserAdd() {
       this.cancel = __bind(this.cancel, this);
       this.saveNewUser = __bind(this.saveNewUser, this);
       this.render = __bind(this.render, this);
       UserAdd.__super__.constructor.apply(this, arguments);
     }
-
     UserAdd.prototype.template = _.template($("#userAdd").html());
-
     UserAdd.prototype.events = {
       'click span.cancel-add-user-link': 'cancel',
       'click input.save-new-user': 'saveNewUser'
     };
-
     UserAdd.prototype.defaults = {
       blogger: true,
       managed: true
     };
-
     UserAdd.prototype.errors = {};
-
     UserAdd.prototype.initialize = function(options) {
       if ((options != null) && (options.initial != null)) {
         return _.extend(this.defaults, options.initial);
       }
     };
-
     UserAdd.prototype.render = function() {
       $(this.el).html(this.template({
         defaults: this.defaults,
@@ -128,10 +87,8 @@
       }));
       return this;
     };
-
     UserAdd.prototype.saveNewUser = function(event) {
-      var key, properties, result, scope, ul, val, _len, _ref,
-        _this = this;
+      var key, properties, result, scope, ul, val, _len, _ref;
       scope = $(".add-user", this.el);
       properties = {
         display_name: $("input[name=display_name]", scope).val(),
@@ -161,29 +118,23 @@
       }
       ul = new btb.UserList();
       result = ul.create(properties, {
-        success: function(model) {
-          _this.newUser = model;
-          return _this.trigger("userAdded", model);
-        },
-        error: function(model, response) {
+        success: __bind(function(model) {
+          this.newUser = model;
+          return this.trigger("userAdded", model);
+        }, this),
+        error: __bind(function(model, response) {
           return alert("Server error");
-        }
+        }, this)
       });
       return result;
     };
-
     UserAdd.prototype.cancel = function(event) {
       return this.trigger("cancelled");
     };
-
     return UserAdd;
-
-  })(Backbone.View);
-
-  btb.UserSearch = (function(_super) {
-
-    __extends(UserSearch, _super);
-
+  })();
+  btb.UserSearch = (function() {
+    __extends(UserSearch, btb.PaginatedView);
     function UserSearch() {
       this.cancel = __bind(this.cancel, this);
       this.addUser = __bind(this.addUser, this);
@@ -200,18 +151,13 @@
       this.initialize = __bind(this.initialize, this);
       UserSearch.__super__.constructor.apply(this, arguments);
     }
-
     UserSearch.prototype.template = _.template($("#userSearch").html());
-
     UserSearch.prototype.emptyRowTemplate = _.template($("#userSearchResultEmpty").html());
-
     UserSearch.prototype.delay = 100;
-
     UserSearch.prototype.defaultFilter = {
       per_page: 6,
       blogger: true
     };
-
     UserSearch.prototype.events = {
       'keyup input.user-chooser-trigger': 'openUserSearch',
       'keyup input.user-search': 'keyUp',
@@ -220,21 +166,18 @@
       'click span.add-user-link': 'addUser',
       'click span.cancel-user-search': 'cancel'
     };
-
     UserSearch.prototype.initialize = function(options) {
       var filter;
       filter = options ? options.filter : {};
       this.userList = new btb.UserList();
       return this.userList.filter = _.extend({}, this.defaultFilter, filter);
     };
-
     UserSearch.prototype.render = function() {
       $(this.el).html(this.template({
         term: this.userList.filter.q || ""
       }));
       return this;
     };
-
     UserSearch.prototype.keyUp = function(event) {
       switch (event.keyCode) {
         case 40:
@@ -251,11 +194,12 @@
       }
       return false;
     };
-
     UserSearch.prototype.highlightResult = function(change) {
       var per_page, too_high, too_low;
       per_page = this.userList.filter.per_page;
-      if (this.highlightedIndex == null) this.highlightedIndex = -1;
+      if (this.highlightedIndex == null) {
+        this.highlightedIndex = -1;
+      }
       this.highlightedIndex = Math.max(0, Math.min(this.highlightedIndex + change, this.userList.pagination.count - 1));
       too_low = this.highlightedIndex < ((this.userList.filter.page || 1) - 1) * this.userList.filter.per_page;
       too_high = this.highlightedIndex >= (this.userList.filter.page || 1) * this.userList.filter.per_page;
@@ -267,85 +211,77 @@
         return $($(".results .result", this.el)[this.highlightedIndex % this.userList.filter.per_page]).addClass("chosen");
       }
     };
-
     UserSearch.prototype.chooseHighlighted = function() {
       return $(".results .result.chosen", this.el).click();
     };
-
     UserSearch.prototype.openUserSearch = function(event, term) {
-      var _this = this;
       term = term || $(event.currentTarget).val();
       this.userList.filter.q = term;
       $(".user-chooser-trigger", this.el).hide();
       $(".user-chooser", this.el).show();
-      return setTimeout(function() {
-        $(".user-search", _this.el).val(term).focus();
+      return setTimeout(__bind(function() {
+        $(".user-search", this.el).val(term).focus();
         try {
-          return $(".user-search", _this.el).prop({
+          return $(".user-search", this.el).prop({
             selectionStart: term.length,
             selectionEnd: term.length
           });
         } catch (error) {
 
         }
-      }, 0);
+      }, this), 0);
     };
-
     UserSearch.prototype.closeUserSearch = function() {
       this.userList.filter.q = "";
       $(".user-chooser-trigger", this.el).val("").show();
       return $(".user-chooser", this.el).hide();
     };
-
     UserSearch.prototype.renderItems = function() {
-      var _this = this;
       $(".results .result, .results .noresult", this.el).remove();
       if (this.userList.length > 0) {
-        this.userList.each(function(user, i) {
+        this.userList.each(__bind(function(user, i) {
           var compact, el;
           compact = new btb.UserCompact({
             user: user,
-            term: _this.userList.filter.q
+            term: this.userList.filter.q
           });
           el = compact.render().el;
           $(el).addClass("result");
-          return $(".results", _this.el).append(el);
-        });
+          return $(".results", this.el).append(el);
+        }, this));
       } else {
         $(".results", this.el).append(this.emptyRowTemplate());
       }
       return this.renderPagination(this.userList, $(".pagination", this.el));
     };
-
     UserSearch.prototype.fetchItems = function() {
-      var delayed,
-        _this = this;
+      var delayed;
       this.userList.filter.q = $(".user-search", this.el).val().substring(0, 20);
-      if (this._timeout != null) window.clearTimeout(this._timeout);
-      delayed = function() {
-        $(".user-search", _this.el).addClass("loading");
-        return _this.userList.fetch({
-          success: function() {
-            _this.renderItems();
-            $(".user-search", _this.el).removeClass("loading");
-            if ((_this.highlightedIndex != null) || _this.userList.length === 1) {
-              _this.highlightResult(0);
+      if (this._timeout != null) {
+        window.clearTimeout(this._timeout);
+      }
+      delayed = __bind(function() {
+        $(".user-search", this.el).addClass("loading");
+        return this.userList.fetch({
+          success: __bind(function() {
+            this.renderItems();
+            $(".user-search", this.el).removeClass("loading");
+            if ((this.highlightedIndex != null) || this.userList.length === 1) {
+              this.highlightResult(0);
             }
-            return _this.trigger("searchDone", _this.userList);
-          },
-          error: function() {
+            return this.trigger("searchDone", this.userList);
+          }, this),
+          error: __bind(function() {
             return alert("Sever error");
-          }
+          }, this)
         });
-      };
+      }, this);
       return this._timeout = window.setTimeout(delayed, this.delay);
     };
-
     UserSearch.prototype.turnPage = function(event) {
       this.userList.filter.page = this.newPageFromEvent(event);
       return this.fetchItems();
     };
-
     UserSearch.prototype.chooseResult = function(event) {
       var chosen, userId;
       userId = parseInt($.trim($("input.user-id-raw", event.currentTarget).val()));
@@ -353,10 +289,8 @@
       this.closeUserSearch();
       return this.trigger("chosen", chosen);
     };
-
     UserSearch.prototype.addUser = function(event) {
-      var initialName,
-        _this = this;
+      var initialName;
       initialName = $(".user-search", this.el).val();
       initialName = _.map(initialName.split(/\s+/), function(word) {
         return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
@@ -366,31 +300,25 @@
           display_name: initialName
         }
       });
-      this.userAdd.bind("userAdded", function(user) {
-        _this.trigger("chosen", user);
-        return _this.userAdd.unbind();
-      });
-      this.userAdd.bind("cancelled", function() {
-        _this.userList.filter.q = initialName || "";
-        _this.render();
-        return _this.userAdd.unbind();
-      });
+      this.userAdd.bind("userAdded", __bind(function(user) {
+        this.trigger("chosen", user);
+        return this.userAdd.unbind();
+      }, this));
+      this.userAdd.bind("cancelled", __bind(function() {
+        this.userList.filter.q = initialName || "";
+        this.render();
+        return this.userAdd.unbind();
+      }, this));
       return $(this.el).html(this.userAdd.render().el);
     };
-
     UserSearch.prototype.cancel = function(event) {
       this.closeUserSearch();
       return this.trigger("cancelled");
     };
-
     return UserSearch;
-
-  })(btb.PaginatedView);
-
-  btb.InPlaceUserChooser = (function(_super) {
-
-    __extends(InPlaceUserChooser, _super);
-
+  })();
+  btb.InPlaceUserChooser = (function() {
+    __extends(InPlaceUserChooser, Backbone.View);
     function InPlaceUserChooser() {
       this.unchoose = __bind(this.unchoose, this);
       this.setUser = __bind(this.setUser, this);
@@ -398,47 +326,43 @@
       this.render = __bind(this.render, this);
       InPlaceUserChooser.__super__.constructor.apply(this, arguments);
     }
-
     InPlaceUserChooser.prototype.template = _.template($("#inPlaceUserChooser").html());
-
     InPlaceUserChooser.prototype.events = {
       "click .user-name": "unchoose"
     };
-
     InPlaceUserChooser.prototype.initialize = function(user) {
-      var _this = this;
       this.user = user;
       this.userChooser = new btb.UserSearch;
-      this.userChooser.bind("chosen", function(model) {
-        _this.choose(model);
-        return _this.trigger("chosen", model);
-      });
-      this.userChooser.bind("cancelled", function() {
-        if (_this.user != null) return _this.choose(_this.user);
-      });
+      this.userChooser.bind("chosen", __bind(function(model) {
+        this.choose(model);
+        return this.trigger("chosen", model);
+      }, this));
+      this.userChooser.bind("cancelled", __bind(function() {
+        if (this.user != null) {
+          return this.choose(this.user);
+        }
+      }, this));
       return $(this.el).addClass("in-place-user-toggle");
     };
-
     InPlaceUserChooser.prototype.render = function() {
       $(this.el).html(this.template());
       $(this.el).addClass("in-place-user-chooser");
       $(".user-chooser-holder", this.el).html(this.userChooser.render().el);
-      if (this.user != null) this.choose(this.user);
+      if (this.user != null) {
+        this.choose(this.user);
+      }
       return this;
     };
-
     InPlaceUserChooser.prototype.choose = function(user) {
       this.user = user;
       $(".user-name", this.el).show().html(_.escapeHTML(user.get("display_name")));
       $(".user-name", this.el).attr("data-user-id", user.id);
       return $(".user-chooser-holder", this.el).hide();
     };
-
     InPlaceUserChooser.prototype.setUser = function(user) {
       this.choose(user);
       return this.trigger("chosen", user);
     };
-
     InPlaceUserChooser.prototype.unchoose = function() {
       if (this.user != null) {
         this.userChooser.openUserSearch(null, this.user.get("display_name"));
@@ -446,29 +370,20 @@
       $(".user-chooser-holder", this.el).show();
       return $(".user-name", this.el).hide();
     };
-
     return InPlaceUserChooser;
-
-  })(Backbone.View);
-
-  btb.UserCompact = (function(_super) {
-
-    __extends(UserCompact, _super);
-
+  })();
+  btb.UserCompact = (function() {
+    __extends(UserCompact, Backbone.View);
     function UserCompact() {
       this.render = __bind(this.render, this);
       UserCompact.__super__.constructor.apply(this, arguments);
     }
-
     UserCompact.prototype.template = _.template($("#compactUser").html());
-
     UserCompact.prototype.stateTemplate = _.template($("#userState").html());
-
     UserCompact.prototype.initialize = function(options) {
       this.user = options.user;
       return this.term = options.term;
     };
-
     UserCompact.prototype.render = function() {
       var field, fields, t, terms, _i, _len, _ref;
       fields = this.user.toJSON();
@@ -481,7 +396,9 @@
             _results = [];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               t = _ref[_i];
-              if (t !== "") _results.push(t);
+              if (t !== "") {
+                _results.push(t);
+              }
             }
             return _results;
           }).call(this)
@@ -502,35 +419,26 @@
       }));
       return this;
     };
-
     return UserCompact;
-
-  })(Backbone.View);
-
-  btb.DocumentTabularList = (function(_super) {
-
-    __extends(DocumentTabularList, _super);
-
+  })();
+  btb.DocumentTabularList = (function() {
+    __extends(DocumentTabularList, btb.TabularList);
     function DocumentTabularList() {
       this.statusColumn = __bind(this.statusColumn, this);
       this.thumbnailColumn = __bind(this.thumbnailColumn, this);
       DocumentTabularList.__super__.constructor.apply(this, arguments);
     }
-
     DocumentTabularList.prototype.thumbnailTemplate = _.template($("#userDetailDocumentThumbnails").html());
-
     DocumentTabularList.prototype.initialize = function(options) {
-      var _this = this;
       options.collection = new btb.DocumentList;
       options.collection.filter = options.filter;
       DocumentTabularList.__super__.initialize.call(this, options);
       return this.collection.fetch({
-        success: function() {
-          return _this.render();
-        }
+        success: __bind(function() {
+          return this.render();
+        }, this)
       });
     };
-
     DocumentTabularList.prototype.thumbnailColumn = function(count) {
       var template;
       template = this.thumbnailTemplate;
@@ -548,7 +456,6 @@
         }
       };
     };
-
     DocumentTabularList.prototype.titleColumn = function() {
       return {
         heading: "Title",
@@ -560,22 +467,19 @@
         }
       };
     };
-
     DocumentTabularList.prototype.statusColumn = function() {
-      var _this = this;
       return {
         heading: "Status",
-        render: function(obj) {
+        render: __bind(function(obj) {
           var el;
           el = new btb.UserDetailDocumentStatusControl(obj);
-          el.bind("letterAdded", function() {
-            return _this.trigger("letterAdded");
-          });
+          el.bind("letterAdded", __bind(function() {
+            return this.trigger("letterAdded");
+          }, this));
           return el.render().el;
-        }
+        }, this)
       };
     };
-
     DocumentTabularList.prototype.commentCountColumn = function() {
       return {
         heading: "Replies",
@@ -584,7 +488,6 @@
         }
       };
     };
-
     DocumentTabularList.prototype.noteCountColumn = function() {
       return {
         heading: "Notes",
@@ -593,7 +496,6 @@
         }
       };
     };
-
     DocumentTabularList.prototype.needsAttentionColumn = function() {
       return {
         heading: "Needs attention?",
@@ -623,15 +525,10 @@
         }
       };
     };
-
     return DocumentTabularList;
-
-  })(btb.TabularList);
-
-  btb.UserDetailDocumentStatusControl = (function(_super) {
-
-    __extends(UserDetailDocumentStatusControl, _super);
-
+  })();
+  btb.UserDetailDocumentStatusControl = (function() {
+    __extends(UserDetailDocumentStatusControl, Backbone.View);
     function UserDetailDocumentStatusControl() {
       this.showError = __bind(this.showError, this);
       this.hideLoading = __bind(this.hideLoading, this);
@@ -642,19 +539,15 @@
       this.render = __bind(this.render, this);
       UserDetailDocumentStatusControl.__super__.constructor.apply(this, arguments);
     }
-
     UserDetailDocumentStatusControl.prototype.template = _.template($("#userDetailDocumentStatus").html());
-
     UserDetailDocumentStatusControl.prototype.events = {
       "change .status": "updateStatus",
       "change .adult": "updateAdult",
       "click .queue-printout": "queuePrintout"
     };
-
     UserDetailDocumentStatusControl.prototype.initialize = function(doc) {
       return this.doc = doc;
     };
-
     UserDetailDocumentStatusControl.prototype.render = function() {
       $(this.el).html(this.template({
         adult: this.doc.get("adult")
@@ -662,40 +555,34 @@
       $(".status", this.el).val(_.escapeHTML(this.doc.get("status")));
       return this;
     };
-
     UserDetailDocumentStatusControl.prototype.updateStatus = function(event) {
-      var _this = this;
       this.showLoading();
       return this.doc.save({
         status: $(event.currentTarget).val()
       }, {
-        success: function() {
-          return _this.hideLoading();
-        },
-        error: function() {
-          return _this.showError();
-        }
+        success: __bind(function() {
+          return this.hideLoading();
+        }, this),
+        error: __bind(function() {
+          return this.showError();
+        }, this)
       });
     };
-
     UserDetailDocumentStatusControl.prototype.updateAdult = function(event) {
-      var _this = this;
       this.showLoading();
       return this.doc.save({
         adult: $(event.currentTarget).is(":checked")
       }, {
-        success: function() {
-          return _this.hideLoading();
-        },
-        error: function() {
-          return _this.showError();
-        }
+        success: __bind(function() {
+          return this.hideLoading();
+        }, this),
+        error: __bind(function() {
+          return this.showError();
+        }, this)
       });
     };
-
     UserDetailDocumentStatusControl.prototype.queuePrintout = function() {
-      var letter,
-        _this = this;
+      var letter;
       this.showLoading();
       letter = new btb.Letter;
       return letter.save({
@@ -703,44 +590,37 @@
         recipient_id: this.doc.get("author").id,
         document_id: this.doc.id
       }, {
-        success: function() {
-          _this.hideLoading();
-          return _this.trigger("letterAdded");
-        },
-        error: function() {
+        success: __bind(function() {
+          this.hideLoading();
+          return this.trigger("letterAdded");
+        }, this),
+        error: __bind(function() {
           alert("Server error.  Letter not saved.");
-          return _this.hideLoading();
-        }
+          return this.hideLoading();
+        }, this)
       });
     };
-
     UserDetailDocumentStatusControl.prototype.showLoading = function() {
       return $(".loading", this.el).show();
     };
-
     UserDetailDocumentStatusControl.prototype.hideLoading = function() {
       return $(".loading", this.el).hide();
     };
-
     UserDetailDocumentStatusControl.prototype.showError = function() {
       $(".loading", this.el).hide();
       return $(".error", this.el).show();
     };
-
     return UserDetailDocumentStatusControl;
-
-  })(Backbone.View);
-
-  btb.PostTabularList = (function(_super) {
-
-    __extends(PostTabularList, _super);
-
+  })();
+  btb.PostTabularList = (function() {
+    __extends(PostTabularList, btb.DocumentTabularList);
     function PostTabularList() {
       PostTabularList.__super__.constructor.apply(this, arguments);
     }
-
     PostTabularList.prototype.initialize = function(userId, docType) {
-      if (docType == null) docType = "post";
+      if (docType == null) {
+        docType = "post";
+      }
       return PostTabularList.__super__.initialize.call(this, {
         columns: [this.dateColumn("date_written"), this.thumbnailColumn(1), this.titleColumn(), this.commentCountColumn(), this.noteCountColumn(), this.statusColumn()],
         filter: {
@@ -750,19 +630,13 @@
         }
       });
     };
-
     return PostTabularList;
-
-  })(btb.DocumentTabularList);
-
-  btb.ProfileDocumentTabularList = (function(_super) {
-
-    __extends(ProfileDocumentTabularList, _super);
-
+  })();
+  btb.ProfileDocumentTabularList = (function() {
+    __extends(ProfileDocumentTabularList, btb.DocumentTabularList);
     function ProfileDocumentTabularList() {
       ProfileDocumentTabularList.__super__.constructor.apply(this, arguments);
     }
-
     ProfileDocumentTabularList.prototype.initialize = function(userId) {
       return ProfileDocumentTabularList.__super__.initialize.call(this, {
         columns: [this.dateColumn("date_written"), this.thumbnailColumn(3), this.statusColumn()],
@@ -772,19 +646,13 @@
         }
       });
     };
-
     return ProfileDocumentTabularList;
-
-  })(btb.DocumentTabularList);
-
-  btb.RequestDocumentTabularList = (function(_super) {
-
-    __extends(RequestDocumentTabularList, _super);
-
+  })();
+  btb.RequestDocumentTabularList = (function() {
+    __extends(RequestDocumentTabularList, btb.DocumentTabularList);
     function RequestDocumentTabularList() {
       RequestDocumentTabularList.__super__.constructor.apply(this, arguments);
     }
-
     RequestDocumentTabularList.prototype.initialize = function(userId) {
       return RequestDocumentTabularList.__super__.initialize.call(this, {
         columns: [this.dateColumn("date_written"), this.thumbnailColumn(3), this.noteCountColumn(), this.needsAttentionColumn()],
@@ -794,19 +662,13 @@
         }
       });
     };
-
     return RequestDocumentTabularList;
-
-  })(btb.DocumentTabularList);
-
-  btb.LicenseDocumentTabularList = (function(_super) {
-
-    __extends(LicenseDocumentTabularList, _super);
-
+  })();
+  btb.LicenseDocumentTabularList = (function() {
+    __extends(LicenseDocumentTabularList, btb.DocumentTabularList);
     function LicenseDocumentTabularList() {
       LicenseDocumentTabularList.__super__.constructor.apply(this, arguments);
     }
-
     LicenseDocumentTabularList.prototype.initialize = function(userId) {
       return LicenseDocumentTabularList.__super__.initialize.call(this, {
         columns: [this.dateColumn("date_written"), this.thumbnailColumn(1)],
@@ -816,19 +678,13 @@
         }
       });
     };
-
     return LicenseDocumentTabularList;
-
-  })(btb.DocumentTabularList);
-
-  btb.PhotoTabularList = (function(_super) {
-
-    __extends(PhotoTabularList, _super);
-
+  })();
+  btb.PhotoTabularList = (function() {
+    __extends(PhotoTabularList, btb.DocumentTabularList);
     function PhotoTabularList() {
       PhotoTabularList.__super__.constructor.apply(this, arguments);
     }
-
     PhotoTabularList.prototype.initialize = function(userId) {
       return PhotoTabularList.__super__.initialize.call(this, {
         columns: [this.dateColumn("date_written"), this.thumbnailColumn(1), this.statusColumn()],
@@ -838,22 +694,15 @@
         }
       });
     };
-
     return PhotoTabularList;
-
-  })(btb.DocumentTabularList);
-
-  btb.MissingScanTabularList = (function(_super) {
-
-    __extends(MissingScanTabularList, _super);
-
+  })();
+  btb.MissingScanTabularList = (function() {
+    __extends(MissingScanTabularList, btb.TabularList);
     function MissingScanTabularList() {
       MissingScanTabularList.__super__.constructor.apply(this, arguments);
     }
-
     MissingScanTabularList.prototype.initialize = function(userId) {
-      var options,
-        _this = this;
+      var options;
       options = {};
       options.collection = new btb.PendingScanList;
       options.collection.filter = {
@@ -872,36 +721,27 @@
       ];
       MissingScanTabularList.__super__.initialize.call(this, options);
       return this.collection.fetch({
-        success: function() {
-          return _this.render();
-        }
+        success: __bind(function() {
+          return this.render();
+        }, this)
       });
     };
-
     return MissingScanTabularList;
-
-  })(btb.TabularList);
-
-  btb.MissingCheckbox = (function(_super) {
-
-    __extends(MissingCheckbox, _super);
-
+  })();
+  btb.MissingCheckbox = (function() {
+    __extends(MissingCheckbox, Backbone.View);
     function MissingCheckbox() {
       this.toggle = __bind(this.toggle, this);
       this.render = __bind(this.render, this);
       MissingCheckbox.__super__.constructor.apply(this, arguments);
     }
-
     MissingCheckbox.prototype.template = _.template($("#missingCheckbox").html());
-
     MissingCheckbox.prototype.events = {
       'click input': 'toggle'
     };
-
     MissingCheckbox.prototype.initialize = function(options) {
       return this.ps = options.ps;
     };
-
     MissingCheckbox.prototype.render = function() {
       $(this.el).html(this.template({
         checked: (this.ps.get("completed") != null) && !(this.ps.get("scan") != null),
@@ -909,87 +749,70 @@
       }));
       return this;
     };
-
     MissingCheckbox.prototype.toggle = function(event) {
-      var _this = this;
       $(".loading", this.el).show();
       return this.ps.save({
         missing: $(event.currentTarget).is(":checked")
       }, {
-        success: function() {
-          return $(".loading", _this.el).hide();
-        },
-        error: function() {
-          $(".loading", _this.el).hide();
+        success: __bind(function() {
+          return $(".loading", this.el).hide();
+        }, this),
+        error: __bind(function() {
+          $(".loading", this.el).hide();
           return alert("Server error; changes not saved");
-        }
+        }, this)
       });
     };
-
     return MissingCheckbox;
-
-  })(Backbone.View);
-
-  btb.UserStatusTable = (function(_super) {
-
-    __extends(UserStatusTable, _super);
-
+  })();
+  btb.UserStatusTable = (function() {
+    __extends(UserStatusTable, Backbone.View);
     function UserStatusTable() {
       this.render = __bind(this.render, this);
       UserStatusTable.__super__.constructor.apply(this, arguments);
     }
-
     UserStatusTable.prototype.template = _.template($("#userStatusTable").html());
-
     UserStatusTable.prototype.initialize = function(options) {
       return this.user = options.user;
     };
-
     UserStatusTable.prototype.render = function() {
       $(this.el).html(this.template());
       btb.EditInPlace.factory([[this.user, "blogger", $(".blogger", this.el), "checkbox"], [this.user, "managed", $(".managed", this.el), "checkbox"], [this.user, "consent_form_received", $(".consent-form-received", this.el), "checkbox"], [this.user, "is_active", $(".is-active", this.el), "checkbox"]]);
       return this;
     };
-
     return UserStatusTable;
-
-  })(Backbone.View);
-
-  btb.UserDetail = (function(_super) {
-
-    __extends(UserDetail, _super);
-
+  })();
+  btb.UserDetail = (function() {
+    __extends(UserDetail, Backbone.View);
     function UserDetail() {
       this.fetchUser = __bind(this.fetchUser, this);
       this.chooseUser = __bind(this.chooseUser, this);
       this.render = __bind(this.render, this);
       UserDetail.__super__.constructor.apply(this, arguments);
     }
-
     UserDetail.prototype.template = _.template($("#userManage").html());
-
     UserDetail.prototype.detailTemplate = _.template($("#userDetail").html());
-
     UserDetail.prototype.stateTemplate = _.template($("#userState").html());
-
     UserDetail.prototype.initialize = function(options) {
-      if (options.userId) return this.fetchUser(options.userId);
+      if (options.userId) {
+        return this.fetchUser(options.userId);
+      }
     };
-
     UserDetail.prototype.render = function() {
-      var correspondence, licenses, list, photos, posts, profiles, requests, userChooser, userFields, userId, _i, _len, _ref,
-        _this = this;
+      var correspondence, licenses, list, photos, posts, profiles, requests, userChooser, userFields, userId, _i, _len, _ref;
       $(this.el).html(this.template());
       userChooser = new btb.UserSearch({
         filter: {
           in_org: 1
         }
       });
-      userChooser.bind("chosen", function(user) {
-        return _this.chooseUser(user);
-      });
+      userChooser.bind("chosen", __bind(function(user) {
+        return this.chooseUser(user);
+      }, this));
       $(".user-chooser-holder", this.el).html(userChooser.render().el);
-      if (!(this.user != null)) return this;
+      if (!(this.user != null)) {
+        return this;
+      }
       userFields = this.user.toJSON();
       $(".user-detail", this.el).html(this.detailTemplate({
         user: userFields
@@ -1027,36 +850,30 @@
       _ref = [licenses, posts, requests, profiles, photos];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         list = _ref[_i];
-        list.bind("letterAdded", function() {
+        list.bind("letterAdded", __bind(function() {
           return correspondence.table.fetchItems();
-        });
+        }, this));
       }
       $(".missingscanlist", this.el).html(new btb.MissingScanTabularList(userId).el);
       return this;
     };
-
     UserDetail.prototype.chooseUser = function(user) {
       btb.app.navigate("#/users/" + (user.get("id")));
       this.user = user;
       return this.render();
     };
-
     UserDetail.prototype.fetchUser = function(userId) {
-      var ul,
-        _this = this;
+      var ul;
       ul = new btb.UserList;
       return ul.fetchById(userId, {
-        success: function(userList, response) {
+        success: __bind(function(userList, response) {
           var user;
           user = userList.at(0);
-          _this.user = userList.at(0);
-          return _this.render();
-        }
+          this.user = userList.at(0);
+          return this.render();
+        }, this)
       });
     };
-
     return UserDetail;
-
-  })(Backbone.View);
-
+  })();
 }).call(this);

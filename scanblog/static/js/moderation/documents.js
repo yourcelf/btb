@@ -1,53 +1,44 @@
 (function() {
-  var Cropper,
-    __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  btb.Document = (function(_super) {
-
-    __extends(Document, _super);
-
+  var Cropper;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (this[i] === item) return i;
+    }
+    return -1;
+  };
+  btb.Document = (function() {
+    __extends(Document, Backbone.Model);
     function Document() {
       Document.__super__.constructor.apply(this, arguments);
     }
-
     Document.prototype.url = function() {
       return btb.DocumentList.prototype.baseUrl + "/" + this.id;
     };
-
     return Document;
-
-  })(Backbone.Model);
-
-  btb.DocumentList = (function(_super) {
-
-    __extends(DocumentList, _super);
-
+  })();
+  btb.DocumentList = (function() {
+    __extends(DocumentList, btb.FilteredPaginatedCollection);
     function DocumentList() {
       DocumentList.__super__.constructor.apply(this, arguments);
     }
-
     DocumentList.prototype.model = btb.Document;
-
     DocumentList.prototype.baseUrl = "/scanning/documents.json";
-
     return DocumentList;
-
-  })(btb.FilteredPaginatedCollection);
-
-  btb.EditDocumentManager = (function(_super) {
-
-    __extends(EditDocumentManager, _super);
-
+  })();
+  btb.EditDocumentManager = (function() {
+    __extends(EditDocumentManager, Backbone.View);
     function EditDocumentManager() {
       this.render = __bind(this.render, this);
       EditDocumentManager.__super__.constructor.apply(this, arguments);
     }
-
     EditDocumentManager.prototype.template = _.template($("#editDocumentsManager").html());
-
     EditDocumentManager.prototype.initialize = function(options) {
       if (options == null) {
         options = {
@@ -60,7 +51,6 @@
         success: this.render
       });
     };
-
     EditDocumentManager.prototype.render = function() {
       var doc, docview, i, _i, _len, _ref;
       if (this.documents.length > 0) {
@@ -82,15 +72,10 @@
       }
       return this;
     };
-
     return EditDocumentManager;
-
-  })(Backbone.View);
-
-  btb.EditDocumentView = (function(_super) {
-
-    __extends(EditDocumentView, _super);
-
+  })();
+  btb.EditDocumentView = (function() {
+    __extends(EditDocumentView, Backbone.View);
     function EditDocumentView() {
       this.checkInReplyToCode = __bind(this.checkInReplyToCode, this);
       this.setPageSize = __bind(this.setPageSize, this);
@@ -102,17 +87,13 @@
       this.render = __bind(this.render, this);
       EditDocumentView.__super__.constructor.apply(this, arguments);
     }
-
     EditDocumentView.prototype.template = _.template($("#editDocument").html());
-
     EditDocumentView.prototype.inReplyToTemplate = _.template($("#editDocumentInReplyTo").html());
-
     EditDocumentView.prototype.pageSizes = {
       small: 0.3,
       medium: 0.6,
       full: 1
     };
-
     EditDocumentView.prototype.events = {
       'click .small': 'pageSizeSmall',
       'click .medium': 'pageSizeMedium',
@@ -120,7 +101,6 @@
       'click .save-doc': 'save',
       'keyup .doc-in-reply-to': 'checkInReplyToCode'
     };
-
     EditDocumentView.prototype.initialize = function(options) {
       if (options == null) {
         options = {
@@ -133,10 +113,8 @@
       this.num = options.num;
       return this.order = options.order;
     };
-
     EditDocumentView.prototype.render = function() {
-      var changeTags, page, userChooser, _fn, _i, _len, _ref,
-        _this = this;
+      var changeTags, page, userChooser, _fn, _i, _len, _ref;
       $(this.el).html(this.template({
         doc: this.doc.toJSON(),
         num: this.num,
@@ -146,116 +124,104 @@
       _ref = _.sortBy(this.doc.get("pages"), function(p) {
         return p.order;
       });
-      _fn = function(page) {
+      _fn = __bind(function(page) {
         var ht, pv;
         pv = new btb.EditDocumentPageView({
           page: page,
-          pagecount: _this.doc.get("pages").length
+          pagecount: this.doc.get("pages").length
         });
-        ht = _this.doc.get("highlight_transform");
+        ht = this.doc.get("highlight_transform");
         if (page.id === (ht != null ? ht.document_page_id : void 0)) {
           pv.setHighlightRelativeToCrop(ht.crop);
         }
-        pv.bind("highlightChanged", function(crop) {
+        pv.bind("highlightChanged", __bind(function(crop) {
           var view, _j, _len2, _ref2, _results;
           if (crop) {
             ht = {
               crop: crop,
               document_page_id: pv.page.id
             };
-            _this.doc.set({
+            this.doc.set({
               "highlight_transform": ht
             });
           } else {
-            _this.doc.set({
+            this.doc.set({
               "highlight_transform": null
             });
           }
-          _ref2 = _this.pageViews;
+          _ref2 = this.pageViews;
           _results = [];
           for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
             view = _ref2[_j];
-            if (view !== pv) {
-              _results.push(view.clearHighlight());
-            } else {
-              _results.push(void 0);
-            }
+            _results.push(view !== pv ? view.clearHighlight() : void 0);
           }
           return _results;
-        });
-        pv.bind("movePageUp", function() {
-          return _this.swapPages(page.order - 1, page.order);
-        });
-        pv.bind("movePageDown", function() {
-          return _this.swapPages(page.order, page.order + 1);
-        });
-        pv.bind("cropping", function(cropping) {
+        }, this));
+        pv.bind("movePageUp", __bind(function() {
+          return this.swapPages(page.order - 1, page.order);
+        }, this));
+        pv.bind("movePageDown", __bind(function() {
+          return this.swapPages(page.order, page.order + 1);
+        }, this));
+        pv.bind("cropping", __bind(function(cropping) {
           var view, _j, _len2, _ref2, _results;
-          _ref2 = _this.pageViews;
+          _ref2 = this.pageViews;
           _results = [];
           for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
             view = _ref2[_j];
-            if (view !== pv) {
-              _results.push(view.setCropping(cropping, false));
-            } else {
-              _results.push(void 0);
-            }
+            _results.push(view !== pv ? view.setCropping(cropping, false) : void 0);
           }
           return _results;
-        });
-        pv.bind("highlighting", function(highlighting) {
+        }, this));
+        pv.bind("highlighting", __bind(function(highlighting) {
           var view, _j, _len2, _ref2, _results;
-          _ref2 = _this.pageViews;
+          _ref2 = this.pageViews;
           _results = [];
           for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
             view = _ref2[_j];
-            if (view !== pv) {
-              _results.push(view.setHighlighting(highlighting, false));
-            } else {
-              _results.push(void 0);
-            }
+            _results.push(view !== pv ? view.setHighlighting(highlighting, false) : void 0);
           }
           return _results;
-        });
-        _this.pageViews.push(pv);
-        return $(".page-list", _this.el).append(pv.render().el);
-      };
+        }, this));
+        this.pageViews.push(pv);
+        return $(".page-list", this.el).append(pv.render().el);
+      }, this);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         page = _ref[_i];
         _fn(page);
       }
       userChooser = new btb.InPlaceUserChooser(new btb.User(this.doc.get("author")));
-      userChooser.bind("chosen", function(model) {
-        return _this.doc.set({
+      userChooser.bind("chosen", __bind(function(model) {
+        return this.doc.set({
           author: model.toJSON()
         });
-      });
+      }, this));
       $(".choose-user-holder", this.el).append(userChooser.render().el);
-      $(".doc-title", this.el).change(function() {
-        return _this.doc.set({
-          title: $(".doc-title", _this.el).val()
+      $(".doc-title", this.el).change(__bind(function() {
+        return this.doc.set({
+          title: $(".doc-title", this.el).val()
         });
-      });
-      $(".doc-date", this.el).change(function() {
-        return _this.doc.set({
-          date_written: $(".doc-date", _this.el).val()
+      }, this));
+      $(".doc-date", this.el).change(__bind(function() {
+        return this.doc.set({
+          date_written: $(".doc-date", this.el).val()
         });
-      });
-      $(".doc-status", this.el).val(this.doc.get("status")).change(function() {
-        return _this.doc.set({
-          status: $(".doc-status", _this.el).val()
+      }, this));
+      $(".doc-status", this.el).val(this.doc.get("status")).change(__bind(function() {
+        return this.doc.set({
+          status: $(".doc-status", this.el).val()
         });
-      });
-      $(".doc-adult", this.el).change(function() {
-        return _this.doc.set({
-          adult: $(".doc-adult", _this.el).is(":checked")
+      }, this));
+      $(".doc-adult", this.el).change(__bind(function() {
+        return this.doc.set({
+          adult: $(".doc-adult", this.el).is(":checked")
         });
-      });
-      changeTags = function() {
-        return _this.doc.set({
-          tags: $(".doc-tags", _this.el).val()
+      }, this));
+      changeTags = __bind(function() {
+        return this.doc.set({
+          tags: $(".doc-tags", this.el).val()
         });
-      };
+      }, this);
       $(".doc-tags", this.el).smartTextBox({
         submitKeys: [13, 188],
         updateOriginal: true,
@@ -263,11 +229,11 @@
         onElementAdd: changeTags,
         onElementRemove: changeTags
       });
-      $(".doc-in-reply-to", this.el).change(function() {
-        return _this.doc.set({
-          in_reply_to: $(".doc-in-reply-to", _this.el).val()
+      $(".doc-in-reply-to", this.el).change(__bind(function() {
+        return this.doc.set({
+          in_reply_to: $(".doc-in-reply-to", this.el).val()
         });
-      });
+      }, this));
       $(".document-notes-manager", this.el).html(new btb.NoteManager({
         filter: {
           document_id: this.doc.id
@@ -294,13 +260,13 @@
             user: new btb.User(this.doc.get("author"))
           }).render().el);
       }
-      if (this.doc.get("in_reply_to")) this.checkInReplyToCode();
+      if (this.doc.get("in_reply_to")) {
+        this.checkInReplyToCode();
+      }
       return this;
     };
-
     EditDocumentView.prototype.save = function() {
-      var d, error, errors, _i, _len, _ref, _ref2,
-        _this = this;
+      var d, error, errors, _i, _len, _ref, _ref2;
       errors = [];
       $(".post-save-message", this.el).html("");
       if (this.doc.get("type") === "post" && !((_ref = this.doc.get("highlight_transform")) != null ? (_ref2 = _ref.crop) != null ? _ref2.length : void 0 : void 0) > 0) {
@@ -326,23 +292,23 @@
       if (errors.length === 0) {
         $(".save-doc", this.el).addClass("loading");
         return this.doc.save({}, {
-          success: function() {
+          success: __bind(function() {
             var klass, msg, status, type;
-            $(".save-doc", _this.el).removeClass("loading");
-            _this.render();
-            type = _this.doc.get("type");
-            status = _this.doc.get("status");
+            $(".save-doc", this.el).removeClass("loading");
+            this.render();
+            type = this.doc.get("type");
+            status = this.doc.get("status");
             if (status === "unknown") {
               klass = "warn";
               msg = "Document saved, but still needs attention.  Add a note explaining why?";
             } else if (status === "published") {
               klass = "success";
               msg = "&check; Document saved and published.";
-              if (!_this.doc.get("is_public")) {
+              if (!this.doc.get("is_public")) {
                 klass = "warn";
                 msg = "Document saved and marked published, but author is not active or enrolled.                                   The document will be published when the author is made active and enrolled.";
               }
-              if (_this.doc.get("type") === "post" && !_this.doc.get("title")) {
+              if (this.doc.get("type") === "post" && !this.doc.get("title")) {
                 msg += " Title left blank.";
               }
             } else if (status === "unpublishable") {
@@ -351,36 +317,36 @@
             } else if (status === "ready") {
               klass = "success";
               msg = "Document queued; will be published within 3 days.";
-              if (_this.doc.get("type") === "post" && !_this.doc.get("title")) {
+              if (this.doc.get("type") === "post" && !this.doc.get("title")) {
                 msg += " Title left blank.";
               }
             }
-            return $(".post-save-message", _this.el).addClass(klass).html(msg);
-          },
-          error: function(model, response) {
+            return $(".post-save-message", this.el).addClass(klass).html(msg);
+          }, this),
+          error: __bind(function(model, response) {
             var msg;
             msg = "Server error - not saved. ";
             if ((response != null ? response.responseText : void 0) != null) {
               msg += _.escapeHTML(response.responseText);
               msg += " (code " + response.status + ")";
             }
-            $(".save-doc", _this.el).removeClass("loading");
-            return $(".post-save-message", _this.el).addClass("error").html(msg);
-          }
+            $(".save-doc", this.el).removeClass("loading");
+            return $(".post-save-message", this.el).addClass("error").html(msg);
+          }, this)
         });
       }
     };
-
     EditDocumentView.prototype.swapPages = function(from, to) {
-      var dest, el, frompage, holder, holders, i, offset, offsets, p, p2, page, pages, topage, _i, _len, _ref, _ref2, _ref3, _ref4, _results,
-        _this = this;
+      var dest, el, frompage, holder, holders, i, offset, offsets, p, p2, page, pages, topage, _i, _len, _ref, _ref2, _ref3, _ref4, _results;
       frompage = _.select(this.pageViews, function(pv) {
         return pv.page.order === from;
       });
       topage = _.select(this.pageViews, function(pv) {
         return pv.page.order === to;
       });
-      if (!(frompage.length === 1 && topage.length === 1)) return;
+      if (!(frompage.length === 1 && topage.length === 1)) {
+        return;
+      }
       pages = [frompage[0], topage[0]];
       p2 = topage[0];
       _ref = [pages[1].page.order, pages[0].page.order], pages[0].page.order = _ref[0], pages[1].page.order = _ref[1];
@@ -417,11 +383,11 @@
       _results = [];
       for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
         _ref4 = _ref3[_i], page = _ref4[0], dest = _ref4[1];
-        _results.push((function(page, dest) {
+        _results.push(__bind(function(page, dest) {
           return $(page.el).animate({
             top: dest.position().top,
             left: dest.position().left
-          }, 'slow', 'swing', function() {
+          }, 'slow', 'swing', __bind(function() {
             $(page.el).css({
               position: 'static',
               top: 'auto',
@@ -431,24 +397,20 @@
             }).insertAfter(dest);
             dest.remove();
             return page.render();
-          });
-        })(page, dest));
+          }, this));
+        }, this)(page, dest));
       }
       return _results;
     };
-
     EditDocumentView.prototype.pageSizeSmall = function(event) {
       return this.setPageSize(this.pageSizes.small, event);
     };
-
     EditDocumentView.prototype.pageSizeMedium = function(event) {
       return this.setPageSize(this.pageSizes.medium, event);
     };
-
     EditDocumentView.prototype.pageSizeFull = function(event) {
       return this.setPageSize(this.pageSizes.full, event);
     };
-
     EditDocumentView.prototype.setPageSize = function(size, event) {
       var name, pv, val, _i, _len, _ref, _ref2, _results;
       if (size) {
@@ -460,7 +422,9 @@
       _ref = this.pageSizes;
       for (name in _ref) {
         val = _ref[name];
-        if (val === size) $("." + name, this.el).addClass("active");
+        if (val === size) {
+          $("." + name, this.el).addClass("active");
+        }
       }
       _ref2 = this.pageViews;
       _results = [];
@@ -471,10 +435,8 @@
       }
       return _results;
     };
-
     EditDocumentView.prototype.checkInReplyToCode = function(event) {
-      var details, input, update, val,
-        _this = this;
+      var details, input, update, val;
       input = $(".doc-in-reply-to", this.el);
       details = $(".doc-in-reply-to-details", this.el);
       val = input.val();
@@ -485,7 +447,7 @@
         return;
       }
       input.addClass("loading");
-      update = function() {
+      update = __bind(function() {
         return $.ajax({
           url: "/annotations/reply_codes.json",
           type: "GET",
@@ -493,7 +455,7 @@
             code: val,
             document: 1
           },
-          success: function(data) {
+          success: __bind(function(data) {
             var error, result;
             input.removeClass("loading");
             if (data.pagination.count !== 1) {
@@ -501,34 +463,31 @@
             } else {
               result = data.results[0];
               input.removeClass("loading");
-              if (_this.doc.get("author").id !== result.document.author.id) {
+              if (this.doc.get("author").id !== result.document.author.id) {
                 error = "Warning: document author doesn't match" + " reply author -- wrong reply code?";
               } else {
                 input.removeClass("error");
                 error = null;
               }
               result.error = error;
-              return details.html(_this.inReplyToTemplate(data.results[0]));
+              return details.html(this.inReplyToTemplate(data.results[0]));
             }
-          },
-          error: function() {
+          }, this),
+          error: __bind(function() {
             input.removeClass("loading");
             return alert("Server error");
-          }
+          }, this)
         });
-      };
-      if (this.replyCodeTimeout) clearTimeout(this.replyCodeTimeout);
+      }, this);
+      if (this.replyCodeTimeout) {
+        clearTimeout(this.replyCodeTimeout);
+      }
       return setTimeout(update, 100);
     };
-
     return EditDocumentView;
-
-  })(Backbone.View);
-
-  btb.EditDocumentPageView = (function(_super) {
-
-    __extends(EditDocumentPageView, _super);
-
+  })();
+  btb.EditDocumentPageView = (function() {
+    __extends(EditDocumentPageView, Backbone.View);
     function EditDocumentPageView() {
       this.setHighlightRelativeToCrop = __bind(this.setHighlightRelativeToCrop, this);
       this.highlightRelativeToCrop = __bind(this.highlightRelativeToCrop, this);
@@ -552,9 +511,7 @@
       this.render = __bind(this.render, this);
       EditDocumentPageView.__super__.constructor.apply(this, arguments);
     }
-
     EditDocumentPageView.prototype.template = _.template($("#editDocumentPage").html());
-
     EditDocumentPageView.prototype.events = {
       'click .rotate90': 'rotateNinety',
       'click .rotate270': 'rotateTwoSeventy',
@@ -567,13 +524,9 @@
       'mousemove .page-image': 'mouseMove',
       'mousedown .page-image': 'mouseDown'
     };
-
     EditDocumentPageView.prototype.grabMargin = 4;
-
     EditDocumentPageView.prototype.scale = 1;
-
     EditDocumentPageView.prototype.initialize = function(options) {
-      var _this = this;
       if (options == null) {
         options = {
           page: null,
@@ -588,13 +541,13 @@
       this.highlighter = new Cropper("orange", "rgba(0,0,0,0)");
       this.highlighting = true;
       this.mouseIsDown = false;
-      return $(document).mouseup(function(event) {
-        if (_this.mouseIsDown) return _this.mouseUp(event);
-      });
+      return $(document).mouseup(__bind(function(event) {
+        if (this.mouseIsDown) {
+          return this.mouseUp(event);
+        }
+      }, this));
     };
-
     EditDocumentPageView.prototype.render = function() {
-      var _this = this;
       $(this.el).html(this.template({
         page: this.page,
         pagecount: this.pagecount
@@ -610,9 +563,9 @@
         $(".page-image", this.el).css("cursor", "normal");
       }
       this.img = new Image();
-      this.img.onload = function() {
-        return _this.renderCanvas();
-      };
+      this.img.onload = __bind(function() {
+        return this.renderCanvas();
+      }, this);
       this.img.src = this.page.scan_page.image;
       if (this.pagecount - 1 === this.page.order) {
         $(".move-page-down", this.el).hide();
@@ -621,7 +574,6 @@
       }
       return this;
     };
-
     EditDocumentPageView.prototype.renderCanvas = function() {
       var c, corners, ctx, h, height, maxx, maxy, minx, miny, scale, theta, tx, ty, w, width, x, y, _i, _len, _ref, _ref2, _ref3, _ref4, _ref5;
       theta = (((_ref = this.page.transformations) != null ? _ref.rotate : void 0) || 0) / 360 * 2 * Math.PI;
@@ -663,23 +615,18 @@
         return this.highlighter.render(this.canvas, this.highlight, this.highlighting);
       }
     };
-
     EditDocumentPageView.prototype.rotateL = function() {
       return this._rotate(359);
     };
-
     EditDocumentPageView.prototype.rotateR = function() {
       return this._rotate(1);
     };
-
     EditDocumentPageView.prototype.rotateNinety = function() {
       return this._rotate(90);
     };
-
     EditDocumentPageView.prototype.rotateTwoSeventy = function() {
       return this._rotate(270);
     };
-
     EditDocumentPageView.prototype._rotate = function(deg) {
       var newrot, oldrot;
       oldrot = this.page.transformations.rotate || 0;
@@ -690,53 +637,55 @@
       }
       return this.renderCanvas();
     };
-
     EditDocumentPageView.prototype.movePageUp = function() {
       return this.trigger("movePageUp");
     };
-
     EditDocumentPageView.prototype.movePageDown = function() {
       return this.trigger("movePageDown");
     };
-
     EditDocumentPageView.prototype.crop = function() {
       return this.setCropping(!this.cropping);
     };
-
     EditDocumentPageView.prototype.setCropping = function(cropping, trigger) {
-      if (trigger == null) trigger = true;
+      if (trigger == null) {
+        trigger = true;
+      }
       this.cropping = cropping;
-      if (this.cropping) this.highlighting = false;
+      if (this.cropping) {
+        this.highlighting = false;
+      }
       this.render();
-      if (trigger) return this.trigger("cropping", this.cropping);
+      if (trigger) {
+        return this.trigger("cropping", this.cropping);
+      }
     };
-
     EditDocumentPageView.prototype.highlight = function() {
       return this.setHighlighting(!this.highlighting);
     };
-
     EditDocumentPageView.prototype.setHighlighting = function(highlighting, trigger) {
-      if (trigger == null) trigger = true;
+      if (trigger == null) {
+        trigger = true;
+      }
       this.highlighting = highlighting;
-      if (this.highlighting) this.cropping = false;
+      if (this.highlighting) {
+        this.cropping = false;
+      }
       this.render();
-      if (trigger) return this.trigger("highlighting", this.highlighting);
+      if (trigger) {
+        return this.trigger("highlighting", this.highlighting);
+      }
     };
-
     EditDocumentPageView.prototype.mouseDown = function(event) {
       this.mouseIsDown = true;
       return this.handleMouse(event, "down");
     };
-
     EditDocumentPageView.prototype.mouseUp = function(event) {
       this.mouseIsDown = false;
       return this.handleMouse(event, "up");
     };
-
     EditDocumentPageView.prototype.mouseMove = function(event) {
       return this.handleMouse(event, "move");
     };
-
     EditDocumentPageView.prototype.handleMouse = function(event, type) {
       var mx, my, offset, orig;
       offset = $(this.canvas).offset();
@@ -756,20 +705,20 @@
         orig = this.highlight;
         this.highlight = this.highlighter.handleMouse(mx, my, type, this.highlight);
         $(this.canvas).css("cursor", this.highlighter.cursor);
-        if (orig !== this.highlight) this.renderCanvas();
+        if (orig !== this.highlight) {
+          this.renderCanvas();
+        }
         if (type === 'up') {
           return this.trigger("highlightChanged", this.highlightRelativeToCrop());
         }
       }
     };
-
     EditDocumentPageView.prototype.clearHighlight = function() {
       if (this.highlight != null) {
         this.highlight = null;
         return this.render();
       }
     };
-
     EditDocumentPageView.prototype.highlightRelativeToCrop = function() {
       var cx, cx1, cy, cy1, hx, hx1, hy, hy1, _ref, _ref2, _ref3, _ref4;
       if (!((_ref = this.page.transformations) != null ? (_ref2 = _ref.crop) != null ? _ref2.length : void 0 : void 0) > 0) {
@@ -779,7 +728,6 @@
       _ref4 = this.highlight, hx = _ref4[0], hy = _ref4[1], hx1 = _ref4[2], hy1 = _ref4[3];
       return [hx - cx, hy - cy, Math.min(hx1 - cx, cx1), Math.min(hy1 - cy, cy1)];
     };
-
     EditDocumentPageView.prototype.setHighlightRelativeToCrop = function(crop) {
       var cx, cx1, cy, cy1, hx, hx1, hy, hy1, _ref;
       if (crop) {
@@ -788,22 +736,16 @@
         return this.highlight = [hx + cx, hy + cy, hx1 + cx, hy1 + cy];
       }
     };
-
     return EditDocumentPageView;
-
-  })(Backbone.View);
-
+  })();
   Cropper = (function() {
-
     Cropper.prototype.grabMargin = 4;
-
     function Cropper(foreground, background) {
       this.foreground = foreground != null ? foreground : "black";
       this.background = background != null ? background : "rgba(200, 200, 200, 0.5)";
       this.handleMouse = __bind(this.handleMouse, this);
       this.render = __bind(this.render, this);
     }
-
     Cropper.prototype.render = function(canvas, crop, cropping) {
       var ctx, h, m, w, x, x1, y, y1;
       ctx = canvas.getContext('2d');
@@ -833,7 +775,6 @@
         }
       }
     };
-
     Cropper.prototype.handleMouse = function(mx, my, type, crop) {
       var cursor, d, directions, dx, dy, m, ox, ox1, oy, oy1, x, x1, y, y1, _ref, _ref2;
       directions = "";
@@ -862,7 +803,9 @@
       }
       this.cursor = cursor || "crosshair";
       if (type === "down") {
-        if (crop && !directions) crop = [mx, my, mx, my];
+        if (crop && !directions) {
+          crop = [mx, my, mx, my];
+        }
         this.mouseDownState = {
           x: mx,
           y: my,
@@ -883,10 +826,14 @@
         this.mouseDownState = {};
         if (crop) {
           x = crop[0], y = crop[1], x1 = crop[2], y1 = crop[3];
-          if (x - x1 === 0 || y - y1 === 0) return null;
+          if (x - x1 === 0 || y - y1 === 0) {
+            return null;
+          }
         }
       } else if (type === "move" && (((_ref = this.mouseDownState) != null ? _ref.x : void 0) != null)) {
-        if (crop) x = crop[0], y = crop[1], x1 = crop[2], y1 = crop[3];
+        if (crop) {
+          x = crop[0], y = crop[1], x1 = crop[2], y1 = crop[3];
+        }
         if ("" === this.mouseDownState.directions) {
           x = this.mouseDownState.x;
           y = this.mouseDownState.y;
@@ -902,17 +849,22 @@
           x1 = ox1 + dx;
           y1 = oy1 + dy;
         }
-        if (__indexOf.call(this.mouseDownState.directions, "w") >= 0) x = mx;
-        if (__indexOf.call(this.mouseDownState.directions, "n") >= 0) y = my;
-        if (__indexOf.call(this.mouseDownState.directions, "e") >= 0) x1 = mx;
-        if (__indexOf.call(this.mouseDownState.directions, "s") >= 0) y1 = my;
+        if (__indexOf.call(this.mouseDownState.directions, "w") >= 0) {
+          x = mx;
+        }
+        if (__indexOf.call(this.mouseDownState.directions, "n") >= 0) {
+          y = my;
+        }
+        if (__indexOf.call(this.mouseDownState.directions, "e") >= 0) {
+          x1 = mx;
+        }
+        if (__indexOf.call(this.mouseDownState.directions, "s") >= 0) {
+          y1 = my;
+        }
         crop = [Math.min(x, x1), Math.min(y, y1), Math.max(x, x1), Math.max(y, y1)];
       }
       return crop;
     };
-
     return Cropper;
-
   })();
-
 }).call(this);
