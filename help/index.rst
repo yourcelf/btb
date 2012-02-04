@@ -53,14 +53,46 @@ Uploading
 This short video describes the simple process of uploading PDF files (scans of
 whole letters) and zip files with many PDFs (from many letters).
 
-TODO!!
+.. raw:: html
+   <iframe width="640" height="360" src="http://www.youtube.com/embed/7IR0Ae4PWnM" frameborder="0" allowfullscreen></iframe>
 
 Processing scans and documents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This video explains how to split, process and publish parts of a scanned letter.
+This series of videos explain how to split, process and publish parts of a scanned letter.
 
-TODO!!
+Splitting
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/embed/LOvjWiiJMlo" frameborder="0" allowfullscreen></iframe>
+
+Editing (Full)
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/watch?v=EkUfZbEBSRg" frameborder="0" allowfullscreen></iframe>
+
+Or, watch it in parts
+
+Editing (1/4) - Post 1
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/watch?v= znRyNYM4J1o" frameborder="0" allowfullscreen></iframe>
+
+Editing (2/4) - Profiles and Controls
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/watch?v= 5JCEeQDFeyM" frameborder="0" allowfullscreen></iframe>
+
+Editing (3/4) - Profiles and Requests
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/watch?v= Mq5PxmE12j0" frameborder="0" allowfullscreen></iframe>
+
+Editing (4/4) - Post 2
+
+.. raw:: html
+   <iframe width="480" height="360" src="http://www.youtube.com/watch?v= Xrj0s_agXtE" frameborder="0" allowfullscreen></iframe>
+
 
 Managing users
 ~~~~~~~~~~~~~~
