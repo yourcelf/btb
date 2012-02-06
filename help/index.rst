@@ -54,7 +54,7 @@ This short video describes the simple process of uploading PDF files (scans of
 whole letters) and zip files with many PDFs (from many letters).
 
 .. raw:: html
-   <iframe width="640" height="480" src="http://www.youtube.com/embed/7IR0Ae4PWnM" frameborder="0" allowfullscreen></iframe>
+   <iframe width="640" height="480" src="https://www.youtube-nocookie.com/embed/7IR0Ae4PWnM" frameborder="0" allowfullscreen></iframe>
 
 Processing scans and documents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,12 +64,12 @@ This series of videos explain how to split, process, edit, and publish contents 
 Splitting
 
 .. raw:: html
-   <iframe width="640" height="480" src="http://www.youtube.com/embed/LOvjWiiJMlo" frameborder="0" allowfullscreen></iframe>
+   <iframe width="640" height="480" src="https://www.youtube-nocookie.com/embed/LOvjWiiJMlo" frameborder="0" allowfullscreen></iframe>
 
 Editing (`Post 1 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Requests and Controls <http://www.youtube.com/watch?v=5JCEeQDFeyM>`_, `Profiles and Licenses <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Post 2 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_)
 
 .. raw:: html
-   <iframe width="640" height="480" src="http://www.youtube.com/embed/EkUfZbEBSRg" frameborder="0" allowfullscreen></iframe>
+   <iframe width="640" height="480" src="https://www.youtube-nocookie.com/embed/EkUfZbEBSRg" frameborder="0" allowfullscreen></iframe>
 
 
 
