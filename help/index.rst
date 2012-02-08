@@ -54,6 +54,7 @@ This short video describes the simple process of uploading PDF files (scans of
 whole letters) and zip files with many PDFs (from many letters).
 
 .. raw:: html
+
    <iframe width="640" height="480" src="https://www.youtube-nocookie.com/embed/7IR0Ae4PWnM" frameborder="0" allowfullscreen></iframe>
 
 Processing scans and documents
