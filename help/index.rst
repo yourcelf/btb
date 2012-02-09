@@ -63,12 +63,18 @@ Processing scans and documents
 This series of videos explain how to split, process, edit, and publish contents of a scanned letter.
 
 Splitting
++++++++++
 
 .. raw:: html
 
    <iframe width="640" height="480" src="https://www.youtube-nocookie.com/embed/LOvjWiiJMlo" frameborder="0" allowfullscreen></iframe>
 
-Editing (`Post 1 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Requests and Controls <http://www.youtube.com/watch?v=5JCEeQDFeyM>`_, `Profiles and Licenses <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Post 2 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_)
+Editing
++++++++
+
+See instructions for individual parts: (`Post 1 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Requests and Controls <http://www.youtube.com/watch?v=5JCEeQDFeyM>`_, `Profiles and Licenses <http://www.youtube.com/watch?v=znRyNYM4J1o>`_, `Post 2 <http://www.youtube.com/watch?v=znRyNYM4J1o>`_)
+
+Or all at once:
 
 .. raw:: html
 

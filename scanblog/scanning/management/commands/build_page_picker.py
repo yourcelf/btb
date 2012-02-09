@@ -15,9 +15,9 @@ class Command(BaseCommand):
     help = "Re-save all documents.  Useful for correcting public/private permissions."
 
     def handle(self, *args, **kwargs):
-        tmpdir = "/tmp/thumbdir"
+        thumb_dir = os.path.join(settings.MEDIA_ROOT, "page_picker_thumbs")
         try:
-            os.makedirs(tmpdir)
+            os.makedirs(thumb_dir)
         except OSError:
             pass
         dp = DocumentPage.objects.filter(
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             page_images = []
             page_data = []
             for page in dp[i:i + num_thumbs]:
-                thumb_dest = os.path.join(tmpdir, "%s.jpg" % page.pk)
+                thumb_dest = os.path.join(thumb_dir, "%s.jpg" % page.pk)
                 if not os.path.exists(thumb_dest):
                     proc = subprocess.Popen(["nice", "convert",
                         "-background", "white",
@@ -106,4 +106,4 @@ class Command(BaseCommand):
         with open(os.path.join(dir_path, "manifest.json"), 'w') as fh:
             json.dump({'images': manifest}, fh)
 
-        #os.system("rm -r %s" % tmpdir)
+        #os.system("rm -r %s" % thumb_dir)
