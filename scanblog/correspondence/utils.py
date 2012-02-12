@@ -121,7 +121,6 @@ def combine_pdfs(*args, **kwargs):
                 num_pages = reader.getNumPages()
                 if num_pages % 2 == 1:
                     shutil.copy(os.path.join(settings.MEDIA_ROOT, 
-                                             "btb", 
                                              "blank.pdf"),
                                 os.path.join(tmpdir, "%06da.pdf" % i))
 

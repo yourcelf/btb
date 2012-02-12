@@ -1,0 +1,25 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% block body %}
+
+\renewcommand{\labelitemi}{\underline{\hspace{0.6cm}}} % Show bullets as short lines
+
+We'd like to invite you to join \emph{Between the Bars}!
+
+If you'd like to blog with us, please complete each item in the following checklist in order to get started (the checklist is for your use; no need to send it to us):
+
+\begin{itemize}
+    \item Read the {\bf Introductory Packet} which explains what Between teh Bars is and how you can use it.  Decide if you're interested in writing with us.
+\end{itemize}
+
+\centerline{ {\bf \emph{If you'd like to use \emph{Between the Bars}, return the following to us:}} }
+
+\begin{itemize}
+    \item Review and sign the {\bf License Agreement}, and send it back to us.  We can't publish any materials from you until you've signed and returned it.
+    \item If you'd like, send us a new {\bf blog post} and a {\bf profile page}!  Profile pages are a single 8.5x11 page in which you introduce yourself.  You may attach a photo or drawing if you like, add your mailing address, or anything else you'd like to tell people about yourself, as long as it fits on \emph{one page}.
+\end{itemize}
+
+We hope this answers any questions you might have, but if not, don't hesitate to write us.
+
+{% endblock %}
+{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

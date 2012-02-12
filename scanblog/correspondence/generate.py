@@ -83,11 +83,28 @@ def generic_letter(letter):
         })
 
 def consent_form(letter):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as fh:
-        destination=fh.name
-    shutil.copy(os.path.join(settings.MEDIA_ROOT, "btb", "intro-packet.pdf"),
-                destination)
-    return destination
+    parts = []
+    delete_after = []
+    if letter.org.custom_intro_packet:
+        parts.append(letter.org.custom_intro_packet.path)
+    else:
+        cover = utils.render_tex_to_pdf("correspondence/intro-packet-cover.tex", {
+            'letter': letter
+        })
+        parts.append(cover)
+        delete_after.append(cover)
+        packet = utils.render_tex_to_pdf("correspondence/intro-packet-packet.tex", {
+            'MEDIA_ROOT': settings.MEDIA_ROOT,
+            'letter': letter
+        })
+        parts.append(packet)
+        delete_after.append(packet)
+    parts.append(os.path.join(settings.MEDIA_ROOT, "intro", "license.pdf"))
+
+    combined = utils.combine_pdfs(*parts, add_blanks=True)
+    for pdf in delete_after:
+        os.remove(pdf)
+    return combined
 
 def signup_complete_letter(letter):
     return utils.render_tex_to_pdf("correspondence/created-packet-template.tex", {

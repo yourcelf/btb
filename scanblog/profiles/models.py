@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes import generic
+from django.conf import settings
 
 from scanning.models import Document
 from comments.models import Comment
@@ -263,6 +264,9 @@ class Organization(models.Model):
     public = models.BooleanField(
         help_text="Check to make this organization appear in the 'Groups' tab"
     )
+    custom_intro_packet = models.FileField(upload_to=settings.UPLOAD_TO + "/org_intro_packets",
+            help_text="Leave blank to use the default packet, formatted with your address.",
+            blank=True, null=True)
     mailing_address = models.TextField()
     outgoing_mail_handled_by = models.ForeignKey('self', blank=True, null=True)
 
