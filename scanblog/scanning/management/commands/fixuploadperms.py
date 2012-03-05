@@ -11,6 +11,7 @@ class Command(BaseCommand):
         for dirname in (os.path.join(settings.MEDIA_ROOT, settings.UPLOAD_TO),
                         os.path.join(settings.MEDIA_ROOT, "letters"),
                         os.path.join(settings.MEDIA_ROOT, "mailings"),
+                        os.path.join(settings.MEDIA_ROOT, "page_picker_thumbs"),
                         settings.PUBLIC_MEDIA_ROOT):
             print dirname
             os.system('sudo chown -R www-data.btb "%s"' % dirname)

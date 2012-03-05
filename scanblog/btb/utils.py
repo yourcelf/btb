@@ -138,7 +138,7 @@ class JSONView(View):
     attr_whitelist = []
     def whitelist_attrs(self, kw):
         for key in kw:
-            if key not in attr_whitelist:
+            if key not in self.attr_whitelist:
                 raise HttpResponseBadRequest("Invalid attribute.")
 
     def json_response(self, struct, response=None, content_type="application/json"):
