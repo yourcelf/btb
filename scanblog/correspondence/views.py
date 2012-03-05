@@ -39,7 +39,7 @@ class Letters(JSONView):
         kw = json.loads(request.raw_post_data)
         # TODO: Remove this at the client side.
         for key in ('order_date', 'org', 'document', 'recipient_address', 'sender'):
-            kw.pop(key)
+            kw.pop(key, None)
         self.whitelist_attrs(kw)
         kw['sender'] = request.user
         if kw.get('type', None) == 'waitlist':

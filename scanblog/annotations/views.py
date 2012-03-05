@@ -34,7 +34,7 @@ class Notes(JSONView):
         kw = json.loads(request.raw_post_data)
         #TODO: Remove these in client.
         for key in ('object', 'object_type', 'creator'):
-            kw.pop(key)
+            kw.pop(key, None)
         self.whitelist_attrs(kw)
 
         #
