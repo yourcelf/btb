@@ -26,11 +26,18 @@ class Letters(JSONView):
     """
     JSON CRUD for Letter models.
     """
+    attr_whitelist = [
+        'recipient_id', 'recipient', 'org_id', 
+        'body', 'is_postcard', 'send_anonymously',
+        'type', 'document_id', 'comments',
+        'created', 'sent'
+    ]
     def clean_params(self, request):
         """
         Parameters for put and post.
         """
         kw = json.loads(request.raw_post_data)
+        self.whitelist_attrs(kw)
         kw['sender'] = request.user
         if kw.get('type', None) == 'waitlist':
             kw['is_postcard'] = True
@@ -44,6 +51,13 @@ class Letters(JSONView):
             ).user
         if 'recipient' not in kw:
             raise Http404
+        if 'document_id' in kw:
+            try:
+                kw['document'] = Document.objects.org_filter(
+                        request.user, pk=kw.pop('document_id')
+                ).get()
+            except Document.DoesNotExist:
+                raise Http404
         if 'org_id' in kw:
             kw['org'] = utils.mail_filter_or_404(
                     request.user, Organization, pk=kw.pop('org_id')

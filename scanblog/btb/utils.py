@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import paginator
 from django.db.models import Q, Manager
 from django.db.models.query import QuerySet, EmptyQuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.functional import update_wrapper
 from django.views.generic import View
 from sorl.thumbnail.base import ThumbnailBackend, serialize, EXTENSIONS, tokey
@@ -135,6 +135,12 @@ def args_method_decorator(decorator, *dargs, **dkwargs):
     return _dec
 
 class JSONView(View):
+    attr_whitelist = []
+    def whitelist_attrs(self, kw):
+        for key in kw:
+            if key not in attr_whitelist:
+                raise HttpResponseBadRequest("Invalid attribute.")
+
     def json_response(self, struct, response=None, content_type="application/json"):
         response = response or HttpResponse()
         response.content = json.dumps(struct, indent=4)

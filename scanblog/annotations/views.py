@@ -4,7 +4,7 @@ import datetime
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 
 from btb.utils import args_method_decorator, JSONView, date_to_string
@@ -28,8 +28,10 @@ class ReplyCodes(JSONView):
         return self.paginated_response(request, codes, dict_method=dict_method)
 
 class Notes(JSONView):
+    attr_whitelist = ('user_id', 'document_id', 'scan_id',
+        'created', 'modified', 'resolved', 'important', 'text')
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        self.whitelist_attrs(json.loads(request.raw_post_data))
 
         #
         # Get the related object for which we are fetching notes.  Filter by
@@ -62,10 +64,7 @@ class Notes(JSONView):
         #
         # Handle remaining kwargs.
         #
-        if 'creator_id' in kw:
-            kw['creator'] = get_object_or_404(User, pk=kw.pop('creator_id'))
-        else:
-            kw['creator'] = request.user
+        kw['creator'] = request.user
         for date_field in ('created', 'modified', 'resolved'):
             if kw.get(date_field, None) is None:
                 continue
