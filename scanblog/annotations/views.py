@@ -28,10 +28,14 @@ class ReplyCodes(JSONView):
         return self.paginated_response(request, codes, dict_method=dict_method)
 
 class Notes(JSONView):
-    attr_whitelist = ('user_id', 'document_id', 'scan_id',
+    attr_whitelist = ('id', 'user_id', 'document_id', 'scan_id',
         'created', 'modified', 'resolved', 'important', 'text')
     def clean_params(self, request):
-        self.whitelist_attrs(json.loads(request.raw_post_data))
+        kw = json.loads(request.raw_post_data)
+        #TODO: Remove these in client.
+        for key in ('object', 'object_type', 'creator'):
+            kw.pop(key)
+        self.whitelist_attrs(kw)
 
         #
         # Get the related object for which we are fetching notes.  Filter by

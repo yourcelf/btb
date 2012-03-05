@@ -1,14 +1,18 @@
 import json
 import os
+import logging
 
 from django.conf import settings
 from django.core import paginator
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Manager
 from django.db.models.query import QuerySet, EmptyQuerySet
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.utils.functional import update_wrapper
 from django.views.generic import View
 from sorl.thumbnail.base import ThumbnailBackend, serialize, EXTENSIONS, tokey
+
+logger = logging.getLogger('django.request')
 
 dthandler = lambda obj: obj.isoformat() if hasattr(obj, "isoformat") else None
 
@@ -139,7 +143,8 @@ class JSONView(View):
     def whitelist_attrs(self, kw):
         for key in kw:
             if key not in self.attr_whitelist:
-                raise HttpResponseBadRequest("Invalid attribute.")
+                logger.error("Invalid kwarg: %s (%s)" % (key, kw))
+                raise PermissionDenied
 
     def json_response(self, struct, response=None, content_type="application/json"):
         response = response or HttpResponse()

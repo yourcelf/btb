@@ -27,7 +27,7 @@ class Letters(JSONView):
     JSON CRUD for Letter models.
     """
     attr_whitelist = [
-        'recipient_id', 'recipient', 'org_id', 
+        'id', 'recipient_id', 'recipient', 'org_id', 
         'body', 'is_postcard', 'send_anonymously',
         'type', 'document_id', 'comments',
         'created', 'sent'
@@ -37,6 +37,9 @@ class Letters(JSONView):
         Parameters for put and post.
         """
         kw = json.loads(request.raw_post_data)
+        # TODO: Remove this at the client side.
+        for key in ('order_date', 'org', 'document', 'recipient_address', 'sender'):
+            kw.pop(key)
         self.whitelist_attrs(kw)
         kw['sender'] = request.user
         if kw.get('type', None) == 'waitlist':
