@@ -3,9 +3,12 @@ import json
 from django.test import TestCase
 
 from django.contrib.auth.models import User, Group
+from django.core.urlresolvers import reverse
 from scanning.models import Document
+from comments.models import Comment
 from annotations.models import ReplyCode
 from profiles.models import Organization
+from btb.tests import BtbMailTestCase
 
 class ReplyCodesTest(TestCase):
     def setUp(self):
@@ -83,4 +86,44 @@ class ReplyCodesTest(TestCase):
         self.assertEquals(res.status_code, 200)
         self.assertEquals(json.loads(res.content)['results'], [])
 
+class FlagTest(BtbMailTestCase):
+    def setUp(self, *args, **kwargs):
+        super(FlagTest, self).setUp(*args, **kwargs)
+        self.author = User.objects.create(username="author")
+        self.author.profile.managed = True
+        self.author.profile.save()
+        self.editor = User.objects.create(username="editor")
+        self.editor.set_password("editor")
+        self.editor.save()
+        self.editor.groups.add(Group.objects.get(name='moderators'))
+        self.reader = User.objects.create(username="reader")
+        self.reader.groups.add(Group.objects.get(name='readers'))
+        self.reader.set_password("reader")
+        self.reader.save()
+        self.org = Organization.objects.create(name="org")
+        self.org.members.add(self.author)
+        self.org.moderators.add(self.editor)
 
+    def test_flag_notifications(self):
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.assertTrue(c.login(username="reader", password="reader"))
+
+        # Document flag
+        url = reverse("scanning.flag_document", args=[doc.pk])
+        res = c.post(url, {'reason': 'oh my!!'})
+        self.assertEquals(res.status_code, 302)
+        self.assertOutboxContains(["%sContent flagged" % self.admin_subject_prefix])
+        self.clear_outbox()
+
+        # Comment
+        comment = Comment.objects.create(document=doc, user=self.reader)
+        self.assertTrue(c.login(username="reader", password="reader"))
+        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
+        self.clear_outbox()
+
+        # Comment flag
+        url = reverse("comments.flag_comment", args=[comment.pk])
+        res = c.post(url, {'reason': 'oh my!!'})
+        self.assertEquals(res.status_code, 302)
+        self.assertOutboxContains(["%sContent flagged" % self.admin_subject_prefix])

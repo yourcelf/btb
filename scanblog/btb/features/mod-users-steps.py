@@ -8,6 +8,7 @@ from btblettuce import *
 @step('I type "([^"]*)" in the user search form')
 def i_type_text_in_the_user_search_form(step, text):
     el = css(".user-chooser-trigger")
+    time.sleep(0.5)
     el.send_keys(text[0])
     time.sleep(0.5)
     el = css(".user-search")

@@ -79,7 +79,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
 
     @receiver(signals.post_save, sender=Note)
     def flag_notification(sender, instance, *args, **kwargs):
-        if 'created' in kwargs and instance.important and "FLAG" in instance.text:
+        if 'created' in kwargs and "FLAG" in instance.text:
             if instance.creator.groups.filter(name='moderators').exists():
                 return
             mail_managers("Content flagged", render_to_string(

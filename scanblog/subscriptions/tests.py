@@ -6,15 +6,16 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
 
-from btb.tests import BtbTestCase
+from btb.tests import BtbMailTestCase
 from profiles.models import Organization
 from subscriptions.models import Subscription, NotificationBlacklist
 from scanning.models import Document
 from comments.models import Comment
 from annotations.models import Tag
 
-class TestSubscriptions(BtbTestCase):
+class TestSubscriptions(BtbMailTestCase):
     def setUp(self):
+        super(TestSubscriptions, self).setUp()
         self.editor = User.objects.create(username='editor')
         self.editor.set_password('editor')
         self.editor.save()
@@ -39,20 +40,6 @@ class TestSubscriptions(BtbTestCase):
                 email="test2@example.com"
             )
 
-        self.user_prefix = "[%s] " % Site.objects.get_current().name
-        self.admin_prefix = settings.EMAIL_SUBJECT_PREFIX
-
-    def assertOutboxContains(self, subjects):
-        """
-        Assert that only the subjects given are in the outbox.
-        """
-        self.assertEquals(set([m.subject for m in mail.outbox]),
-                          set(subjects))
-
-    def clear_outbox(self):
-        for i in range(len(mail.outbox)):
-            mail.outbox.pop()
-
     def test_auto_subscribe_and_comment_notifications(self):
         """
         Note: Must have the settings:
@@ -68,7 +55,7 @@ class TestSubscriptions(BtbTestCase):
 
         comment = Comment.objects.create(comment="test", 
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_prefix])
+        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
         self.clear_outbox()
 
         self.assertEquals(Subscription.objects.count(), 1)
@@ -80,15 +67,15 @@ class TestSubscriptions(BtbTestCase):
         # subscribed, but yes notification for admin.
         second_comment = Comment.objects.create(comment="test2",
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_prefix])
+        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
         self.clear_outbox()
 
         # Notification for subscribed comment.
         third_comment = Comment.objects.create(comment="test3",
                 document=doc, user=self.commenter2)
         self.assertOutboxContains([
-            "%sNew comment" % self.admin_prefix,
-            "%sNew reply" % self.user_prefix,
+            "%sNew comment" % self.admin_subject_prefix,
+            "%sNew reply" % self.user_subject_prefix,
         ])
         self.clear_outbox()
 
@@ -101,12 +88,12 @@ class TestSubscriptions(BtbTestCase):
         doc = Document.objects.create(author=self.author,
                 editor=self.editor)
         # No notification until published.
-        self.assertEquals(mail.outbox, [])
+        self.assertOutboxIsEmpty()
 
         doc.status = "published"
         doc.save()
 
-        self.assertOutboxContains(["%sNew post" % self.user_prefix])
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
     def test_tag_notifications(self):
@@ -119,7 +106,7 @@ class TestSubscriptions(BtbTestCase):
         doc.tags.add(tag)
         doc.save()
 
-        self.assertOutboxContains(["%sNew post" % self.user_prefix])
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
     def test_org_notifications(self):
@@ -129,7 +116,7 @@ class TestSubscriptions(BtbTestCase):
         Subscription.objects.create(subscriber=self.commenter, organization=self.org)
         doc = Document.objects.create(author=self.author, 
                 editor=self.editor, status="published")
-        self.assertOutboxContains(["%sNew post" % self.user_prefix])
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
     def test_reply_coded_comment_notifications(self):
@@ -142,7 +129,7 @@ class TestSubscriptions(BtbTestCase):
         reply = Document.objects.create(author=self.author, editor=self.editor,
                 status="published", in_reply_to=doc.reply_code)
         # No admin notification for document.
-        self.assertOutboxContains(["%sNew reply" % self.user_prefix])
+        self.assertOutboxContains(["%sNew reply" % self.user_subject_prefix])
 
     def test_no_duplicate_document_notifications(self):
         """
@@ -159,7 +146,7 @@ class TestSubscriptions(BtbTestCase):
         doc.save()
 
         # Only one, despite triple subscription
-        self.assertOutboxContains(["%sNew post" % self.user_prefix])
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
         doc.save()
@@ -167,7 +154,7 @@ class TestSubscriptions(BtbTestCase):
         doc.save()
 
         # and no more.
-        self.assertEquals(mail.outbox, [])
+        self.assertOutboxIsEmpty()
 
     def test_unsubscribe(self):
         """
@@ -236,7 +223,7 @@ class TestSubscriptions(BtbTestCase):
         Comment.objects.create(document=doc, user=otherCommenter)
 
         # (just outbox)
-        self.assertOutboxContains(['%sNew comment' % self.admin_prefix] * 2)
+        self.assertOutboxContains(['%sNew comment' % self.admin_subject_prefix] * 2)
 
     def test_comment_notification_escaping(self):
         doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
@@ -253,7 +240,7 @@ class TestSubscriptions(BtbTestCase):
                 author=self.commenter, 
                 editor=self.commenter,
                 type="profile")
-        self.assertOutboxContains(["%sProfile uploaded" % self.admin_prefix])
+        self.assertOutboxContains(["%sProfile uploaded" % self.admin_subject_prefix])
 
     def test_unmanaged_author_notifications(self):
         self.author.profile.managed = False
@@ -267,7 +254,7 @@ class TestSubscriptions(BtbTestCase):
                 status="published")
 
         msg = mail.outbox.pop()
-        self.assertEquals(msg.subject, "%sNew post" % self.admin_prefix)
+        self.assertEquals(msg.subject, "%sNew post" % self.admin_subject_prefix)
         self.assertEquals(msg.to, [m[1] for m in settings.MANAGERS])
         self.assertTrue("This is my fun body text" in msg.message().get_payload(None, True))
         self.assertEquals(mail.outbox, [])

@@ -1,6 +1,8 @@
 from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
+from django.core import mail
 
 # TODO this backports the with self.settings construct in the development
 # versions of Django. When it becomes standard, we don't need this anymore.
@@ -33,6 +35,26 @@ class BtbBaseTestCase():
 
 class BtbTestCase(TestCase, BtbBaseTestCase):
     pass
+
+class BtbMailTestCase(BtbTestCase):
+    def setUp(self, *args, **kwargs):
+        super(BtbMailTestCase, self).setUp(*args, **kwargs)
+        self.user_subject_prefix = "[%s] " % Site.objects.get_current().name
+        self.admin_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
+
+    def assertOutboxContains(self, subjects):
+        """
+        Assert that only the subjects given are in the outbox.
+        """
+        self.assertEquals(set([m.subject for m in mail.outbox]),
+                          set(subjects))
+
+    def assertOutboxIsEmpty(self):
+        self.assertEquals(mail.outbox, [])
+
+    def clear_outbox(self):
+        for i in range(len(mail.outbox)):
+            mail.outbox.pop()
 
 class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
     pass

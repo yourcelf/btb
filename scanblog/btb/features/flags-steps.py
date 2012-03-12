@@ -9,7 +9,8 @@ from scanning.models import Document
 @step(u'document (\d+) has no flags')
 def document_has_no_flags(step, doc_id):
     doc = Document.objects.get(pk=doc_id)
-    doc.notes = []
+    for note in doc.notes.all():
+        note.delete()
     assert doc.notes.count() == 0
 
 @step(u'I click the flag button')
