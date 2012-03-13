@@ -166,7 +166,8 @@
     ProcessScanListView.prototype.defaultFilter = {
       page: 1,
       per_page: 6,
-      processing_complete: 0
+      processing_complete: 0,
+      managed: 1
     };
     ProcessScanListView.prototype.initialize = function() {
       return ProcessScanListView.__super__.initialize.call(this, {

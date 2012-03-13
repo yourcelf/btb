@@ -32,7 +32,7 @@ if __name__ == "__main__":
             collectstatic.communicate()
             unittests = subprocess.Popen(
                     [MANAGE_PATH, "test", "btb", "about", "profiles", 
-                        "annotations", "subscriptions", "blogs"])
+                        "annotations", "scanning", "subscriptions", "blogs"])
             unittests.communicate()
             assert unittests.returncode == 0
             integration = subprocess.Popen([MANAGE_PATH, "harvest"])

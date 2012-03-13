@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core import mail
 
+from profiles.models import Organization
+
 # TODO this backports the with self.settings construct in the development
 # versions of Django. When it becomes standard, we don't need this anymore.
 # see http://docs.djangoproject.com/en/dev/topics/testing/#overriding-settings
@@ -62,17 +64,26 @@ class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
 class BtbLoginTestCase(BtbTestCase):
     fixtures = ['initial_data.json']
     def setUp(self):
+        org = Organization.objects.create(name='org')
         test_users = [{
             'username': 'admin',
+            'is_superuser': True,
+            'managed': False,
+            'moderates': org,
             'groups': [],
         }, {
             'username': 'moderator',
+            'managed': False,
+            'moderates': org,
             'groups': ['moderators', 'readers'],
         }, {
             'username': 'reader',
+            'managed': False,
             'groups': ['readers'],
         }, {
             'username': 'author',
+            'managed': True,
+            'member': org,
             'groups': ['authors', 'readers'],
         }]
         for struct in test_users:
@@ -80,6 +91,12 @@ class BtbLoginTestCase(BtbTestCase):
                     is_superuser = struct.get('is_superuser', False))
             user.set_password(user.username)
             user.save()
+            user.profile.managed = struct['managed']
+            user.profile.save()
+            if struct.get('moderates', None):
+                org.moderators.add(user)
+            if struct.get('member', None):
+                org.members.add(user)
             for group in struct['groups']:
                 user.groups.add(Group.objects.get(name=group))
 

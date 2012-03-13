@@ -39,6 +39,18 @@ class Scans(JSONView):
                         processing_complete=
                             get_boolean(request.GET.get("processing_complete"))
                 )
+            if request.GET.get("managed"):
+                try:
+                    managed = bool(int(request.GET.get('managed')))
+                except ValueError:
+                    managed = False
+                if managed:
+                    scans = scans.filter(
+                            Q(author__isnull=True) |
+                            Q(author__profile__managed=True)
+                    )
+                else:
+                    scans = scans.filter(author__profile__managed=False)
             if request.GET.get("editlock__isnull"):
                 scans = scans.filter(
                         editlock__isnull=

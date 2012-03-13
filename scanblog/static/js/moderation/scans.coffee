@@ -95,6 +95,7 @@ class btb.ProcessScanListView extends btb.ProcessItemListView
         page: 1
         per_page: 6
         processing_complete: 0
+        managed: 1
 
     initialize: ->
         super listClass: btb.ScanList
