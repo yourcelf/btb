@@ -25,7 +25,7 @@ System-specific instructions:
  
  * Ubuntu::
 
-    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev
+    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all
 
     cd /tmp
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
