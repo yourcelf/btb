@@ -17,7 +17,7 @@ lettuce
 django_compressor
 sorl-thumbnail
 python-memcached
--e git+https://github.com/jtauber/django-notification#egg=django-notification
+-e git+https://github.com/yourcelf/django-notification#egg=django-notification
 django-pagination
 django-urlcrypt
 South
