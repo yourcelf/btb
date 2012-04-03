@@ -20,17 +20,19 @@ System requirements:
  * `git <http://git-scm.com>`_ (for obtaining the codebase)
  * `mercurial <http://mercurial.selenic.com>`_ (for installing python dependencies)
  * `python-virtualenv <http://www.virtualenv.org/en/latest/>`_
+ * `compass <http://compass-style.org/>`_ (for stylesheet compilation)
 
 System-specific instructions:
  
  * Ubuntu::
 
-    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all
+    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all rubygems
 
     cd /tmp
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
     tar xjvf wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
     sudo cp wkhtmltopdf /usr/local/bin
+    sudo gem install compass
  
  * OS X (using `MacPorts <http://www.macports.org/>`_ -- install that first)::
 
@@ -54,6 +56,9 @@ System-specific instructions:
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-OSX-0.10.0_rc2-static.tar.bz2
     tar jxvf wkhtmltopdf-OSX-0.10.0_rc2-static.tar.bz2
     sudo cp wkhtmltopdf /usr/local/bin
+
+    #XXX: need instructions for installing compass (http://compass-style.org)
+
 
 2. Set up project directory
 ---------------------------
