@@ -2,10 +2,10 @@
 @import "compass/typography/lists"
 @import "compass/layout/sticky-footer"
 @import "compass/typography/vertical_rhythm"
-@import "compass/utilities/links/link-colors"
+@import "compass/typography/links/link-colors"
 @import "compass/css3/box-shadow"
 @import "compass/css3/border-radius"
-@import "compass/css3/gradient"
+@import "compass/css3/images"
 @import "compass/css3/transform"
 @import "blueprint/form"
 
@@ -33,18 +33,18 @@
 @mixin button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
   color: $normalfg
   background-color: $normalbg
-  +linear-gradient(color-stops($normalbg, $normalbg - #222))
+  +background-image(linear-gradient(color-stops($normalbg, $normalbg - #222)))
   &:hover
     color: $hoverfg
     background-color: $hoverbg
-    +linear-gradient(color-stops($hoverbg, $hoverbg - #222))
+    +background-image(linear-gradient(color-stops($hoverbg, $hoverbg - #222)))
   &:active
     color: $activefg
     background-color: $activebg
-    +linear-gradient(color-stops($activebg, $activebg + #222))
+    +background-image(linear-gradient(color-stops($activebg, $activebg + #222)))
   &[disabled]
     color: $normalbg - #222
-    +linear-gradient(color-stops($normalbg, $normalbg))
+    +background-image(linear-gradient(color-stops($normalbg, $normalbg)))
     cursor: default
     border: none
   display: inline-block
