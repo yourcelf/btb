@@ -175,6 +175,15 @@
   @if $sprite == frontflag
     background: url(../img/frontend-sprite.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == twitter
+    background: url(../img/twitter_bird.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == facebook
+    background: url(../img/facebook.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == pinterest
+    background: url(../img/pinterest.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
 
 @mixin anchor-button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
   +button($normalfg, $normalbg, $hoverfg, $hoverbg, $activefg, $activebg)
@@ -810,3 +819,18 @@ a.skip-reply-button
   +anchor-button
   font-weight: normal
   border: white
+
+span.sharing
+  font-style: italic
+a.twitter-button
+  +flat-button
+  +flat-button-position(left)
+  +flat-button-sprite(twitter)
+a.pinterest-button
+  +flat-button
+  +flat-button-position(right)
+  +flat-button-sprite(pinterest)
+a.facebook-button
+  +flat-button
+  +flat-button-position(middle)
+  +flat-button-sprite(facebook)
