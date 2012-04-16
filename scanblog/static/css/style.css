@@ -1959,6 +1959,19 @@ a.facebook-button:hover {
   font-style: italic;
 }
 
+.post-tag-list {
+  position: relative;
+  font-style: italic;
+  top: 0.7em;
+  color: #999999;
+}
+.post-tag-list a:link {
+  color: #99aa99;
+}
+.post-tag-list a:visited {
+  color: #aabbaa;
+}
+
 .other-explore {
   margin-top: 1em;
   margin-bottom: 1em;
