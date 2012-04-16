@@ -1,0 +1,9 @@
+{% with post.tags.all as tags %}
+{% if tags %}
+    <span class='post-tag-list'>Tags: 
+        {% for tag in tags %}
+            <a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </span>
+{% endif %}
+{% endwith %}

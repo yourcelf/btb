@@ -321,8 +321,10 @@ class Documents(JSONView):
             # tags
             tags = []
             for name in kw['tags'].split(';'):
-                tag, created = Tag.objects.get_or_create(name=name.strip().lower())
-                tags.append(tag)
+                name = name.strip()
+                if name:
+                    tag, created = Tag.objects.get_or_create(name=name.strip().lower())
+                    tags.append(tag)
             doc.tags = tags
 
             # pages

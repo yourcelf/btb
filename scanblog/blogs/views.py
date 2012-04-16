@@ -11,6 +11,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.html import escape
 from django import forms
@@ -111,6 +112,7 @@ def blog_cloud(request):
         'tag_columns': columns,
         'count': Document.objects.public().count(),
         'related': {
+            'more': reverse("blogs.recent"),
             'title': "Latest posts by date:",
             'items': DocumentPage.objects.filter(
                 order=0,
@@ -123,7 +125,7 @@ def blog_cloud(request):
                 'document'
             ).order_by(
                 '-document__date_written'
-            )[:14]
+            )[:7]
         }
     }
     return render(request, "blogs/blog_cloud.html", context)
