@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 import json
 import math
@@ -102,11 +103,12 @@ def blog_cloud(request):
     # Sort tags into columns.
     columns = []
     if tags:
-        per_column = min(5, int(math.ceil(len(tags) / 5.)))
+        per_column = max(5, int(math.ceil(len(tags) / 5.)))
         for i in range(0, len(tags), per_column):
             columns.append([])
             for j in range(i, i + per_column):
-                columns[-1].append(tags[i])
+                if i + j < len(tags):
+                    columns[-1].append(tags[i + j])
     
     context = {
         'tag_columns': columns,
@@ -125,7 +127,7 @@ def blog_cloud(request):
                 'document'
             ).order_by(
                 '-document__date_written'
-            )[:7]
+            )[:14]
         }
     }
     return render(request, "blogs/blog_cloud.html", context)
@@ -192,7 +194,7 @@ def tagged_post_list(request, tag):
     context['tag'] = Tag.objects.get(name=tag.lower())
     pnum = context['page'].number
     context['related'] = {
-        'title': "Other recent posts tagged %s" % tag,
+        'title': u"Other posts tagged with “%s”" % tag,
         'items': DocumentPage.objects.filter(
                     order=0,
                     document__tags__name=tag.lower(),
@@ -332,7 +334,7 @@ def save_tags(request, post_id):
     if request.method != 'POST':
         return HttpResponseBadRequest()
     post = get_object_or_404(Document, pk=post_id, type='post')
-    names = [t.strip() for t in request.POST.get("tags").split(",")]
+    names = [t.strip() for t in request.POST.get("tags").split(",") if t.strip()]
     tags = []
     for name in names:
         tag = Tag.objects.get(name=name)
