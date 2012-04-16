@@ -1760,6 +1760,12 @@ a.twitter-button.disabled:hover, a.twitter-button.loading:hover {
 a.twitter-button.loading {
   background: url(../img/spinner.gif) 0px 0px no-repeat #f3f3f3;
 }
+a.twitter-button:hover {
+  background: url(../img/button-sprite.png) 0px 0px no-repeat #f3f3f3;
+  padding-left: 30px;
+  background: url(../img/twitter_bird-hover.png) 0px 0px no-repeat #f3f3f3;
+  background-position: 8px 0px;
+}
 
 a.pinterest-button {
   color: #6e6e6e;
@@ -1826,6 +1832,12 @@ a.pinterest-button.loading {
 a.pinterest-button:hover {
   border-left: 1px solid #999999;
 }
+a.pinterest-button:hover {
+  background: url(../img/button-sprite.png) 0px 0px no-repeat #f3f3f3;
+  padding-left: 30px;
+  background: url(../img/pinterest-hover.png) 0px 0px no-repeat #f3f3f3;
+  background-position: 8px 0px;
+}
 
 a.facebook-button {
   color: #6e6e6e;
@@ -1887,6 +1899,12 @@ a.facebook-button.loading {
 }
 a.facebook-button:hover {
   border-left: 1px solid #999999;
+}
+a.facebook-button:hover {
+  background: url(../img/button-sprite.png) 0px 0px no-repeat #f3f3f3;
+  padding-left: 30px;
+  background: url(../img/facebook-hover.png) 0px 0px no-repeat #f3f3f3;
+  background-position: 8px 0px;
 }
 
 body, p, li, td {

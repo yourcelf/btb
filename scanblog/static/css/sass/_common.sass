@@ -178,11 +178,20 @@
   @if $sprite == twitter
     background: url(../img/twitter_bird.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == twitter-hover
+    background: url(../img/twitter_bird-hover.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
   @if $sprite == facebook
     background: url(../img/facebook.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == facebook-hover
+    background: url(../img/facebook-hover.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
   @if $sprite == pinterest
     background: url(../img/pinterest.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == pinterest-hover
+    background: url(../img/pinterest-hover.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
 
 @mixin anchor-button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
@@ -826,11 +835,17 @@ a.twitter-button
   +flat-button
   +flat-button-position(left)
   +flat-button-sprite(twitter)
+  &:hover
+    +flat-button-sprite(twitter-hover)
 a.pinterest-button
   +flat-button
   +flat-button-position(right)
   +flat-button-sprite(pinterest)
+  &:hover
+    +flat-button-sprite(pinterest-hover)
 a.facebook-button
   +flat-button
   +flat-button-position(middle)
   +flat-button-sprite(facebook)
+  &:hover
+    +flat-button-sprite(facebook-hover)
