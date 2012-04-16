@@ -103,7 +103,10 @@ class Note(models.Model):
         ordering = ['-important', '-created']
 
 class Tag(models.Model):
-    name = models.CharField(max_length=30, db_index=True)
+    name = models.CharField(max_length=30, unique=True, db_index=True)
+
+    post_count = models.IntegerField(default=0, 
+        help_text="Denormalized count of posts with this tag.")
 
     def __unicode__(self):
         return self.name

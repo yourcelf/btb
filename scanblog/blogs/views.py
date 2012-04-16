@@ -1,5 +1,6 @@
 import logging
 import json
+import math
 
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
@@ -92,9 +93,45 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
+def blog_cloud(request):
+    """
+    Show a nav interface to blog posts, by tag or etc.
+    """
+    tags = list(Tag.objects.filter(post_count__gt=0).order_by('name'))
+    # Sort tags into columns.
+    columns = []
+    if tags:
+        per_column = min(5, int(math.ceil(len(tags) / 5.)))
+        for i in range(0, len(tags), per_column):
+            columns.append([])
+            for j in range(i, i + per_column):
+                columns[-1].append(tags[i])
+    
+    context = {
+        'tag_columns': columns,
+        'count': Document.objects.public().count(),
+        'related': {
+            'title': "Latest posts by date:",
+            'items': DocumentPage.objects.filter(
+                order=0,
+                document__status="published",
+                document__type="post",
+                document__author__profile__consent_form_received=True,
+                document__author__is_active=True,
+                document__adult=False,
+            ).select_related(
+                'document'
+            ).order_by(
+                '-document__date_written'
+            )[:14]
+        }
+    }
+    return render(request, "blogs/blog_cloud.html", context)
+
+
 def all_posts_list(request):
     """
-    Show a list of posts.
+    Show a list of all posts (probably the front blog page).
     """
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
@@ -150,7 +187,24 @@ def org_post_list(request, slug):
 def tagged_post_list(request, tag):
     posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
     context = _paginate(request, posts)
-    context['tag'] = tag.capitalize()
+    context['tag'] = Tag.objects.get(name=tag.lower())
+    pnum = context['page'].number
+    context['related'] = {
+        'title': "Other recent posts tagged %s" % tag,
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__tags__name=tag.lower(),
+                    document__status="published",
+                    document__type="post",
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__adult=False,
+            ).distinct().select_related(
+                    'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
     return render(request, "blogs/tag_post_list.html", context)
 
 def post_detail(request, post_id=None, slug=None):

@@ -1936,3 +1936,33 @@ a.facebook-button:hover {
   background: url(../img/facebook-hover.png) 0px 0px no-repeat #f3f3f3;
   background-position: 8px 0px;
 }
+
+.tag-list a:link {
+  color: #006600;
+  text-decoration: none;
+}
+.tag-list a:visited {
+  color: #009900;
+}
+.tag-list .column {
+  float: left;
+  width: 120px;
+  border: 1px solid #dddddd;
+  padding: 0.5em;
+}
+.tag-list .column .tag .count {
+  float: right;
+  color: #cccccc;
+}
+.tag-list .every-page-link {
+  font-size: 120%;
+  font-style: italic;
+}
+
+.other-explore {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.other-explore .bullets {
+  font-size: 150%;
+}
