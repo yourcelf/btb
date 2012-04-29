@@ -381,7 +381,8 @@ def author_post_feed(request, author_id):
 
 def page_picker(request):
     return render(request, "blogs/page_picker.html", {
-        'PUBLIC_MEDIA_URL': settings.PUBLIC_MEDIA_URL
+        'PUBLIC_MEDIA_URL': settings.PUBLIC_MEDIA_URL,
+        'tag_columns': get_tag_columns(),
     })
 
 #
