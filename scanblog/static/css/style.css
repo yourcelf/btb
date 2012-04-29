@@ -1977,6 +1977,12 @@ div.blog-nav-bar .column .tag .count {
   color: #cccccc;
   margin-right: 0.5em;
 }
+div.blog-nav-bar td {
+  text-align: right;
+}
+div.blog-nav-bar td + td {
+  text-align: left;
+}
 div.blog-nav-bar .every-page-link {
   font-size: 120%;
   font-style: italic;
