@@ -318,7 +318,7 @@ def save_tags(request, post_id):
     if request.method != 'POST':
         return HttpResponseBadRequest()
     post = get_object_or_404(Document, pk=post_id, type='post')
-    names = [t.strip() for t in request.POST.get("tags").split(",") if t.strip()]
+    names = [t.strip().lower() for t in request.POST.get("tags").split(",") if t.strip()]
     tags = []
     for name in names:
         tag = Tag.objects.get(name=name)

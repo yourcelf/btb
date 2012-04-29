@@ -238,13 +238,13 @@ def page_picker(request):
         'pages': pages,
     })
  
-@permission_required("scanning.tag_posts")
+@permission_required("scanning.tag_post")
 def tagparty(request):
     return render(request, "moderation/tagparty.html", {
         'tags': Tag.objects.all(),
     })
 
-@permission_required("scanning.tag_posts")
+@permission_required("scanning.tag_post")
 def tagparty_next(request):
     try:
         doc = Document.objects.public().order_by('created').filter(
