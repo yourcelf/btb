@@ -81,6 +81,7 @@ def author_post_list(request, author_id=None, slug=None):
         raise Http404
     context['org'] = author.organization_set.get()
     context['feed_author'] = author
+    context['tag_columns'] = get_tag_columns()
     context['related'] = {
         'title': "Most recent posts from this author:",
         'items': DocumentPage.objects.filter(order=0,
@@ -95,68 +96,48 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
-def blog_cloud(request):
-    """
-    Show a nav interface to blog posts, by tag or etc.
-    """
-    tags = list(Tag.objects.filter(post_count__gt=0).order_by('name'))
+def get_tag_columns():
+    tags = list(Tag.objects.filter(post_count__gte=0).order_by('name'))
     # Sort tags into columns.
     columns = []
+    logger = logging.getLogger("django.request")
     if tags:
         per_column = max(5, int(math.ceil(len(tags) / 5.)))
         for i in range(0, len(tags), per_column):
             columns.append([])
-            for j in range(i, i + per_column):
+            for j in range(0, per_column):
                 if i + j < len(tags):
                     columns[-1].append(tags[i + j])
-    
-    context = {
-        'tag_columns': columns,
-        'count': Document.objects.public().count(),
-        'related': {
-            'more': reverse("blogs.recent"),
-            'title': "Latest posts by date:",
-            'items': DocumentPage.objects.filter(
-                order=0,
-                document__status="published",
-                document__type="post",
-                document__author__profile__consent_form_received=True,
-                document__author__is_active=True,
-                document__adult=False,
-            ).select_related(
-                'document'
-            ).order_by(
-                '-document__date_written'
-            )[:14]
-        }
-    }
-    return render(request, "blogs/blog_cloud.html", context)
+    return columns
 
+def blogs_front_page(request):
+    return posts_by_date(request, template="blogs/blogs_front_page.html")
 
-def all_posts_list(request):
+def posts_by_date(request, template="blogs/all_posts_list.html"):
     """
-    Show a list of all posts (probably the front blog page).
+    Show a list of posts by date
     """
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
     )
     context = _paginate(request, posts)
     pnum = context['page'].number
+    context['tag_columns'] = get_tag_columns()
     context['related'] = {
-        'items': DocumentPage.objects.filter(
-                    order=0,
-                    document__status="published",
-                    document__type="post",
-                    document__author__profile__consent_form_received=True,
-                    document__author__is_active=True,
-                    document__adult=False,
-            ).select_related(
-                    'document'
-            ).order_by(
-                '-document__date_written'
-            )[pnum*10:pnum*10+7]
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
     }
-    return render(request, "blogs/all_posts_list.html", context)
+    return render(request, template, context)
 
 def org_post_list(request, slug):
     """
@@ -170,6 +151,7 @@ def org_post_list(request, slug):
     context = _paginate(request, posts)
     context['org'] = org
     pnum = context['page'].number
+    context['tag_columns'] = get_tag_columns()
     context['related'] = {
         'items': DocumentPage.objects.filter(
                     order=0,
@@ -193,6 +175,7 @@ def tagged_post_list(request, tag):
     context = _paginate(request, posts)
     context['tag'] = Tag.objects.get(name=tag.lower())
     pnum = context['page'].number
+    context['tag_columns'] = get_tag_columns()
     context['related'] = {
         'title': u"Other posts tagged with “%s”" % tag,
         'items': DocumentPage.objects.filter(

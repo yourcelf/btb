@@ -12,3 +12,7 @@ do ->
       date = new Date(date.getTime() + (1000*60*60*24))
   $(".comment-maildate").html("#{days[date.getDay()]}, #{date.getDate()} #{months[date.getMonth()]} #{date.getFullYear()}")
 
+
+$("a.hide, a.show", ".blog-nav-bar").on "click", ->
+  links = $(".blog-nav-bar .links").slideToggle()
+  $(".blog-nav-bar").toggleClass("open")

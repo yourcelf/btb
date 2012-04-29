@@ -1907,28 +1907,6 @@ a.facebook-button:hover {
   background-position: 8px 0px;
 }
 
-.tag-list a:link {
-  color: #006600;
-  text-decoration: none;
-}
-.tag-list a:visited {
-  color: #009900;
-}
-.tag-list .column {
-  float: left;
-  width: 120px;
-  border: 1px solid #dddddd;
-  padding: 0.5em;
-}
-.tag-list .column .tag .count {
-  float: right;
-  color: #cccccc;
-}
-.tag-list .every-page-link {
-  font-size: 120%;
-  font-style: italic;
-}
-
 .post-tag-list {
   position: relative;
   font-style: italic;
@@ -1942,12 +1920,62 @@ a.facebook-button:hover {
   color: #aabbaa;
 }
 
-.other-explore {
-  margin-top: 1em;
-  margin-bottom: 1em;
+div.blog-nav-bar {
+  display: inline-block;
+  width: 100%;
+  vertical-align: middle;
+  font-weight: normal;
 }
-.other-explore .bullets {
+div.blog-nav-bar .links a, div.blog-nav-bar .links a:active, div.blog-nav-bar .links a.active {
+  padding-right: 0 !important;
+  color: #006600 !important;
+  text-decoration: none;
+}
+div.blog-nav-bar .links a:visited {
+  color: #009900 !important;
+}
+div.blog-nav-bar .tag {
+  line-height: 15px;
+}
+div.blog-nav-bar .column {
+  border-left: 1px solid #eeeeee;
+  vertical-align: top;
+  display: inline-block;
+  padding: 0.5em;
+}
+div.blog-nav-bar .column .tag .count {
+  color: #cccccc;
+  margin-right: 0.5em;
+}
+div.blog-nav-bar .every-page-link {
+  font-size: 120%;
+  font-style: italic;
+}
+div.blog-nav-bar .tag-list, div.blog-nav-bar .other-explore {
+  display: inline-block;
+  float: left;
+}
+div.blog-nav-bar ul.bullets {
   font-size: 150%;
+}
+div.blog-nav-bar .toggle a {
+  font-weight: bold;
+  float: left;
+  margin-right: 1em;
+  color: black;
+  text-decoration: none;
+}
+div.blog-nav-bar a.hide, div.blog-nav-bar div.links {
+  display: none;
+}
+div.blog-nav-bar.open a.show {
+  display: none;
+}
+div.blog-nav-bar.open a.hide {
+  display: inline;
+}
+div.blog-nav-bar.open div.links {
+  display: block;
 }
 
 body, p, li, td {

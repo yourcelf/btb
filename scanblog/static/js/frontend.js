@@ -17,4 +17,10 @@
     return $(".comment-maildate").html("" + days[date.getDay()] + ", " + (date.getDate()) + " " + months[date.getMonth()] + " " + (date.getFullYear()));
   })();
 
+  $("a.hide, a.show", ".blog-nav-bar").on("click", function() {
+    var links;
+    links = $(".blog-nav-bar .links").slideToggle();
+    return $(".blog-nav-bar").toggleClass("open");
+  });
+
 }).call(this);
