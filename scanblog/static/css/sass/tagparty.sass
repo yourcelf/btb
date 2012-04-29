@@ -1,0 +1,26 @@
+@import "compass/css3/box-shadow"
+
+#tagpanel
+  position: fixed
+  right: 0
+  top: 2em
+  background-color: rgba(255, 255, 255, 0.95)
+  border: 1px solid black
+  +single-box-shadow(black, 0, 0, 10px)
+  z-index: 1
+  padding: 1em
+  table td
+    vertical-align: top
+  ul.tagit
+    max-width: 300px
+  max-height: 90%
+  overflow: auto
+
+.success
+  background-color: #eff
+  border: 1px solid #99f
+  padding: 0.5em
+.warn
+  background-color: #ffe
+  border: 1px solid #f9e
+  padding: 0.5em
