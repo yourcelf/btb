@@ -1,70 +1,93 @@
 (function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __slice = Array.prototype.slice, __indexOf = Array.prototype.indexOf || function(item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (this[i] === item) return i;
-    }
-    return -1;
-  };
-  btb.Scan = (function() {
-    __extends(Scan, Backbone.Model);
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __slice = Array.prototype.slice,
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  btb.Scan = (function(_super) {
+
+    __extends(Scan, _super);
+
     function Scan() {
       Scan.__super__.constructor.apply(this, arguments);
     }
+
     Scan.prototype.url = function() {
       return btb.ScanList.prototype.baseUrl + "/" + this.id;
     };
+
     Scan.prototype.parse = function(response) {
       return response.results[0];
     };
+
     return Scan;
-  })();
-  btb.ScanList = (function() {
-    __extends(ScanList, btb.FilteredPaginatedCollection);
+
+  })(Backbone.Model);
+
+  btb.ScanList = (function(_super) {
+
+    __extends(ScanList, _super);
+
     function ScanList() {
       ScanList.__super__.constructor.apply(this, arguments);
     }
+
     ScanList.prototype.model = btb.Scan;
+
     ScanList.prototype.baseUrl = "/scanning/scans.json";
+
     return ScanList;
-  })();
-  btb.ScanSplit = (function() {
-    __extends(ScanSplit, Backbone.Model);
+
+  })(btb.FilteredPaginatedCollection);
+
+  btb.ScanSplit = (function(_super) {
+
+    __extends(ScanSplit, _super);
+
     function ScanSplit() {
       ScanSplit.__super__.constructor.apply(this, arguments);
     }
+
     ScanSplit.prototype.url = function() {
       return "/scanning/scansplits.json/" + this.get("scan").id;
     };
+
     return ScanSplit;
-  })();
-  btb.ProcessingManager = (function() {
-    __extends(ProcessingManager, Backbone.View);
+
+  })(Backbone.Model);
+
+  btb.ProcessingManager = (function(_super) {
+
+    __extends(ProcessingManager, _super);
+
     function ProcessingManager() {
       this.render = __bind(this.render, this);
       ProcessingManager.__super__.constructor.apply(this, arguments);
     }
+
     ProcessingManager.prototype.template = _.template($("#processManager").html());
+
     ProcessingManager.prototype.initialize = function() {
       this.scanView = new btb.ProcessScanListView();
       return this.docView = new btb.ProcessDocListView();
     };
+
     ProcessingManager.prototype.render = function() {
       $(this.el).html(this.template());
       $(".process-scan-list", this.el).html(this.scanView.render().el);
       $(".process-document-list", this.el).html(this.docView.render().el);
       return this;
     };
+
     return ProcessingManager;
-  })();
-  btb.ProcessItemListView = (function() {
-    __extends(ProcessItemListView, btb.PaginatedView);
+
+  })(Backbone.View);
+
+  btb.ProcessItemListView = (function(_super) {
+
+    __extends(ProcessItemListView, _super);
+
     function ProcessItemListView() {
       this.turnPage = __bind(this.turnPage, this);
       this.stopLoading = __bind(this.stopLoading, this);
@@ -72,11 +95,15 @@
       this.fetch = __bind(this.fetch, this);
       ProcessItemListView.__super__.constructor.apply(this, arguments);
     }
+
     ProcessItemListView.prototype.itemTemplate = _.template($("#processItem").html());
+
     ProcessItemListView.prototype.events = {
       "click span.pagelink": "turnPage"
     };
+
     ProcessItemListView.prototype.defaultFilter = {};
+
     ProcessItemListView.prototype.initialize = function(options) {
       if (options == null) {
         options = {
@@ -86,30 +113,36 @@
       this.list = new options.listClass();
       return this.list.filter = _.extend({}, this.defaultFilter);
     };
+
     ProcessItemListView.prototype.fetch = function() {
+      var _this = this;
       this.startLoading();
       return this.list.fetch({
-        success: __bind(function() {
-          this.stopLoading();
-          return this.renderDetails();
-        }, this),
-        error: __bind(function() {
-          this.stopLoading();
+        success: function() {
+          _this.stopLoading();
+          return _this.renderDetails();
+        },
+        error: function() {
+          _this.stopLoading();
           return alert("Server error");
-        }, this)
+        }
       });
     };
+
     ProcessItemListView.prototype.startLoading = function() {
       return $(this.el).addClass("loading");
     };
+
     ProcessItemListView.prototype.stopLoading = function() {
       return $(this.el).removeClass("loading");
     };
+
     ProcessItemListView.prototype.render = function() {
       $(this.el).html("<ul class='process-list'></ul><div class='pagination'></div>");
       this.fetch();
       return this;
     };
+
     ProcessItemListView.prototype.renderDetails = function() {
       var html, obj, _i, _len, _ref;
       html = '';
@@ -127,57 +160,78 @@
       }
       return this.renderPagination(this.list, $(".pagination", this.el));
     };
+
     ProcessItemListView.prototype.turnPage = function(event) {
       var page;
       page = this.newPageFromEvent(event);
       this.list.filter.page = page;
       return this.fetch();
     };
+
     return ProcessItemListView;
-  })();
-  btb.ProcessDocListView = (function() {
-    __extends(ProcessDocListView, btb.ProcessItemListView);
+
+  })(btb.PaginatedView);
+
+  btb.ProcessDocListView = (function(_super) {
+
+    __extends(ProcessDocListView, _super);
+
     function ProcessDocListView() {
       this.renderDetails = __bind(this.renderDetails, this);
       ProcessDocListView.__super__.constructor.apply(this, arguments);
     }
+
     ProcessDocListView.prototype.defaultFilter = {
       page: 1,
       per_page: 6,
       status: "unknown"
     };
+
     ProcessDocListView.prototype.initialize = function() {
       return ProcessDocListView.__super__.initialize.call(this, {
         listClass: btb.DocumentList
       });
     };
+
     ProcessDocListView.prototype.renderDetails = function() {
       ProcessDocListView.__super__.renderDetails.call(this);
       $(".delete-scan", this.el).remove();
       return this;
     };
+
     return ProcessDocListView;
-  })();
-  btb.ProcessScanListView = (function() {
-    __extends(ProcessScanListView, btb.ProcessItemListView);
+
+  })(btb.ProcessItemListView);
+
+  btb.ProcessScanListView = (function(_super) {
+
+    __extends(ProcessScanListView, _super);
+
     function ProcessScanListView() {
       ProcessScanListView.__super__.constructor.apply(this, arguments);
     }
+
     ProcessScanListView.prototype.defaultFilter = {
       page: 1,
       per_page: 6,
       processing_complete: 0,
       managed: 1
     };
+
     ProcessScanListView.prototype.initialize = function() {
       return ProcessScanListView.__super__.initialize.call(this, {
         listClass: btb.ScanList
       });
     };
+
     return ProcessScanListView;
-  })();
-  btb.SplitScanView = (function() {
-    __extends(SplitScanView, Backbone.View);
+
+  })(btb.ProcessItemListView);
+
+  btb.SplitScanView = (function(_super) {
+
+    __extends(SplitScanView, _super);
+
     function SplitScanView() {
       this.switchToDocumentView = __bind(this.switchToDocumentView, this);
       this.getEditableDocuments = __bind(this.getEditableDocuments, this);
@@ -210,10 +264,15 @@
       this.initSplit = __bind(this.initSplit, this);
       SplitScanView.__super__.constructor.apply(this, arguments);
     }
+
     SplitScanView.prototype.template = _.template($("#splitScan").html());
+
     SplitScanView.prototype.lockTemplate = _.template($("#splitScanEditLockWarning").html());
+
     SplitScanView.prototype.minimumTypes = ["post", "profile", "photo", "request", "license"];
+
     SplitScanView.prototype.addableTypes = ["post", "profile", "photo", "request"];
+
     SplitScanView.prototype.typeColors = {
       "post": ["#0f0", "#00f", "#0a0", "#00a"],
       "profile": ["#0ff"],
@@ -222,6 +281,7 @@
       "license": ["#ff0"],
       "ignore": ["#000"]
     };
+
     SplitScanView.prototype.events = {
       'click .switch-to-edit-documents': 'switchToDocumentView',
       'mouseover div.page-image': 'mouseOverPage',
@@ -234,6 +294,7 @@
       'click .page-size-chooser span': 'setPageSize',
       'keyup .choose-code input': 'chooseCode'
     };
+
     SplitScanView.prototype.initialize = function(scanId) {
       this.split = new btb.ScanSplit({
         scan: {
@@ -247,6 +308,7 @@
       this.imgScale = 1;
       return this;
     };
+
     SplitScanView.prototype.initSplit = function(model) {
       this.loadSplit(model);
       this.render();
@@ -254,11 +316,10 @@
       this.checkFinished();
       return this.selectPage(0);
     };
+
     SplitScanView.prototype.keyUp = function(event) {
       var index, _ref;
-      if ($("input:focus, textarea:focus").length > 0) {
-        return;
-      }
+      if ($("input:focus, textarea:focus").length > 0) return;
       switch (event.keyCode) {
         case 32:
         case 78:
@@ -279,15 +340,14 @@
         default:
           if ((48 <= (_ref = event.keyCode) && _ref <= 57)) {
             index = (event.keyCode - 48) - 1;
-            if (index === -1) {
-              index = 9;
-            }
+            if (index === -1) index = 9;
             if (index < this.choiceViews.length) {
               return this.choiceViews[index]._toggleChoice(event);
             }
           }
       }
     };
+
     SplitScanView.prototype.loadSplit = function(split) {
       var doc, type, _i, _j, _len, _len2, _ref, _ref2;
       this.split = split;
@@ -317,12 +377,14 @@
         });
       }
     };
+
     SplitScanView.prototype.save = function(event) {
+      var _this = this;
       if ($(".save", this.el).hasClass("disabled")) {
         $(".post-save-message", this.el).html("Not savable yet.").removeClass("success").removeClass("warn");
-        setTimeout(__bind(function() {
-          return $(".post-save-message", this.el).html("");
-        }, this), 2000);
+        setTimeout(function() {
+          return $(".post-save-message", _this.el).html("");
+        }, 2000);
         return;
       }
       this.checkFinished();
@@ -331,21 +393,22 @@
       });
       $(".save", this.el).addClass("loading");
       return this.split.save({}, {
-        success: __bind(function(model) {
-          $(".save", this.el).removeClass("loading");
-          this.initSplit(model);
-          if (this.split.get("scan").processing_complete) {
-            return $(".post-save-message", this.el).html("&check; All good.").addClass("success");
+        success: function(model) {
+          $(".save", _this.el).removeClass("loading");
+          _this.initSplit(model);
+          if (_this.split.get("scan").processing_complete) {
+            return $(".post-save-message", _this.el).html("&check; All good.").addClass("success");
           } else {
-            return $(".post-save-message", this.el).html("Saved, but still needs attention").addClass("warn");
+            return $(".post-save-message", _this.el).html("Saved, but still needs attention").addClass("warn");
           }
-        }, this),
-        error: __bind(function(model, error) {
+        },
+        error: function(model, error) {
           alert("Server error");
-          return $(".save", this.el).removeClass("loading");
-        }, this)
+          return $(".save", _this.el).removeClass("loading");
+        }
       });
     };
+
     SplitScanView.prototype.getAssignedIds = function() {
       var c;
       return _.union.apply(_, [this.ignoreChoice.get("pages")].concat(__slice.call((function() {
@@ -354,13 +417,12 @@
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           c = _ref[_i];
-          if (c.get("pages") != null) {
-            _results.push(c.get("pages"));
-          }
+          if (c.get("pages") != null) _results.push(c.get("pages"));
         }
         return _results;
       }).call(this))));
     };
+
     SplitScanView.prototype.getUnassignedIds = function() {
       var assignedIds, p, pageIds, _i, _len, _ref;
       pageIds = [];
@@ -372,19 +434,19 @@
       assignedIds = this.getAssignedIds();
       return _.difference(pageIds, assignedIds);
     };
+
     SplitScanView.prototype.addChoice = function(doc) {
       var title, type;
       type = doc.get("type");
       this.typeCount[type] = (this.typeCount[type] || 0) + 1;
       title = type;
-      if (this.typeCount[type] > 1) {
-        title += " " + this.typeCount[type];
-      }
+      if (this.typeCount[type] > 1) title += " " + this.typeCount[type];
       doc.set({
         choiceTitle: title
       });
       return this.choices.push(doc);
     };
+
     SplitScanView.prototype.userAddChoice = function(type) {
       var doc;
       doc = new btb.Document({
@@ -402,20 +464,25 @@
         return this.selectPage(this.currentPageIndex);
       }
     };
+
     SplitScanView.prototype.addPostChoice = function(event) {
       return this.userAddChoice("post");
     };
+
     SplitScanView.prototype.addPhotoChoice = function(event) {
       return this.userAddChoice("photo");
     };
+
     SplitScanView.prototype.removeChoice = function(type) {
       return alert("TODO");
     };
+
     SplitScanView.prototype.mouseOverPage = function(event) {
       var i;
       i = parseInt($("input[name=page-index]", event.currentTarget).val());
       return this.selectPage(i);
     };
+
     SplitScanView.prototype.selectPage = function(pageIndex) {
       var pages, view, _i, _len, _ref;
       this.currentPageIndex = pageIndex;
@@ -430,6 +497,7 @@
       }
       return this.ignoreView.setDisplay(pages[pageIndex].id);
     };
+
     SplitScanView.prototype.updateType = function(doc, value) {
       var id, pages;
       this.setDirty(true);
@@ -449,6 +517,7 @@
         return this.checkFinished();
       }
     };
+
     SplitScanView.prototype.setDirty = function(val) {
       var saveEnabled, _ref;
       this.dirty = val;
@@ -456,6 +525,7 @@
       $(".save", this.el).toggleClass("disabled", !saveEnabled);
       return $(".switch-to-edit-documents", this.el).toggleClass("disabled", this.dirty || !this.split.get("scan").processing_complete || this.getEditableDocuments().length === 0);
     };
+
     SplitScanView.prototype.checkFinished = function() {
       var assigned, choice, color, colors, finished, id, type, typeMod, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _m, _ref, _ref2, _ref3, _ref4;
       assigned = this.getAssignedIds();
@@ -475,9 +545,7 @@
         _ref2 = choice.get("pages") || [];
         for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
           id = _ref2[_k];
-          if (!(colors[id] != null)) {
-            colors[id] = [];
-          }
+          if (!(colors[id] != null)) colors[id] = [];
           color = this.typeColors[type][typeMod[type] % this.typeColors[type].length];
           colors[id].push(color);
         }
@@ -495,8 +563,10 @@
       this.split.get("scan").processing_complete = finished;
       return finished;
     };
+
     SplitScanView.prototype.render = function() {
-      var choice, choiceView, lock, scan, user, _i, _len, _ref;
+      var choice, choiceView, lock, scan, user, _i, _len, _ref,
+        _this = this;
       scan = this.split.get("scan");
       if (scan.pages != null) {
         $(this.el).html(this.template({
@@ -508,19 +578,19 @@
           user = null;
         }
         this.userToggle = new btb.InPlaceUserChooser(user);
-        this.userToggle.bind("chosen", __bind(function(user) {
-          this.chooseUser(user);
-          return this.setDirty(true);
-        }, this));
+        this.userToggle.bind("chosen", function(user) {
+          _this.chooseUser(user);
+          return _this.setDirty(true);
+        });
         $(".user-chooser-holder", this.el).html(this.userToggle.render().el);
         $(".user-chooser-trigger", this.el).attr("placeholder", "Author");
         this.ignoreView = new btb.SplitScanPageDocChoice({
           choice: this.ignoreChoice
         });
-        this.ignoreView.bind("toggleChoice", __bind(function(choice, value) {
-          this.updateType(choice, value);
-          return this.setIgnore(value);
-        }, this));
+        this.ignoreView.bind("toggleChoice", function(choice, value) {
+          _this.updateType(choice, value);
+          return _this.setIgnore(value);
+        });
         $(".ignore-choice", this.el).append(this.ignoreView.render().el);
         this.choiceViews = [];
         _ref = this.choices;
@@ -529,13 +599,13 @@
           choiceView = new btb.SplitScanPageDocChoice({
             choice: choice
           });
-          choiceView.bind("toggleChoice", __bind(function(choice, value) {
-            this.updateType(choice, value);
+          choiceView.bind("toggleChoice", function(choice, value) {
+            _this.updateType(choice, value);
             if (value) {
-              this.updateType(this.ignoreChoice, false);
-              return this.setIgnore(false);
+              _this.updateType(_this.ignoreChoice, false);
+              return _this.setIgnore(false);
             }
-          }, this));
+          });
           $(".type-list", this.el).append(choiceView.render().el);
           this.choiceViews.push(choiceView);
         }
@@ -557,13 +627,15 @@
           now: lock.now
         }));
       }
-      $(".page-image img").load(__bind(function() {
-        return this.setPageScale(parseFloat($.cookie("scanpagesize") || 1));
-      }, this));
+      $(".page-image img").load(function() {
+        return _this.setPageScale(parseFloat($.cookie("scanpagesize") || 1));
+      });
       return this;
     };
+
     SplitScanView.prototype.chooseCode = function(event) {
-      var code;
+      var code,
+        _this = this;
       code = $(event.currentTarget).val();
       this.split.get("scan").pendingscan_code = "";
       this.setDirty(true);
@@ -574,22 +646,23 @@
         $(event.currentTarget).addClass("loading");
         $.get("/scanning/scancodes.json", {
           term: code
-        }, __bind(function(data) {
+        }, function(data) {
           var ps, _i, _len;
           $(event.currentTarget).removeClass("loading");
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             ps = data[_i];
             if (ps.code === code) {
-              $(".choose-code input", this.el).removeClass("error");
-              this.userToggle.setUser(new btb.User(ps.author));
-              this.split.get("scan").pendingscan_code = code;
+              $(".choose-code input", _this.el).removeClass("error");
+              _this.userToggle.setUser(new btb.User(ps.author));
+              _this.split.get("scan").pendingscan_code = code;
               return;
             }
           }
-        }, this));
+        });
       }
       return $(".choose-code input", this.el).addClass("error");
     };
+
     SplitScanView.prototype.buildScroller = function() {
       var aspect, best, height, n, numCols, numRows, pageHeight, pageWidth, perCol, perRow, waste, wastedSpace, width;
       n = this.split.get("scan").pages.length;
@@ -602,9 +675,7 @@
         perRow = Math.ceil(n / numRows);
         pageHeight = Math.min(height, Math.floor(height / numRows));
         pageWidth = Math.floor(pageHeight / aspect);
-        if (pageHeight * numRows > height || pageWidth * perRow > width) {
-          continue;
-        }
+        if (pageHeight * numRows > height || pageWidth * perRow > width) continue;
         waste = height * width - (pageHeight * pageWidth * n);
         if (waste < wastedSpace) {
           wastedSpace = waste;
@@ -640,6 +711,7 @@
       $(".pagestatus", this.el).height(best.pageHeight - 2);
       return $(".page-scroller", this.el).height(best.pageHeight * best.numRows);
     };
+
     SplitScanView.prototype.setIgnore = function(value) {
       var view, _i, _len, _ref, _results;
       if (value) {
@@ -664,15 +736,19 @@
         return this.ignoreView.toggleChoice(false, true);
       }
     };
+
     SplitScanView.prototype.chooseUser = function(user) {
       return this.split.get("scan").author = user.toJSON();
     };
+
     SplitScanView.prototype.prevPage = function(event) {
       return this.scrollTo((this.currentPageIndex || 0) - 1);
     };
+
     SplitScanView.prototype.nextPage = function(event) {
       return this.scrollTo((this.currentPageIndex || 0) + 1);
     };
+
     SplitScanView.prototype.jumpToPage = function(event) {
       var classes, index, match, name, _i, _len;
       classes = event.currentTarget.className.split(/\s+/);
@@ -686,6 +762,7 @@
         }
       }
     };
+
     SplitScanView.prototype.scrollTo = function(pageIndex) {
       var target;
       if ((0 <= pageIndex && pageIndex < this.split.get("scan").pages.length)) {
@@ -696,17 +773,20 @@
         return this.selectPage(pageIndex);
       }
     };
+
     SplitScanView.prototype.pageSizes = {
       small: 0.2,
       medium: 0.5,
       large: 1.0
     };
+
     SplitScanView.prototype.setPageSize = function(event) {
       var newScale;
       $(event.currentTarget).removeClass("chosen");
       newScale = this.pageSizes[event.currentTarget.className];
       return this.setPageScale(newScale);
     };
+
     SplitScanView.prototype.setPageScale = function(newScale) {
       var el, h, name, page, scale, w, _i, _len, _ref, _ref2;
       $(".page-size-chooser span", this.el).removeClass("chosen");
@@ -731,24 +811,30 @@
       this.imgScale = newScale;
       return $.cookie("scanpagesize", newScale);
     };
+
     SplitScanView.prototype.getEditableDocuments = function() {
-      return _.select(this.choices, __bind(function(c) {
+      var _this = this;
+      return _.select(this.choices, function(c) {
         var _ref;
         return ((_ref = c.get("pages")) != null ? _ref.length : void 0) > 0;
-      }, this));
+      });
     };
+
     SplitScanView.prototype.switchToDocumentView = function() {
       var editableIds;
-      if ($(".switch-to-edit-documents", this.el).hasClass("disabled")) {
-        return;
-      }
+      if ($(".switch-to-edit-documents", this.el).hasClass("disabled")) return;
       editableIds = _.pluck(this.getEditableDocuments(), "id");
       return btb.app.navigate("#/process/document/" + (editableIds.join(".")), true);
     };
+
     return SplitScanView;
-  })();
-  btb.SplitScanPageDocChoice = (function() {
-    __extends(SplitScanPageDocChoice, Backbone.View);
+
+  })(Backbone.View);
+
+  btb.SplitScanPageDocChoice = (function(_super) {
+
+    __extends(SplitScanPageDocChoice, _super);
+
     function SplitScanPageDocChoice() {
       this.chosenIds = __bind(this.chosenIds, this);
       this.setDisplay = __bind(this.setDisplay, this);
@@ -757,17 +843,22 @@
       this.render = __bind(this.render, this);
       SplitScanPageDocChoice.__super__.constructor.apply(this, arguments);
     }
+
     SplitScanPageDocChoice.prototype.tagName = "li";
+
     SplitScanPageDocChoice.prototype.template = _.template($("#splitScanPageDocChoice").html());
+
     SplitScanPageDocChoice.prototype.events = {
       'click': '_toggleChoice'
     };
+
     SplitScanPageDocChoice.prototype.initialize = function(_arg) {
       var choice, chosen;
       choice = _arg.choice, chosen = _arg.chosen;
       this.choice = choice;
       return this.chosen = chosen || false;
     };
+
     SplitScanPageDocChoice.prototype.render = function() {
       $(this.el).html(this.template({
         title: this.choice.get("choiceTitle"),
@@ -775,23 +866,28 @@
       }));
       return this;
     };
+
     SplitScanPageDocChoice.prototype._toggleChoice = function(event) {
       return this.toggleChoice(null, null);
     };
+
     SplitScanPageDocChoice.prototype.toggleChoice = function(value, silent) {
       this.chosen = value != null ? value : !this.chosen;
       this.render();
-      if (!silent) {
-        return this.trigger("toggleChoice", this.choice, this.chosen);
-      }
+      if (!silent) return this.trigger("toggleChoice", this.choice, this.chosen);
     };
+
     SplitScanPageDocChoice.prototype.setDisplay = function(pageId) {
       this.chosen = __indexOf.call(this.chosenIds(), pageId) >= 0;
       return this.render();
     };
+
     SplitScanPageDocChoice.prototype.chosenIds = function() {
       return this.choice.get("pages") || [];
     };
+
     return SplitScanPageDocChoice;
-  })();
+
+  })(Backbone.View);
+
 }).call(this);

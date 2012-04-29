@@ -1,7 +1,7 @@
 (function() {
-  if (window.btb == null) {
-    window.btb = {};
-  }
+
+  if (window.btb == null) window.btb = {};
+
   btb.stats = {
     treeMap: function(id, data) {
       var fixData, id_counter, tm;
@@ -13,9 +13,7 @@
         Events: {
           enable: true,
           onClick: function(node) {
-            if (node) {
-              return tm.enter(node);
-            }
+            if (node) return tm.enter(node);
           },
           onRightClick: function() {
             return tm.out();
@@ -73,9 +71,7 @@
         data.label.push(name);
         for (_i = 0, _len = agg.length; _i < _len; _i++) {
           entry = agg[_i];
-          if (weeks[entry.week] == null) {
-            weeks[entry.week] = {};
-          }
+          if (weeks[entry.week] == null) weeks[entry.week] = {};
           if (weeks[entry.week][name] == null) {
             weeks[entry.week][name] = entry.count;
           }
@@ -253,4 +249,5 @@
       return sb.refresh();
     }
   };
+
 }).call(this);
