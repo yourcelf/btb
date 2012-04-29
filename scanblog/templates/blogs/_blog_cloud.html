@@ -1,0 +1,37 @@
+<div class='blog-nav-bar{% if blog_cloud_open %} open{% endif %}'>
+    <span class='toggle'>
+        <a href='{% url blogs.home %}' class='show' title='Show or hide navigation links'
+            >&#9654; explore other blogs</a>
+        <a href='{% url blogs.home %}' class='hide' title='Show or hide navigation links'
+            >&#9660;</a>
+    </span>
+    <div class='links'>
+        {% if tag_columns %}
+        <div class='tag-list'>
+            <h3>Posts by category</h3>
+            {% for column in tag_columns %}
+                <div class='column'>
+                    <table>
+                    {% for tag in column %}
+                        <tr class='tag'><td>
+                            <span class='count'>{{ tag.post_count }}</span>
+                        </td><td>
+                            <span class='name'><a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name|title }}</a></span>
+                        </td></tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class='other-explore'>
+            <h3>&nbsp;</h3>
+            <ul class='bullets'>
+                <li><a href='{% url blogs.recent %}'>Recent posts by date</a></li>
+                <li><a href='{% url profiles.profile_list %}'>Posts by author</a></li>
+                <li><a href='TODO'>Recent comments</a></li>
+                <li><em><a href='{% url blogs.page_picker %}'>every page at once</a>!</em></li>
+            </ul>
+        </div>
+    </div>
+</div>
