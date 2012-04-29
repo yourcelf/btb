@@ -16,3 +16,4 @@ do ->
 $("a.hide, a.show", ".blog-nav-bar").on "click", ->
   links = $(".blog-nav-bar .links").slideToggle()
   $(".blog-nav-bar").toggleClass("open")
+  return false

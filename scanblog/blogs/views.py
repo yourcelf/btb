@@ -274,6 +274,7 @@ def post_detail(request, post_id=None, slug=None):
     }
 
     return render(request, "blogs/post_detail.html", {
+            'tag_columns': get_tag_columns(),
             'post': post,
             'org': post.author.organization_set.get(),
             'documentpages': documentpages,

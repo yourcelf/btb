@@ -20,7 +20,8 @@
   $("a.hide, a.show", ".blog-nav-bar").on("click", function() {
     var links;
     links = $(".blog-nav-bar .links").slideToggle();
-    return $(".blog-nav-bar").toggleClass("open");
+    $(".blog-nav-bar").toggleClass("open");
+    return false;
   });
 
 }).call(this);
