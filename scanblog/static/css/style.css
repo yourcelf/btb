@@ -1950,66 +1950,134 @@ a.facebook-button:hover {
   color: #aabbaa;
 }
 
+#subnav div.blog-nav-bar a {
+  color: #006600;
+  padding-right: 0;
+  text-decoration: underline;
+}
+#subnav div.blog-nav-bar a:visited {
+  color: #559955;
+}
+#subnav div.blog-nav-bar a:hover {
+  color: #559955;
+}
+#subnav div.blog-nav-bar a:active {
+  color: black;
+}
+#subnav div.blog-nav-bar .all a {
+  color: #006600;
+}
+#subnav div.blog-nav-bar .all a:visited {
+  color: #006600;
+}
+#subnav div.blog-nav-bar .all a:hover {
+  color: #006600;
+}
+#subnav div.blog-nav-bar .all a:active {
+  color: black;
+}
+#subnav div.blog-nav-bar .tag-links a {
+  text-decoration: none;
+}
+#subnav div.blog-nav-bar a.comment-text {
+  color: black;
+  text-decoration: none;
+}
+#subnav div.blog-nav-bar a.comment-text:visited {
+  color: black;
+}
+#subnav div.blog-nav-bar a.comment-text:hover {
+  color: black;
+}
+#subnav div.blog-nav-bar a.comment-text:active {
+  color: black;
+}
+#subnav div.blog-nav-bar div.subnav a {
+  color: black;
+  padding-right: 1em;
+  text-decoration: none;
+}
+#subnav div.blog-nav-bar div.subnav a:visited {
+  color: black;
+}
+#subnav div.blog-nav-bar div.subnav a:hover {
+  color: black;
+}
+#subnav div.blog-nav-bar div.subnav a:active {
+  color: black;
+}
+#subnav div.blog-nav-bar div.subnav a.open {
+  color: #006600;
+}
+#subnav div.blog-nav-bar div.subnav a.open:visited {
+  color: #006600;
+}
+#subnav div.blog-nav-bar div.subnav a.open:hover {
+  color: #006600;
+}
+#subnav div.blog-nav-bar div.subnav a.open:active {
+  color: #006600;
+}
+
 div.blog-nav-bar {
   display: inline-block;
   width: 100%;
   vertical-align: middle;
   font-weight: normal;
 }
-div.blog-nav-bar .links a, div.blog-nav-bar .links a:active, div.blog-nav-bar .links a.active {
-  padding-right: 0 !important;
-  color: #006600 !important;
-  text-decoration: none;
+div.blog-nav-bar .subnav {
+  margin-left: 1em;
 }
-div.blog-nav-bar .links a:visited {
-  color: #009900 !important;
+div.blog-nav-bar .tag-list {
+  display: inline-block;
 }
-div.blog-nav-bar .tag {
+div.blog-nav-bar .tag-list .tag {
   line-height: 15px;
 }
-div.blog-nav-bar .column {
+div.blog-nav-bar .tag-list td {
+  text-align: right;
+}
+div.blog-nav-bar .tag-list td + td {
+  text-align: left;
+}
+div.blog-nav-bar .tag-list .column {
   border-left: 1px solid #eeeeee;
   vertical-align: top;
   display: inline-block;
   padding: 0.5em;
 }
-div.blog-nav-bar .column .tag .count {
+div.blog-nav-bar .tag-list .column .tag .count {
   color: #cccccc;
   margin-right: 0.5em;
 }
-div.blog-nav-bar td {
-  text-align: right;
+div.blog-nav-bar a.toggle, div.blog-nav-bar a.every-page {
+  font-weight: bold;
 }
-div.blog-nav-bar td + td {
-  text-align: left;
+div.blog-nav-bar a.toggle:before, div.blog-nav-bar a.every-page:before {
+  content: "▶ ";
 }
-div.blog-nav-bar .every-page-link {
-  font-size: 120%;
+div.blog-nav-bar a.toggle.open:before, div.blog-nav-bar a.every-page.open:before {
+  content: "▼ ";
+}
+div.blog-nav-bar a.every-page {
   font-style: italic;
 }
-div.blog-nav-bar .tag-list, div.blog-nav-bar .other-explore {
-  display: inline-block;
-  float: left;
+div.blog-nav-bar a.every-page:before {
+  content: "";
 }
-div.blog-nav-bar ul.bullets {
-  font-size: 150%;
-}
-div.blog-nav-bar .toggle a {
-  font-weight: bold;
-  float: left;
-  margin-right: 1em;
-  color: black;
-  text-decoration: none;
-}
-div.blog-nav-bar a.hide, div.blog-nav-bar div.links {
+div.blog-nav-bar .target {
+  padding: 1em;
+  border: 1px solid #999999;
+  border-top: none;
+  background-color: white;
   display: none;
 }
-div.blog-nav-bar.open a.show {
-  display: none;
-}
-div.blog-nav-bar.open a.hide {
-  display: inline;
-}
-div.blog-nav-bar.open div.links {
+div.blog-nav-bar .target.open {
   display: block;
+}
+div.blog-nav-bar .target .all {
+  font-size: 200%;
+}
+div.blog-nav-bar .comments li {
+  margin-bottom: 1em;
 }

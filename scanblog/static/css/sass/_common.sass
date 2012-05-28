@@ -860,57 +860,73 @@ a.facebook-button
   a:visited
     color: #aba
     
+
+#subnav
+  div.blog-nav-bar
+    a
+      +link-colors(#060, #595, #000, #595)
+      padding-right: 0
+      text-decoration: underline
+    .all a
+      +link-colors(#060, #060, #000, #060)
+    .tag-links a
+      text-decoration: none
+    a.comment-text
+      +link-colors(#000, #000, #000, #000)
+      text-decoration: none
+    div.subnav
+      a
+        +link-colors(#000, #000, #000, #000)
+        padding-right: 1em
+        text-decoration: none
+        &.open
+          +link-colors(#060, #060, #060, #060)
+
 div.blog-nav-bar
+  .subnav
+    margin-left: 1em
   display: inline-block
   width: 100%
   vertical-align: middle
   font-weight: normal
-  .links
-    a, a:active, a.active
-      padding-right: 0 !important
-      color: #060 !important
-      text-decoration: none
-    a:visited
-      color: #090 !important
-  .tag
-    line-height: 15px
 
-  .column
-    border-left: 1px solid #eee
-    vertical-align: top
+  .tag-list
     display: inline-block
-    padding: 0.5em
     .tag
-      .count
-        color: #ccc
-        margin-right: 0.5em
-  td
-    text-align: right
-  td + td
-    text-align: left
-  .every-page-link
-    font-size: 120%
-    font-style: italic
-  .tag-list, .other-explore
-    display: inline-block
-    float: left
-  ul.bullets
-    font-size: 150%
-  .toggle a
+      line-height: 15px
+    td
+      text-align: right
+    td + td
+      text-align: left
+    .column
+      border-left: 1px solid #eee
+      vertical-align: top
+      display: inline-block
+      padding: 0.5em
+      .tag
+        .count
+          color: #ccc
+          margin-right: 0.5em
+  a.toggle, a.every-page
     font-weight: bold
-    float: left
-    margin-right: 1em
-    color: black
-    text-decoration: none
-  a.hide, div.links
+    &:before
+      content: "▶ "
+    &.open:before
+      content: "▼ "
+  a.every-page
+    font-style: italic
+    &:before
+      content: ""
+
+  .target
+    padding: 1em
+    border: 1px solid #999
+    border-top: none
+    background-color: white
     display: none
-
-  &.open
-    a.show
-      display: none
-    a.hide
-      display: inline
-    div.links
+    &.open
       display: block
-
-
+    .all
+      font-size: 200%
+  .comments li
+    margin-bottom: 1em

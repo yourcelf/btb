@@ -12,6 +12,7 @@ from profiles.models import Organization
 @before.all
 def get_browser():
     world.browser = webdriver.Firefox()
+        
     world.browser.implicitly_wait(1)
 
 @before.all

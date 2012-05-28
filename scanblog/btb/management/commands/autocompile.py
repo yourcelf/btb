@@ -14,11 +14,11 @@ class Command(BaseCommand):
     help = 'Watch and automatically compile sass and coffeescript files.'
 
     def exec_coffee(self):
-        # XXX HACK: compile coffeescript with vim plugin instead.
-        if platform.uname()[0] == 'Linux':
-            return subprocess.Popen([COFFEEWATCH_PATH], shell=True)
-        else:
-            return subprocess.Popen(["coffee", "--watch", "--compile", COFFEESCRIPT_PATH])
+        # XXX HACK: compile coffeescript with inotify instead
+        #if platform.uname()[0] == 'Linux':
+        #    return subprocess.Popen([COFFEEWATCH_PATH], shell=True)
+        #else:
+        return subprocess.Popen(["coffee", "--watch", "--compile", COFFEESCRIPT_PATH])
 
     def exec_compass(self):
         return subprocess.Popen(["compass", "watch"], cwd=SASS_PATH)

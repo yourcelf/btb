@@ -241,7 +241,7 @@ def page_picker(request):
 @permission_required("scanning.tag_post")
 def tagparty(request):
     return render(request, "moderation/tagparty.html", {
-        'tags': Tag.objects.all(),
+        'tags': Tag.objects.all().order_by('name'),
     })
 
 @permission_required("scanning.tag_post")

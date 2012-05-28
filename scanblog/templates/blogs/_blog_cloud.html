@@ -1,13 +1,14 @@
-<div class='blog-nav-bar{% if blog_cloud_open %} open{% endif %}'>
-    <span class='toggle'>
-        <a href='{% url blogs.home %}' class='show' title='Show or hide navigation links'
-            >&#9654; explore other blogs</a>
-        <a href='{% url blogs.home %}' class='hide' title='Show or hide navigation links'
-            >&#9660;</a>
-    </span>
-    <div class='links'>
+<div class='blog-nav-bar'>
+    <div class='subnav'>
+        <a class='toggle {{ categories_open }}' href='{% url blogs.home %}' data-target='.categories'>Categories</a>
+        <a class='toggle {{ posts_open }}' href='{% url blogs.home %}' data-target='.recent'>Recent posts</a>
+        <a class='toggle {{ comments_open }}' href='{% url blogs.comments %}' data-target='.comments'>Comments</a>
+        <a class='toggle {{ authors_open }}' href='{% url profiles.profile_list %}' data-target='.authors'>Authors</a>
+        <a href='{% url blogs.page_picker %}' class='every-page'>Every Page</a>
+    </div>
+    <div class='targets'>
+        <div class='target categories tag-list {{ categories_open }}'>
         {% if tag_columns %}
-        <div class='tag-list'>
             <h3>Posts by category</h3>
             {% for column in tag_columns %}
                 <div class='column'>
@@ -22,15 +23,41 @@
                     </table>
                 </div>
             {% endfor %}
-        </div>
         {% endif %}
-        <div class='other-explore'>
-            <h3>&nbsp;</h3>
+        </div>
+        <div class='target recent {{ posts_open }}'>
+            <h3>Recent posts</h3>
             <ul class='bullets'>
-                <li><a href='{% url blogs.recent %}'>Recent posts by date</a></li>
-                <li><a href='{% url profiles.profile_list %}'>Posts by author</a></li>
-                <li><a href='TODO'>Recent comments</a></li>
-                <li><em><a href='{% url blogs.page_picker %}'>every page at once</a>!</em></li>
+                {% for post in recent_titles %}
+                    <li><span class='date'>{{ post.date_written }}</span>
+                        <a href='{{ post.get_absolute_url }}'>{{ post.get_title }}</a>, by {{ post.author.profile }}
+                    </li>
+                {% endfor %}
+                <li class='all'><a href='{% url blogs.home %}'>All posts by date</a></li>
+            </ul>
+        </div>
+        <div class='target comments {{ comments_open }}'>
+            <h3>Recent comments</h3>
+            <ul class='bullets'>
+                {% for comment in recent_comments %}
+                <li><span class='date'>{{ comment.created }}:</span> <a href='{{ comment.document.get_absolute_url }}' class='comment-text'>&ldquo;{{ comment.comment|truncatewords:25 }}&rdquo;</a>
+                <br />on <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by {{ comment.document.author.profile }}</li>
+                {% endfor %}
+                <li class='all'><a href='{% url blogs.comments %}'>All comments</a></li>
+            </ul>
+        </div>
+        <div class='target authors {{ authors_open }}'>
+            <h3>Authors with recent posts</h3>
+            <ul class='bullets'>
+                {% for author in recent_authors %}
+                    <li><span class='date'>{{ author.latest_post }}</span>
+                        <a href='{{ author.get_blog_url }}'>{{ author }}</a>
+                        {% if author.has_public_profile %}
+                            (<a href='{{ author.get_abslute_url }}'>profile</a>)
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                <li class='all'><a href='{% url profiles.profile_list %}'>All authors</a></li>
             </ul>
         </div>
     </div>

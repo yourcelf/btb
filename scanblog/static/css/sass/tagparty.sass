@@ -2,8 +2,8 @@
 
 #tagpanel
   position: fixed
-  right: 0
-  top: 2em
+  bottom: 0
+  left: 5%
   background-color: rgba(255, 255, 255, 0.95)
   border: 1px solid black
   +single-box-shadow(black, 0, 0, 10px)
@@ -11,10 +11,11 @@
   padding: 1em
   table td
     vertical-align: top
-  ul.tagit
-    max-width: 300px
-  max-height: 90%
+  width: 90%
   overflow: auto
+  li
+    float: left
+    margin-right: 1em
 
 .success
   background-color: #eff

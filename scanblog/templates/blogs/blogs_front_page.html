@@ -1,9 +1,8 @@
 {% extends "blogs/base_post_list.html" %}
 {% block title %}Blogs from writers in prison{% endblock %}
-{% block subnav %}{# blank out subnav #}{% endblock %}
+{% block subnav %}
+    {% with categories_open="open" %}{{ block.super }}{% endwith %}
+{% endblock %}
 {% block heading %}
-<h1>Find some blogs to read</h1>
-
-{% with blog_cloud_open=1 %}{% include "blogs/_blog_cloud.html" %}{% endwith %}
-<h2>Recent posts by date</h2>
+<h1>Recent posts by date</h1>
 {% endblock %}

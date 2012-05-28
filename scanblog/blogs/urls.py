@@ -11,6 +11,7 @@ urlpatterns = patterns('blogs.views',
     url(r'^blogs/recent/$', 'posts_by_date', name='blogs.recent'),
     url(r'^blogs/tag/(?P<tag>.+)/$', 'tagged_post_list', name='blogs.tagged_posts'),
     url(r'^blogs/{0}/{1}/?$'.format(author_id, slug), 'author_post_list', name='blogs.blog_show'),
+    url(r'^blogs/comments/$', 'all_comments_list', name='blogs.comments'),
 
     url(r'^blogs/feed/$', 'all_posts_feed', name='blogs.all_posts_feed'),
     url(r'^blogs/feed/{0}/$'.format(author_id), 'author_post_feed', name='blogs.blog_feed'),
@@ -23,7 +24,6 @@ urlpatterns = patterns('blogs.views',
 
     # Org has to come after feed, so that it doesn't consume 'feed' and 'tag' as slugs.
     url(r'^blogs/{0}/$'.format(slug), 'org_post_list', name='blogs.org_post_list'),
-
     url(r'^blogs/{0}/{1}/feed/$'.format(author_id, slug), 'legacy_author_post_feed'),
 
     # Individual posts

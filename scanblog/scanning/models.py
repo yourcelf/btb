@@ -469,7 +469,7 @@ class Document(models.Model):
             return unicode(self.pk)
 
     def get_title(self):
-        return self.title or _("Untitled")
+        return (self.title or _("Untitled")).strip()
 
     def get_slug(self):
         return slugify(self.title)

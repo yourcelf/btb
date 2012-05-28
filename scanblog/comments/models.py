@@ -8,6 +8,14 @@ class CommentManager(OrgManager):
     def public(self):
         return self.filter(removed=False, document__status="published")
 
+    def excluding_boilerplate(self):
+        return self.public().exclude(
+                comment="Thanks for writing! I finished the transcription for your post."
+            ).exclude(
+                comment="Thanks for writing! I worked on the transcription for your post."
+            )
+
+
     def with_mailed_annotation(self):
         return self.public().annotate(letter_sent=models.Max('letter__sent'))
 

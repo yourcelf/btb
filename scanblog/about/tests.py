@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 class TestAccess(TestCase):
+    fixtures = ["initial_data.json"]
     def test_access(self):
         for page in ("about", "about.copyright", "about.faq",
                 "about.resources", "about.community_guidelines", "about.terms",

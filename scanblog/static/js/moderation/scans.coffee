@@ -36,7 +36,7 @@ class btb.ProcessItemListView extends btb.PaginatedView
 
     defaultFilter: {}
 
-    initialize: (options=listClass: btb.DocumentList)->
+    initialize: (options={listClass: btb.DocumentList}) ->
         @list = new options.listClass()
         @list.filter = _.extend({}, @defaultFilter)
 
@@ -56,12 +56,12 @@ class btb.ProcessItemListView extends btb.PaginatedView
     stopLoading: =>
         $(@el).removeClass("loading")
 
-    render: ->
+    render: =>
         $(@el).html "<ul class='process-list'></ul><div class='pagination'></div>"
         @fetch()
         this
 
-    renderDetails: ->
+    renderDetails: =>
         html = ''
         if @list.models.length == 0
             $('ul', @el).html("<li>None found.</li>")

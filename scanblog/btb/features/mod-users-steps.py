@@ -56,7 +56,9 @@ def i_enter_an_address_in_the_create_user_form(step):
 
 @step('a new user named "([^"]*)" is created')
 def a_new_user_named_name_is_created(step, name):
+    time.sleep(1)
     i_search_for_the_user(step, name)
+    time.sleep(1)
     els = csss(".user-chooser-holder .results .display-name")
     for el in els:
         if el.text == name:

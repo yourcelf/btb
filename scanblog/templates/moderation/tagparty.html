@@ -15,22 +15,29 @@
 {% block scripts %}
     <script type='text/template' id='tagpanelTemplate'>
         <form class='tagparty'>
-            Tags:
-            <ul class='chosen-tags'>
-                <% for (var i = 0; i < chosen.length; i++) { %>
-                    <li><%= chosen[i] %></li>
-                <% } %>
-            </ul>
-            <input type='submit' value='Save' class='save-post-button' />
-            <span class='status'></span>
-            <a href=''>Next&nbsp;&raquo;</a>
+            <table>
+                <tr>
+                    <td>
+                        Tags:
+                    </td>
+                    <td>
+                        <ul class='chosen-tags'>
+                            <% for (var i = 0; i < chosen.length; i++) { %>
+                                <li><%= chosen[i] %></li>
+                            <% } %>
+                        </ul>
+                    </td>
+                    <td>
+                        <input type='submit' value='Save' class='save-post-button' />
+                    </td>
+                    <td><div class='status'></div></td>
+                    <td><a href=''>Next&nbsp;&raquo;</a></td>
+                </tr>
+            </table>
             <table class='possible-tags'>
                 <tr>
                     <td><ul>
                         <% for (var i = 0; i < possible.length; i++) { %>
-                            <% if (i && (i % 20 == 0)) { %>
-                                </ul></td><td><ul>
-                            <% } %>
                             <li>
                                 <a href='#' class='tag<%= possible[i].chosen ? " chosen": "" %>'
                                     ><%= possible[i].name %></a>

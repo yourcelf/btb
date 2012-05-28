@@ -1,7 +1,7 @@
 #tagpanel {
   position: fixed;
-  right: 0;
-  top: 2em;
+  bottom: 0;
+  left: 5%;
   background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid black;
   -webkit-box-shadow: 0 0 10px black;
@@ -9,14 +9,15 @@
   box-shadow: 0 0 10px black;
   z-index: 1;
   padding: 1em;
-  max-height: 90%;
+  width: 90%;
   overflow: auto;
 }
 #tagpanel table td {
   vertical-align: top;
 }
-#tagpanel ul.tagit {
-  max-width: 300px;
+#tagpanel li {
+  float: left;
+  margin-right: 1em;
 }
 
 .success {

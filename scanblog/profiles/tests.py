@@ -13,6 +13,7 @@ from scanning.models import Document, Scan
 from annotations.models import Note
 
 class TestUrls(TestCase):
+    fixtures = ["initial_data.json"]
     def testAbsoluteUrls(self):
         u = User.objects.create(username="hoopla", pk=12345)
         u.profile.display_name = "Test User"
@@ -24,6 +25,7 @@ class TestUrls(TestCase):
 
 
 class TestProfileManager(TestCase):
+    fixtures = ["initial_data.json"]
     def setUp(self):
         # Remove default user from fixture.
         User.objects.get(username='uploader').delete()
@@ -263,6 +265,7 @@ class TestProfileManager(TestCase):
         self.assertEqual(set(Profile.objects.needs_comments_letter()), set())
 
 class TestOrgPermissions(TestCase):
+    fixtures = ["initial_data.json"]
     def setUp(self):
         self.orgs = []
         self.superuser = User.objects.create(username="superuser", is_superuser=True)
