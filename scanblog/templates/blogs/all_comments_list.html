@@ -1,4 +1,6 @@
 {% extends "blogs/base.html" %}
+{% load thumbnail %}
+{% load public_url %}
 
 {% block title %}Recent comments{% endblock %}
 {% block body %}
@@ -9,7 +11,18 @@
 {% for comment in page.object_list %}
     <div class='comment-list-item'>
         {% include "comments/_comment.html" %}
-        <span class='comment-list-foot'>Posted on <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by {{ comment.document.author.profile }}</em>
+        {% with doc=comment.document %}
+        <div class='comment-list-foot'>Posted on <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> by {{ comment.document.author.profile }}</em>
+            {% thumbnail doc.documentpage_set.all.0.image.path "100" as im %}
+            <a href='{{ doc.get_absolute_url }}'
+                ><img src='{{ im.url|public_url }}'
+                    width='{{ im.x }}'
+                    height='{{ im.y }}'
+                    title='{{ doc.get_title }}'
+                    alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/></a>
+            {% endthumbnail %}
+        </div>
+        {% endwith %}
     </div>
 {% endfor %}
 </div>

@@ -13,6 +13,8 @@ class CommentManager(OrgManager):
                 comment="Thanks for writing! I finished the transcription for your post."
             ).exclude(
                 comment="Thanks for writing! I worked on the transcription for your post."
+            ).exclude(
+                comment_doc__isnull=False
             )
 
 

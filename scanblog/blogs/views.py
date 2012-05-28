@@ -363,7 +363,8 @@ def org_post_feed(request, slug, filtered=True):
     })
 
 def all_comments_feed(request):
-    comments = Comment.objects.excluding_boilerplate().order_by('-created')[0:10]
+    comments = Comment.objects.excluding_boilerplate().exclude(
+            comment_doc__isnull=False).order_by('-created')[0:10]
     return feeds.all_comments_feed(request, comments)
 
 def post_comments_feed(request, post_id):
