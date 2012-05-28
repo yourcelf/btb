@@ -9,7 +9,7 @@ urlpatterns = patterns('blogs.views',
     # Post lists
     url(r'^blogs/$', 'blogs_front_page', name='blogs.home'),
     url(r'^blogs/recent/$', 'posts_by_date', name='blogs.recent'),
-    url(r'^blogs/tag/(?P<tag>.+)/$', 'tagged_post_list', name='blogs.tagged_posts'),
+    url(r'^blogs/tag/(?:(?P<tag>.+)/)?$', 'tagged_post_list', name='blogs.tagged_posts'),
     url(r'^blogs/{0}/{1}/?$'.format(author_id, slug), 'author_post_list', name='blogs.blog_show'),
     url(r'^blogs/comments/$', 'all_comments_list', name='blogs.comments'),
 

@@ -98,6 +98,9 @@ def author_post_list(request, author_id=None, slug=None):
 
 def get_nav_context():
     tags = list(Tag.objects.filter(post_count__gte=0).order_by('name'))
+    tags.append({
+        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count()
+    })
     # Sort tags into columns.
     columns = []
     logger = logging.getLogger("django.request")
@@ -176,27 +179,49 @@ def org_post_list(request, slug):
     return render(request, "blogs/org_post_list.html", context)
 
 def tagged_post_list(request, tag):
-    posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
+    if tag:
+        posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
+    else:
+        posts = Document.objects.public().filter(type='post', tags__isnull=True)
     context = _paginate(request, posts)
-    context['tag'] = Tag.objects.get(name=tag.lower())
     pnum = context['page'].number
+    if tag:
+        context['tag'] = Tag.objects.get(name=tag.lower())
+        context['related'] = {
+            'title': u"Other posts tagged with “%s”" % tag,
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__tags__name=tag.lower(),
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).distinct().select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
+        }
+    else:
+        context['tag'] = None
+        context['related'] = {
+            'title': u"Other uncategorized posts",
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__tags__isnull=True,
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).distinct().select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
+        }
     context.update(get_nav_context())
-    context['related'] = {
-        'title': u"Other posts tagged with “%s”" % tag,
-        'items': DocumentPage.objects.filter(
-                    order=0,
-                    document__tags__name=tag.lower(),
-                    document__status="published",
-                    document__type="post",
-                    document__author__profile__consent_form_received=True,
-                    document__author__is_active=True,
-                    document__adult=False,
-            ).distinct().select_related(
-                    'document'
-            ).order_by(
-                '-document__date_written'
-            )[pnum*10:pnum*10+7]
-    }
     return render(request, "blogs/tag_post_list.html", context)
 
 def all_comments_list(request):
