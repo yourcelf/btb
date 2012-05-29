@@ -7,8 +7,8 @@ from btblettuce import *
 
 @step('I type "([^"]*)" in the user search form')
 def i_type_text_in_the_user_search_form(step, text):
-    el = css(".user-chooser-trigger")
     time.sleep(0.5)
+    el = css(".user-chooser-trigger")
     el.send_keys(text[0])
     time.sleep(0.5)
     el = css(".user-search")
@@ -26,6 +26,7 @@ def i_click_the_first_user_choice(step):
 
 @step('I search for the user "([^"]*)"')
 def i_search_for_the_user(step, text):
+    world.browser.get(django_url("/moderation/"))
     world.browser.get(django_url("/moderation/#/users"))
     i_type_text_in_the_user_search_form(step, text)
 

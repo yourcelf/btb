@@ -126,3 +126,4 @@ LOGGING = {
     }
 }
 
+SELENIUM_FIREFOX_BIN = "/home/tc1/src/firefox/firefox"

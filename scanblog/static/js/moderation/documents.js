@@ -562,8 +562,6 @@
 
       this.setHighlighting = __bind(this.setHighlighting, this);
 
-      this.highlight = __bind(this.highlight, this);
-
       this.setCropping = __bind(this.setCropping, this);
 
       this.crop = __bind(this.crop, this);
@@ -585,6 +583,8 @@
       this.renderCanvas = __bind(this.renderCanvas, this);
 
       this.render = __bind(this.render, this);
+
+      this.highlightMe = __bind(this.highlightMe, this);
       return EditDocumentPageView.__super__.constructor.apply(this, arguments);
     }
 
@@ -598,7 +598,7 @@
       'click .move-page-up': 'movePageUp',
       'click .move-page-down': 'movePageDown',
       'click .crop': 'crop',
-      'click .highlight': 'highlight',
+      'click .highlight': 'highlightMe',
       'mousemove .page-image': 'mouseMove',
       'mousedown .page-image': 'mouseDown'
     };
@@ -615,7 +615,6 @@
           pagecount: 1
         };
       }
-      this.highlight = null;
       this.page = options.page;
       this.page.transformations = this.page.transformations || {};
       this.pagecount = options.pagecount;
@@ -628,6 +627,10 @@
           return _this.mouseUp(event);
         }
       });
+    };
+
+    EditDocumentPageView.prototype.highlightMe = function() {
+      return this.setHighlighting(!this.highlighting);
     };
 
     EditDocumentPageView.prototype.render = function() {
@@ -752,10 +755,6 @@
       if (trigger) {
         return this.trigger("cropping", this.cropping);
       }
-    };
-
-    EditDocumentPageView.prototype.highlight = function() {
-      return this.setHighlighting(!this.highlighting);
     };
 
     EditDocumentPageView.prototype.setHighlighting = function(highlighting, trigger) {

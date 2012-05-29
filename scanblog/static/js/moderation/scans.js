@@ -18,10 +18,6 @@
       return btb.ScanList.prototype.baseUrl + "/" + this.id;
     };
 
-    Scan.prototype.parse = function(response) {
-      return response.results[0];
-    };
-
     return Scan;
 
   })(Backbone.Model);

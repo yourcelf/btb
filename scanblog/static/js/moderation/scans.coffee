@@ -3,8 +3,6 @@
 #
 class btb.Scan extends Backbone.Model
     url: -> btb.ScanList.prototype.baseUrl + "/" + @id
-    parse: (response) ->
-        response.results[0]
 
 class btb.ScanList extends btb.FilteredPaginatedCollection
     model: btb.Scan

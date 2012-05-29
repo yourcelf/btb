@@ -32,7 +32,6 @@ if __name__ == "__main__":
                 preexec_fn=os.setsid)
                                    
         return_code = 0
-
         if runtests:
             try:
                 collectstatic = subprocess.Popen(

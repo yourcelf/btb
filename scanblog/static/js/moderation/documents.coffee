@@ -15,6 +15,7 @@ class btb.DocumentList extends btb.FilteredPaginatedCollection
 
 class btb.EditDocumentManager extends Backbone.View
     template: _.template $("#editDocumentsManager").html()
+
     initialize: (options=documents: []) ->
         @documents = new btb.DocumentList
         @documents.filter.idlist = options.documents.join(".")
@@ -329,7 +330,7 @@ class btb.EditDocumentPageView extends Backbone.View
         'click .move-page-up': 'movePageUp'
         'click .move-page-down': 'movePageDown'
         'click .crop': 'crop'
-        'click .highlight': 'highlight'
+        'click .highlight': 'highlightMe'
         'mousemove .page-image': 'mouseMove'
         'mousedown .page-image': 'mouseDown'
 
@@ -337,7 +338,6 @@ class btb.EditDocumentPageView extends Backbone.View
     scale: 1
 
     initialize: (options=page: null, pagecount: 1) ->
-        @highlight = null
         @page = options.page
         @page.transformations = @page.transformations or {}
         @pagecount = options.pagecount
@@ -350,6 +350,9 @@ class btb.EditDocumentPageView extends Backbone.View
         $(document).mouseup (event) =>
             if @mouseIsDown
                 @mouseUp(event)
+
+    highlightMe: =>
+        @setHighlighting(not @highlighting)
 
     render: =>
         $(@el).html @template(page: @page, pagecount: @pagecount)
@@ -460,6 +463,7 @@ class btb.EditDocumentPageView extends Backbone.View
         @trigger "movePageDown"
 
     crop: => @setCropping(not @cropping)
+
     setCropping: (cropping, trigger=true) =>
         @cropping = cropping
         if @cropping
@@ -468,7 +472,7 @@ class btb.EditDocumentPageView extends Backbone.View
         if trigger
             @trigger "cropping", @cropping
 
-    highlight: => @setHighlighting(not @highlighting)
+
     setHighlighting: (highlighting, trigger=true) =>
         @highlighting = highlighting
         if @highlighting

@@ -17,7 +17,7 @@ from pyPdf.utils import PdfReadError
 
 from django.contrib.auth.models import User
 from django.conf import settings
-from celery.decorators import task
+from celery.task import task
 from sorl.thumbnail import get_thumbnail
 
 from scanning.models import Scan, ScanPage, Document, DocumentPage, EditLock
