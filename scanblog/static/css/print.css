@@ -2036,11 +2036,11 @@ div.blog-nav-bar a.every-page:before {
   content: "";
 }
 div.blog-nav-bar .target {
-  -webkit-box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 2px 2px 0px #666666;
+  -moz-box-shadow: 0px 2px 2px 0px #666666;
+  box-shadow: 0px 2px 2px 0px #666666;
   padding: 1em;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.2);
   display: none;
 }
 div.blog-nav-bar .target.open {

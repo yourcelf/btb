@@ -33,7 +33,7 @@
             <h3>Recent posts</h3>
             <ul class='bullets'>
                 {% for post in recent_titles %}
-                    <li><span class='date'>{{ post.date_written }}</span>
+                    <li><span class='date'>{{ post.date_written|date:"b d, Y" }}</span>
                         <a href='{{ post.get_absolute_url }}'>{{ post.get_title }}</a>, by {{ post.author.profile }}
                     </li>
                 {% endfor %}
@@ -44,7 +44,7 @@
             <h3>Recent comments</h3>
             <ul class='bullets'>
                 {% for comment in recent_comments %}
-                <li><span class='date'>{{ comment.created }}:</span> <a href='{{ comment.document.get_absolute_url }}' class='comment-text'>&ldquo;{{ comment.comment|truncatewords:25 }}&rdquo;</a>
+                <li><span class='date'>{{ comment.created|date:"b d, Y" }}:</span> <a href='{{ comment.document.get_absolute_url }}' class='comment-text'>&ldquo;{{ comment.comment|truncatewords:25 }}&rdquo;</a>
                 <br />on <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by {{ comment.document.author.profile }}</li>
                 {% endfor %}
                 <li class='all'><a href='{% url blogs.comments %}'>All comments</a></li>
@@ -54,7 +54,7 @@
             <h3>Authors with recent posts</h3>
             <ul class='bullets'>
                 {% for author in recent_authors %}
-                    <li><span class='date'>{{ author.latest_post }}</span>
+                    <li><span class='date'>{{ author.latest_post|date:"b d, Y" }}</span>
                         <a href='{{ author.get_blog_url }}'>{{ author }}</a>
                         {% if author.has_public_profile %}
                             (<a href='{{ author.get_absolute_url }}'>profile</a>)
