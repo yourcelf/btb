@@ -2066,9 +2066,10 @@ div.blog-nav-bar a.every-page:before {
   content: "";
 }
 div.blog-nav-bar .target {
+  -webkit-box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.5);
   padding: 1em;
-  border: 1px solid #999999;
-  border-top: none;
   background-color: white;
   display: none;
 }
