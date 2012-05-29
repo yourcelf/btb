@@ -57,7 +57,7 @@
                     <li><span class='date'>{{ author.latest_post }}</span>
                         <a href='{{ author.get_blog_url }}'>{{ author }}</a>
                         {% if author.has_public_profile %}
-                            (<a href='{{ author.get_abslute_url }}'>profile</a>)
+                            (<a href='{{ author.get_absolute_url }}'>profile</a>)
                         {% endif %}
                     </li>
                 {% endfor %}
