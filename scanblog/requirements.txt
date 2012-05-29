@@ -1,5 +1,5 @@
-django==1.4
-psycopg2==2.4.1
+django>=1.4
+psycopg2
 -e hg+http://bitbucket.org/ubernostrum/django-registration#egg=django-registration
 # Require celery 2.2 because of backwards incompatibility introduced in 2.3 --
 # upgrade when resolved.
