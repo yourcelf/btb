@@ -1,16 +1,16 @@
-Hello,
+%{ trans "Hello" %},
 
-Welcome to {{ site.name }}!  You've just joined a community of respectful
-people who value helping to give a voice to the voiceless.
+%{ trans "Welcome to {{ site.name }}!  You've just joined a community of respectful
+people who value helping to give a voice to the voiceless." %}
 
-To complete your registration, follow this link:
+%{ trans "To complete your registration, follow this link:" %}
 {{ base_url }}/accounts/activate/{{ activation_key }}/
 
-This link will expire in {{ expiration_days }} days, so don't delay.
+%{ trans "This link will expire in {{ expiration_days }} days, so don't delay." %}
 
-See you on {{ site.name }}!
+%{ trans "See you on {{ site.name }}! "%}
 
-Sincerely,
+%{ trans "Sincerely" %},
 
-{{ site.name }} staff
+%{ trans "{{ site.name }} staff" %}
 {{ base_url }}
