@@ -1,15 +1,15 @@
 {% extends "blogs/base_post_list.html" %}
 {% block title %}
     {% if tag %}
-        Posts tagged &ldquo;{{ tag|title }}&rdquo;
+        {% trans "Posts tagged" %} &ldquo;{{ tag|title }}&rdquo;
     {% else %}
-        Uncategorized posts
+        {% trans "Uncategorized posts" %}
     {% endif %}
 {% endblock %}
 {% block heading %}
     {% if tag %}
-        <h1>Posts tagged &ldquo;{{ tag|title }}&rdquo;</h1>
+        <h1>{% trans "Posts tagged" %} &ldquo;{{ tag|title }}&rdquo;</h1>
     {% else %}
-        <h1>Uncategorized posts</h1>
+        <h1>{% trans "Uncategorized posts" %}</h1>
     {% endif %}
 {% endblock %}

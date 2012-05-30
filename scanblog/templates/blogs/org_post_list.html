@@ -1,6 +1,6 @@
 {% extends "blogs/base_post_list.html" %}
-{% block title %}Recent posts from authors in {{ org.name }}{% endblock %}
+{% block title %}{% trans "Recent posts from authors in" %} {{ org.name }}{% endblock %}
 {% block heading %}
-<h1>Recent posts from authors in <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em></h1>
+<h1>{% trans "Recent posts from authors in" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em></h1>
     {{ org.footer|safe }}
 {% endblock %}

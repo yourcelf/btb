@@ -1,15 +1,29 @@
 <div class='blog-nav-bar'>
     <div class='subnav'>
-        <a class='toggle {{ categories_open }}' href='{% url blogs.home %}' data-target='.categories'>Categories</a>
-        <a class='toggle {{ posts_open }}' href='{% url blogs.home %}' data-target='.recent'>Recent posts</a>
-        <a class='toggle {{ comments_open }}' href='{% url blogs.comments %}' data-target='.comments'>Comments</a>
-        <a class='toggle {{ authors_open }}' href='{% url profiles.profile_list %}' data-target='.authors'>Authors</a>
-        <a href='{% url blogs.page_picker %}' class='every-page'>Every Page</a>
+        <a class='toggle {{ categories_open }}' href='{% url blogs.home %}'
+	   data-target='.categories'>
+	  {% trans "Categories" %}
+	</a>
+        <a class='toggle {{ posts_open }}' href='{% url blogs.home %}'
+	   data-target='.recent'>
+	  {% trans "Recent posts" %}
+	</a>
+        <a class='toggle {{ comments_open }}' href='{% url blogs.comments %}'
+	   data-target='.comments'>
+	  {% trans "Comments" %}
+	</a>
+        <a class='toggle {{ authors_open }}' href='{% url profiles.profile_list %}'
+	   data-target='.authors'>
+	  {% trans "Authors" %}
+	</a>
+        <a href='{% url blogs.page_picker %}' class='every-page'>
+	  {% trans "Every Page" %}
+	</a>
     </div>
     <div class='targets'>
         <div class='target categories tag-list {{ categories_open }}'>
         {% if tag_columns %}
-            <h3>Posts by category</h3>
+            <h3>{% trans "Posts by category" %}</h3>
             {% for column in tag_columns %}
                 <div class='column'>
                     <table>
@@ -30,38 +44,44 @@
         {% endif %}
         </div>
         <div class='target recent {{ posts_open }}'>
-            <h3>Recent posts</h3>
+            <h3>{% trans "Recent posts" %}</h3>
             <ul class='bullets'>
                 {% for post in recent_titles %}
                     <li><span class='date'>{{ post.date_written|date:"b d, Y" }}</span>
                         <a href='{{ post.get_absolute_url }}'>{{ post.get_title }}</a>, by {{ post.author.profile }}
                     </li>
                 {% endfor %}
-                <li class='all'><a href='{% url blogs.home %}'>All posts by date</a></li>
+                <li class='all'><a href='{% url blogs.home %}'>
+		    {% trans "All posts by date" %}
+		</a></li>
             </ul>
         </div>
         <div class='target comments {{ comments_open }}'>
-            <h3>Recent comments</h3>
+            <h3>{% trans "Recent comments" %}</h3>
             <ul class='bullets'>
                 {% for comment in recent_comments %}
                 <li><span class='date'>{{ comment.created|date:"b d, Y" }}:</span> <a href='{{ comment.document.get_absolute_url }}' class='comment-text'>&ldquo;{{ comment.comment|truncatewords:25 }}&rdquo;</a>
-                <br />on <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by {{ comment.document.author.profile }}</li>
+                <br />{% trans "on" %} <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> {% trans "by" %} {{ comment.document.author.profile }}</li>
                 {% endfor %}
-                <li class='all'><a href='{% url blogs.comments %}'>All comments</a></li>
+                <li class='all'><a href='{% url blogs.comments %}'>
+		    {% trans "All comments" %}
+		</a></li>
             </ul>
         </div>
         <div class='target authors {{ authors_open }}'>
-            <h3>Authors with recent posts</h3>
+            <h3>{% trans "Authors with recent posts" %}</h3>
             <ul class='bullets'>
                 {% for author in recent_authors %}
                     <li><span class='date'>{{ author.latest_post|date:"b d, Y" }}</span>
                         <a href='{{ author.get_blog_url }}'>{{ author }}</a>
                         {% if author.has_public_profile %}
-                            (<a href='{{ author.get_absolute_url }}'>profile</a>)
+                            (<a href='{{ author.get_absolute_url }}'>{% trans "profile" %}</a>)
                         {% endif %}
                     </li>
                 {% endfor %}
-                <li class='all'><a href='{% url profiles.profile_list %}'>All authors</a></li>
+                <li class='all'><a href='{% url profiles.profile_list %}'>
+		    {% trans "All authors" %}
+		</a></li>
             </ul>
         </div>
     </div>

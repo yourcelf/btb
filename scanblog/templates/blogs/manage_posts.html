@@ -1,17 +1,17 @@
 {% extends "blogs/base.html" %}
 {% load humanize %}
 
-{% block title %}My posts{% endblock %}
+{% block title %}{% trans "My posts" }%{% endblock %}
 
 {% block body %}
-    <a href='{% url blogs.edit_post %}'>&#9997; Compose new post</a>
+    <a href='{% url blogs.edit_post %}'>&#9997; {% trans "Compose new post" %}</a>
     <table class='my-posts'>
         {% if posts %}
             <tr>
-                <th>Title</th>
-                <th>Tags</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Tags" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Date" %}</th>
                 <th></th>
             </tr>
         {% endif %}
@@ -21,28 +21,28 @@
                 <td>{{ post.tags.all|join:", " }}</td>
                 <td>
                     {% if post.status == "unknown" %}
-                        Draft
+                        {% trans "Draft" %}
                     {% endif %}
                     {% if post.status == "ready_to_publish" %}
-                        Ready to publish
+                        {% trans "Ready to publish" %}
                     {% endif %}
                     {% if post.status == "published" %}
-                        Published
+                        {% trans "Published" %}
                     {% endif %}
                     {% if post.status == "unpublishable" %}
-                        Can't be published
+                        {% trans "Can't be published" %}
                     {% endif %}
                 </td>
                 <td>{{ post.date_written|naturalday }}</td>
                 <td>
                     {% if post.status == "published" %}
-                        <a href='{{ post.get_absolute_url }}'>View on site &raquo;</a>
+                        <a href='{{ post.get_absolute_url }}'>{% trans "View on site" %} &raquo;</a>
                     {% endif %}
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td>No posts yet.</td>
+                <td>{% trans "No posts yet." %}</td>
             </tr>
         {% endfor %}
     </table>

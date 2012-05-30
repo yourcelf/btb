@@ -1,35 +1,36 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
 {% load public_url %}
+{% load i18n %}
 
-{% block title %}Human Stories from Prison{% endblock %}
+{% block title %}{% trans "Human Stories from Prison" %}{% endblock %}
 
 {% block nav_logo_icon %}{% endblock %}
-{% block nav_home_text %}Home{% endblock %}
+{% block nav_home_text %}{% trans "Home" %}{% endblock %}
 
 {% block body %}
 <div class='titlepage'>
     <img src='{{ STATIC_URL }}img/v2-nadya-medium.png' alt='{{ site.name }}' />
     <h1>{{ site.name }}</h1>
-    <h2>Human stories from prison</h2>
+    <h2>{% trans "Human stories from prison" %}</h2>
     <div style='clear: both;'></div>
     <div class='about'>
-        {{ site.name }} is a weblog platform for people in prison, through
+        {{ site.name }} {% trans "is a weblog platform for people in prison, through
         which the 1% of Americans who are in prison can tell their stories.
-        Leave a comment &ndash; we'll pass it on.
+        Leave a comment &ndash; we'll pass it on." %}
     </div>
 </div>
 <div class='news-blurbs'>
     <div class='blurb'>
-        <blockquote>Gives voice to the voiceless.</blockquote>
+        <blockquote>{% trans "Gives voice to the voiceless." %}</blockquote>
         <a href='http://news.change.org/stories/between-the-bars-gives-voice-to-the-voiceless'>Change.org</a>
     </div>
     <div class='blurb'>
-        <blockquote>... encourages inmates to retain their individual identities ...</blockquote>
+        <blockquote>{% trans "... encourages inmates to retain their individual identities ..." %}</blockquote>
         <a href='http://www.technewsdaily.com/new-site-helps-inmates-blog-from-behind-bars-2605/'>technewsdaily.com</a>
     </div>
     <div class='blurb'>
-        <blockquote>Amazing stuff.</blockquote>
+        <blockquote>{% trans "Amazing stuff." %}</blockquote>
         <a href='http://chrisuggen.blogspot.com/2010/11/between-bars.html'>Christopher Uggen</a>, criminologist
     </div>
 </div>
@@ -59,12 +60,12 @@
     </div>
 </div>
 <div class='recent-comments'>
-    <h2>Recent comments</h2>
+    <h2>{% trans "Recent comments" %}</h2>
     {% for comment in comments %}
     <div class='comment'>
-        <div class='date'>{{ comment.created|timesince }} ago</div>
+        <div class='date'>{{ comment.created|timesince }} {% trans "ago" %}</div>
         <div class='excerpt'>&#147;<span class='quote'>{{ comment.comment|truncatewords:"20" }}</span>&#148;</div>
-        <span class='author'>By {{ comment.user.profile }}</span> on <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
+        <span class='author'>{% trans "By" %} {{ comment.user.profile }}</span> {% trans "on" %} <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
     </div>
     {% endfor %}
 
@@ -72,8 +73,8 @@
 </div>
 <div style='clear: both; margin-bottom: 2em;'></div>
 <div class='title-closing'>
-    <h2>Join the conversation!</h2>
-    <p>Head on over to the <a href='/blogs/'>blogs</a>.</p>
+    <h2>{% trans "Join the conversation!" %}</h2>
+    <p>{% trans "Head on over to the <a href='/blogs/'>blogs</a>." %}</p>
 </div>
 {% endblock %}
 {% block scripts %}

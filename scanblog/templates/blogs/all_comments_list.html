@@ -5,21 +5,22 @@
 {% block title %}Recent comments{% endblock %}
 {% block body %}
 
-<h1>Recent Comments</h1>
+<h1>{% trans "Recent Comments" %}</h1>
 
 <div class='comment-list'>
 {% for comment in page.object_list %}
     <div class='comment-list-item'>
         {% include "comments/_comment.html" %}
         {% with doc=comment.document %}
-        <div class='comment-list-foot'>Posted on <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> by {{ comment.document.author.profile }}</em>
+        <div class='comment-list-foot'>{% trans "Posted on" %} <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> {% trans "by" %} {{ comment.document.author.profile }}</em>
             {% thumbnail doc.documentpage_set.all.0.image.path "100" as im %}
-            <a href='{{ doc.get_absolute_url }}'
-                ><img src='{{ im.url|public_url }}'
+            <a href='{{ doc.get_absolute_url }}'>
+	      <img src='{{ im.url|public_url }}'
                     width='{{ im.x }}'
                     height='{{ im.y }}'
                     title='{{ doc.get_title }}'
-                    alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/></a>
+                    alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/>
+	    </a>
             {% endthumbnail %}
         </div>
         {% endwith %}
@@ -28,7 +29,7 @@
 </div>
 
 {% if page.paginator.num_pages > 1 %}
-    More comments:
+    {% trans "More comments" %}:
     {% include "_pagination.html" %}
 {% endif %}
 

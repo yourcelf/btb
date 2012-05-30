@@ -4,6 +4,7 @@
 {% load thumbnail %}
 {% load public_url %}
 
+<!-- don't know how to trans 'Untitled' FIXME -->
 {% block title %}{% firstof post.title "Untitled" %} &mdash; {{post.author.profile}}{% endblock %}
 
 {% block head %}
@@ -20,69 +21,75 @@
 {% else %}
     {% with tx=post.transcription tx_rev=tx.current %}
 
-        {% include "blogs/_post_title_line.html" %}
+	{% include "blogs/_post_title_line.html" %}
 
-        <div class='post-detail-author'>
-            {% if post.author.profile.blog_name %}
-                From <a href='{{ post.author.profile.get_blog_url }}'><b>{{ post.author.profile.blog_name }}</b></a>
-            {% endif %}
-            by <a href='{{post.author.profile.get_blog_url}}'>{{ post.author.profile.display_name }}</a>
-            {% if post.author.profile.has_public_profile %} 
-                (author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>)
-            {% endif %}
-            {% if org.public %}, writing for <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
-            {% if org.public %}{{ org.footer|safe }}{% endif %}
-        </div>
+	<div class='post-detail-author'>
+	    {% if post.author.profile.blog_name %}
+		{% trans "From" %} <a href='{{ post.author.profile.get_blog_url }}'><b>{{ post.author.profile.blog_name }}</b></a>
+	    {% endif %}
+	    {% trans "by" %} <a href='{{post.author.profile.get_blog_url}}'>{{ post.author.profile.display_name }}</a>
+	    {% if post.author.profile.has_public_profile %}
+		({% trans "author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>" %})
+	    {% endif %}
+	    {% if org.public %}, {% trans "writing for" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
+	    {% if org.public %}{{ org.footer|safe }}{% endif %}
+	</div>
 
-        {% if post.in_reply_to %}
-            <div class='in-reply-to'>
-                {% with in_reply_to=post.in_reply_to.document %}
-                {% thumbnail in_reply_to.documentpage_set.all.0.image.path "100" as im %}
-                <table><tr>
-                    <td><b>This post is in reply to comments on:</b>&nbsp;</td>
-                    <td>
-                        <a href='{{ in_reply_to.get_absolute_url }}'
-                        ><img style='vertical-align: top;' src='{{ im.url|public_url }}' alt='{{ in_reply_to.get_title }} thumbnail' /></a><br />
-                        <a href='{{ in_reply_to.get_absolute_url }}'>{{ in_reply_to.get_title }}</a><br /> ({{ in_reply_to.date_written|naturalday }})
-                    </td>
-                </tr></table>
-                {% endthumbnail %}
-                {% endwith %}
-            </div>
-        {% endif %}
+	{% if post.in_reply_to %}
+	    <div class='in-reply-to'>
+		{% with in_reply_to=post.in_reply_to.document %}
+		{% thumbnail in_reply_to.documentpage_set.all.0.image.path "100" as im %}
+		<table><tr>
+		    <td><b>{% trans "This post is in reply to comments on" %}:</b>&nbsp;</td>
+		    <td>
+			<a href='{{ in_reply_to.get_absolute_url }}'>
+			  <img style='vertical-align: top;' src='{{ im.url|public_url }}' 
+			      alt='{{ in_reply_to.get_title }} thumbnail' />
+			</a>
+			<br />
+			<a href='{{ in_reply_to.get_absolute_url }}'>
+			  {{ in_reply_to.get_title }}
+			</a>
+			<br /> ({{ in_reply_to.date_written|naturalday }})
+		    </td>
+		</tr></table>
+		{% endthumbnail %}
+		{% endwith %}
+	    </div>
+	{% endif %}
 
-        {% include "blogs/_sharing_buttons.html" %}
+	{% include "blogs/_sharing_buttons.html" %}
 
-        <div style='position: relative;'>
-            {% if post.body %}
-                <div id='body{{post.id}}' class='post-body'>{{post.body|linebreaks}}</div>
-            {% else  %}
-                {% if post.scan_id %}
-                    <div id='scan{{post.id}}'>
-                        {% include "blogs/_post_pages.html" %}
-                    </div>
+	<div style='position: relative;'>
+	    {% if post.body %}
+		<div id='body{{post.id}}' class='post-body'>{{post.body|linebreaks}}</div>
+	    {% else  %}
+		{% if post.scan_id %}
+		    <div id='scan{{post.id}}'>
+			{% include "blogs/_post_pages.html" %}
+		    </div>
 
-                    <div id='transcription{{post.id}}' class='transcription-container'>
-                        <a name='transcription'></a>
-                        {% if tx %}
-                            <h2>{% trans "Transcription" %}
-                            {% if transcription_open and not post.transcription.locked and perms.scanning.change_transcription %}
-                                <small> 
-                                    &mdash; 
-                                    <a href='{% url scanning.transcribe_document post.id %}'>{% trans "edit" %}</a>, 
-                                    <a href='{% url scanning.revision_list post.id %}'>{% trans "revisions" %}</a>
-                                </small>
-                            {% endif %}
-                            </h2>
-                            <div class='transcription'>
-                                <p>{{ tx.current.body|linebreaks }}</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            {% endif %}
-            <div class='clear'></div>
-        </div>
+		    <div id='transcription{{post.id}}' class='transcription-container'>
+			<a name='transcription'></a>
+			{% if tx %}
+			    <h2>{% trans "Transcription" %}
+			    {% if transcription_open and not post.transcription.locked and perms.scanning.change_transcription %}
+				<small>
+				    &mdash;
+				    <a href='{% url scanning.transcribe_document post.id %}'>{% trans "edit" %}</a>,
+				    <a href='{% url scanning.revision_list post.id %}'>{% trans "revisions" %}</a>
+				</small>
+			    {% endif %}
+			    </h2>
+			    <div class='transcription'>
+				<p>{{ tx.current.body|linebreaks }}</p>
+			    </div>
+			{% endif %}
+		    </div>
+		{% endif %}
+	    {% endif %}
+	    <div class='clear'></div>
+	</div>
     {% endwith %}
 {% endif %}
 </div>
@@ -95,7 +102,7 @@
     <a name='comments'></a>
     <h2>{% trans "Replies" %} {% if comments %}({{comments|length}}){% endif %} <a href='{% url blogs.post_comments_feed post.id %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' alt='{% trans "Replies feed" %}' /></a></h2>
     {% for comment in comments %}
-        {% include "comments/_comment.html" %}
+	{% include "comments/_comment.html" %}
     {% endfor %}
 </div>
 {% if comments_open %}
