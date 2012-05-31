@@ -1,0 +1,902 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-31 15:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: accounts/forms.py:9
+msgid "Email address"
+msgstr ""
+
+#: accounts/forms.py:10
+msgid "Email optional."
+msgstr ""
+
+#: accounts/views.py:30
+msgid "Successfully logged out."
+msgstr ""
+
+#: accounts/views.py:65
+msgid "Password changed successfully."
+msgstr ""
+
+#: blogs/feeds.py:68
+#, python-format
+msgid "All comments on %s"
+msgstr ""
+
+#: blogs/feeds.py:74 blogs/feeds.py:93
+msgid "Comment"
+msgstr ""
+
+#: blogs/feeds.py:86
+#, python-format
+msgid "Comments on '%s'"
+msgstr ""
+
+#: btb/models.py:21
+msgid "New reply"
+msgstr ""
+
+#: btb/models.py:22
+msgid "new reply to a post you're following"
+msgstr ""
+
+#: btb/models.py:25
+msgid "New post"
+msgstr ""
+
+#: btb/models.py:26
+msgid "new letter from an author or subject you're following"
+msgstr ""
+
+#: comments/forms.py:18
+msgid "Reply"
+msgstr ""
+
+#: comments/forms.py:23
+msgid ""
+"If you enter anything in this field your comment will be treated as spam"
+msgstr ""
+
+#: comments/views.py:74
+msgid ""
+"A moderator will review that comment shortly. Thanks for helping us run a "
+"tight ship."
+msgstr ""
+
+#: profiles/forms.py:9
+msgid "* E-mail address"
+msgstr ""
+
+#: profiles/forms.py:10
+msgid "Required. We never share or make e-mail addresses public."
+msgstr ""
+
+#: profiles/forms.py:18
+msgid "E-mail address"
+msgstr ""
+
+#: profiles/forms.py:34
+msgid "* Display name"
+msgstr ""
+
+#: profiles/forms.py:34
+msgid "Required."
+msgstr ""
+
+#: profiles/models.py:165
+msgid "Show posts and comments that have been marked as adult?"
+msgstr ""
+
+#: profiles/views.py:235
+msgid "Changes saved."
+msgstr ""
+
+#: scanning/models.py:472
+msgid "Untitled"
+msgstr ""
+
+#: scanning/models.py:535
+msgid "Check if transcription is complete"
+msgstr ""
+
+#: scanning/views.py:633
+msgid "Thanks for your attention to detail.  Transcription updated."
+msgstr ""
+
+#: scanning/views.py:736
+msgid ""
+"A moderator will review that post shortly. Thanks for helping us run a tight "
+"ship."
+msgstr ""
+
+#: templates/404.html:3
+msgid "404 - Not found"
+msgstr ""
+
+#: templates/404.html:5
+msgid "404 Not Found"
+msgstr ""
+
+#: templates/500.html:2
+msgid "500 Internal Server Error"
+msgstr ""
+
+#: templates/500.html:6
+msgid ""
+"You can return to the front page here: <a href='http://betweenthebars."
+"org'>http://betweenthebars.org</a>."
+msgstr ""
+
+#: templates/_pagination.html:2
+msgid "Page:"
+msgstr ""
+
+#: templates/_pagination.html:4
+msgid "Previous page"
+msgstr ""
+
+#: templates/_pagination.html:4
+msgid "Previous"
+msgstr ""
+
+#: templates/_pagination.html:10
+msgid "Next page"
+msgstr ""
+
+#: templates/_pagination.html:10
+msgid "Next"
+msgstr ""
+
+#: templates/home.html:6
+msgid "Human Stories from Prison"
+msgstr ""
+
+#: templates/home.html:9
+msgid "Home"
+msgstr ""
+
+#: templates/home.html:15
+msgid "Human stories from prison"
+msgstr ""
+
+#: templates/home.html:25
+msgid "Gives voice to the voiceless."
+msgstr ""
+
+#: templates/home.html:29
+msgid "... encourages inmates to retain their individual identities ..."
+msgstr ""
+
+#: templates/home.html:33
+msgid "Amazing stuff."
+msgstr ""
+
+#: templates/home.html:63 templates/blogs/_blog_cloud.html:60
+msgid "Recent comments"
+msgstr ""
+
+#: templates/home.html:66
+msgid "ago"
+msgstr ""
+
+#: templates/home.html:68
+msgid "By"
+msgstr ""
+
+#: templates/home.html:68 templates/blogs/_blog_cloud.html:64
+msgid "on"
+msgstr ""
+
+#: templates/home.html:76
+msgid "Join the conversation!"
+msgstr ""
+
+#: templates/home.html:77
+msgid "Head on over to the <a href='/blogs/'>blogs</a>."
+msgstr ""
+
+#: templates/site_base.html:33
+msgid "Blogs"
+msgstr ""
+
+#: templates/site_base.html:34 templates/profiles/profiles_list.html:5
+msgid "People"
+msgstr ""
+
+#: templates/site_base.html:35 templates/about/index.html:4
+msgid "About"
+msgstr ""
+
+#: templates/site_base.html:42
+msgid "Moderation"
+msgstr ""
+
+#: templates/site_base.html:45
+msgid "Upload"
+msgstr ""
+
+#: templates/site_base.html:69
+msgid "Profile"
+msgstr ""
+
+#: templates/site_base.html:70
+msgid "Admin"
+msgstr ""
+
+#: templates/site_base.html:80
+msgid "Logout"
+msgstr ""
+
+#: templates/site_base.html:85
+msgid "Sign in"
+msgstr ""
+
+#: templates/site_base.html:85
+msgid "or"
+msgstr ""
+
+#: templates/site_base.html:86
+msgid "Join"
+msgstr ""
+
+#: templates/site_base.html:122
+msgid "Contact us"
+msgstr ""
+
+#: templates/site_base.html:123
+msgid "Copyrights"
+msgstr ""
+
+#: templates/site_base.html:124 templates/about/terms.html:4
+msgid "Terms of Use"
+msgstr ""
+
+#: templates/site_base.html:125
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/site_base.html:126
+msgid "DMCA"
+msgstr ""
+
+#: templates/about/about_base.html:10
+msgid "Community Guidelines"
+msgstr ""
+
+#: templates/about/about_base.html:11 templates/about/faq.html:4
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: templates/about/about_base.html:13
+msgid "Mailing list"
+msgstr ""
+
+#: templates/about/resources.html:4
+msgid "Resources"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:5
+msgid "Categories"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:9 templates/blogs/_blog_cloud.html:47
+#: templates/blogs/all_posts_list.html:2
+msgid "Recent posts"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:13
+msgid "Comments"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:17
+msgid "Authors"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:20
+msgid "Every Page"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:26
+msgid "Posts by category"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:55
+msgid "All posts by date"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:64
+#: templates/blogs/_post_bottom_line.html:22
+#: templates/blogs/_sharing_buttons.html:2
+#: templates/blogs/all_comments_list.html:15
+#: templates/blogs/author_post_list.html:4
+#: templates/blogs/author_post_list.html:12
+#: templates/blogs/post_detail.html:30
+msgid "by"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:67
+msgid "All comments"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:72
+msgid "Authors with recent posts"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:78
+msgid "profile"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:83
+#: templates/profiles/profiles_list.html:10
+msgid "All authors"
+msgstr ""
+
+#: templates/blogs/_post_bottom_line.html:3
+msgid "Read more &raquo;"
+msgstr ""
+
+#: templates/blogs/_post_bottom_line.html:20
+#: templates/blogs/post_detail.html:28
+msgid "From"
+msgstr ""
+
+#: templates/blogs/_post_bottom_line.html:24
+#: templates/blogs/post_detail.html:34
+msgid "writing for"
+msgstr ""
+
+#: templates/blogs/_post_feed.html:6
+msgid "This post must be viewed on "
+msgstr ""
+
+#: templates/blogs/_post_feed.html:9 templates/blogs/_post_pagegroup.html:16
+msgid "Read more"
+msgstr ""
+
+#: templates/blogs/_post_pagegroup.html:7
+msgid "page"
+msgstr ""
+
+#: templates/blogs/_post_pagegroup.html:11
+msgid "Scanned page"
+msgstr ""
+
+#: templates/blogs/_post_pages.html:34
+msgid "uploaded"
+msgstr ""
+
+#: templates/blogs/_post_pages.html:35
+msgid "Original (PDF)"
+msgstr ""
+
+#: templates/blogs/_post_tag_list.html:3
+msgid "filed under"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:23
+msgid "Flag post"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:30
+msgid "Click to read the transcription"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:31
+msgid "Transcribed"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:36
+msgid "Partially transcribed"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:43
+msgid "Add transcription"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:52
+#: templates/blogs/_post_title_line.html:59
+msgid "Edit"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:67 templates/blogs/edit_post.html:36
+#: templates/blogs/manage_posts.html:12
+msgid "Tags"
+msgstr ""
+
+#: templates/blogs/_post_title_line.html:73
+#: templates/scanning/transcription_edit.html:117
+msgid "Save"
+msgstr ""
+
+#: templates/blogs/_related.html:29
+msgid "More"
+msgstr ""
+
+#: templates/blogs/_sharing_buttons.html:1
+msgid "Share this"
+msgstr ""
+
+#: templates/blogs/_sharing_buttons.html:2
+msgid "at"
+msgstr ""
+
+#: templates/blogs/_sharing_buttons.html:2
+msgid "Share on twitter"
+msgstr ""
+
+#: templates/blogs/_sharing_buttons.html:2
+msgid "Share on facebook"
+msgstr ""
+
+#: templates/blogs/_sharing_buttons.html:2
+msgid "Share on Pinterest"
+msgstr ""
+
+#: templates/blogs/all_comments_list.html:8
+msgid "Recent Comments"
+msgstr ""
+
+#: templates/blogs/all_comments_list.html:15
+msgid "Posted on"
+msgstr ""
+
+#: templates/blogs/all_comments_list.html:32
+msgid "More comments"
+msgstr ""
+
+#: templates/blogs/all_posts_list.html:3
+msgid "Recent posts from all authors"
+msgstr ""
+
+#: templates/blogs/base.html:13
+msgid "My Blog Posts"
+msgstr ""
+
+#: templates/blogs/base.html:14
+msgid "Compose"
+msgstr ""
+
+#: templates/blogs/base_post_list.html:23
+msgid "More posts"
+msgstr ""
+
+#: templates/blogs/blogs_front_page.html:3
+msgid "Blogs from writers in prison"
+msgstr ""
+
+#: templates/blogs/blogs_front_page.html:8
+msgid "Recent posts by date"
+msgstr ""
+
+#: templates/blogs/delete_post.html:5
+msgid "Delete the post"
+msgstr ""
+
+#: templates/blogs/delete_post.html:6
+msgid "and remove it from the site?"
+msgstr ""
+
+#: templates/blogs/delete_post.html:7
+msgid "This can't be undone."
+msgstr ""
+
+#: templates/blogs/delete_post.html:12 templates/blogs/edit_post.html:62
+msgid "Delete post"
+msgstr ""
+
+#: templates/blogs/delete_post.html:16
+#: templates/scanning/transcription_edit.html:118
+msgid "Cancel"
+msgstr ""
+
+#: templates/blogs/edit_post.html:6 templates/blogs/edit_post.html.py:15
+msgid "Editing post"
+msgstr ""
+
+#: templates/blogs/edit_post.html:8 templates/blogs/edit_post.html.py:17
+msgid "Compose post"
+msgstr ""
+
+#: templates/blogs/edit_post.html:29
+msgid ""
+"If you'd like to remove the post, click &ldquo;Delete post&ldquo; below."
+msgstr ""
+
+#: templates/blogs/edit_post.html:38
+msgid "(optional) Comma separated list of categories"
+msgstr ""
+
+#: templates/blogs/edit_post.html:50
+msgid "Save post"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:4
+msgid "My posts"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:7
+msgid "Compose new post"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:11
+msgid "Title"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:13
+msgid "Status"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:14
+msgid "Date"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:24
+msgid "Draft"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:27
+msgid "Ready to publish"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:30
+msgid "Published"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:33
+msgid "Can't be published"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:39
+msgid "View on site"
+msgstr ""
+
+#: templates/blogs/manage_posts.html:45
+msgid "No posts yet."
+msgstr ""
+
+#: templates/blogs/org_post_list.html:2 templates/blogs/org_post_list.html:4
+msgid "Recent posts from authors in"
+msgstr ""
+
+#: templates/blogs/page_picker.html:3
+msgid "By the page"
+msgstr ""
+
+#: templates/blogs/page_picker.html:45
+msgid ""
+"This page requires javsacript. To browse Between the Bars without "
+"javascript, try"
+msgstr ""
+
+#: templates/blogs/page_picker.html:45
+msgid "blogs"
+msgstr ""
+
+#: templates/blogs/page_picker.html:47
+msgid "Every page"
+msgstr ""
+
+#: templates/blogs/page_picker.html:50
+msgid "Loading..."
+msgstr ""
+
+#: templates/blogs/page_picker.html:53
+msgid "That's all so far"
+msgstr ""
+
+#: templates/blogs/page_picker.html:54
+msgid "help us grow"
+msgstr ""
+
+#: templates/blogs/post_detail.html:32
+msgid ""
+"author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>"
+msgstr ""
+
+#: templates/blogs/post_detail.html:43
+msgid "This post is in reply to comments on"
+msgstr ""
+
+#: templates/blogs/post_detail.html:75
+#: templates/profiles/profile_detail.html:44
+msgid "Transcription"
+msgstr ""
+
+#: templates/blogs/post_detail.html:79
+#: templates/profiles/profile_detail.html:48
+msgid "edit"
+msgstr ""
+
+#: templates/blogs/post_detail.html:80
+#: templates/profiles/profile_detail.html:49
+#: templates/scanning/revision_list.html:5
+msgid "revisions"
+msgstr ""
+
+#: templates/blogs/post_detail.html:103
+msgid "Replies"
+msgstr ""
+
+#: templates/blogs/post_detail.html:103
+msgid "Replies feed"
+msgstr ""
+
+#: templates/blogs/tag_post_list.html:4 templates/blogs/tag_post_list.html:11
+msgid "Posts tagged"
+msgstr ""
+
+#: templates/blogs/tag_post_list.html:6 templates/blogs/tag_post_list.html:13
+msgid "Uncategorized posts"
+msgstr ""
+
+#: templates/comments/_comment_form.html:19
+msgid "Send Reply &raquo;"
+msgstr ""
+
+#: templates/comments/preview.html:4 templates/comments/preview.html.py:13
+msgid "Preview your comment"
+msgstr ""
+
+#: templates/comments/preview.html:11
+msgid "Please correct the error below"
+msgid_plural "Please correct the errors below"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/comments/preview.html:28
+msgid "and"
+msgstr ""
+
+#: templates/comments/preview.html:28
+msgid "Post your comment"
+msgstr ""
+
+#: templates/comments/preview.html:28
+msgid "or make changes"
+msgstr ""
+
+#: templates/comments/preview.html:44
+msgid "Preview"
+msgstr ""
+
+#: templates/correspondence/base_letter_list.html:7
+#: templates/correspondence/pending.html:3
+msgid "Manage correspondence"
+msgstr ""
+
+#: templates/correspondence/base_letter_list.html:18
+msgid "Changed letter sent status."
+msgstr ""
+
+#: templates/correspondence/sent.html:4 templates/correspondence/sent.html:8
+msgid "Sent correspondence"
+msgstr ""
+
+#: templates/profiles/profile_detail.html:6
+#, python-format
+msgid "%(profile)s's profile"
+msgstr ""
+
+#: templates/profiles/profile_detail.html:39
+msgid "Scanned profile"
+msgstr ""
+
+#: templates/profiles/profile_edit.html:23
+msgid "Save details"
+msgstr ""
+
+#: templates/registration/activation_complete.html:7
+msgid "Your registration is now complete."
+msgstr ""
+
+#: templates/registration/activation_complete.html:8
+msgid "You may now"
+msgstr ""
+
+#: templates/registration/activation_complete.html:8
+msgid "login"
+msgstr ""
+
+#: templates/registration/login.html:3 templates/registration/login.html:11
+msgid "Login"
+msgstr ""
+
+#: templates/registration/login.html:14
+msgid "Forgot your password?"
+msgstr ""
+
+#: templates/registration/login.html:28
+#: templates/registration/registration_form.html:25
+msgid "Register"
+msgstr ""
+
+#: templates/registration/password_change_form.html:7
+#, python-format
+msgid ""
+"\n"
+"<p>%%{ trans \"For security purposes, enter your old password first.\" %%}</"
+"p>\n"
+msgstr ""
+
+#: templates/registration/password_change_form.html:14
+msgid "Change Password"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:4
+#: templates/registration/password_reset_complete.html:8
+msgid "Password reset complete"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:10
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:12
+msgid "Log in"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:4
+#: templates/registration/password_reset_form.html:8
+msgid "Password reset"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:10
+msgid "Enter new password"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:12
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:16
+msgid "New password:"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:18
+msgid "Confirm password:"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:19
+msgid "Change my password"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:24
+msgid "Password reset unsuccessful"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:26
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:27
+msgid "Request password reset"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:4
+msgid "Password reset successful"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:7
+msgid "Reset e-mail sent"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:8
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted.  You should receive it soon."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:4
+msgid "password reset"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:9
+msgid ""
+"Forgotten your password?  Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:15
+msgid "Reset my password"
+msgstr ""
+
+#: templates/registration/registration_closed.html:3
+msgid "Registration temporarily closed"
+msgstr ""
+
+#: templates/registration/registration_closed.html:6
+#, python-format
+msgid ""
+"\n"
+"%%{ trans \"Registration is temporarily disabled while the site is "
+"undergoing maintenance.\" %%}\n"
+"%%{ trans \"We apologize for the inconvenience.\" %%}\n"
+msgstr ""
+
+#: templates/registration/registration_complete.html:6
+msgid "Confirmation email sent"
+msgstr ""
+
+#: templates/registration/registration_form.html:4
+msgid "Registration"
+msgstr ""
+
+#: templates/registration/registration_form.html:6
+msgid "New user registration"
+msgstr ""
+
+#: templates/registration/registration_form.html:13
+#, python-format
+msgid ""
+"\n"
+"%%{ trans \"Registered users may leave comments and transcribe posts.  By "
+"registering, you\n"
+"are agreeing to abide by the\n"
+"<a href='%(terms)s'>Terms of Service</a> and\n"
+"<a href='%(privacy)s'>Privacy Policy</a>.\" %%}\n"
+msgstr ""
+
+#: templates/registration/welcome.html:3 templates/registration/welcome.html:6
+msgid "Welcome"
+msgstr ""
+
+#: templates/registration/welcome.html:14
+#, python-format
+msgid ""
+"\n"
+"Registration successful.  You may now leave comments,\n"
+"transcribe posts, and\"\n"
+"<a href='%(edit_profile)s'>edit your profile</a>.\n"
+msgstr ""
+
+#: templates/registration/welcome.html:21
+#, python-format
+msgid ""
+"\n"
+"If you haven't yet, please look over the\n"
+"<a href='%(community_guidelines)s'>community guidelines</a>\n"
+"for comments and transcriptions.\n"
+msgstr ""
+
+#: templates/scanning/revision_list.html:10
+msgid "Transcription revisions"
+msgstr ""
+
+#: templates/scanning/transcription_edit.html:85
+msgid "Transcription editor"
+msgstr ""
+
+#: templates/scanning/transcription_edit.html:87
+msgid "Arrange:"
+msgstr ""
+
+#: templates/scanning/transcription_edit.html:89
+msgid "Arrange horizontally"
+msgstr ""
+
+#: templates/scanning/transcription_edit.html:92
+msgid "Arrange vertically"
+msgstr ""
+
+#: templates/scanning/transcription_edit.html:103
+msgid "Transcription:"
+msgstr ""
