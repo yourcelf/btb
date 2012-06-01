@@ -1,10 +1,10 @@
 {% extends "moderation/base.html" %}
 {% block title %}Reimport scan{% endblock %}
 {% block body %}
-    <h1>Reimport scan</h1>
-    <p>If processing of a scan failed for whatever reason, sometimes reimporting it will fix garbled or missing images.  This will make any documents associated with this scan unavailable until the import is finished.</p>
+    <h1>{% trans "Reimport scan" %}</h1>
+    <p>{% trans "If processing of a scan failed for whatever reason, sometimes reimporting it will fix garbled or missing images.  This will make any documents associated with this scan unavailable until the import is finished." %}</p>
     <form method='post' action=''>{% csrf_token %}
-        <input type='submit' value='Reimport scan' />
+        <input type='submit' value='{% trans "Reimport scan" %}' />
     </form>
     
 {% endblock %}

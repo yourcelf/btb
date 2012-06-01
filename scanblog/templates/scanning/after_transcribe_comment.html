@@ -1,15 +1,15 @@
 {% extends "site_base.html" %}
 
-{% block title %}Leave a note{% endblock %}
+{% block title %}{% trans "Leave a note" %}{% endblock %}
 
 {% block body %}
 <p>
-Thanks for updating the transcription.  Would you like to leave a note for
-the author so they know you've done the work?
+{% trans "Thanks for updating the transcription.  Would you like to leave a note for
+the author so they know you've done the work?" %}
 </p>
 
 <p>
-<a href='{{ document.get_absolute_url }}#transcription' class='skip-reply-button'>No thanks, skip this</a>
+<a href='{{ document.get_absolute_url }}#transcription' class='skip-reply-button'>{% trans "No thanks, skip this" %}</a>
 </p>
 
 {% with comment_form=form post=document%}
