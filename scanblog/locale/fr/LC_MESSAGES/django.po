@@ -20,196 +20,196 @@ msgstr ""
 
 #: accounts/forms.py:9
 msgid "Email address"
-msgstr ""
+msgstr "Adresse email"
 
 #: accounts/forms.py:10
 msgid "Email optional."
-msgstr ""
+msgstr "email optionnel."
 
 #: accounts/views.py:30
 msgid "Successfully logged out."
-msgstr ""
+msgstr "Déconnexion réussie."
 
 #: accounts/views.py:65
 msgid "Password changed successfully."
-msgstr ""
+msgstr "Mot de passe modifié avec succès."
 
 #: blogs/feeds.py:68
 #, python-format
 msgid "All comments on %s"
-msgstr ""
+msgstr "Tous les commentaires à propos de %s"
 
 #: blogs/feeds.py:74 blogs/feeds.py:93
 msgid "Comment"
-msgstr ""
+msgstr "Commentaire"
 
 #: blogs/feeds.py:86
 #, python-format
 msgid "Comments on '%s'"
-msgstr ""
+msgstr "Commentaires à propos '%s'"
 
 #: btb/models.py:21
 msgid "New reply"
-msgstr ""
+msgstr "Nouvelle réponse"
 
 #: btb/models.py:22
 msgid "new reply to a post you're following"
-msgstr ""
+msgstr "nouvelle réponse à un article que vous suivez"
 
 #: btb/models.py:25
 msgid "New post"
-msgstr ""
+msgstr "Nouvel article"
 
 #: btb/models.py:26
 msgid "new letter from an author or subject you're following"
-msgstr ""
+msgstr "nouvelle lettre d'un auteur ou d'une sujet que vous suivez"
 
 #: comments/forms.py:18
 msgid "Reply"
-msgstr ""
+msgstr "Répondre"
 
 #: comments/forms.py:23
 msgid ""
 "If you enter anything in this field your comment will be treated as spam"
-msgstr ""
+msgstr "Si vous entrez quelquechose dans ce champ, votre commentaire sera considéré comme du spam"
 
 #: comments/views.py:74
 msgid ""
 "A moderator will review that comment shortly. Thanks for helping us run a "
 "tight ship."
-msgstr ""
+msgstr "Un modérateur va faire une revue de votre commentaire bientôt. Merci de nous aider."
 
 #: profiles/forms.py:9
 msgid "* E-mail address"
-msgstr ""
+msgstr "Adresse e-mail"
 
 #: profiles/forms.py:10
 msgid "Required. We never share or make e-mail addresses public."
-msgstr ""
+msgstr "Obligatoire. Nous ne partageons jamais les addresses mails de notre site."
 
 #: profiles/forms.py:18
 msgid "E-mail address"
-msgstr ""
+msgstr "Adresse email"
 
 #: profiles/forms.py:34
 msgid "* Display name"
-msgstr ""
+msgstr "Nom affiché"
 
 #: profiles/forms.py:34
 msgid "Required."
-msgstr ""
+msgstr "Obligatoire."
 
 #: profiles/models.py:165
 msgid "Show posts and comments that have been marked as adult?"
-msgstr ""
+msgstr "Montre les articles et commentaires qui ont été noté comme du contenu adulte ?"
 
 #: profiles/views.py:235
 msgid "Changes saved."
-msgstr ""
+msgstr "Changements enregistrés."
 
 #: scanning/models.py:472
 msgid "Untitled"
-msgstr ""
+msgstr "Sans titre"
 
 #: scanning/models.py:535
 msgid "Check if transcription is complete"
-msgstr ""
+msgstr "Vérifier si la retranscription est complète"
 
 #: scanning/views.py:633
 msgid "Thanks for your attention to detail.  Transcription updated."
-msgstr ""
+msgstr "Merci pour votre attention au détail. La transcription a été mise à jour."
 
 #: scanning/views.py:736
 msgid ""
 "A moderator will review that post shortly. Thanks for helping us run a tight "
 "ship."
-msgstr ""
+msgstr "Un modérateur va faire une revue de votre article sous peu. Merci pour votre aide."
 
 #: templates/404.html:3
 msgid "404 - Not found"
-msgstr ""
+msgstr "404 - Document introuvable"
 
 #: templates/404.html:5
 msgid "404 Not Found"
-msgstr ""
+msgstr "404 Document introuvable"
 
 #: templates/500.html:2
 msgid "500 Internal Server Error"
-msgstr ""
+msgstr "500 Erreur interne"
 
 #: templates/500.html:6
 msgid ""
 "You can return to the front page here: <a href='http://betweenthebars."
 "org'>http://betweenthebars.org</a>."
-msgstr ""
+msgstr "Vous pouvez retournez sur la page d'acceuil ici : <sitename>"
 
 #: templates/_pagination.html:2
 msgid "Page:"
-msgstr ""
+msgstr "Page:"
 
 #: templates/_pagination.html:4
 msgid "Previous page"
-msgstr ""
+msgstr "Page précédente"
 
 #: templates/_pagination.html:4
 msgid "Previous"
-msgstr ""
+msgstr "Précédente"
 
 #: templates/_pagination.html:10
 msgid "Next page"
-msgstr ""
+msgstr "Page suivante"
 
 #: templates/_pagination.html:10
 msgid "Next"
-msgstr ""
+msgstr "Suivante"
 
 #: templates/home.html:6
 msgid "Human Stories from Prison"
-msgstr ""
+msgstr "Des histoires humaines en prison"
 
 #: templates/home.html:9
 msgid "Home"
-msgstr ""
+msgstr "Acceuil"
 
 #: templates/home.html:15
 msgid "Human stories from prison"
-msgstr ""
+msgstr "Des histoires humaines en prison"
 
 #: templates/home.html:25
 msgid "Gives voice to the voiceless."
-msgstr ""
+msgstr "Donne une voix aux sans voix"
 
 #: templates/home.html:29
 msgid "... encourages inmates to retain their individual identities ..."
-msgstr ""
+msgstr "... encourage les détenus à garder leur identité ..."
 
 #: templates/home.html:33
 msgid "Amazing stuff."
-msgstr ""
+msgstr "Incroyable!"
 
 #: templates/home.html:63 templates/blogs/_blog_cloud.html:60
 msgid "Recent comments"
-msgstr ""
+msgstr "Commentaires récents"
 
 #: templates/home.html:66
 msgid "ago"
-msgstr ""
+msgstr "il y a"
 
 #: templates/home.html:68
 msgid "By"
-msgstr ""
+msgstr "Par"
 
 #: templates/home.html:68 templates/blogs/_blog_cloud.html:64
 msgid "on"
-msgstr ""
+msgstr "le"
 
 #: templates/home.html:76
 msgid "Join the conversation!"
-msgstr ""
+msgstr "Rejoignez la conversation!"
 
 #: templates/home.html:77
 msgid "Head on over to the <a href='/blogs/'>blogs</a>."
-msgstr ""
+msgstr "Visitez les <a href='/blogs/'>blogs</a>"
 
 #: templates/site_base.html:33
 msgid "Blogs"
@@ -217,15 +217,15 @@ msgstr ""
 
 #: templates/site_base.html:34 templates/profiles/profiles_list.html:5
 msgid "People"
-msgstr ""
+msgstr "Personnes"
 
 #: templates/site_base.html:35 templates/about/index.html:4
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: templates/site_base.html:42
 msgid "Moderation"
-msgstr ""
+msgstr "Modération"
 
 #: templates/site_base.html:45
 msgid "Upload"
@@ -233,59 +233,59 @@ msgstr ""
 
 #: templates/site_base.html:69
 msgid "Profile"
-msgstr ""
+msgstr "Profile"
 
 #: templates/site_base.html:70
 msgid "Admin"
-msgstr ""
+msgstr "Administration"
 
 #: templates/site_base.html:80
 msgid "Logout"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: templates/site_base.html:85
 msgid "Sign in"
-msgstr ""
+msgstr "Se connecter"
 
 #: templates/site_base.html:85
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: templates/site_base.html:86
 msgid "Join"
-msgstr ""
+msgstr "S'inscrire"
 
 #: templates/site_base.html:122
 msgid "Contact us"
-msgstr ""
+msgstr "Nous contacter"
 
 #: templates/site_base.html:123
 msgid "Copyrights"
-msgstr ""
+msgstr "Droits d'auteur"
 
 #: templates/site_base.html:124 templates/about/terms.html:4
 msgid "Terms of Use"
-msgstr ""
+msgstr "Conditions d'usage"
 
 #: templates/site_base.html:125
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Politique vie privée"
 
 #: templates/site_base.html:126
 msgid "DMCA"
-msgstr ""
+msgstr "Mentions légales"
 
 #: templates/about/about_base.html:10
 msgid "Community Guidelines"
-msgstr ""
+msgstr "Guide de la communauté"
 
 #: templates/about/about_base.html:11 templates/about/faq.html:4
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Foire Aux Questions"
 
 #: templates/about/about_base.html:13
 msgid "Mailing list"
-msgstr ""
+msgstr "Liste de discussion"
 
 #: templates/about/resources.html:4
 msgid "Resources"
@@ -293,32 +293,32 @@ msgstr ""
 
 #: templates/blogs/_blog_cloud.html:5
 msgid "Categories"
-msgstr ""
+msgstr "Categories"
 
 #: templates/blogs/_blog_cloud.html:9 templates/blogs/_blog_cloud.html:47
 #: templates/blogs/all_posts_list.html:2
 msgid "Recent posts"
-msgstr ""
+msgstr "Articles récents"
 
 #: templates/blogs/_blog_cloud.html:13
 msgid "Comments"
-msgstr ""
+msgstr "Commentaires"
 
 #: templates/blogs/_blog_cloud.html:17
 msgid "Authors"
-msgstr ""
+msgstr "Auteurs"
 
 #: templates/blogs/_blog_cloud.html:20
 msgid "Every Page"
-msgstr ""
+msgstr "Toutes les pages"
 
 #: templates/blogs/_blog_cloud.html:26
 msgid "Posts by category"
-msgstr ""
+msgstr "Articles par categorie"
 
 #: templates/blogs/_blog_cloud.html:55
 msgid "All posts by date"
-msgstr ""
+msgstr "Tous les articles par date"
 
 #: templates/blogs/_blog_cloud.html:64
 #: templates/blogs/_post_bottom_line.html:22
@@ -328,46 +328,46 @@ msgstr ""
 #: templates/blogs/author_post_list.html:12
 #: templates/blogs/post_detail.html:30
 msgid "by"
-msgstr ""
+msgstr "par"
 
 #: templates/blogs/_blog_cloud.html:67
 msgid "All comments"
-msgstr ""
+msgstr "Tous les commentaires"
 
 #: templates/blogs/_blog_cloud.html:72
 msgid "Authors with recent posts"
-msgstr ""
+msgstr "Auteurs ayant des articles récents"
 
 #: templates/blogs/_blog_cloud.html:78
 msgid "profile"
-msgstr ""
+msgstr "profil"
 
 #: templates/blogs/_blog_cloud.html:83
 #: templates/profiles/profiles_list.html:10
 msgid "All authors"
-msgstr ""
+msgstr "Tous les auteurs"
 
 #: templates/blogs/_post_bottom_line.html:3
 msgid "Read more &raquo;"
-msgstr ""
+msgstr "Lire plus &raquo;"
 
 #: templates/blogs/_post_bottom_line.html:20
 #: templates/blogs/post_detail.html:28
 msgid "From"
-msgstr ""
+msgstr "De"
 
 #: templates/blogs/_post_bottom_line.html:24
 #: templates/blogs/post_detail.html:34
 msgid "writing for"
-msgstr ""
+msgstr "écrivant pour"
 
 #: templates/blogs/_post_feed.html:6
 msgid "This post must be viewed on "
-msgstr ""
+msgstr "Cet article doit être vu sur "
 
 #: templates/blogs/_post_feed.html:9 templates/blogs/_post_pagegroup.html:16
 msgid "Read more"
-msgstr ""
+msgstr "Lire plus"
 
 #: templates/blogs/_post_pagegroup.html:7
 msgid "page"
@@ -375,356 +375,357 @@ msgstr ""
 
 #: templates/blogs/_post_pagegroup.html:11
 msgid "Scanned page"
-msgstr ""
+msgstr "Page scannée"
 
 #: templates/blogs/_post_pages.html:34
 msgid "uploaded"
-msgstr ""
+msgstr "télétransmis"
 
 #: templates/blogs/_post_pages.html:35
 msgid "Original (PDF)"
-msgstr ""
+msgstr "Original (PDF)"
 
 #: templates/blogs/_post_tag_list.html:3
 msgid "filed under"
-msgstr ""
+msgstr "enregistré sous"
 
 #: templates/blogs/_post_title_line.html:23
 msgid "Flag post"
-msgstr ""
+msgstr "Signaler ce contenu"
 
 #: templates/blogs/_post_title_line.html:30
 msgid "Click to read the transcription"
-msgstr ""
+msgstr "Cliquez pour lire la retranscription"
 
 #: templates/blogs/_post_title_line.html:31
 msgid "Transcribed"
-msgstr ""
+msgstr "Retranscris"
 
 #: templates/blogs/_post_title_line.html:36
 msgid "Partially transcribed"
-msgstr ""
+msgstr "Retranscris partiellement"
 
 #: templates/blogs/_post_title_line.html:43
 msgid "Add transcription"
-msgstr ""
+msgstr "Ajouter une transcription"
 
 #: templates/blogs/_post_title_line.html:52
 #: templates/blogs/_post_title_line.html:59
 msgid "Edit"
-msgstr ""
+msgstr "Éditer"
 
 #: templates/blogs/_post_title_line.html:67 templates/blogs/edit_post.html:36
 #: templates/blogs/manage_posts.html:12
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: templates/blogs/_post_title_line.html:73
 #: templates/scanning/transcription_edit.html:117
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: templates/blogs/_related.html:29
 msgid "More"
-msgstr ""
+msgstr "Plus"
 
 #: templates/blogs/_sharing_buttons.html:1
 msgid "Share this"
-msgstr ""
+msgstr "Partager"
 
 #: templates/blogs/_sharing_buttons.html:2
 msgid "at"
-msgstr ""
+msgstr "sur"
 
 #: templates/blogs/_sharing_buttons.html:2
 msgid "Share on twitter"
-msgstr ""
+msgstr "Partager via twitter"
 
 #: templates/blogs/_sharing_buttons.html:2
 msgid "Share on facebook"
-msgstr ""
+msgstr "Partager via facebook"
 
 #: templates/blogs/_sharing_buttons.html:2
 msgid "Share on Pinterest"
-msgstr ""
+msgstr "Partager via Pinterest"
 
 #: templates/blogs/all_comments_list.html:8
 msgid "Recent Comments"
-msgstr ""
+msgstr "Commentaires récents"
 
 #: templates/blogs/all_comments_list.html:15
 msgid "Posted on"
-msgstr ""
+msgstr "Publié sur"
 
 #: templates/blogs/all_comments_list.html:32
 msgid "More comments"
-msgstr ""
+msgstr "Plus de commentaires"
 
 #: templates/blogs/all_posts_list.html:3
 msgid "Recent posts from all authors"
-msgstr ""
+msgstr "Contenu récent de tous les auteurs"
 
 #: templates/blogs/base.html:13
 msgid "My Blog Posts"
-msgstr ""
+msgstr "Mes entrées de blog"
 
 #: templates/blogs/base.html:14
 msgid "Compose"
-msgstr ""
+msgstr "Écrire"
 
 #: templates/blogs/base_post_list.html:23
 msgid "More posts"
-msgstr ""
+msgstr "Plus d'articles"
 
 #: templates/blogs/blogs_front_page.html:3
 msgid "Blogs from writers in prison"
-msgstr ""
+msgstr "Blogs d'écrivains en prison"
 
 #: templates/blogs/blogs_front_page.html:8
 msgid "Recent posts by date"
-msgstr ""
+msgstr "Contenus récents par date"
 
 #: templates/blogs/delete_post.html:5
 msgid "Delete the post"
-msgstr ""
+msgstr "Supprimer l'article"
 
 #: templates/blogs/delete_post.html:6
 msgid "and remove it from the site?"
-msgstr ""
+msgstr "et le supprimer de ce site ?"
 
 #: templates/blogs/delete_post.html:7
 msgid "This can't be undone."
-msgstr ""
+msgstr "Cette opération ne peut pas être annulée."
 
 #: templates/blogs/delete_post.html:12 templates/blogs/edit_post.html:62
 msgid "Delete post"
-msgstr ""
+msgstr "Supprimer l'article"
 
 #: templates/blogs/delete_post.html:16
 #: templates/scanning/transcription_edit.html:118
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: templates/blogs/edit_post.html:6 templates/blogs/edit_post.html.py:15
 msgid "Editing post"
-msgstr ""
+msgstr "Edition de l'article"
 
 #: templates/blogs/edit_post.html:8 templates/blogs/edit_post.html.py:17
 msgid "Compose post"
-msgstr ""
+msgstr "Écrire un article"
 
 #: templates/blogs/edit_post.html:29
 msgid ""
 "If you'd like to remove the post, click &ldquo;Delete post&ldquo; below."
-msgstr ""
+msgstr "Si vous souhaitez supprimer cet article, cliquez sur &ldquo;Supprimer l'article&ldquo; ci-dessous."
 
 #: templates/blogs/edit_post.html:38
 msgid "(optional) Comma separated list of categories"
-msgstr ""
+msgstr "(optionnel) Liste de catégories séparées par des virgules"
 
 #: templates/blogs/edit_post.html:50
 msgid "Save post"
-msgstr ""
+msgstr "Enregistré l'article"
 
 #: templates/blogs/manage_posts.html:4
 msgid "My posts"
-msgstr ""
+msgstr "Mes articles"
 
 #: templates/blogs/manage_posts.html:7
 msgid "Compose new post"
-msgstr ""
+msgstr "Editer un nouvel article"
 
 #: templates/blogs/manage_posts.html:11
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: templates/blogs/manage_posts.html:13
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: templates/blogs/manage_posts.html:14
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: templates/blogs/manage_posts.html:24
 msgid "Draft"
-msgstr ""
+msgstr "Brouillon"
 
 #: templates/blogs/manage_posts.html:27
 msgid "Ready to publish"
-msgstr ""
+msgstr "Prêt à la publication"
 
 #: templates/blogs/manage_posts.html:30
 msgid "Published"
-msgstr ""
+msgstr "Publié"
 
 #: templates/blogs/manage_posts.html:33
 msgid "Can't be published"
-msgstr ""
+msgstr "Ne peux pas être publié"
 
 #: templates/blogs/manage_posts.html:39
 msgid "View on site"
-msgstr ""
+msgstr "Voir sur le site"
 
 #: templates/blogs/manage_posts.html:45
 msgid "No posts yet."
-msgstr ""
+msgstr "Pas encore d'articles."
 
 #: templates/blogs/org_post_list.html:2 templates/blogs/org_post_list.html:4
 msgid "Recent posts from authors in"
-msgstr ""
+msgstr "Articles récent des auteurs lié à "
 
 #: templates/blogs/page_picker.html:3
 msgid "By the page"
-msgstr ""
+msgstr "Par page"
 
 #: templates/blogs/page_picker.html:45
 msgid ""
 "This page requires javsacript. To browse Between the Bars without "
 "javascript, try"
-msgstr ""
+msgstr "Cette page nécésite javascript. Pour nagiguer <sitename> sans javascript, essayez "
 
 #: templates/blogs/page_picker.html:45
 msgid "blogs"
-msgstr ""
+msgstr "blogs"
 
 #: templates/blogs/page_picker.html:47
 msgid "Every page"
-msgstr ""
+msgstr "Toutes les pages"
 
 #: templates/blogs/page_picker.html:50
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 #: templates/blogs/page_picker.html:53
 msgid "That's all so far"
-msgstr ""
+msgstr "C'est tout pour l'instant"
 
 #: templates/blogs/page_picker.html:54
 msgid "help us grow"
-msgstr ""
+msgstr "aidez nous à grandir"
 
 #: templates/blogs/post_detail.html:32
 msgid ""
 "author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>"
-msgstr ""
+msgstr "le <a href='{{ post.author.profile.get_absolute_url }}'>profil</a> de l'auteur"
 
 #: templates/blogs/post_detail.html:43
 msgid "This post is in reply to comments on"
-msgstr ""
+msgstr "Cet article est en réponse aux commentaires sur"
 
 #: templates/blogs/post_detail.html:75
 #: templates/profiles/profile_detail.html:44
 msgid "Transcription"
-msgstr ""
+msgstr "Retranscription"
 
 #: templates/blogs/post_detail.html:79
 #: templates/profiles/profile_detail.html:48
 msgid "edit"
-msgstr ""
+msgstr "editer
+"
 
 #: templates/blogs/post_detail.html:80
 #: templates/profiles/profile_detail.html:49
 #: templates/scanning/revision_list.html:5
 msgid "revisions"
-msgstr ""
+msgstr "révisions"
 
 #: templates/blogs/post_detail.html:103
 msgid "Replies"
-msgstr ""
+msgstr "Réponses"
 
 #: templates/blogs/post_detail.html:103
 msgid "Replies feed"
-msgstr ""
+msgstr "Flux des réponses"
 
 #: templates/blogs/tag_post_list.html:4 templates/blogs/tag_post_list.html:11
 msgid "Posts tagged"
-msgstr ""
+msgstr "Articles ayant un tag"
 
 #: templates/blogs/tag_post_list.html:6 templates/blogs/tag_post_list.html:13
 msgid "Uncategorized posts"
-msgstr ""
+msgstr "Articles sans catégorie"
 
 #: templates/comments/_comment_form.html:19
 msgid "Send Reply &raquo;"
-msgstr ""
+msgstr "Envoyé une réponse &raquo;"
 
 #: templates/comments/preview.html:4 templates/comments/preview.html.py:13
 msgid "Preview your comment"
-msgstr ""
+msgstr "Avoir un aperçu de votre commentaire"
 
 #: templates/comments/preview.html:11
 msgid "Please correct the error below"
 msgid_plural "Please correct the errors below"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Merci de corriger l'erreur ci-dessous"
+msgstr[1] "Merci de corriger les erreurs ci-dessous"
 
 #: templates/comments/preview.html:28
 msgid "and"
-msgstr ""
+msgstr "et"
 
 #: templates/comments/preview.html:28
 msgid "Post your comment"
-msgstr ""
+msgstr "Publiez votre commentaire"
 
 #: templates/comments/preview.html:28
 msgid "or make changes"
-msgstr ""
+msgstr "ou faites des changement"
 
 #: templates/comments/preview.html:44
 msgid "Preview"
-msgstr ""
+msgstr "Aperçu"
 
 #: templates/correspondence/base_letter_list.html:7
 #: templates/correspondence/pending.html:3
 msgid "Manage correspondence"
-msgstr ""
+msgstr "Gérer la correspondance"
 
 #: templates/correspondence/base_letter_list.html:18
 msgid "Changed letter sent status."
-msgstr ""
+msgstr "Status d'envoi de la lettre modifié"
 
 #: templates/correspondence/sent.html:4 templates/correspondence/sent.html:8
 msgid "Sent correspondence"
-msgstr ""
+msgstr "Correspondance envoyée"
 
 #: templates/profiles/profile_detail.html:6
 #, python-format
 msgid "%(profile)s's profile"
-msgstr ""
+msgstr "Profil de %(profile)s"
 
 #: templates/profiles/profile_detail.html:39
 msgid "Scanned profile"
-msgstr ""
+msgstr "Profil scanné"
 
 #: templates/profiles/profile_edit.html:23
 msgid "Save details"
-msgstr ""
+msgstr "Enregistrer les details"
 
 #: templates/registration/activation_complete.html:7
 msgid "Your registration is now complete."
-msgstr ""
+msgstr "Votre enregistrement est effectué."
 
 #: templates/registration/activation_complete.html:8
 msgid "You may now"
-msgstr ""
+msgstr "Vous savez peut-être"
 
 #: templates/registration/activation_complete.html:8
 msgid "login"
-msgstr ""
+msgstr "s'authentifier"
 
 #: templates/registration/login.html:3 templates/registration/login.html:11
 msgid "Login"
-msgstr ""
+msgstr "S'authentifier"
 
 #: templates/registration/login.html:14
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Oublié votre mot de passe ?"
 
 #: templates/registration/login.html:28
 #: templates/registration/registration_form.html:25
 msgid "Register"
-msgstr ""
+msgstr "S'enregistrer"
 
 #: templates/registration/password_change_form.html:7
 #, python-format
@@ -736,93 +737,93 @@ msgstr ""
 
 #: templates/registration/password_change_form.html:14
 msgid "Change Password"
-msgstr ""
+msgstr "Modifier le mot de passe"
 
 #: templates/registration/password_reset_complete.html:4
 #: templates/registration/password_reset_complete.html:8
 msgid "Password reset complete"
-msgstr ""
+msgstr "Remise à zéro effectuée"
 
 #: templates/registration/password_reset_complete.html:10
 msgid "Your password has been set.  You may go ahead and log in now."
-msgstr ""
+msgstr "Votre mot de passe à été enregistré. Vous pouvez vous authentifé à présent."
 
 #: templates/registration/password_reset_complete.html:12
 msgid "Log in"
-msgstr ""
+msgstr "S'authentifier"
 
 #: templates/registration/password_reset_confirm.html:4
 #: templates/registration/password_reset_form.html:8
 msgid "Password reset"
-msgstr ""
+msgstr "Mot de passe remis à zéro"
 
 #: templates/registration/password_reset_confirm.html:10
 msgid "Enter new password"
-msgstr ""
+msgstr "Renseigné un nouveau mot de passe"
 
 #: templates/registration/password_reset_confirm.html:12
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
-msgstr ""
+msgstr "Merci d'entrer votre nouveau mot de passe deux fois pour que nous puissions vérifer que vous l'avez tapé correctement."
 
 #: templates/registration/password_reset_confirm.html:16
 msgid "New password:"
-msgstr ""
+msgstr "Nouveau mot de passe:"
 
 #: templates/registration/password_reset_confirm.html:18
 msgid "Confirm password:"
-msgstr ""
+msgstr "Confirmation du mot de passe:"
 
 #: templates/registration/password_reset_confirm.html:19
 msgid "Change my password"
-msgstr ""
+msgstr "Changement de mot de passe"
 
 #: templates/registration/password_reset_confirm.html:24
 msgid "Password reset unsuccessful"
-msgstr ""
+msgstr "Remise à zéro du mot de passe a échoué"
 
 #: templates/registration/password_reset_confirm.html:26
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
-msgstr ""
+msgstr "Le lien de remise à zéro du mot de passe est invalide, il est possible qu'il ait déjà été utilisé. Merci de refaire une demande de remise à zéro du mot de passe."
 
 #: templates/registration/password_reset_confirm.html:27
 msgid "Request password reset"
-msgstr ""
+msgstr "Demandez une remise à zéro de votre mot de passe"
 
 #: templates/registration/password_reset_done.html:4
 msgid "Password reset successful"
-msgstr ""
+msgstr "Remise à zéro du mot de passe effectué"
 
 #: templates/registration/password_reset_done.html:7
 msgid "Reset e-mail sent"
-msgstr ""
+msgstr "E-mail de remise à zero du mot de passe envoyé"
 
 #: templates/registration/password_reset_done.html:8
 msgid ""
 "We've e-mailed you instructions for setting your password to the e-mail "
 "address you submitted.  You should receive it soon."
-msgstr ""
+msgstr "Un email vous a été envoyé avec des instructions pour faire une remise à zéro de votre mot de passe"
 
 #: templates/registration/password_reset_form.html:4
 msgid "password reset"
-msgstr ""
+msgstr "remise à zéro du mot de passe"
 
 #: templates/registration/password_reset_form.html:9
 msgid ""
 "Forgotten your password?  Enter your e-mail address below, and we'll e-mail "
 "instructions for setting a new one."
-msgstr ""
+msgstr "Vous avez oublié votre mot de passe ? Entrez votre addresse email ci-dessous et nous vous enverons des instructions pour en entrer un nouveau."
 
 #: templates/registration/password_reset_form.html:15
 msgid "Reset my password"
-msgstr ""
+msgstr "Remise à zéro de mot de passe"
 
 #: templates/registration/registration_closed.html:3
 msgid "Registration temporarily closed"
-msgstr ""
+msgstr "Création de compte temporairement fermée"
 
 #: templates/registration/registration_closed.html:6
 #, python-format
@@ -835,15 +836,15 @@ msgstr ""
 
 #: templates/registration/registration_complete.html:6
 msgid "Confirmation email sent"
-msgstr ""
+msgstr "Email de confirmation envoyé"
 
 #: templates/registration/registration_form.html:4
 msgid "Registration"
-msgstr ""
+msgstr "Inscription"
 
 #: templates/registration/registration_form.html:6
 msgid "New user registration"
-msgstr ""
+msgstr "Inscription d'un nouvel utilisateur"
 
 #: templates/registration/registration_form.html:13
 #, python-format
@@ -854,11 +855,11 @@ msgid ""
 "are agreeing to abide by the\n"
 "<a href='%(terms)s'>Terms of Service</a> and\n"
 "<a href='%(privacy)s'>Privacy Policy</a>.\" %%}\n"
-msgstr ""
+msgstr "Les utilisateurs enregistrés peuvent laisser des commentaires et contribuer des retranscriptions des articles. En créant un compte sur la plateforme vous êtes d'accord avec les <a href='%(terms)s'>conditions d'utilisation</a> et la <a href='%(privacy)s'>politique vie privée</a>."
 
 #: templates/registration/welcome.html:3 templates/registration/welcome.html:6
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenu"
 
 #: templates/registration/welcome.html:14
 #, python-format
@@ -867,7 +868,7 @@ msgid ""
 "Registration successful.  You may now leave comments,\n"
 "transcribe posts, and\"\n"
 "<a href='%(edit_profile)s'>edit your profile</a>.\n"
-msgstr ""
+msgstr "Enregistrement effectué. Vous pouvez à présenter laisser des commentaires, retranscrire des articles et <a href='%(edit_profile)s'>editer votre profil</a>."
 
 #: templates/registration/welcome.html:21
 #, python-format
@@ -876,28 +877,28 @@ msgid ""
 "If you haven't yet, please look over the\n"
 "<a href='%(community_guidelines)s'>community guidelines</a>\n"
 "for comments and transcriptions.\n"
-msgstr ""
+msgstr "Si vous n'avez pas encore lu le <a href='%(community_guidelines)s'>guide de la communauté</a> qui explique la démarche pour les commentaires et les retranscriptions."
 
 #: templates/scanning/revision_list.html:10
 msgid "Transcription revisions"
-msgstr ""
+msgstr "Révisions de la retranscription"
 
 #: templates/scanning/transcription_edit.html:85
 msgid "Transcription editor"
-msgstr ""
+msgstr "Editeur de retranscription"
 
 #: templates/scanning/transcription_edit.html:87
 msgid "Arrange:"
-msgstr ""
+msgstr "Arranger :"
 
 #: templates/scanning/transcription_edit.html:89
 msgid "Arrange horizontally"
-msgstr ""
+msgstr "Arranger horizontalement"
 
 #: templates/scanning/transcription_edit.html:92
 msgid "Arrange vertically"
-msgstr ""
+msgstr "Arranger verticalement"
 
 #: templates/scanning/transcription_edit.html:103
 msgid "Transcription:"
-msgstr ""
+msgstr "Retranscription :"
