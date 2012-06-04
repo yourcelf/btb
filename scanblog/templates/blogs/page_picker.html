@@ -1,6 +1,7 @@
 {% extends "blogs/base.html" %}
-
-{% block title %}{% trans "By the page" %}{% endblock %}
+{% load i18n %}
+{% trans "By the page" as i18n_by_the_page%}
+{% block title %}{{ i18n_by_the_page }}{% endblock %}
 
 {% block body %}
 <style type='text/css'>

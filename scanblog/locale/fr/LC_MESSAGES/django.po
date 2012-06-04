@@ -6,13 +6,13 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: django-btb VERSION\n"
+"Report-Msgid-Bugs-To: arthur.lutz@gmail.com \n"
 "POT-Creation-Date: 2012-05-31 15:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Arthur Lutz <arthur.lutz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -229,7 +229,7 @@ msgstr "Modération"
 
 #: templates/site_base.html:45
 msgid "Upload"
-msgstr ""
+msgstr "Envoi de fichiers"
 
 #: templates/site_base.html:69
 msgid "Profile"
@@ -621,8 +621,7 @@ msgstr "Retranscription"
 #: templates/blogs/post_detail.html:79
 #: templates/profiles/profile_detail.html:48
 msgid "edit"
-msgstr "editer
-"
+msgstr "editer"
 
 #: templates/blogs/post_detail.html:80
 #: templates/profiles/profile_detail.html:49
@@ -855,7 +854,9 @@ msgid ""
 "are agreeing to abide by the\n"
 "<a href='%(terms)s'>Terms of Service</a> and\n"
 "<a href='%(privacy)s'>Privacy Policy</a>.\" %%}\n"
-msgstr "Les utilisateurs enregistrés peuvent laisser des commentaires et contribuer des retranscriptions des articles. En créant un compte sur la plateforme vous êtes d'accord avec les <a href='%(terms)s'>conditions d'utilisation</a> et la <a href='%(privacy)s'>politique vie privée</a>."
+msgstr ""
+"\n"
+"Les utilisateurs enregistrés peuvent laisser des commentaires et contribuer des retranscriptions des articles. En créant un compte sur la plateforme vous êtes d'accord avec les <a href='%(terms)s'>conditions d'utilisation</a> et la <a href='%(privacy)s'>politique vie privée</a>.\n"
 
 #: templates/registration/welcome.html:3 templates/registration/welcome.html:6
 msgid "Welcome"
@@ -868,7 +869,9 @@ msgid ""
 "Registration successful.  You may now leave comments,\n"
 "transcribe posts, and\"\n"
 "<a href='%(edit_profile)s'>edit your profile</a>.\n"
-msgstr "Enregistrement effectué. Vous pouvez à présenter laisser des commentaires, retranscrire des articles et <a href='%(edit_profile)s'>editer votre profil</a>."
+msgstr ""
+"\n"
+"Enregistrement effectué. Vous pouvez à présenter laisser des commentaires, retranscrire des articles et <a href='%(edit_profile)s'>editer votre profil</a>.\n"
 
 #: templates/registration/welcome.html:21
 #, python-format
@@ -877,7 +880,9 @@ msgid ""
 "If you haven't yet, please look over the\n"
 "<a href='%(community_guidelines)s'>community guidelines</a>\n"
 "for comments and transcriptions.\n"
-msgstr "Si vous n'avez pas encore lu le <a href='%(community_guidelines)s'>guide de la communauté</a> qui explique la démarche pour les commentaires et les retranscriptions."
+msgstr ""
+"\n"
+"Si vous n'avez pas encore lu le <a href='%(community_guidelines)s'>guide de la communauté</a> qui explique la démarche pour les commentaires et les retranscriptions.\n"
 
 #: templates/scanning/revision_list.html:10
 msgid "Transcription revisions"
@@ -902,3 +907,6 @@ msgstr "Arranger verticalement"
 #: templates/scanning/transcription_edit.html:103
 msgid "Transcription:"
 msgstr "Retranscription :"
+
+msgid "is a weblog platform for people in prison, through which the 1% of Americans who are in prison can tell their stories. Leave a comment &ndash; we'll pass it on."
+msgstr "est une plateforme de blogs pour personnes incarcérées. Laissez leur un message, nous leur envoyons par courrier postal."

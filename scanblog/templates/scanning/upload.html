@@ -1,6 +1,8 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 {% block nav_upload_active %}active{% endblock %}
-{% block title %}{% trans "Upload scans" %}{% endblock %}
+{% trans "Upload scans" as upload_scans %}
+{% block title %}{{ upload_scans }} {% endblock %}
 {% block body %}
     <h1>{% trans "Upload Scans" %}</h1>
     <p>{% trans "Upload individual PDF files, or zip files containing multiple PDFs." %}</p>

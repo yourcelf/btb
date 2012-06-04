@@ -20,7 +20,7 @@
 
 {% if page.paginator.num_pages > 1 %}
 
-{% trans "More posts" %}:
+{{ more_posts }} :
 {% include "_pagination.html" %}
 {% include "blogs/_related.html" %}
 

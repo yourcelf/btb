@@ -15,9 +15,8 @@
     <h2>{% trans "Human stories from prison" %}</h2>
     <div style='clear: both;'></div>
     <div class='about'>
-        {{ site.name }} {% trans "is a weblog platform for people in prison, through
-        which the 1% of Americans who are in prison can tell their stories.
-        Leave a comment &ndash; we'll pass it on." %}
+        {{ site.name }} 
+	{% trans "is a weblog platform for people in prison, through which the 1% of Americans who are in prison can tell their stories. Leave a comment &ndash; we'll pass it on." %}
     </div>
 </div>
 <div class='news-blurbs'>
@@ -36,7 +35,7 @@
 </div>
 <div class='featured'>
 <div class='featured-posts'>
-    <h2>Featured posts</h2>
+    <h2>{% trans "Featured posts" %}</h2>
     <div class='slideshow'>
         <div class='slides_container'>
             {% for doc in featured %}
