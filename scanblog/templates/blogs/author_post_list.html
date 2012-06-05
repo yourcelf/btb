@@ -1,7 +1,9 @@
 {% extends "blogs/base_post_list.html" %}
+{% load i18n %}
+{% trans "by" as by %} 
 {% block title %}
 {% if author.profile.blog_name %}
-    {{ author.profile.blog_name }} {% trans "by" %} {{ author.profile.display_name }}
+    {{ author.profile.blog_name }} {{ by }} {{ author.profile.display_name }}
 {% else %}
     {{ author.profile.display_name }}
 {% endif %}
