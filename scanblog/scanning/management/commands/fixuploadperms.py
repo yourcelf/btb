@@ -14,8 +14,8 @@ class Command(BaseCommand):
                         os.path.join(settings.MEDIA_ROOT, "page_picker_thumbs"),
                         settings.PUBLIC_MEDIA_ROOT):
             print dirname
-            os.system('sudo chown -R www-data.btb "%s"' % dirname)
             # files: -rw-rw-r--
             os.system('sudo chmod -R 0664 "%s"' % dirname)
+            os.system('sudo chown -R www-data.btb "%s"' % dirname)
             # directories: -rwxrwsr-x
             os.system('sudo find "%s" -type d -exec sudo chmod 2775 {} \\;' % dirname)
