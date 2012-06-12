@@ -115,6 +115,8 @@
 
     EditDocumentView.prototype.inReplyToTemplate = _.template($("#editDocumentInReplyTo").html());
 
+    EditDocumentView.prototype.inReplyToCampaignTemplate = _.template($("#editDocumentInReplyToCampaign").html());
+
     EditDocumentView.prototype.pageSizes = {
       small: 0.3,
       medium: 0.6,
@@ -514,15 +516,20 @@
               return input.addClass("error");
             } else {
               result = data.results[0];
+              console.log(result);
               input.removeClass("loading");
-              if (_this.doc.get("author").id !== result.document.author.id) {
+              if (result.document && _this.doc.get("author").id !== result.document.author.id) {
                 error = "Warning: document author doesn't match" + " reply author -- wrong reply code?";
               } else {
                 input.removeClass("error");
                 error = null;
               }
               result.error = error;
-              return details.html(_this.inReplyToTemplate(data.results[0]));
+              if (result.document != null) {
+                return details.html(_this.inReplyToTemplate(result));
+              } else if (result.campaign != null) {
+                return details.html(_this.inReplyToCampaignTemplate(result));
+              }
             }
           },
           error: function() {

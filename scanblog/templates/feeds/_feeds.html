@@ -12,3 +12,6 @@
 {% if tag and tag.name != "featured" %}
     {% include "feeds/_tag.html" %}
 {% endif %}
+{% if campaign %}
+    {% include "feeds/_campaign.html" %}
+{% endif %}

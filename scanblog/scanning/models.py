@@ -300,7 +300,13 @@ class Document(models.Model):
         # Create comment objects only when the doc is public.  That way,
         # subscription signals are fired at the right moment -- the comment is
         # public and viewable.
+        parent = None
         if self.in_reply_to:
+            try:
+                parent = self.in_reply_to.document
+            except Document.DoesNotExist:
+                pass
+        if parent:
             # Only create a comment object if we are public.
             if self.is_public():
                 try:
@@ -310,7 +316,7 @@ class Document(models.Model):
                     self.comment = Comment.objects.create(
                         user=self.author,
                         removed=False,
-                        document=Document.objects.get(reply_code=self.in_reply_to),
+                        document=parent,
                         comment_doc=self,
                     )
             else:

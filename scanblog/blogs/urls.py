@@ -40,4 +40,8 @@ urlpatterns = patterns('blogs.views',
     url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),
     url(r'^posts/edit/{0}?$'.format(post_id), 'edit_post', name='blogs.edit_post'),
     url(r'^posts/delete/{0}?$'.format(post_id), 'delete_post', name='blogs.delete_post'),
+
+    # Campaigns
+    url(r'^campaigns/(?P<slug>\w+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
+    url(r'^campaigns/(?P<slug>\w+)/$', 'show_campaign', name='blogs.show_campaign'),
 )

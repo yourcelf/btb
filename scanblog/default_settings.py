@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'profiles',
     'subscriptions',
     'scanning',
+    'campaigns',
 
     # django internal apps
     'django.contrib.auth',

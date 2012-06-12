@@ -11,7 +11,8 @@ from profiles.models import Organization
 from subscriptions.models import Subscription, NotificationBlacklist
 from scanning.models import Document
 from comments.models import Comment
-from annotations.models import Tag
+from annotations.models import Tag, ReplyCode
+from campaigns.models import Campaign
 
 class TestSubscriptions(BtbMailTestCase):
     fixtures = ["initial_data.json"]
@@ -120,6 +121,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
+    def test_campaign_notifications(self):
+        reply_code = ReplyCode.objects.create(code='test-campaign')
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                public=True, 
+                reply_code=reply_code)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                status="published", in_reply_to=reply_code)
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
+        self.clear_outbox()
+
     def test_reply_coded_comment_notifications(self):
         """
         Test notifications for document replies to comments.
@@ -138,10 +150,14 @@ class TestSubscriptions(BtbMailTestCase):
         even if you're multiply subscribed to it.
         """
         tag = Tag.objects.create(name="featured")
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                reply_code=ReplyCode.objects.create(code='test-campaign'))
         Subscription.objects.create(subscriber=self.commenter, author=self.author)
         Subscription.objects.create(subscriber=self.commenter, organization=self.org)
         Subscription.objects.create(subscriber=self.commenter, tag=tag)
-        doc = Document.objects.create(author=self.author, editor=self.editor)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                in_reply_to=campaign.reply_code)
         doc.tags.add(tag)
         doc.status = "published"
         doc.save()

@@ -41,6 +41,7 @@ class btb.EditDocumentManager extends Backbone.View
 class btb.EditDocumentView extends Backbone.View
     template: _.template $("#editDocument").html()
     inReplyToTemplate: _.template $("#editDocumentInReplyTo").html()
+    inReplyToCampaignTemplate: _.template $("#editDocumentInReplyToCampaign").html()
     pageSizes:
         small: 0.3
         medium: 0.6
@@ -298,17 +299,24 @@ class btb.EditDocumentView extends Backbone.View
                         input.addClass("error")
                     else
                         result = data.results[0]
+                        console.log result
                         input.removeClass("loading")
-                        if @doc.get("author").id != result.document.author.id
+                        if (result.document and
+                              @doc.get("author").id != result.document.author.id)
                             error = "Warning: document author doesn't match" +
                                     " reply author -- wrong reply code?"
                         else
                             input.removeClass("error")
                             error = null
                         result.error = error
-                        details.html(
-                            @inReplyToTemplate(data.results[0])
-                        )
+                        if result.document?
+                            details.html(
+                                @inReplyToTemplate(result)
+                            )
+                        else if result.campaign?
+                            details.html(
+                                @inReplyToCampaignTemplate(result)
+                            )
                 error: =>
                     input.removeClass("loading")
                     alert "Server error"
