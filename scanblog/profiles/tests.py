@@ -264,6 +264,23 @@ class TestProfileManager(TestCase):
         # ... and no one should need one anymore.
         self.assertEqual(set(Profile.objects.needs_comments_letter()), set())
 
+    def test_bloggers_with_published_content(self):
+        self.assertEqual(set(Profile.objects.bloggers_with_published_content()), set())
+        has_post, has_profile, has_both, has_nothing = Profile.objects.enrolled()[0:4]
+        has_post.user.documents_authored.create(type="post", editor=self.sender, 
+                status="published")
+        has_profile.user.documents_authored.create(type="profile", editor=self.sender,
+                status="published")
+        has_both.user.documents_authored.create(type="post", editor=self.sender, 
+                status="published")
+        has_both.user.documents_authored.create(type="profile", editor=self.sender,
+                status="published")
+
+        self.assertEqual(
+            sorted(Profile.objects.bloggers_with_published_content(), key=lambda a: a.pk),
+            sorted([has_post, has_profile, has_both], key=lambda a: a.pk)
+        )
+
 class TestOrgPermissions(TestCase):
     fixtures = ["initial_data.json"]
     def setUp(self):
