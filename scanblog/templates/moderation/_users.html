@@ -34,6 +34,13 @@
                     </td>
             </tr>
             <tr>
+                <th>Lost contact?*</th>
+                <td><input type='checkbox' 
+                        <% if (defaults.lost_contact) { %>checked='checked'<% } %> 
+                        name='lost_contact' />
+                    </td>
+            </tr>
+            <tr>
                 <th>Email&nbsp;</th>
                 <td><input type='text' name='email' value='<%= defaults.email %>' placeholder='e.g., johnsmith@yahoo.com' /></td>
             </tr>
@@ -102,7 +109,10 @@
     <% if (user.blogger) { %>
         Blogger:
         <% if (user.consent_form_received) { %>
-            <% if (user.managed) { %>
+            <% if (user.lost_contact) { %>
+                <span class='ui-icon ui-icon-alert' title='Lost contact'></span>
+                Lost contact
+            <% } else if (user.managed) { %>
                 <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
                 Managed
             <% } else { %>
@@ -152,12 +162,14 @@
             <th>Blogger</th>
             <th>Managed</th>
             <th>License signed</th>
+            <th>Lost contact</th>
         </tr>
         <tr>
             <td class='is-active'></td>
             <td class='blogger'></td>
             <td class='managed'></td>
             <td class='consent-form-received'></td>
+            <td class='lost-contact'></td>
         </tr>
     </table>
 </script>

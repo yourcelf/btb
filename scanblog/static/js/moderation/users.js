@@ -143,6 +143,7 @@
         managed: $("input[name=managed]", scope).is(":checked"),
         email: $("input[name=email]", scope).val(),
         blog_name: $("input[name=blog_name]", scope).val(),
+        lost_contact: $("input[name=lost_contact]", scope).val(),
         org_id: $("[name=org_id]", scope).val()
       };
       if (!properties.mailing_address) {
@@ -985,7 +986,7 @@
 
     UserStatusTable.prototype.render = function() {
       $(this.el).html(this.template());
-      btb.EditInPlace.factory([[this.user, "blogger", $(".blogger", this.el), "checkbox"], [this.user, "managed", $(".managed", this.el), "checkbox"], [this.user, "consent_form_received", $(".consent-form-received", this.el), "checkbox"], [this.user, "is_active", $(".is-active", this.el), "checkbox"]]);
+      btb.EditInPlace.factory([[this.user, "blogger", $(".blogger", this.el), "checkbox"], [this.user, "managed", $(".managed", this.el), "checkbox"], [this.user, "lost_contact", $(".lost-contact", this.el), "checkbox"], [this.user, "consent_form_received", $(".consent-form-received", this.el), "checkbox"], [this.user, "is_active", $(".is-active", this.el), "checkbox"]]);
       return this;
     };
 

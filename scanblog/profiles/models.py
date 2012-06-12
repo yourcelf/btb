@@ -170,6 +170,7 @@ class Profile(models.Model):
 
     blogger = models.BooleanField()
     managed = models.BooleanField()
+    lost_contact = models.BooleanField()
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
     mailing_address = models.TextField(blank=True, default="")
@@ -192,6 +193,7 @@ class Profile(models.Model):
             'date_joined': self.user.date_joined.isoformat(),
             'blogger': self.blogger,
             'managed': self.managed,
+            'lost_contact': self.lost_contact,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,

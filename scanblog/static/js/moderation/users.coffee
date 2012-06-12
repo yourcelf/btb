@@ -48,6 +48,7 @@ class btb.UserAdd extends Backbone.View
             managed: $("input[name=managed]", scope).is(":checked")
             email: $("input[name=email]", scope).val()
             blog_name: $("input[name=blog_name]", scope).val()
+            lost_contact: $("input[name=lost_contact]", scope).val()
             org_id: $("[name=org_id]", scope).val()
         if not properties.mailing_address
             @errors.mailing_address = "Mailing address required"
@@ -518,6 +519,7 @@ class btb.UserStatusTable extends Backbone.View
         btb.EditInPlace.factory [
             [@user, "blogger", $(".blogger", @el), "checkbox"]
             [@user, "managed", $(".managed", @el), "checkbox"]
+            [@user, "lost_contact", $(".lost-contact", @el), "checkbox"]
             [@user, "consent_form_received", $(".consent-form-received", @el), "checkbox"]
             [@user, "is_active", $(".is-active", @el), "checkbox"]
         ]
