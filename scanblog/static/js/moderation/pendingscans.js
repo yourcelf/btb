@@ -145,7 +145,8 @@
       }, {
         success: function(model) {
           _this.render();
-          return _this.$("tr.item:first").effect("highlight", 5000);
+          _this.$("tr.item:first").effect("highlight", 5000);
+          return _this.$(".user-chooser-trigger").select();
         }
       });
     };

@@ -68,6 +68,7 @@ class btb.PendingScans extends btb.PaginatedView
             success: (model) =>
               @render()
               @$("tr.item:first").effect("highlight", 5000)
+              @$(".user-chooser-trigger").select()
         }
         
 
