@@ -434,7 +434,7 @@ def post_comments_feed(request, post_id):
 def tagged_post_feed(request, tag):
     return feeds.posts_feed(request, {
         'title': "%s posts" % escape(tag.capitalize()),
-        'posts': Document.objects.public().filter(tags__name=tag.lower())
+        'posts': Document.objects.public().filter(tags__name=tag.lower(), type='post')
     })
 def legacy_author_post_feed(request, author_id, slug):
     # We're stripping out author slugs from feed URLs, so feed readers don't
