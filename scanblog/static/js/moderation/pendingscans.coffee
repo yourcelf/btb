@@ -8,7 +8,13 @@ class btb.PendingScanList extends btb.FilteredPaginatedCollection
     model: btb.PendingScan
     baseUrl: "/scanning/pendingscans.json"
     comparator: (ps) ->
-        return -( new Date(ps.get "created").getTime() )
+        # Hack: if we don't have a date, assume we were just created, and use
+        # 'now'.
+        if ps.get("created")
+            date = new Date(ps.get "created")
+        else
+            date = new Date()
+        return -(date.getTime())
 
 class btb.PendingScans extends btb.PaginatedView
     template: _.template $("#pendingScanList").html()
@@ -59,7 +65,8 @@ class btb.PendingScans extends btb.PaginatedView
             author_id: user.get "id"
             org_id: $("[name=org_id]", @el).val()
         }, {
-            success: (model) => @render()
+            success: (model) =>
+              @render()
         }
         
 

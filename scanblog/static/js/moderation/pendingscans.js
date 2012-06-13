@@ -35,7 +35,13 @@
     PendingScanList.prototype.baseUrl = "/scanning/pendingscans.json";
 
     PendingScanList.prototype.comparator = function(ps) {
-      return -(new Date(ps.get("created")).getTime());
+      var date;
+      if (ps.get("created")) {
+        date = new Date(ps.get("created"));
+      } else {
+        date = new Date();
+      }
+      return -(date.getTime());
     };
 
     return PendingScanList;
