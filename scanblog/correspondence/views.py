@@ -19,7 +19,7 @@ from comments.models import Comment
 from correspondence.models import Letter, Mailing
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
-from scanning.models import Scan
+from scanning.models import Scan, Document
 from btb.utils import args_method_decorator, JSONView
 
 class Letters(JSONView):
