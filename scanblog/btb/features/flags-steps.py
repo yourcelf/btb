@@ -1,4 +1,5 @@
 import re
+import time
 from lettuce import *
 from lettuce.django import django_url
 from selenium.common.exceptions import NoSuchElementException
@@ -43,9 +44,8 @@ def document_has_a_comment_and_no_flags(step, doc_id):
 
 @step(u'I click the comment flag button')
 def i_click_the_comment_flag_button(step):
+    time.sleep(3)
     href = world.browser.find_element_by_class_name(
-            'comments'
-    ).find_element_by_class_name(
             'comment-flag'
     ).get_attribute('href')
     world.browser.get(href)

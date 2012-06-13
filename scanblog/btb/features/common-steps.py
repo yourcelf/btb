@@ -7,12 +7,17 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 from profiles.models import Organization
+from btblettuce import hard_click
 
 @before.all
 def get_browser():
-    world.browser = webdriver.Firefox()
-    world.browser.implicitly_wait(1)
+    binary = webdriver.firefox.firefox_binary.FirefoxBinary(
+            firefox_path=settings.SELENIUM_FIREFOX_BIN
+    )
+    world.browser = webdriver.Firefox(firefox_binary=binary)
+    world.browser.implicitly_wait(2)
 
 @before.all
 def set_up_user():
@@ -124,6 +129,7 @@ def see_header(step, text):
 @step(u'I am redirected to login')
 def i_am_redirected_to_login(step):
     # URL is correct....
+    time.sleep(1)
     assert world.browser.current_url.split("?")[0] == django_url("/accounts/login/"), "Expected %s, got %s" % (django_url("/accounts/login/"), world.browser.current_url.split("?")[0])
     # ... and login form exists (e.g. page rendered properly)
     world.browser.find_element_by_class_name('login-form')
@@ -157,6 +163,7 @@ def i_login_as(step, username, password):
 def i_click_the_button(step, value):
     el = world.browser.find_element_by_xpath('//input[@value="%s"]' % value)
     el.click()
+    time.sleep(1)
 
 @step(u'I click the submit button')
 def i_click_the_submit_button(step):

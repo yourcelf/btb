@@ -125,6 +125,13 @@
         <%= document.comment_count %> comments.
     </div>
 </script>
+<script type="text/template" id="editDocumentInReplyToCampaign">
+    <div>
+        <% if (error) { %><div class='error'><b><%= error %></b></div><% } %>
+        <b>Campaign</b>: <a href='<%= campaign.url %>'><%= campaign.title %></a>
+        (<%= btb.formatDate(campaign.created) %> &ndash; <%= campaign.public ? "public" : "not public yet" %>)
+    </div>
+</script>
 <script type="text/template" id="editDocumentPage">
 <div class='edit-document-page'>
     <div class='controls'>

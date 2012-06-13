@@ -19,6 +19,10 @@
                       alt='{{ page.document.get_title }}' /></a>
             </td>
             {% endthumbnail %}
+            {% if forloop.counter == 7 %}
+            </tr><tr>
+            {% endif %}
+
         {% endfor%}
         {% if related.more %}
             <td class='more'>

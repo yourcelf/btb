@@ -15,6 +15,7 @@ class btb.DocumentList extends btb.FilteredPaginatedCollection
 
 class btb.EditDocumentManager extends Backbone.View
     template: _.template $("#editDocumentsManager").html()
+
     initialize: (options=documents: []) ->
         @documents = new btb.DocumentList
         @documents.filter.idlist = options.documents.join(".")
@@ -40,6 +41,7 @@ class btb.EditDocumentManager extends Backbone.View
 class btb.EditDocumentView extends Backbone.View
     template: _.template $("#editDocument").html()
     inReplyToTemplate: _.template $("#editDocumentInReplyTo").html()
+    inReplyToCampaignTemplate: _.template $("#editDocumentInReplyToCampaign").html()
     pageSizes:
         small: 0.3
         medium: 0.6
@@ -297,17 +299,24 @@ class btb.EditDocumentView extends Backbone.View
                         input.addClass("error")
                     else
                         result = data.results[0]
+                        console.log result
                         input.removeClass("loading")
-                        if @doc.get("author").id != result.document.author.id
+                        if (result.document and
+                              @doc.get("author").id != result.document.author.id)
                             error = "Warning: document author doesn't match" +
                                     " reply author -- wrong reply code?"
                         else
                             input.removeClass("error")
                             error = null
                         result.error = error
-                        details.html(
-                            @inReplyToTemplate(data.results[0])
-                        )
+                        if result.document?
+                            details.html(
+                                @inReplyToTemplate(result)
+                            )
+                        else if result.campaign?
+                            details.html(
+                                @inReplyToCampaignTemplate(result)
+                            )
                 error: =>
                     input.removeClass("loading")
                     alert "Server error"
@@ -329,7 +338,7 @@ class btb.EditDocumentPageView extends Backbone.View
         'click .move-page-up': 'movePageUp'
         'click .move-page-down': 'movePageDown'
         'click .crop': 'crop'
-        'click .highlight': 'highlight'
+        'click .highlight': 'highlightMe'
         'mousemove .page-image': 'mouseMove'
         'mousedown .page-image': 'mouseDown'
 
@@ -337,7 +346,6 @@ class btb.EditDocumentPageView extends Backbone.View
     scale: 1
 
     initialize: (options=page: null, pagecount: 1) ->
-        @highlight = null
         @page = options.page
         @page.transformations = @page.transformations or {}
         @pagecount = options.pagecount
@@ -350,6 +358,9 @@ class btb.EditDocumentPageView extends Backbone.View
         $(document).mouseup (event) =>
             if @mouseIsDown
                 @mouseUp(event)
+
+    highlightMe: =>
+        @setHighlighting(not @highlighting)
 
     render: =>
         $(@el).html @template(page: @page, pagecount: @pagecount)
@@ -460,6 +471,7 @@ class btb.EditDocumentPageView extends Backbone.View
         @trigger "movePageDown"
 
     crop: => @setCropping(not @cropping)
+
     setCropping: (cropping, trigger=true) =>
         @cropping = cropping
         if @cropping
@@ -468,7 +480,7 @@ class btb.EditDocumentPageView extends Backbone.View
         if trigger
             @trigger "cropping", @cropping
 
-    highlight: => @setHighlighting(not @highlighting)
+
     setHighlighting: (highlighting, trigger=true) =>
         @highlighting = highlighting
         if @highlighting

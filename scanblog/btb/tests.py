@@ -28,6 +28,7 @@ class BtbWithSettings:
             delattr(settings, key)
 
 class BtbBaseTestCase():
+    fixtures = ["initial_data.json"]
     # see WithSettings
     def settings(self, *args, **kwargs):
         return BtbWithSettings(kwargs)
@@ -62,7 +63,6 @@ class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
     pass
 
 class BtbLoginTestCase(BtbTestCase):
-    fixtures = ['initial_data.json']
     def setUp(self):
         org = Organization.objects.create(name='org')
         test_users = [{

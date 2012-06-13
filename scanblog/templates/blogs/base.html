@@ -12,6 +12,7 @@
     <a href='{% url blogs.manage_posts %}'>&#9776; My Blog Posts</a>
     <a href='{% url blogs.edit_post %}'>&#9997; Compose</a>
 {% endif %}
+{% include "blogs/_blog_cloud.html" %}
 {% endblock %}
 
 {% block scripts %}

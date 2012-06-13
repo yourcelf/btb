@@ -20,8 +20,7 @@ def i_upload_the_scan(step, name):
     # Upload the file...
     world.browser.get(django_url("/scanning/add"))
     el = css("input[type=file]")
-    el.send_keys(os.path.join(settings.SETTINGS_ROOT,
-        "media", "test", "src", name))
+    el.send_keys(os.path.join(settings.SETTINGS_ROOT, "media", "test", "src", name))
     el.submit()
     # Wait for it...
     while "moderation/wait" in world.browser.current_url:
@@ -97,8 +96,8 @@ def enter_a_pending_scan_for_user(step, name):
     css(".user-chooser-trigger").send_keys(name[0])
     time.sleep(0.1)
     css(".user-search").send_keys(name[1:])
-    time.sleep(0.1)
-    css(".user-search").send_keys(Keys.ENTER)
+    time.sleep(0.5)
+    css(".name-and-details").click()
     time.sleep(0.5)
     user_id = int(css(".user-id-raw").get_attribute("value"))
     scan_code = css(".reply-code").text

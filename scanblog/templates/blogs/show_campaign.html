@@ -1,0 +1,9 @@
+{% extends "blogs/base_post_list.html" %}
+{% block title %}{{ campaign.title }}{% endblock %}
+{% block heading %}
+
+<h1>{{ campaign.title }}</h1>
+
+{{ campaign.body|safe }}
+
+{% endblock %}

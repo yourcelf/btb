@@ -38,7 +38,7 @@ DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
 # http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=Gentium_download
 # Be sure to change this to the exact location
-TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
+TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 
 # You'll want to change these as needed...
 NICE_CMD = "/usr/bin/nice"
@@ -57,23 +57,23 @@ CONVERT_CMD = '/usr/bin/convert'
 
 if DEBUG:
     pass
-#    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-#    INSTALLED_APPS += ('debug_toolbar',)
-#    DEBUG_TOOLBAR_CONFIG = {
-#            'INTERCEPT_REDIRECTS': False,
-#    }
-#    DEBUG_TOOLBAR_PANELS = (
-#            'debug_toolbar.panels.version.VersionDebugPanel',
-#            'debug_toolbar.panels.timer.TimerDebugPanel',
-#            'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-#            'debug_toolbar.panels.headers.HeaderDebugPanel',
-#            'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-#            'debug_toolbar.panels.sql.SQLDebugPanel',
-#            'debug_toolbar.panels.template.TemplateDebugPanel',
-#            'debug_toolbar.panels.signals.SignalDebugPanel',
-#            'debug_toolbar.panels.logger.LoggingPanel',
-#            'debug_toolbar.panels.cache.CacheDebugPanel',
-#    )
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INSTALLED_APPS += ('debug_toolbar',)
+    DEBUG_TOOLBAR_CONFIG = {
+            'INTERCEPT_REDIRECTS': False,
+    }
+    DEBUG_TOOLBAR_PANELS = (
+            'debug_toolbar.panels.version.VersionDebugPanel',
+            'debug_toolbar.panels.timer.TimerDebugPanel',
+            'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
+            'debug_toolbar.panels.headers.HeaderDebugPanel',
+            'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
+            'debug_toolbar.panels.sql.SQLDebugPanel',
+            'debug_toolbar.panels.template.TemplateDebugPanel',
+            'debug_toolbar.panels.signals.SignalDebugPanel',
+            'debug_toolbar.panels.logger.LoggingPanel',
+            'debug_toolbar.panels.cache.CacheDebugPanel',
+    )
 
 
 # Whether or not to allow new user sign ups
@@ -119,10 +119,11 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins', 'log_file'],
+            'handlers': ['mail_admins', 'log_file', 'console'],
             'level': 'ERROR',
             'propagate': True,
         },
     }
 }
 
+SELENIUM_FIREFOX_BIN = "/home/tc1/src/firefox/firefox"

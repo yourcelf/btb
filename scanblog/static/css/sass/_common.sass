@@ -2,10 +2,10 @@
 @import "compass/typography/lists"
 @import "compass/layout/sticky-footer"
 @import "compass/typography/vertical_rhythm"
-@import "compass/utilities/links/link-colors"
+@import "compass/typography/links/link-colors"
 @import "compass/css3/box-shadow"
 @import "compass/css3/border-radius"
-@import "compass/css3/gradient"
+@import "compass/css3/images"
 @import "compass/css3/transform"
 @import "blueprint/form"
 
@@ -33,18 +33,18 @@
 @mixin button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
   color: $normalfg
   background-color: $normalbg
-  +linear-gradient(color-stops($normalbg, $normalbg - #222))
+  +background-image(linear-gradient(color-stops($normalbg, $normalbg - #222)))
   &:hover
     color: $hoverfg
     background-color: $hoverbg
-    +linear-gradient(color-stops($hoverbg, $hoverbg - #222))
+    +background-image(linear-gradient(color-stops($hoverbg, $hoverbg - #222)))
   &:active
     color: $activefg
     background-color: $activebg
-    +linear-gradient(color-stops($activebg, $activebg + #222))
+    +background-image(linear-gradient(color-stops($activebg, $activebg + #222)))
   &[disabled]
     color: $normalbg - #222
-    +linear-gradient(color-stops($normalbg, $normalbg))
+    +background-image(linear-gradient(color-stops($normalbg, $normalbg)))
     cursor: default
     border: none
   display: inline-block
@@ -174,6 +174,24 @@
     background-position: 13px + $xoff -358px + $yoff
   @if $sprite == frontflag
     background: url(../img/frontend-sprite.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == twitter
+    background: url(../img/twitter_bird.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == twitter-hover
+    background: url(../img/twitter_bird-hover.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == facebook
+    background: url(../img/facebook.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == facebook-hover
+    background: url(../img/facebook-hover.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == pinterest
+    background: url(../img/pinterest.png) 0px 0px no-repeat #f3f3f3
+    background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == pinterest-hover
+    background: url(../img/pinterest-hover.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
 
 @mixin anchor-button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
@@ -810,3 +828,104 @@ a.skip-reply-button
   +anchor-button
   font-weight: normal
   border: white
+
+span.sharing
+  font-style: italic
+a.twitter-button
+  +flat-button
+  +flat-button-position(left)
+  +flat-button-sprite(twitter)
+  &:hover
+    +flat-button-sprite(twitter-hover)
+a.pinterest-button
+  +flat-button
+  +flat-button-position(right)
+  +flat-button-sprite(pinterest)
+  &:hover
+    +flat-button-sprite(pinterest-hover)
+a.facebook-button
+  +flat-button
+  +flat-button-position(middle)
+  +flat-button-sprite(facebook)
+  &:hover
+    +flat-button-sprite(facebook-hover)
+
+.post-tag-list
+  position: relative
+  font-style: italic
+  top: 0.7em
+  color: #999
+  a:link
+    color: #9a9
+  a:visited
+    color: #aba
+    
+
+#subnav
+  div.blog-nav-bar
+    a
+      +link-colors(#060, #595, #000, #595)
+      padding-right: 0
+      text-decoration: underline
+    .all a
+      +link-colors(#060, #060, #000, #060)
+    .tag-links a
+      text-decoration: none
+    a.comment-text
+      +link-colors(#000, #000, #000, #000)
+      text-decoration: none
+    div.subnav
+      a
+        +link-colors(#000, #000, #000, #000)
+        padding-right: 1em
+        text-decoration: none
+        &.open
+          +link-colors(#060, #060, #060, #060)
+
+div.blog-nav-bar
+  .subnav
+    margin-left: 1em
+  display: inline-block
+  width: 100%
+  vertical-align: middle
+  font-weight: normal
+
+  .tag-list
+    display: inline-block
+    .tag
+      line-height: 15px
+    td
+      text-align: right
+    td + td
+      text-align: left
+    .column
+      border-left: 1px solid #eee
+      vertical-align: top
+      display: inline-block
+      padding: 0.5em
+      .tag
+        .count
+          color: #ccc
+          margin-right: 0.5em
+  a.toggle, a.every-page
+    font-weight: bold
+    &:before
+      content: "▶ "
+    &.open:before
+      content: "▼ "
+  a.every-page
+    font-style: italic
+    &:before
+      content: ""
+
+  .target
+    +single-box-shadow(#666, 0px, 2px, 2px, 0px)
+    padding: 1em
+    background-color: rgba(255, 255, 255, 0.2)
+    display: none
+    &.open
+      display: block
+    .all
+      font-size: 130%
+  .comments li
+    margin-bottom: 1em

@@ -12,3 +12,17 @@ do ->
       date = new Date(date.getTime() + (1000*60*60*24))
   $(".comment-maildate").html("#{days[date.getDay()]}, #{date.getDate()} #{months[date.getMonth()]} #{date.getFullYear()}")
 
+
+$(".blog-nav-bar a.toggle").on "click", ->
+  if $(this).hasClass("open")
+    openit = false
+  else
+    openit = true
+  console.log openit
+  # close everything.
+  $(".blog-nav-bar .toggle.open").removeClass("open")
+  $(".blog-nav-bar .target.open").removeClass("open").show().slideToggle()
+  if openit
+    $($(this).attr("data-target"), ".blog-nav-bar").hide().slideToggle().addClass("open")
+    $(this).addClass("open")
+  return false

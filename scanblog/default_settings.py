@@ -37,7 +37,7 @@ PUBLIC_MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(SETTINGS_ROOT, "site_static")
 STATIC_URL = '/static/'
 
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+#ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATICFILES_DIRS = (os.path.join(SETTINGS_ROOT, "static"),)
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'profiles',
     'subscriptions',
     'scanning',
+    'campaigns',
 
     # django internal apps
     'django.contrib.auth',
@@ -213,3 +214,4 @@ THUMBNAIL_PREFIX = "cache/"
 
 MAX_READY_TO_PUBLISH_DAYS = 3
 PUBLISHING_HOURS = (7, 23)
+SELENIUM_FIREFOX_BIN = "/usr/bin/firefox"

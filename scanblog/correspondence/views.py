@@ -86,7 +86,9 @@ class Letters(JSONView):
             letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
             return self.json_response(letter.to_dict())
 
-        letters = Letter.objects.mail_filter(request.user).extra(
+        letters = Letter.objects.mail_filter(request.user).filter(
+                recipient__profile__lost_contact=False
+             ).extra(
                 select={
                     'date_order': 
                         'COALESCE("{0}"."sent", "{0}"."created")'.format(
@@ -95,7 +97,7 @@ class Letters(JSONView):
 
                 },
                 order_by=('-date_order',)
-        ).distinct()
+            ).distinct()
         if "sent" in request.GET:
             letters = letters.filter(sent__isnull=False)
         if "unsent" in request.GET:
@@ -311,6 +313,7 @@ class Mailings(JSONView):
         kw = {'auto_generated': True, 'sender': request.user}
         if "enqueued" in types:
             to_send += list(Letter.objects.unsent().mail_filter(request.user).filter(
+                    recipient__profile__lost_contact=False,
                     mailing__isnull=True,
                     auto_generated=False
             ))
@@ -318,27 +321,34 @@ class Mailings(JSONView):
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="waitlist", is_postcard=True, 
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.waitlistable().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.waitlistable().mail_filter(request.user).filter(
+                    lost_contact=False
+                ).distinct())
         if "consent_form" in types:
             cutoff = params.get("consent_cutoff", "") or datetime.datetime.now()
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="consent_form",
                     org=p.user.organization_set.get(), **kw 
                 ) for p in Profile.objects.invitable().mail_filter(request.user).filter(
-                    user__date_joined__lte=cutoff
+                    user__date_joined__lte=cutoff,
+                    lost_contact=False
                 ).distinct())
         if "signup_complete" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="signup_complete",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(
+                    request.user
+                ).filter(lost_contact=False).distinct())
         if "first_post" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="first_post",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).filter(lost_contact=False).distinct())
         if "comments" in types:
-            comments = list(Comment.objects.unmailed().mail_filter(request.user).order_by(
+            comments = list(Comment.objects.unmailed().mail_filter(request.user).filter(
+                document__author__profile__lost_contact=False
+            ).order_by(
                 'document__author', 'document'
             ))
             doc = None
@@ -383,7 +393,8 @@ class NeededLetters(JSONView):
         """
         if 'consent_form_cutoff' in request.GET:
             consent_forms = Profile.objects.invitable().filter(
-                    user__date_joined__lte=request.GET.get('consent_form_cutoff')
+                    user__date_joined__lte=request.GET.get('consent_form_cutoff'),
+                    lost_contact=False
                 ).mail_filter(
                     request.user
                 ).distinct().count()
@@ -400,20 +411,21 @@ class NeededLetters(JSONView):
             "consent_form": consent_forms,
             "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
                     request.user
-                ).distinct().count(),
+                ).filter(lost_contact=False).distinct().count(),
             "first_post": Profile.objects.needs_first_post_letter().mail_filter(
                     request.user
-                ).distinct().count(),
+                ).filter(lost_contact=False).distinct().count(),
             "comments": Profile.objects.needs_comments_letter().mail_filter(
                     request.user
-                ).distinct().count(),
+                ).filter(lost_contact=False).distinct().count(),
             "waitlist": Profile.objects.waitlistable().mail_filter(
                     request.user
-                ).distinct().count(),
+                ).filter(lost_contact=False).distinct().count(),
             "enqueued": Letter.objects.mail_filter(
                     request.user
                 ).filter(
-                    sent__isnull=True
+                    sent__isnull=True,
+                    recipient__profile__lost_contact=False,
                 ).exclude(mailing__isnull=False).count(),
         })
 

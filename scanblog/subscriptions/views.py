@@ -13,6 +13,7 @@ from subscriptions.models import Subscription
 from scanning.models import Document
 from annotations.models import Tag
 from profiles.models import Organization
+from campaigns.models import Campaign
 
 @login_required
 def subscribe_to_org(request, org_id):
@@ -25,6 +26,19 @@ def subscribe_to_org(request, org_id):
         return redirect("subscriptions.settings")
     return render(request, "subscriptions/subscribe_to.html", {
         'org': org,
+    })
+
+@login_required
+def subscribe_to_campaign(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    if request.method == "POST":
+        sub, created = Subscription.objects.get_or_create(
+                subscriber=request.user,
+                campaign=campaign,
+        )
+        return redirect("subscriptions.settings")
+    return render(request, "subscriptions/subscribe_to.html", {
+        'campaign': campaign,
     })
 
 @login_required

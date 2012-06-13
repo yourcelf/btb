@@ -8,6 +8,16 @@ class CommentManager(OrgManager):
     def public(self):
         return self.filter(removed=False, document__status="published")
 
+    def excluding_boilerplate(self):
+        return self.public().exclude(
+                comment="Thanks for writing! I finished the transcription for your post."
+            ).exclude(
+                comment="Thanks for writing! I worked on the transcription for your post."
+            ).exclude(
+                comment_doc__isnull=False
+            )
+
+
     def with_mailed_annotation(self):
         return self.public().annotate(letter_sent=models.Max('letter__sent'))
 
@@ -71,3 +81,28 @@ class Comment(models.Model):
         else:
             blurb = "None"
         return "%s: %s" % (self.user.profile.display_name, blurb)
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User)
+    document = models.ForeignKey('scanning.Document')
+    created = models.DateTimeField(default=datetime.datetime.now)
+
+    class QuerySet(OrgQuerySet):
+        orgs = ["document__author__organization"]
+
+    def get_absolute_url(self):
+        return self.document.get_absolute_url()
+
+    def to_dict(self):
+        return {
+                'id': self.pk,
+                'user_id': self.user_id,
+                'document_id': self.document_id,
+                'url': self.get_absolute_url(),
+        }
+
+    class Meta:
+        ordering = ['-created']
+
+    def __unicode__(self):
+        return "%s: %s" % (self.user.profile, self.document_id)

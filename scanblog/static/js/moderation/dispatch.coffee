@@ -3,16 +3,16 @@ class btb.ScanModerationRouter extends Backbone.Router
     routes:
         "": "dashboard"
 
-        "/pending":                  "pending"
-        "/users":                    "users"
-        "/users/:id":                "users"
+        "pending":                  "pending"
+        "users":                    "users"
+        "users/:id":                "users"
 
-        "/process":                  "processScanList"
-        "/process/scan/:id":         "processScan"
-        "/process/document/:idlist":     "processDocument"
+        "process":                  "processScanList"
+        "process/scan/:id":         "processScan"
+        "process/document/:idlist":     "processDocument"
 
-        "/mail":                     "mail"
-        "/mail/:path":               "mail"
+        "mail":                     "mail"
+        "mail/:path":               "mail"
 
     dashboard: =>
         $("#app").html(

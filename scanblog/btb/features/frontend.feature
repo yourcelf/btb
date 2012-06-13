@@ -2,7 +2,7 @@ Feature: Pages display correctly
     Scenario: Access the blogs page
         Given I access the url "/"
         And I follow "Blogs"
-        Then I see the header "Recent posts from all authors"
+        Then I see the header "Recent posts by date"
         And I see a page of post snippets
 
     Scenario: Access a post

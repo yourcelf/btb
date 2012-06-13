@@ -7,9 +7,11 @@ revision_id = "(?P<revision_id>\d+)"
 
 urlpatterns = patterns('blogs.views',
     # Post lists
-    url(r'^blogs/$', 'all_posts_list', name='blogs.home'),
-    url(r'^blogs/tag/(?P<tag>.+)/$', 'tagged_post_list', name='blogs.tagged_posts'),
+    url(r'^blogs/$', 'blogs_front_page', name='blogs.home'),
+    url(r'^blogs/recent/$', 'posts_by_date', name='blogs.recent'),
+    url(r'^blogs/tag/(?:(?P<tag>.+)/)?$', 'tagged_post_list', name='blogs.tagged_posts'),
     url(r'^blogs/{0}/{1}/?$'.format(author_id, slug), 'author_post_list', name='blogs.blog_show'),
+    url(r'^blogs/comments/$', 'all_comments_list', name='blogs.comments'),
 
     url(r'^blogs/feed/$', 'all_posts_feed', name='blogs.all_posts_feed'),
     url(r'^blogs/feed/{0}/$'.format(author_id), 'author_post_feed', name='blogs.blog_feed'),
@@ -22,7 +24,6 @@ urlpatterns = patterns('blogs.views',
 
     # Org has to come after feed, so that it doesn't consume 'feed' and 'tag' as slugs.
     url(r'^blogs/{0}/$'.format(slug), 'org_post_list', name='blogs.org_post_list'),
-
     url(r'^blogs/{0}/{1}/feed/$'.format(author_id, slug), 'legacy_author_post_feed'),
 
     # Individual posts
@@ -39,4 +40,8 @@ urlpatterns = patterns('blogs.views',
     url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),
     url(r'^posts/edit/{0}?$'.format(post_id), 'edit_post', name='blogs.edit_post'),
     url(r'^posts/delete/{0}?$'.format(post_id), 'delete_post', name='blogs.delete_post'),
+
+    # Campaigns
+    url(r'^campaigns/(?P<slug>\w+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
+    url(r'^campaigns/(?P<slug>\w+)/$', 'show_campaign', name='blogs.show_campaign'),
 )

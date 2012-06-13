@@ -1,0 +1,8 @@
+{% extends "blogs/base_post_list.html" %}
+{% block title %}Blogs from writers in prison{% endblock %}
+{% block subnav %}
+    {% with categories_open="open" %}{{ block.super }}{% endwith %}
+{% endblock %}
+{% block heading %}
+<h1>Recent posts by date</h1>
+{% endblock %}

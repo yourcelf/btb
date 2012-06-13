@@ -305,6 +305,8 @@ class UsersJSON(JSONView):
             profiles = profiles.filter(blogger=tf('blogger'))
         if request.GET.get("managed", "null") != "null":
             profiles = profiles.filter(managed=tf('managed'))
+        if request.GET.get("lost_contact", "null") != "null":
+            profiles = profiles.filter(lost_contact=tf("lost_contact"))
         if request.GET.get("consent_form_received", "null") != "null":
             profiles = profiles.filter(consent_form_received=tf('consent_form_received'))
         if request.GET.get("in_org", "null") != "null":
@@ -351,6 +353,7 @@ class UsersJSON(JSONView):
         p.blog_name = params["blog_name"]
         p.blogger = params["blogger"]
         p.managed = params["managed"]
+        p.lost_contact = params.get("lost_contact", False)
         p.save()
 
         org.members.add(user)
@@ -370,7 +373,7 @@ class UsersJSON(JSONView):
 
         for param in ('display_name', 'mailing_address', 
                 'special_mail_handling', 'consent_form_received', 
-                'blogger', 'managed', 'blog_name'):
+                'blogger', 'managed', 'lost_contact', 'blog_name'):
             if param in params:
                 if params[param] != getattr(user.profile, param):
                     dirty = True

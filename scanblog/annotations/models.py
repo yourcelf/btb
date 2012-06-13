@@ -103,7 +103,10 @@ class Note(models.Model):
         ordering = ['-important', '-created']
 
 class Tag(models.Model):
-    name = models.CharField(max_length=30, db_index=True)
+    name = models.CharField(max_length=30, unique=True, db_index=True)
+
+    post_count = models.IntegerField(default=0, 
+        help_text="Denormalized count of posts with this tag.")
 
     def __unicode__(self):
         return self.name
@@ -117,7 +120,10 @@ class ReplyCode(models.Model):
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
-        orgs = ["document__author__organization"]
+        orgs = [
+            "document__author__organization",
+            "campaign__organizations",
+        ]
 
 
     def save(self, *args, **kwargs):
@@ -138,10 +144,15 @@ class ReplyCode(models.Model):
         }
 
     def doc_dict(self):
+        document = None
+        campaign = None
         try:
             document = self.document
         except ObjectDoesNotExist:
-            document = None
+            try:
+                campaign = self.campaign
+            except ObjectDoesNotExist:
+                pass
         finally:
             if document:
                 dd = {
@@ -156,10 +167,22 @@ class ReplyCode(models.Model):
                 }
             else:
                 dd = None
+            if campaign:
+                cc = {
+                    'id': campaign.pk,
+                    'title': unicode(campaign.title),
+                    'public': campaign.public,
+                    'created': campaign.created.isoformat(),
+                    'ended': campaign.ended.isoformat() if campaign.ended else None,
+                    'url': campaign.get_absolute_url(),
+                }
+            else:
+                cc = None
         return {
             'id': self.pk,
             'code': self.code,
             'document': dd,
+            'campaign': cc,
         }
 
     def __unicode__(self):

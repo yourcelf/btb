@@ -1,7 +1,7 @@
 A blog post was added or edited by user {{ document.author.profile }}.
 
 View post:
-<http://{{ site.domain }}{{ document.author.profile.get_aboslute_url }}>
+<http://{{ site.domain }}{{ document.get_absolute_url }}>
 Edit user:
 <http://{{ site.domain }}{{ document.author.profile.get_edit_url }}>
 Edit user in admin: 

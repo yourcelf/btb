@@ -1,13 +1,16 @@
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core import paginator
 from django.db.models import Count
+from django.http import Http404
 from djcelery.models import TaskMeta
 
-from scanning.models import Document, Scan, DocumentPage
+from scanning.models import Document, Scan, DocumentPage, EditLock
+from scanning import tasks as scanning_tasks
 from profiles.models import Profile, Organization
+from annotations.models import Tag
 from django.contrib.auth.models import User
 from correspondence.models import Letter
 from comments.models import Comment
@@ -234,3 +237,26 @@ def page_picker(request):
     return render(request, "moderation/page_picker.html", {
         'pages': pages,
     })
+ 
+@permission_required("scanning.tag_post")
+def tagparty(request):
+    return render(request, "moderation/tagparty.html", {
+        'tags': Tag.objects.all().order_by('name'),
+    })
+
+@permission_required("scanning.tag_post")
+def tagparty_next(request):
+    try:
+        doc = Document.objects.public().order_by('created').filter(
+                type="post",
+                tags__isnull=True,
+                editlock__isnull=True,
+        )[0]
+    except IndexError:
+        raise Http404
+
+    lock = EditLock.objects.create(user=request.user, document=doc)
+    scanning_tasks.expire_editlock.apply_async(args=[lock.id], countdown=60*5)
+
+    return redirect(doc.get_absolute_url())
+

@@ -12,5 +12,7 @@ urlpatterns = patterns('moderation.views',
     # Local hash urls here for DRY, but will never trigger.
     url(r'^#/process/scan/(?P<scan_id>\d+)', 'home', name='moderation.edit_scan'),
     url(r'^#/process/document/(?P<scan_id>\d+)', 'home', name='moderation.edit_doc'),
+    url(r'^tagparty/next/$', 'tagparty_next', name='moderation.tagparty_next'),
+    url(r'^tagparty/$', 'tagparty', name='moderation.tagparty'),
 )
 

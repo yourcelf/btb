@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import logging
 import json
+import math
 
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
@@ -10,6 +12,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.html import escape
 from django import forms
@@ -20,6 +23,7 @@ from comments.models import Comment
 from comments.forms import CommentForm
 from blogs import feeds
 from profiles.models import Profile, Organization
+from campaigns.models import Campaign
 
 #
 # Displaying posts
@@ -44,7 +48,7 @@ def _paginate(request, qs, count=10):
 
     # XXX failsafe for missing highlight bug.  Ideally, this would never get invoked.
     for post in page.object_list:
-        if post.type == "post" and not post.body and not post.highlight:
+        if isinstance(post, Document) and post.type == "post" and not post.body and not post.highlight:
             post.status = "unknown"
             post.save()
             logger = logging.getLogger('django.request')
@@ -78,6 +82,7 @@ def author_post_list(request, author_id=None, slug=None):
         raise Http404
     context['org'] = author.organization_set.get()
     context['feed_author'] = author
+    context.update(get_nav_context())
     context['related'] = {
         'title': "Most recent posts from this author:",
         'items': DocumentPage.objects.filter(order=0,
@@ -92,30 +97,84 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
-def all_posts_list(request):
+
+
+def get_nav_context():
+    tags = list(Tag.objects.filter(post_count__gte=2).order_by('name'))
+    tags.append({
+        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count()
+    })
+    # Sort tags into columns.
+    columns = []
+    logger = logging.getLogger("django.request")
+    if tags:
+        per_column = max(5, int(math.ceil(len(tags) / 5.)))
+        for i in range(0, len(tags), per_column):
+            columns.append([])
+            for j in range(0, per_column):
+                if i + j < len(tags):
+                    columns[-1].append(tags[i + j])
+    nav_context = {
+        'tag_columns': columns,
+        'recent_titles': Document.objects.safe().filter(type='post')[:5],
+        'recent_authors': Profile.objects.bloggers_with_posts().order_by('-latest_post')[:10],
+        'recent_comments': Comment.objects.excluding_boilerplate().order_by('-modified')[:5],
+    }
+    return nav_context
+
+def blogs_front_page(request):
+    return posts_by_date(request, template="blogs/blogs_front_page.html")
+
+def posts_by_date(request, template="blogs/all_posts_list.html"):
     """
-    Show a list of posts.
+    Show a list of posts by date
     """
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
     )
     context = _paginate(request, posts)
     pnum = context['page'].number
+    context.update(get_nav_context())
+    context['related'] = {
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
+    }
+    return render(request, template, context)
+
+def show_campaign(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(
+            in_reply_to=campaign.reply_code
+    )
+    context = _paginate(request, posts)
+    pnum = context['page'].number
+    context.update(get_nav_context())
+    context['campaign'] = campaign
     context['related'] = {
         'items': DocumentPage.objects.filter(
                     order=0,
                     document__status="published",
-                    document__type="post",
+                    document__in_reply_to=campaign.reply_code,
                     document__author__profile__consent_form_received=True,
                     document__author__is_active=True,
                     document__adult=False,
             ).select_related(
-                    'document'
+                'document'
             ).order_by(
                 '-document__date_written'
             )[pnum*10:pnum*10+7]
     }
-    return render(request, "blogs/all_posts_list.html", context)
+    return render(request, "blogs/show_campaign.html", context)
 
 def org_post_list(request, slug):
     """
@@ -129,6 +188,7 @@ def org_post_list(request, slug):
     context = _paginate(request, posts)
     context['org'] = org
     pnum = context['page'].number
+    context.update(get_nav_context())
     context['related'] = {
         'items': DocumentPage.objects.filter(
                     order=0,
@@ -146,12 +206,57 @@ def org_post_list(request, slug):
     }
     return render(request, "blogs/org_post_list.html", context)
 
-
 def tagged_post_list(request, tag):
-    posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
+    if tag:
+        posts = Document.objects.public().filter(type="post", tags__name=tag.lower())
+    else:
+        posts = Document.objects.public().filter(type='post', tags__isnull=True)
     context = _paginate(request, posts)
-    context['tag'] = tag.capitalize()
+    pnum = context['page'].number
+    if tag:
+        context['tag'] = Tag.objects.get(name=tag.lower())
+        context['related'] = {
+            'title': u"Other posts tagged with “%s”" % tag,
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__tags__name=tag.lower(),
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).distinct().select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
+        }
+    else:
+        context['tag'] = None
+        context['related'] = {
+            'title': u"Other uncategorized posts",
+            'items': DocumentPage.objects.filter(
+                        order=0,
+                        document__tags__isnull=True,
+                        document__status="published",
+                        document__type="post",
+                        document__author__profile__consent_form_received=True,
+                        document__author__is_active=True,
+                        document__adult=False,
+                ).distinct().select_related(
+                        'document'
+                ).order_by(
+                    '-document__date_written'
+                )[pnum*10:pnum*10+7]
+        }
+    context.update(get_nav_context())
     return render(request, "blogs/tag_post_list.html", context)
+
+def all_comments_list(request):
+    context = _paginate(request,
+            Comment.objects.excluding_boilerplate().order_by('-created'))
+    context.update(get_nav_context())
+    return render(request, "blogs/all_comments_list.html", context)
 
 def post_detail(request, post_id=None, slug=None):
     try:
@@ -232,7 +337,8 @@ def post_detail(request, post_id=None, slug=None):
         'items': related_items,
     }
 
-    return render(request, "blogs/post_detail.html", {
+    context = get_nav_context()
+    context.update({
             'post': post,
             'org': post.author.organization_set.get(),
             'documentpages': documentpages,
@@ -242,6 +348,7 @@ def post_detail(request, post_id=None, slug=None):
             'comment_form': form,
             'related': related,
         })
+    return render(request, "blogs/post_detail.html", context)
 
 def more_pages(request, post_id):
     try:
@@ -276,7 +383,7 @@ def save_tags(request, post_id):
     if request.method != 'POST':
         return HttpResponseBadRequest()
     post = get_object_or_404(Document, pk=post_id, type='post')
-    names = [t.strip() for t in request.POST.get("tags").split(",")]
+    names = [t.strip().lower() for t in request.POST.get("tags").split(",") if t.strip()]
     tags = []
     for name in names:
         tag = Tag.objects.get(name=name)
@@ -295,6 +402,13 @@ def all_posts_feed(request):
         'posts': Document.objects.safe().filter(type="post")
     })
 
+def campaign_feed(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    return feeds.posts_feed(request, {
+        'title': campaign.title,
+        'posts': Document.objects.safe().filter(in_reply_to_id=campaign.reply_code_id)
+    })
+
 def org_post_feed(request, slug, filtered=True):
     org = get_object_or_404(Organization, slug=slug, public=True)
     docs = Document.objects.public().filter(
@@ -309,7 +423,8 @@ def org_post_feed(request, slug, filtered=True):
     })
 
 def all_comments_feed(request):
-    comments = Comment.objects.public().order_by('-created')[0:10]
+    comments = Comment.objects.excluding_boilerplate().exclude(
+            comment_doc__isnull=False).order_by('-created')[0:10]
     return feeds.all_comments_feed(request, comments)
 
 def post_comments_feed(request, post_id):
@@ -338,9 +453,9 @@ def author_post_feed(request, author_id):
     })
 
 def page_picker(request):
-    return render(request, "blogs/page_picker.html", {
-        'PUBLIC_MEDIA_URL': settings.PUBLIC_MEDIA_URL
-    })
+    context = get_nav_context()
+    context['PUBLIC_MEDIA_URL'] = settings.PUBLIC_MEDIA_URL
+    return render(request, "blogs/page_picker.html", context)
 
 #
 # Textual posts, edited by author

@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{STATIC_URL}}css/style.css" type="text/css" media="screen, projection">
         <link rel="stylesheet" href="{{STATIC_URL}}js/vendor/jquery-tagit/css/tagit-simple-blue.css" type="text/css" media="screen, projection">
         <link rel="stylesheet" href="{{STATIC_URL}}css/print.css" type="text/css" media="print">
+        <link rel="shortcut icon" href="{{STATIC_URL}}img/v2-icon.ico">
         {% endcompress %}
         <!--[if lte IE 8]>
             <link rel="stylesheet" href="{{STATIC_URL}}css/ie.css" type="text/css" media="screen, projection">
@@ -140,6 +141,5 @@
 <script type='text/javascript' src='{{STATIC_URL}}js/frontend.js'></script>
 {% endcompress %}
 {% block scripts %}{% endblock %}
-{% include "analytics.html" %}
 </body>
 </html>

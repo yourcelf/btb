@@ -263,10 +263,13 @@ class Documents(JSONView):
         if g("type", None):
             docs = docs.filter(type=g("type"))
         if g("idlist", None):
-            docs = [b for a,b in sorted(docs.in_bulk(g("idlist").split(".")).items())]
+            ids = g("idlist").split(".")
+            if not ids:
+                raise Http404
+            docs = [b for a,b in sorted(docs.in_bulk(ids).items())]
         if g("status", None):
             docs = docs.filter(status=g("status"))
-        #TODO: EditLock's.
+        #TODO: EditLock's for documents.
         return self.paginated_response(request, docs)
 
     @args_method_decorator(permission_required, "scanning.change_document")
@@ -318,8 +321,10 @@ class Documents(JSONView):
             # tags
             tags = []
             for name in kw['tags'].split(';'):
-                tag, created = Tag.objects.get_or_create(name=name.strip().lower())
-                tags.append(tag)
+                name = name.strip()
+                if name:
+                    tag, created = Tag.objects.get_or_create(name=name.strip().lower())
+                    tags.append(tag)
             doc.tags = tags
 
             # pages

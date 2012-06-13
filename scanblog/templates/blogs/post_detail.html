@@ -11,9 +11,6 @@
     {{ block.super }}
     {% endwith %}
 {% endblock %}
-{% block css %}
-    {{ block.super }}
-{% endblock %}
 
 {% block body %}
 
@@ -24,7 +21,6 @@
     {% with tx=post.transcription tx_rev=tx.current %}
 
         {% include "blogs/_post_title_line.html" %}
-
 
         <div class='post-detail-author'>
             {% if post.author.profile.blog_name %}
@@ -54,6 +50,8 @@
                 {% endwith %}
             </div>
         {% endif %}
+
+        {% include "blogs/_sharing_buttons.html" %}
 
         <div style='position: relative;'>
             {% if post.body %}
@@ -89,6 +87,8 @@
 {% endif %}
 </div>
 {% if org.public %}{{ org.footer|safe }}{% endif %}
+
+{% include "blogs/_sharing_buttons.html" %}
 
 {# comments #}
 <div class='comments'>

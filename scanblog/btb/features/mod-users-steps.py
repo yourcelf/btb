@@ -7,8 +7,8 @@ from btblettuce import *
 
 @step('I type "([^"]*)" in the user search form')
 def i_type_text_in_the_user_search_form(step, text):
-    el = css(".user-chooser-trigger")
     time.sleep(0.5)
+    el = css(".user-chooser-trigger")
     el.send_keys(text[0])
     time.sleep(0.5)
     el = css(".user-search")
@@ -26,6 +26,7 @@ def i_click_the_first_user_choice(step):
 
 @step('I search for the user "([^"]*)"')
 def i_search_for_the_user(step, text):
+    world.browser.get(django_url("/moderation/"))
     world.browser.get(django_url("/moderation/#/users"))
     i_type_text_in_the_user_search_form(step, text)
 
@@ -56,7 +57,9 @@ def i_enter_an_address_in_the_create_user_form(step):
 
 @step('a new user named "([^"]*)" is created')
 def a_new_user_named_name_is_created(step, name):
+    time.sleep(1)
     i_search_for_the_user(step, name)
+    time.sleep(1)
     els = csss(".user-chooser-holder .results .display-name")
     for el in els:
         if el.text == name:

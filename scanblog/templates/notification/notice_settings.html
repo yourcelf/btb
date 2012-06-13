@@ -50,6 +50,9 @@
                     {% if sub.organization_id %}
                         Posts from <em><a href='{{ sub.organization.get_absolute_url }}'>{{ sub.organization.name }}</a></em> authors
                     {% endif %}
+                    {% if sub.campaign_id %}
+                        Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
