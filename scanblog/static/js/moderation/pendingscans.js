@@ -144,7 +144,8 @@
         org_id: $("[name=org_id]", this.el).val()
       }, {
         success: function(model) {
-          return _this.render();
+          _this.render();
+          return _this.$("tr.item:first").effect("highlight", 5000);
         }
       });
     };
