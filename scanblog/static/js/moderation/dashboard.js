@@ -57,7 +57,6 @@
       } else {
         this.docsView.list.filter.author__profile__managed = 0;
       }
-      console.log(this.docsView.list.filter);
       return this.docsView.fetch();
     };
 
