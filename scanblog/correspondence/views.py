@@ -616,6 +616,11 @@ def mass_mailing_spreadsheet(request, who=None):
         qs = Profile.objects.needs_first_post_letter()
     elif who == "needs_comments_letter":
         qs = Profile.objects.needs_comments_letter()
+    elif who == "lost_contact":
+        qs = Profile.objects.filter(lost_contact=True)
+
+    if who != "lost_contact":
+        qs = qs.filter(lost_contact=False)
 
     qs = qs.mail_filter(request.user)
 
