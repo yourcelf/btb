@@ -388,6 +388,8 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
             type: "printout"
             recipient_id: @doc.get("author").id
             document_id: @doc.id
+            # UGLY HACK: depends on the org ID from a completely different UI element
+            org_id: $(".org_id").val()
         }, {
             success: =>
                 @hideLoading()

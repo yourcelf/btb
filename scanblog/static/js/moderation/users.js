@@ -737,7 +737,8 @@
       return letter.save({
         type: "printout",
         recipient_id: this.doc.get("author").id,
-        document_id: this.doc.id
+        document_id: this.doc.id,
+        org_id: $(".org_id").val()
       }, {
         success: function() {
           _this.hideLoading();
