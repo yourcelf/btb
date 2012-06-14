@@ -1,9 +1,10 @@
 {% with post.tags.all as tags %}
-{% if tags %}
+{% if tags or post.in_reply_to.campaign %}
     <span class='post-tag-list'>filed under: 
         {% for tag in tags %}
-            <a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-        {% endfor %}
+        <a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}{% endfor %}{% if post.in_reply_to.campaign %}{% if tags %}, {% endif %}
+            <a href='{% url blogs.show_campaign %}'>{{ post.in_reply_to.campaign.title }}</a>
+        {% endif %}
     </span>
 {% endif %}
 {% endwith %}
