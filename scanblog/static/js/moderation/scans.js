@@ -188,7 +188,8 @@
     ProcessDocListView.prototype.defaultFilter = {
       page: 1,
       per_page: 6,
-      status: "unknown"
+      status: "unknown",
+      author__profile__managed: 1
     };
 
     ProcessDocListView.prototype.initialize = function() {

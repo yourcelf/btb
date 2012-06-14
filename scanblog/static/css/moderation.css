@@ -1311,7 +1311,9 @@ a.logo img {
 }
 .slideshow ul li {
   float: left;
-  width: 3em;
+  width: 14%;
+  margin: 0;
+  padding: 0;
   display: block;
   text-align: center;
 }

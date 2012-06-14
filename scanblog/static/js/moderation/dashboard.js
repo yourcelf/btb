@@ -52,6 +52,11 @@
       $(".doc-chooser span", this.el).removeClass("chosen");
       $(event.currentTarget).addClass("chosen");
       this.docsView.list.filter.status = $(event.currentTarget).attr("data-status");
+      if (this.docsView.list.filter.status === "unknown") {
+        this.docsView.list.filter.author__profile__managed = 1;
+      } else {
+        this.docsView.list.filter.author__profile__managed = 0;
+      }
       return this.docsView.fetch();
     };
 
