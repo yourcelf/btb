@@ -189,9 +189,8 @@ def date_to_str(date_or_str):
 
 class CorrespondenceList(JSONView):
     """
-    This slightly ugly one combines scans and correspondence into a single
-    response.  This is to facilitate a threaded view of the conversation with a
-    particular user.
+    This one combines scans and correspondence into a single response.  This is
+    to facilitate a threaded view of the conversation with a particular user.
     """
     @args_method_decorator(permission_required, "correspondence.manage_correspondence")
     def get(self, request, user_id=None):
@@ -202,59 +201,39 @@ class CorrespondenceList(JSONView):
         if user_id:
             scans = scans.filter(author__id=user_id)
             letters = letters.filter(recipient__id=user_id)
-        scans_count = scans.count()
-        letters_count = letters.count()
 
-        # Paginate over scans only, not letters.  Get a ragged number of
-        # entries depending ono the number of letters out.  Grab one more than
-        # the number of scans per page to catch letters falling in the boundary
-        # between pages of scans.  We have to paginate manually because of this --
-        # the built-in paginator won't grab one more than the page length.
+        # Just grab all at once.  Number of letters/scans doesn't get so high
+        # as to make it worth lazy fetching.
+        all_correspondence = list(scans) + list(letters)
+        all_correspondence.sort(
+                key=lambda a: a.sent if hasattr(a, "sent") and a.sent else a.created,
+                reverse=True)
+
         per_page = int(request.GET.get('per_page', 12))
         page_num = int(request.GET.get('page', 1))
-        total_pages = int(scans_count / per_page) + 1
-        if per_page * (page_num - 1) > scans_count or page_num < 1:
+        total_pages = int(len(all_correspondence) / per_page) + 1
+
+        if per_page * (page_num - 1) > len(all_correspondence) or page_num < 1:
             page_num = 1
-        # One extra to catch boundary letters...
-        scans = list(scans[per_page * (page_num - 1) : (per_page * page_num) + 1])
 
-        order_date = '''COALESCE("{0}"."sent", "{0}"."created")'''.format(
-                Letter._meta.db_table
-        )
-        extra_kwargs = {
-            'select': {'order_date': order_date},
-            'order_by': ['-order_date'],
-            'where': [],
-            'params': [],
-        }
-        if page_num > 1:
-            extra_kwargs['where'].append(order_date + " <= %s")
-            extra_kwargs['params'].append(scans[0].created)
-        if page_num < total_pages:
-            end_scan = scans.pop(-1)
-            extra_kwargs['where'].append(order_date + " >= %s")
-            extra_kwargs['params'].append(end_scan.created)
-        letters = list(letters.extra(**extra_kwargs))
-
-        correspondence = []
-        for obj in scans:
+        sliced = all_correspondence[(page_num-1)*per_page : page_num*per_page]
+        results = []
+        for obj in sliced:
             as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.created)
-            correspondence.append({'scan': as_dict})
-        for obj in letters:
-            as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.order_date)
-            correspondence.append({'letter': as_dict})
-        correspondence.sort(key=lambda o: o.values()[0]['order_date'], reverse=True)
-
+            if isinstance(obj, Scan):
+                as_dict['order_date'] = obj.created.isoformat()
+                results.append({'scan': as_dict})
+            else:
+                as_dict['order_date'] = (obj.sent or obj.created).isoformat()
+                results.append({'letter': as_dict})
         return self.json_response({
             'pagination': {
-                'count': scans_count + letters_count,
+                'count': len(all_correspondence),
                 'page': page_num,
                 'pages': total_pages,
                 'per_page': per_page,
             },
-            'results': correspondence
+            'results': results
         })
 
 class Mailings(JSONView):
