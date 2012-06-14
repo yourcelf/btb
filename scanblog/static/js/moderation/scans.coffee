@@ -79,6 +79,7 @@ class btb.ProcessDocListView extends btb.ProcessItemListView
         page: 1
         per_page: 6
         status: "unknown"
+        author__profile__managed: 1
 
     initialize: ->
         super listClass: btb.DocumentList
