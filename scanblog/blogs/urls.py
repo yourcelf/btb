@@ -42,6 +42,6 @@ urlpatterns = patterns('blogs.views',
     url(r'^posts/delete/{0}?$'.format(post_id), 'delete_post', name='blogs.delete_post'),
 
     # Campaigns
-    url(r'^campaigns/(?P<slug>\w+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
-    url(r'^campaigns/(?P<slug>\w+)/$', 'show_campaign', name='blogs.show_campaign'),
+    url(r'^campaigns/(?P<slug>[-\w]+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
+    url(r'^campaigns/(?P<slug>[-\w]+)/$', 'show_campaign', name='blogs.show_campaign'),
 )

@@ -9,24 +9,42 @@
     <div class='targets'>
         <div class='target categories tag-list {{ categories_open }}'>
         {% if tag_columns %}
-            <h3>Posts by category</h3>
-            {% for column in tag_columns %}
-                <div class='column'>
-                    <table>
-                    {% for tag in column %}
-                        <tr class='tag'><td>
-                            <span class='count'>{{ tag.post_count }}</span>
-                        </td><td>
-                            {% if tag.name %}
-                                <span class='name'><a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name|title }}</a></span>
-                            {% else %}
-                                <span class='uncategorized'><a href='{% url blogs.tagged_posts %}'>Uncategorized</a></span>
-                            {% endif %}
-                        </td></tr>
-                    {% endfor %}
-                    </table>
+            <div style='display: inline-block;'>
+                <h3>Posts by category</h3>
+                {% for column in tag_columns %}
+                    <div class='column'>
+                        <table>
+                        {% for tag in column %}
+                            <tr class='tag'><td>
+                                <span class='count'>{{ tag.post_count }}</span>
+                            </td><td>
+                                {% if tag.name %}
+                                    <span class='name'><a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name|title }}</a></span>
+                                {% else %}
+                                    <span class='uncategorized'><a href='{% url blogs.tagged_posts %}'>Uncategorized</a></span>
+                                {% endif %}
+                            </td></tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if campaigns %}
+                <div style='display: inline-block'>
+                    <h3>Campaigns</h3>
+                    <div class='column'>
+                        <table>
+                        {% for campaign in campaigns %}
+                            <tr class='tag'><td>
+                                <span class='count'>{{ campaign.reply_code.document_replies.safe.count }}</span>
+                            </td><td>
+                                <span class='name'><a href='{{ campaign.get_absolute_url }}'>{{ campaign.title }}</a></span>
+                            </td></tr>
+                        {% endfor %}
+                        </table>
+                    </div>
                 </div>
-            {% endfor %}
+            {% endif %}
         {% endif %}
         </div>
         <div class='target recent {{ posts_open }}'>

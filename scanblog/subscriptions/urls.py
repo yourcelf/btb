@@ -16,7 +16,7 @@ urlpatterns = patterns('subscriptions.views',
         name='subscriptions.org'),
     url(r'^subscribe/document/(?P<document_id>\d+)$', 'subscribe_to_document',
         name='subscriptions.document'),
-    url(r'^subscribe/campaign/(?P<slug>\w+)$', 'subscribe_to_campaign',
+    url(r'^subscribe/campaign/(?P<slug>[-\w]+)$', 'subscribe_to_campaign',
         name='subscriptions.campaign'),
 
     # Notification addendum

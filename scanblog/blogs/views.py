@@ -119,6 +119,7 @@ def get_nav_context():
         'recent_titles': Document.objects.safe().filter(type='post')[:5],
         'recent_authors': Profile.objects.bloggers_with_posts().order_by('-latest_post')[:10],
         'recent_comments': Comment.objects.excluding_boilerplate().order_by('-modified')[:5],
+        'campaigns': Campaign.objects.filter(public=True),
     }
     return nav_context
 
