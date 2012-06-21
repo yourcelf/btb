@@ -24,6 +24,7 @@ USE_L10N = True
 MEDIA_ROOT = os.path.join(SETTINGS_ROOT, "media")
 MEDIA_URL = '/private_media/'
 UPLOAD_TO = "uploads"
+FILE_UPLOAD_PERMISSIONS = 0664
 
 # Serve PUBLIC_MEDIA_ROOT with webserver, at PUBLIC_MEDIA_URL.  Symlinks for
 # anything public will be added to this directory, so it should be on the same
