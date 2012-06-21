@@ -98,6 +98,7 @@ class btb.UserSearch extends btb.PaginatedView
         'click .result': 'chooseResult'
         'click span.add-user-link': 'addUser'
         'click span.cancel-user-search': 'cancel'
+        'click a': 'nothing'
 
     initialize: (options) =>
         filter = if options then options.filter else {}
@@ -108,6 +109,9 @@ class btb.UserSearch extends btb.PaginatedView
         $(@el).html this.template
             term: @userList.filter.q or ""
         this
+
+    nothing: (event) =>
+        event.stopPropagation()
 
     keyUp: (event) =>
         switch event.keyCode

@@ -210,6 +210,8 @@
 
       this.keyUp = __bind(this.keyUp, this);
 
+      this.nothing = __bind(this.nothing, this);
+
       this.render = __bind(this.render, this);
 
       this.initialize = __bind(this.initialize, this);
@@ -233,7 +235,8 @@
       'click span.pagelink': 'turnPage',
       'click .result': 'chooseResult',
       'click span.add-user-link': 'addUser',
-      'click span.cancel-user-search': 'cancel'
+      'click span.cancel-user-search': 'cancel',
+      'click a': 'nothing'
     };
 
     UserSearch.prototype.initialize = function(options) {
@@ -248,6 +251,10 @@
         term: this.userList.filter.q || ""
       }));
       return this;
+    };
+
+    UserSearch.prototype.nothing = function(event) {
+      return event.stopPropagation();
     };
 
     UserSearch.prototype.keyUp = function(event) {
