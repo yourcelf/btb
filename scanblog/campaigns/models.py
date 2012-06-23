@@ -34,6 +34,9 @@ class Campaign(models.Model):
         def finished(self):
             return self.filter(ended__isnull=False)
 
+    class Meta:
+        ordering = ['-created']
+
     def get_absolute_url(self):
         return reverse("blogs.show_campaign", args=[self.slug])
 
