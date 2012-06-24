@@ -362,6 +362,37 @@ class Mailings(JSONView):
         mailing.delete()
         return self.json_response("success")
 
+def needed_letters(user, consent_form_cutoff=None):
+    if consent_form_cutoff:
+        consent_forms = Profile.objects.invitable().filter(
+                user__date_joined__lte=consent_form_cutoff,
+                lost_contact=False
+            ).mail_filter(
+                user
+            ).distinct().count()
+    else:
+        consent_forms = Profile.objects.invitable().mail_filter(
+                user
+            ).distinct().count()
+    return {
+        "consent_form": consent_forms,
+        "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
+                user).filter(lost_contact=False).distinct().count(),
+        "first_post": Profile.objects.needs_first_post_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct().count(),
+        "comments": Profile.objects.needs_comments_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct().count(),
+        "waitlist": Profile.objects.waitlistable().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct().count(),
+        "enqueued": Letter.objects.mail_filter(user).filter(
+                sent__isnull=True,
+                recipient__profile__lost_contact=False,
+            ).exclude(mailing__isnull=False).count(),
+    }
+
 class NeededLetters(JSONView):
     @args_method_decorator(permission_required, "correspondence.manage_correspondence")
     def get(self, request):
@@ -370,43 +401,10 @@ class NeededLetters(JSONView):
         automatic letters.  Excludes any letters that have been created, and are
         part of a mailing.
         """
-        if 'consent_form_cutoff' in request.GET:
-            consent_forms = Profile.objects.invitable().filter(
-                    user__date_joined__lte=request.GET.get('consent_form_cutoff'),
-                    lost_contact=False
-                ).mail_filter(
-                    request.user
-                ).distinct().count()
-        else:
-            consent_forms = Profile.objects.invitable().mail_filter(
-                    request.user
-                ).distinct().count()
-
-        # TODO: date-based aggregate of when people signed up (better UI than
-        # the calendar).  Or better yet, a "choose how many to sign up" instead
-        # of "choose from when to sign up".
-
-        return self.json_response({
-            "consent_form": consent_forms,
-            "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
-                    request.user
-                ).filter(lost_contact=False).distinct().count(),
-            "first_post": Profile.objects.needs_first_post_letter().mail_filter(
-                    request.user
-                ).filter(lost_contact=False).distinct().count(),
-            "comments": Profile.objects.needs_comments_letter().mail_filter(
-                    request.user
-                ).filter(lost_contact=False).distinct().count(),
-            "waitlist": Profile.objects.waitlistable().mail_filter(
-                    request.user
-                ).filter(lost_contact=False).distinct().count(),
-            "enqueued": Letter.objects.mail_filter(
-                    request.user
-                ).filter(
-                    sent__isnull=True,
-                    recipient__profile__lost_contact=False,
-                ).exclude(mailing__isnull=False).count(),
-        })
+        return self.json_response(needed_letters(
+               request.user,
+               request.GET.get('consent_form_cutoff', None)
+           ))
 
 @permission_required("correspondence.manage_correspondence")
 @transaction.commit_on_success

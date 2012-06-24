@@ -56,29 +56,36 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def transcription_notification(sender, instance, *args, **kwargs):
         if instance.editor.groups.filter(name='moderators').exists():
             return
-        mail_managers("Transcription edited", render_to_string(
-            "btb/admin-email-transcription-edited.txt", {
-                'document': instance.transcription.document,
-                'transcription': instance.transcription,
-                'revision': instance,
-                'site': Site.objects.get_current(),
-            }))
+        # Send mail immediately if there's something even remotely link-like in
+        # there.  Otherwise, wait for the daily digest.
+        if "http" in instance.body:
+            mail_managers("Transcription edited", render_to_string(
+                "btb/admin-email-transcription-edited.txt", {
+                    'document': instance.transcription.document,
+                    'transcription': instance.transcription,
+                    'revision': instance,
+                    'site': Site.objects.get_current(),
+                }))
 
     @receiver(signals.post_save, sender=Comment)
     def comment_notification(sender, instance, *args, **kwargs):
-        if instance.user.groups.filter(name='moderators').exists():
-            return
-        if instance.comment_doc:
-            return
-        subject = "New comment" if 'created' in kwargs else "Comment edited"
-        mail_managers(subject, render_to_string(
-            "btb/admin-email-comment-posted.txt", {
-                'comment': instance,
-                'site': Site.objects.get_current(),
-            }))
+        # Send mail immediately if there's something even remotely link-like in
+        # there.  Otherwise, wait for the daily digest.
+        if "http" in instance.comment:
+            if instance.user.groups.filter(name='moderators').exists():
+                return
+            if instance.comment_doc:
+                return
+            subject = "New comment" if 'created' in kwargs else "Comment edited"
+            mail_managers(subject, render_to_string(
+                "btb/admin-email-comment-posted.txt", {
+                    'comment': instance,
+                    'site': Site.objects.get_current(),
+                }))
 
     @receiver(signals.post_save, sender=Note)
     def flag_notification(sender, instance, *args, **kwargs):
+        # Send flags immediately.
         if 'created' in kwargs and "FLAG" in instance.text:
             if instance.creator.groups.filter(name='moderators').exists():
                 return

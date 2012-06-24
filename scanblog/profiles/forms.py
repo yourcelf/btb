@@ -25,7 +25,8 @@ def get_profile_form(editor):
             'special_mail_handling',
             'blogger', 
             'managed', 
-            'consent_form_received'
+            'consent_form_received',
+            'lost_contact',
         ]
     if not editor.has_perm('blogs.change_own_post'):
         exclude_list.append('blog_name')
