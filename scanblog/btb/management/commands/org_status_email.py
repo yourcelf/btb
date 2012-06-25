@@ -188,7 +188,7 @@ def send_org_mail(org):
     html = t.render(Context(ctx))
 
     mail_managers(
-        subject="Distance from inbox-zero: {0}".format(
+        subject="{0} clicks away from Inbox Zero".format(
             ctx['inbox_zero_distance']
         ),
         message="",
