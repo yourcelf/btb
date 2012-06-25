@@ -16,10 +16,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Answer the following questions:
         # 1. What transcriptions/comments have been left in the last 24 hours?
-        # 2. How many scans are on the dashboard, and how old?
-        # 3. How many tickets are on the dashboard, and how old?
-        # 4. How much mail needs to go out, and when was it last sent?
-        # 5. When were the last new invitations sent?
         if settings.DISABLE_ADMIN_NOTIFICATIONS:
             print "Admin notifications are disabled; sending nothing."
             return

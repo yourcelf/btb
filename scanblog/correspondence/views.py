@@ -369,28 +369,28 @@ def needed_letters(user, consent_form_cutoff=None):
                 lost_contact=False
             ).mail_filter(
                 user
-            ).distinct().count()
+            ).distinct()
     else:
         consent_forms = Profile.objects.invitable().mail_filter(
                 user
-            ).distinct().count()
+            ).distinct()
     return {
         "consent_form": consent_forms,
         "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
-                user).filter(lost_contact=False).distinct().count(),
+                user).filter(lost_contact=False).distinct(),
         "first_post": Profile.objects.needs_first_post_letter().mail_filter(
                 user
-            ).filter(lost_contact=False).distinct().count(),
+            ).filter(lost_contact=False).distinct(),
         "comments": Profile.objects.needs_comments_letter().mail_filter(
                 user
-            ).filter(lost_contact=False).distinct().count(),
+            ).filter(lost_contact=False).distinct(),
         "waitlist": Profile.objects.waitlistable().mail_filter(
                 user
-            ).filter(lost_contact=False).distinct().count(),
+            ).filter(lost_contact=False).distinct(),
         "enqueued": Letter.objects.mail_filter(user).filter(
                 sent__isnull=True,
                 recipient__profile__lost_contact=False,
-            ).exclude(mailing__isnull=False).count(),
+            ).exclude(mailing__isnull=False),
     }
 
 class NeededLetters(JSONView):
@@ -401,10 +401,12 @@ class NeededLetters(JSONView):
         automatic letters.  Excludes any letters that have been created, and are
         part of a mailing.
         """
-        return self.json_response(needed_letters(
+        needed = needed_letters(
                request.user,
                request.GET.get('consent_form_cutoff', None)
-           ))
+           )
+        counts = dict((k, v.count) for k,v in needed.items())
+        return self.json_response(counts)
 
 @permission_required("correspondence.manage_correspondence")
 @transaction.commit_on_success

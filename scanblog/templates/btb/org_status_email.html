@@ -1,0 +1,131 @@
+{% load humanize %}
+{% load scanning_text_diffs %}
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+<style type='text/css'>
+    body, p, div, span, td, th, h1, h2 {
+        font-family: sans-serif;
+    }
+    p,div,span,td,th {
+        font-size: 12px;
+    }
+    td,th {
+        border: 1px solid #eee;
+    }
+    th {
+        background-color: #eee;
+    }
+    .deleted {
+        text-decoration: line-through;
+        color: red;
+    }
+    .inserted {
+        color: green;
+    }
+</style>
+</head>
+<body>
+    <h1>The State of the {{ org.name }} is <em>{{ adjective.word }}</em></h1>
+    <span style='font-size: 8px'><b>{{ adjective.word }}</b>: <i>{{ adjective.definition }}</i></span>
+    <h2>Distance from inbox zero: {{ inbox_zero_distance }}.</h2>
+    {% if inbox_zero_distance == 0 %}
+        <span style='color: green;'>
+            CONGRATULATIONS!  Is the PO Box empty too?
+        </span>
+    {% endif %}
+    <table>
+        <tr>
+            <th bgcolor='#eee'>Type</th><th>TODO</th><th>Oldest</th><th>Last work</th>
+        </tr>
+        <tr>
+            <th bgcolor='#eee'>Tickets</th>
+            <td>
+                <a href='https://{{ site.domain }}{{ moderation.home }}'>{{ tickets.count }} {% if tickets.important %}<span style='color: red;' title='important'>{{ tickets.important }}</span>){% endif %}</a>
+                {% if tickets.overdue %}
+                    <span style='color: red;'>OVERDUE</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ tickets.oldest.created|naturalday }}
+            </td>
+            <td>
+                {{ tickets.last_completed.creator.profile }},
+                {{ tickets.last_completed.modified|naturalday }}
+            </td>
+        </tr>
+        <tr>
+            <th bgcolor='#eee'>Pending</th>
+            <td>
+                <a href='https://{{ site.domain }}{{ moderation.home }}#/pending/'>{{ pendingscans.count }}</a>
+                {% if pendingscans.overdue %}
+                    <span style='color: red;'>OVERDUE</span>
+                {% endif %}
+            </td>
+            <td>{{ pendingscans.oldest.created|naturalday }}</td>
+            <td>
+                {{ pendingscans.last_completed.scan.editor.profile }},
+                {{ pendingscans.last_completed.completed|naturalday }}
+            </td>
+        </tr>
+        <tr>
+            <th bgcolor='#eee'>Scan Splitting</th>
+            <td>
+                <a href='https://{{ site.domain }}{{ moderation.home }}'>{{ scans.count }}</a>
+                {% if scans.overdue %}
+                    <span style='color: red;'>OVERDUE</span>
+                {% endif %}
+            </td>
+            <td>{{ scans.oldest.created|naturalday }}</td>
+            <td>
+                {{ scans.last_completed.document_set.all.0.editor.profile }},
+                {{ scans.last_completed.modified|naturalday }}
+            </td>
+        </tr>
+        <tr>
+            <th bgcolor='#eee'>Documents</th>
+            <td><a href='https://{{ site.domain }}{{ moderation.home }}'>{{ documents.count }}</a>
+                {% if documents.overdue %}
+                    <span style='color: red;'>OVERDUE</span>
+                {% endif %}
+            </td>
+            <td>{{ documents.oldest.created|naturalday }}</td>
+            <td>
+                {{ documents.last_completed.editor }},
+                {{ documents.last_completed.modified|naturalday }}
+            </td>
+        </tr>
+        <tr>
+            <th colspan='4'><b>Outgoing mail</b></th>
+        </tr>
+        {% for letter_type, details in outgoing_mail.items %}
+            <tr>
+                <th bgcolor='#eee'>{{ letter_type }}</th>
+                <td>
+                    <a href='https://{{ sit.edomain }}{{ moderation.home }}#/mail'>{{ details.count }}</a>
+                    {% if details.overdue %}
+                        <span style='color: red;'>OVERDUE</span>
+                    {% endif %}
+                </td>
+                <td>{{ details.oldest.created|naturalday }}</td>
+                <td>
+                    {{ details.last_completed.sender.profile }},
+                    {{ details.last_completed.sent|naturalday }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div>
+        The collective noun-thing of the day is <b>{{ collective_noun.thing }}</b>:
+        <ul>
+        {% for name, condition in collective_noun.names_and_conditions %}
+            <li>
+            {% if condition %}When {{ condition }}, a{% else %}A{% endif %}
+                <i>{{ name }}</i> of <b>{{ collective_noun.thing }}</b>.
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

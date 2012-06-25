@@ -107,12 +107,16 @@ class Scan(models.Model):
     under_construction = models.BooleanField()
 
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
         orgs = ["author__organization", "org"]
+
+    def save(self, *args, **kwargs):
+        self.modified = datetime.datetime.now()
+        super(Scan, self).save(*args, **kwargs)
 
     def to_dict(self):
         try:
@@ -276,7 +280,7 @@ class Document(models.Model):
     editor = models.ForeignKey(User, related_name='documents_edited',
             help_text="The last person to edit this document.")
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = DocumentManager()
 
@@ -288,6 +292,7 @@ class Document(models.Model):
             self.date_written = datetime.datetime.now()
         if not self.reply_code_id:
             self.reply_code = ReplyCode.objects.create()
+        self.modified = datetime.datetime.now()
         super(Document, self).save(*args, **kwargs)
         self.set_publicness()
         self.update_comment()
