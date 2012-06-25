@@ -405,7 +405,7 @@ class NeededLetters(JSONView):
                request.user,
                request.GET.get('consent_form_cutoff', None)
            )
-        counts = dict((k, v.count) for k,v in needed.items())
+        counts = dict((k, v.count()) for k,v in needed.items())
         return self.json_response(counts)
 
 @permission_required("correspondence.manage_correspondence")
