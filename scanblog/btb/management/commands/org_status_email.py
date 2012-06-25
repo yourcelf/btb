@@ -5,11 +5,12 @@ import random
 import datetime
 from django.conf import settings
 from django.core.management import BaseCommand
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import mail_managers
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.template import loader, Context
 
+from comments.models import Comment
 from profiles.models import Organization
 from scanning.models import Document, Scan, PendingScan
 from correspondence.models import Letter
@@ -100,15 +101,39 @@ def send_org_mail(org):
             'count': recipients.count(),
             'last_completed': latest,
         }
-        oldest = None
         if ctx['outgoing_mail'][letter_type]['count'] > 0:
-            if letter_type == 'enqueued':
-                oldest = recipients.order_by('created')[0]
-                ctx['outgoing_mail'][letter_type]['oldest'] = oldest
-        if letter_type != "consent_form":
-            if oldest:
-                overdue = oldest.created < (now - datetime.timedelta(days=7))
-                ctx['outgoing_mail'][letter_type]['overdue'] = overdue
+            if letter_type in ('waitlist', 'consent_form'):
+                due_since = recipients.order_by('user__date_joined')[0].user.date_joined
+            elif letter_type == 'enqueued':
+              due_since = recipients.order_by('created')[0].created
+            elif letter_type == 'comments':
+              due_since = Comment.objects.unmailed().order_by('created')[0].created
+            elif letter_type == 'signup_complete':
+                try:
+                    due_since = Document.objects.filter(
+                            type='license',
+                    ).exclude(
+                        author__received_letters__type="signup_complete"
+                    ).order_by('created')[0].created
+                except IndexError:
+                    due_since = None
+            elif letter_type == 'first_post':
+                try:
+                    due_since = Document.objects.public().filter(
+                        Q(type='post') | Q(type='profile')
+                    ).exclude(
+                        author__received_letters__type="first_post"
+                    ).order_by('created')[0].created
+                except IndexError:
+                    due_since = None
+            else:
+                due_since = None
+            if due_since:
+                ctx['outgoing_mail'][letter_type]['due_since'] = due_since
+                if letter_type != 'consent_form':
+                    ctx['outgoing_mail'][letter_type]['overdue'] = due_since < (
+                        now - datetime.timedelta(days=7)
+                    )
 
     # Tickets
     tickets = Note.objects.org_filter(org_user).filter(
@@ -123,6 +148,7 @@ def send_org_mail(org):
         ctx['tickets']['oldest'] = tickets.order_by('created')[0]
         overdue = ctx['tickets']['oldest'].created < \
                 (now - datetime.timedelta(days=14))
+        ctx['tickets']['overdue'] = overdue
     try:
         ctx['tickets']['last_completed'] = finished_tickets[0]
     except IndexError:
