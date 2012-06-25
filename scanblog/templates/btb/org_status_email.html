@@ -103,7 +103,7 @@
             <tr>
                 <th bgcolor='#eee'>{{ letter_type }}</th>
                 <td>
-                    <a href='https://{{ sit.edomain }}{% url moderation.home %}#/mail'>{{ details.count }}</a>
+                    <a href='https://{{ site.domain }}{% url moderation.home %}#/mail'>{{ details.count }}</a>
                     {% if details.overdue %}
                         <span style='color: red;'>OVERDUE</span>
                     {% endif %}
