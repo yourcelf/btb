@@ -8,55 +8,73 @@
     body, p, div, span, td, th, h1, h2 {
         font-family: sans-serif;
     }
+    p,div,span,td,th {
+        font-size: 12px;
+    }
+    .deleted {
+        text-decoration: line-through;
+        color: red;
+    }
+    .inserted {
+        color: green;
+    }
 </style>
 </head>
 <body>
 <h1>BtB Comment/Transcription report</h1>
+{% if comments %}
+    <h2>Comments</h2>
+    <table>
+    {% for comment in comments %}
+    {% with doc=comment.document %}
+        <tr><td bgcolor='#eee'>
+            <b>{{ comment.user.profile }}</b> {{ comment.modified|naturalday }} {{ comment.modified|date:"P" }}
+            on
+            <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a>
+
+            (<a href='https://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/'>edit comment</a>,
+             <a href='https://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/'>edit user</a>,
+             <a href='https://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete'>delete user</a>)
+        </td></tr>
+        <tr><td bgcolor='#ffe'>
+            {{ comment.comment|linebreaksbr }}
+        </td></tr>
+    {% endwith %}
+    {% endfor %}
+    </table>
+{% endif %}
 {% if transcriptions %}
     <h2>Transcriptions ({{ transcriptions|length }})</h2>
     {% for transcription, revs in transcriptions %}
     {% with doc=transcription.document %}
-    <span><a href='{{ doc.get_absolute_url }}'>{{ doc.type }}: {{ doc.get_title }}</a> by {{ doc.author.profile }}</span> <span style='color: #999;'>(uploaded {{ doc.date_written|naturalday }})</span>. <a href='https://{{ site.domain }}{% url scanning.transcribe_document doc.pk %}'>edit transcription</a>, <a href='http://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>, <a href='http://{{ site.domain }}{% url scanning.revision_list doc.pk %}'>full diff</a>.
-    <table style='border: 1px solid #ddd; width: 100%;'>
+    {% with prev=revs.0 cur=revs.1 %}
+    <table>
+        <tr><td bgcolor='#ddd'>
+                <h2>{{ forloop.counter }}</h2>
+                <a href='{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
+                by {{ doc.author.profile }}
+                <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url scanning.transcribe_document doc.pk %}'>edit transcription</a>,
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
+                <a href='https://{{ site.domain }}{% url scanning.revision_list doc.pk %}'>full diff</a>.
+        </td></tr>
         <tr>
-            {% for prev,cur in revs %}
-                <td>
-                    By {{ cur.editor }}, {{ cur.modified|naturalday }} {{ cur.modified|date:"P" }}
-                    (<a href='http://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/'>edit user</a>, 
-                    <a href='http://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/delete'>delete user</a>)
-                </td>
-            {% endfor %}
+            <td bgcolor='#eee'>
+                By {{ cur.editor }}, {{ cur.modified|naturalday }} {{ cur.modified|date:"P" }}
+                (<a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/'>edit user</a>, 
+                <a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/delete'>delete user</a>)
+            </td>
         </tr>
         <tr>
-            {% for prev,cur in revs %}
-                <td style='border: 1px solid #ddd; background-color: #ffe;'>
-                    {% if prev %}
-                        {% column_diff prev.body cur.body %}
-                    {% else %}
-                        {{ cur.body|linebreaksbr }}
-                    {% endif %}
-                </td>
-            {% endfor %}
+            <td style='border: 1px solid #ddd;'>
+                {% if prev %}
+                    {% simple_diff prev.body cur.body %}
+                {% else %}
+                    {{ cur.body|linebreaksbr }}
+                {% endif %}
+            </td>
         </tr>
     </table>
     {% endwith %}
-    {% endfor %}
-{% endif %}
-{% if comments %}
-    <h2>Comments</h2>
-    {% for comment in comments %}
-    {% with doc=comment.document %}
-        <span><b>{{ comment.user.profile }}</b> {{ comment.modified|naturalday }} {{ comment.modified|date:"P" }}
-            on
-            <a href='http://{{ site.domain }}{{ comment.get_absolute_url }}'
-              >{{ doc.get_title }}</a>
-
-            (<a href='http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/'>edit comment</a>,
-             <a href='http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/'>edit user</a>,
-             <a href='http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete'>delete user</a>)</span><br />
-        <table><tr><td style='background-color: #ffe'>
-            {{ comment.comment|linebreaksbr }}
-        </td></tr></table>
     {% endwith %}
     {% endfor %}
 {% endif %}

@@ -1,3 +1,5 @@
+import datetime
+
 # Create your views here.
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.views import redirect_to_login
@@ -38,6 +40,7 @@ def edit_comment(request, comment_id=None, comment=None):
     })
     if form.is_valid():
         comment.comment = form.cleaned_data['comment']
+        comment.modified = datetime.datetime.now()
         comment.save()
         return redirect(comment.get_absolute_url())
     return render(request, "comments/edit_comment.html", {

@@ -16,6 +16,11 @@ def column_diff(text1, text2):
         out1.replace(u"\n", u"<br />"), out2.replace(u"\n", u"<br />")
     ))
 
+@register.simple_tag
+def simple_diff(text1, text2):
+    out = show_diff(escape(text1), escape(text2))
+    return mark_safe(out.replace("\n", "<br />"))
+
 def show_diff(a, b):
     seqm = SequenceMatcher(None, a, b)
     output= []

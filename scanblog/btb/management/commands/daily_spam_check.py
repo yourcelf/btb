@@ -32,21 +32,15 @@ class Command(BaseCommand):
         # Transcriptions
         mods = Group.objects.get(name='moderators')
         transcriptions = list(Transcription.objects.filter(
-                Q(revisions__modified__gte=then),
-                ~Q(revisions__editor__groups=mods)
+                revisions__modified__gte=then,
             ).order_by('-revisions__modified').distinct())
         txrevs = []
         for tx in transcriptions:
-            revs = list(tx.revisions.all()[0:4])
-            pairs = []
-            for i in range(len(revs)):
-                if i + 1 < len(revs):
-                    pair = (revs[i + 1], revs[i])
-                else:
-                    pair = (None, revs[i])
-                pairs.append(pair)
-            pairs.reverse()
-            txrevs.append(pairs)
+            revs = list(tx.revisions.all()[0:2])
+            if len(revs) == 2:
+                txrevs.append((revs[1], revs[0]))
+            else:
+                txrevs.append((None, revs[0]))
         ctx['transcriptions'] = zip(transcriptions, txrevs)
 
         # Comments
@@ -56,20 +50,19 @@ class Command(BaseCommand):
             user__groups=mods
         ).exclude(
             user__profile__managed=True
+        ).exclude(
+            comment_doc__isnull=False    
         ))
             
-
         t = loader.get_template("btb/daily_spam_check_email.html")
         html = t.render(Context(ctx))
+#        print html
 
         if len(ctx['comments']) > 0 or len(ctx['transcriptions']) > 0:
             mail_managers(
-                subject="Spam check: {0} comments, {1} transcriptions".format(
+                subject="Check: {0} comments, {1} transcriptions".format(
                     len(ctx['comments']), len(ctx['transcriptions'])
                 ),
                 message="",
                 html_message=html
             )
-        
-        
-

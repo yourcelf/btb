@@ -33,7 +33,7 @@ class CommentManager(OrgManager):
 class Comment(models.Model):
     user = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     # The comment itself
     comment = models.TextField(blank=True)
