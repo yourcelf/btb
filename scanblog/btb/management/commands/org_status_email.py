@@ -165,6 +165,16 @@ def send_org_mail(org):
     # Flavor
     with open(os.path.join(
                 os.path.dirname(__file__),
+                "adjectives.json"
+            )) as fh:
+        adjectives = json.load(fh)
+        word, definition = random.choice(adjectives)
+        ctx['adjective'] = {
+            'word': word,
+            'definition': definition,
+        }
+    with open(os.path.join(
+                os.path.dirname(__file__),
                 "collective_nouns.json"
             )) as fh:
         collective_nouns = json.load(fh).items()
