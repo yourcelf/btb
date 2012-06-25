@@ -119,10 +119,18 @@ class FlagTest(BtbMailTestCase):
         self.clear_outbox()
 
         # Comment
-        comment = Comment.objects.create(document=doc, user=self.reader)
+        # Things with links get sent right away.
+        comment = Comment.objects.create(document=doc, user=self.reader,
+                comment="http://spam.com")
         self.assertTrue(c.login(username="reader", password="reader"))
         self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
         self.clear_outbox()
+        # But not things without.
+        comment = Comment.objects.create(document=doc, user=self.reader,
+                comment="no problem")
+        self.assertOutboxIsEmpty()
+        self.clear_outbox()
+        
 
         # Comment flag
         url = reverse("comments.flag_comment", args=[comment.pk])
