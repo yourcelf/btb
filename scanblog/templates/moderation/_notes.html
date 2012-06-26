@@ -1,7 +1,7 @@
 <script type='text/template' id='noteEditor'>
     <% if (note) {%>
         <div class='note-editor'>
-            <h2>Add Note</h2>
+            <h2>{% trans "Add Note" %}</h2>
             <textarea name='text'><%= note.text %></textarea>
             <br />
             <input 
@@ -19,24 +19,24 @@
                 name='needsResolution'
                 id='noteNeedsResolution<%= note.id %>'
                 />
-            <label for='noteNeedsResolution<%= note.id %>'>Needs further attention?</label>
+            <label for='noteNeedsResolution<%= note.id %>'>{% trans "Needs further attention?" %}</label>
             <br />
             <input type='button' value='Save' class='save-note' />
             <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
-            <span class='link-like cancel-add'>Cancel</span>
+            <span class='link-like cancel-add'>{% trans "Cancel" %}</span>
         </div>
     <% } else if (addable) { %>
-        <input type='button' value='Add Note/Ticket' class='add-note' />
+        <input type='button' value='{% trans "Add Note/Ticket" %}' class='add-note' />
     <% } %>
 </script>
 <script type='text/template' id='noteRow'>
     <div class='note'>
         <div class='body<%= note.important ? " important" : "" %>'>
             <% if (!note.resolved) { %>
-                <span class='ui-icon ui-icon-notice'></span><span class='status'>NEEDS ATTENTION</span>
+                <span class='ui-icon ui-icon-notice'></span><span class='status'>{% trans "NEEDS ATTENTION" %}</span>
             <% } %>
             <% if (note.important) { %>
-                <span class='ui-icon ui-icon-alert'></span> 
+                <span class='ui-icon ui-icon-alert'></span>
             <% } %>
             <%= note.text %>
             <% if (note.object) { %>
@@ -45,19 +45,19 @@
         </div>
         <div class='byline'>
             <% if (note.assigned) { %>
-                Assigned to: <%= note.assigned.display_name %>; 
+                {% trans "Assigned to" %}: <%= note.assigned.display_name %>; 
             <% } %>
-            By 
+            {% trans "By" %} 
             <% if (note.creator.email) { %>
                 <a href='mailto:<%= note.creator.email %>?subject=Note:%20<%= encodeURIComponent(btb.formatDate(note.created) + " " + note.text.substring(0, 50) + "...") %>&body=<%= encodeURIComponent("{{ base_url }}" + note.object.edit_url) + "%0A%0A" + encodeURIComponent(note.text) %>'><%= note.creator.display_name %></a>, 
             <% } else { %>
                 <%= note.creator.display_name %>, 
             <% } %>
             <%= btb.formatDate(note.created) %>
-            <span class='ui-icon ui-icon-pencil edit-note link-like' title='Edit note'></span>
-            <span class='ui-icon ui-icon-trash delete-note link-like' title='Delete note'></span>
+            <span class='ui-icon ui-icon-pencil edit-note link-like' title='{% trans "Edit note" %}'></span>
+            <span class='ui-icon ui-icon-trash delete-note link-like' title='{% trans "Delete note" %}'></span>
             <% if (!note.resolved) { %>
-                <span class='mark-resolved'>Mark resolved</span>
+                <span class='mark-resolved'>{% trans "Mark resolved" %}</span>
             <% } %>
             <img src='{{STATIC_URL}}img/spinner.gif' style='display: none;' class='loading' />
         </div>

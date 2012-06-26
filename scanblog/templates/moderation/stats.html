@@ -4,80 +4,92 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ site.name }} Stats</h1>
+    <h1>{{ site.name }} {% trans "Stats" %}</h1>
 
     <div class='stats-block'>
-        <h2>Users</h2>
+        <h2>{% trans "Users" %}</h2>
 
-        <h3>Current breakdown</h3>
+        <h3>{% trans "Current breakdown" %}</h3>
         <div class='treemap' id='usersTreemap' style='width: 100%; height: 240px;'></div>
         <div class='about'>
-            A treemap showing various user statuses, with the number of users
+            {% trans "A treemap showing various user statuses, with the number of users
             in each group in parentheses. Click to zoom in, right-click to zoom
-            out.
+            out." %}
         </div>
 
-        <h3>New users per week</h3>
+        <h3>{% trans "New users per week" %}</h3>
         <div class='stackedarea' id='usersStackedArea'></div>
         <div class='about'>
-            The number of new users that are added per week.  Spikes in comment
+            {% trans "The number of new users that are added per week.  Spikes in comment
             count probably indicate spam bot signups.  We have been inviting and
-            enrolling fewer writers since June when we reached capacity.
+            enrolling fewer writers since June when we reached capacity." %}
         </div>
     </div>
 
     <div class='stats-block'>
-        <h2>Posts</h2>
+        <h2>{% trans "Posts" %}</h2>
 
-        <h3>Totals</h3>
+        <h3>{% trans "Totals" %}</h3>
         <table class='stats'>
-            <tr><th></th><th>Total</th><th>Published</th><th>Ready to publish</th>
-            <tr><th>Posts</th><td class='total-posts'></td><td class='published-posts'></td><td class='ready-posts'></td></tr>
-            <tr><th>Profiles</th><td class='total-profiles'></td><td class='published-profiles'></td><td class='ready-profiles'></td></tr>
+            <tr>
+	      <th></th>
+	      <th>{% trans "Total" %}</th>
+	      <th>{% trans "Published" %}</th>
+	      <th>{% trans "Ready to publish" %}</th>
+            <tr>
+	      <th>{% trans "Posts" %}</th>
+	      <td class='total-posts'></td>
+	      <td class='published-posts'></td>
+	      <td class='ready-posts'></td></tr>
+            <tr>
+	      <th>{% trans "Profiles" %}</th>
+	      <td class='total-profiles'></td>
+	      <td class='published-profiles'></td>
+	      <td class='ready-profiles'></td></tr>
         </table>
         <div id='postsTotals'></div>
 
 
-        <h3>Timeline (by week)</h3>
+        <h3>{% trans "Timeline (by week)" %}</h3>
         <div class='stackedarea' id='postsStackedArea'></div>
         <div class='about'>
-            The timeline shows the number of requests, posts, and profiles
+            {% trans "The timeline shows the number of requests, posts, and profiles
             received in total per week.  We only started tracking requests on Oct
-            1.
+            1."%}
         </div>
 
-        <h3>Impact: Posts</h3>
+        <h3>{% trans "Impact: Posts" %}</h3>
         <div class='impact' id='postsImpact'></div>
         <div class='about'>
-            This graph shows the number of posts ordered by author, to
-            demonstrate the portion of all posts that top contributors make.
+            {% trans "This graph shows the number of posts ordered by author, to
+            demonstrate the portion of all posts that top contributors make." %}
         </div>
 
-        <h3>Impact: Pages</h3>
+        <h3>{% trans "Impact: Pages" %}</h3>
         <div class='impact' id='pagesImpact'></div>
         <div class='about'>
-            This graph shows the contribution by page count.  Some authors
-            post a lot of pages, where others send short form pieces.
+            {% trans "This graph shows the contribution by page count.  Some authors
+            post a lot of pages, where others send short form pieces." %}
         </div>
     </div>
 
     <div class='stats-block'>
-        <h2>Comments</h2>
-        <h3>Totals</h3>
+        <h2>{% trans "Comments" %}</h2>
+        <h3>{% trans "Totals" %}</h3>
         <table class='stats'>
-            <tr><th>Comments published</th><td class='total-comments'></td></tr>
+            <tr><th>{% trans "Comments published" %}</th><td class='total-comments'></td></tr>
         </table>
-        <h3>Comments posted per week</h3>
+        <h3>{% trans "Comments posted per week" %}</h3>
         <div class='stackedarea' id='commentsStackedArea'></div>
         <div class='about'>
-            This graph shows the number of new comments posted per week.
+            {% trans "This graph shows the number of new comments posted per week." %}
         </div>
 
-        <h3>Commenter Impact</h3>
+        <h3>{% trans "Commenter Impact" %}</h3>
         <div class='impact' id='commenterImpact'></div>
         <div class='about'>
-            This graph shows the number of comments posted by particular users.
-            Around 1/4 of the comments posted are from the top 5 contributors.
+            {% trans "This graph shows the number of comments posted by particular users.
+            Around 1/4 of the comments posted are from the top 5 contributors." %}
         </div>
     </div>
 
