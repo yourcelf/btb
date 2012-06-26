@@ -4,8 +4,13 @@
 {% block title %}{% trans "Terms of Use" %}{% endblock %}
 {% block body %}
 <div class='terms'>
-<h2>Between the Bars Terms of Use</h2>
-<p><b>PLEASE REVIEW BEFORE USING THIS WEBSITE &ndash; IF YOU DO NOT AGREE TO THESE TERMS OF USE, DO NOT USE THIS WEBSITE.</b></p>
+<h2>{% trans "Between the Bars Terms of Use" %}</h2>
+<p><b>
+{% blocktrans %}
+    PLEASE REVIEW BEFORE USING THIS WEBSITE &ndash; IF YOU DO NOT AGREE TO THESE TERMS OF USE, DO NOT USE THIS WEBSITE.
+{% endblocktrans %}
+</b></p>
+{% blocktrans %}
 <h3>General</h3>
 <p>
 Welcome to Between the Bars (“BtB”).  BtB is a blog platform for prisoners
@@ -297,6 +302,7 @@ the remainder of the Terms will continue in full force and effect.
 <p>
 Effective Date of the Agreement is 2010-11-15.
 </p>
+{% endblocktrans %}
 
 </div>
 {% endblock %}

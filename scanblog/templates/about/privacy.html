@@ -4,17 +4,26 @@
 
 
 <div class='terms'>
-<h2>Between the Bars Privacy Policy</h2>
+<h2>
+  {% blocktrans %}
+  Between the Bars Privacy Policy
+  {% endblocktrans %}
+</h2>
 
-<p><b>PLEASE REVIEW BEFORE USING THIS WEBSITE – IF YOU DO NOT AGREE WITH ALL OF
-    THE TERMS OF THE BTB PRIVACY POLICY, DO NOT USE THIS WEBSITE.</b></p>
+<p><b>
+    {% blocktrans %}
+    PLEASE REVIEW BEFORE USING THIS WEBSITE – IF YOU DO NOT AGREE WITH ALL OF
+    THE TERMS OF THE BTB PRIVACY POLICY, DO NOT USE THIS WEBSITE.
+    {% blocktrans %}
+</b></p>
 
+      {% blocktrans %}
 <p>
-The following discloses the information gathering and dissemination practices
-for the Between the Bars (“BtB”) website available at 
-<a href='{% url home %}'>http://betweenthebars.org</a>
-(the “Site”).  Your use of the Site constitutes your agreement to this privacy
-policy and consent to the terms herein.  
+The following discloses the information gathering and dissemination
+practices for the Between the Bars (“BtB”) website available at
+<a href='{% url home %}'>http://betweenthebars.org</a> (the “Site”).
+Your use of the Site constitutes your agreement to this privacy policy
+and consent to the terms herein.
 </p>
 
 <p>
@@ -103,6 +112,7 @@ emailing <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.
 <p>
 Effective Date of the Agreement is 2010-11-15.
 </p>
+{% endblocktrans %}
 </div>
 
 {% endblock %}
