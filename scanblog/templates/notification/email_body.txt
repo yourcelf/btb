@@ -1,9 +1,10 @@
-{% load urlcrypt_tags %}Greetings,
+{% load urlcrypt_tags %}{% trans "Greetings" %},
 
 {{ message }}
 
 -----
 
+{% blocktrans %}
 You received this email because you are subscribed to receive emails from {{ current_site }}.
 To manage your {{ current_site }} email preferences, please go to:
 <{{ notices_url }}>
@@ -11,3 +12,4 @@ To unsubscribe from all {{ current_site }} notifications, please go to:
 <http://{{ current_site }}{% encoded_url recipient subscriptions.unsubscribe %}>
 
 To report abuse, please reply to this email.
+{% endblocktrans %}

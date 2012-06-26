@@ -1,10 +1,10 @@
-{{ comment.user.profile }} has replied to "{{ comment.document.get_title }}" by {{ comment.document.author.profile }}, which you are following.
+{{ comment.user.profile }} {% trans "has replied to" %} "{{ comment.document.get_title }}" {% trans "by" %} {{ comment.document.author.profile }}, {% trans "which you are following" %}.
 
-View the reply online:
+{% trans "View the reply online" %}:
 http://{{ current_site.domain }}{{ comment.get_absolute_url }}
 
 {% if not comment.comment_doc_id %}
-{{ comment.user.profile }} wrote:
+{{ comment.user.profile }} {% trans "wrote" %}:
 -----------------------------------------
 {{ comment.comment }}
 ----------------------------------------

@@ -1,1 +1,1 @@
-<a href='{{ comment.get_absolute_url }}'>New reply</a> from {{ comment.user.profile }} to a post you're following.
+<a href='{{ comment.get_absolute_url }}'>{% trans "New reply" %}</a> {% trans "from" %} {{ comment.user.profile }} {% trans "to a post you're following" %}.
