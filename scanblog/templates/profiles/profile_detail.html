@@ -8,74 +8,91 @@
 {% with tx=document.transcription tx_rev=tx.current %}
 
 <div class='profile-title-line'>
-    <h2 class='profile-title'>{{profile}}'s profile</h2> 
+    <h2 class='profile-title'>
+      {% blocktrans %}{{profile}}'s profile{% blocktrans %}
+    </h2>
     {% include "blogs/_sharing_buttons.html" %}
     <div>{% if org.public %}{{ org.footer|safe }}{% endif %}</div>
     <div class='controls'>
-        {% if can_edit %}
-            <a class='edit-profile-button' href='{% url profiles.profile_edit profile.pk %}'>Edit settings</a>
-        {% endif %}
-        {% if document  %}
-                {% with tx=post.transcription %}
-                    {% if tx %}
-                        {% if tx.complete %}
-                            <a class='transcribe-top-button' href='#transcription' title='Click to read the transcription'>&#9997; Transcribed</a>
-                        {% else %}
-                            <a class='transcribe-top-button' href='#transcription'>&#9997; Partially transcribed</a>
-                        {% endif %}
-                    {% else %}
-                        {% if transcription_open and perms.scanning.add_transcription %}
-                            <a class='transcribe-top-button' href='{% url scanning.transcribe_document document.pk %}'>&#9997; Add transcription</a>
-                        {% endif %}
-                    {% endif %}
-                 {% endwith %}
-        {% endif %}
+	{% if can_edit %}
+	    <a class='edit-profile-button' href='{% url profiles.profile_edit profile.pk %}'>
+	      {% trans "Edit settings" %}
+	    </a>
+	{% endif %}
+	{% if document  %}
+		{% with tx=post.transcription %}
+		    {% if tx %}
+			{% if tx.complete %}
+			    <a class='transcribe-top-button' href='#transcription' 
+			       title='{% trans "Click to read the transcription" %}'>
+			      &#9997; {% trans "Transcribed" %}
+			    </a>
+			{% else %}
+			    <a class='transcribe-top-button' href='#transcription'>
+			      &#9997; {% trans "Partially transcribed" %}
+			    </a>
+			{% endif %}
+		    {% else %}
+			{% if transcription_open and perms.scanning.add_transcription %}
+			    <a class='transcribe-top-button' 
+			       href='{% url scanning.transcribe_document document.pk %}'>
+			      &#9997; {% trans "Add transcription" %}
+			    </a>
+			{% endif %}
+		    {% endif %}
+		 {% endwith %}
+	{% endif %}
     </div>
 </div>
 <div class='profile-detail'>
     {% if document %}
-        {% for page in document.documentpage_set.all %}
-            <div class='profile-page'>
-                <img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned profile' %}" />
-            </div>
-        {% endfor %}
-        <a name='transcription'></a>
-        {% if tx %}
-            <h2>{% trans "Transcription" %}
-            {% if transcription_open and not document.transcription.locked and perms.scanning.change_transcription %}
-                <small> 
-                    &mdash; 
-                    <a href='{% url scanning.transcribe_document document.id %}'>{% trans "edit" %}</a>, 
-                    <a href='{% url scanning.revision_list document.id %}'>{% trans "revisions" %}</a>
-                </small>
-            {% endif %}
-            </h2>
-            <div class='transcription'>
-                <p>{{ tx.current.body|linebreaks }}</p>
-            </div>
-        {% endif %}
+	{% for page in document.documentpage_set.all %}
+	    <div class='profile-page'>
+		<img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned profile' %}" />
+	    </div>
+	{% endfor %}
+	<a name='transcription'></a>
+	{% if tx %}
+	    <h2>{% trans "Transcription" %}
+	    {% if transcription_open and not document.transcription.locked and perms.scanning.change_transcription %}
+		<small>
+		    &mdash;
+		    <a href='{% url scanning.transcribe_document document.id %}'>{% trans "edit" %}</a>,
+		    <a href='{% url scanning.revision_list document.id %}'>{% trans "revisions" %}</a>
+		</small>
+	    {% endif %}
+	    </h2>
+	    <div class='transcription'>
+		<p>{{ tx.current.body|linebreaks }}</p>
+	    </div>
+	{% endif %}
     {% endif %}
     {% if profile.has_blog_posts %}
-        <p>
-            <a class='read-more' href='{{profile.get_blog_url}}'>Read more from {{ profile }}'s blog{% if profile.blog_name %}: {{ profile.blog_name }}{% endif %} &raquo;</a>
-        </p>
+	<p>
+	    <a class='read-more' href='{{profile.get_blog_url}}'>
+	      {% blocktrans %}
+	      Read more from {{ profile }}'s blog{% if profile.blog_name %}: 
+	      {{ profile.blog_name }}{% endif %} &raquo;
+	      {% endblocktrans %}
+	    </a>
+	</p>
     {% else %}{% if not profile.managed %}
-        <h3>Comments</h3>
-        <ul class='bullets'>
-        {% for comment in profile.user.comment_set.public %}
-            <li>{{ comment.comment|truncatewords:20 }}<a href='{{ comment.get_absolute_url }}'>... {{ comment.created }}</a></li>
-        {% empty %}
-            <li>No comments.</li>
-        {% endfor %}
-        </ul>
-        <h3>Transcriptions</h3>
-        <ul class='bullets'>
-        {% for tr in profile.user.transcriptionrevision_set.all %}
-            <li>{{ tr.transcription.document.get_title }} &ndash; <a href='{{ tr.transcription.document.get_absolute_url }}'>{{ tr.modified }}</a></li>
-        {% empty %}
-            <li>No transcriptions.</li>
-        {% endfor %}
-        </ul>
+	<h3>{% trans "Comments" %}</h3>
+	<ul class='bullets'>
+	{% for comment in profile.user.comment_set.public %}
+	    <li>{{ comment.comment|truncatewords:20 }}<a href='{{ comment.get_absolute_url }}'>... {{ comment.created }}</a></li>
+	{% empty %}
+	    <li>{% trans "No comments" %}.</li>
+	{% endfor %}
+	</ul>
+	<h3>{% trans "Transcriptions" %}</h3>
+	<ul class='bullets'>
+	{% for tr in profile.user.transcriptionrevision_set.all %}
+	    <li>{{ tr.transcription.document.get_title }} &ndash; <a href='{{ tr.transcription.document.get_absolute_url }}'>{{ tr.modified }}</a></li>
+	{% empty %}
+	    <li>{% trans "No transcriptions" %}.</li>
+	{% endfor %}
+	</ul>
     {% endif %}{% endif %}
 </div>
 

@@ -6,76 +6,100 @@
 
 <table>
     <tr>
-        <td class='group-links'>
-            <ul>
-                <li class='org{% if chosen_org.name == site.name %} active{% endif %}'><a href='{% url profiles.profile_list %}'>{{ site.name }}</a></li>
-            {% if orgs %}
-                <li>Partners:</li>
-            {% endif %}
-            {% for org in orgs %}
-                <li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
-                    {# We don't use get_absolute_url here because independent org doesn't have one #}
-                    <a href='{% url profiles.profile_list org.slug %}'>{{ org.name }}</a>
-                </li>
-            {% endfor %}
-            <li {% if chosen_org.slug == "join" %}class='active'{% endif %}><a href='{% url profiles.profile_list "join" %}'>Join</a></li>
-            </ul>
-        </td>
-        <td class='about'>
-            {% if chosen_org.slug == "join" %}
-                <h2>{{ site.name }} partners program</h2>
-                <p>
-                Do you know someone in prison who would like to blog? Between the
-                Bars is growing through the support of volunteers around the world
-                who help to facilitate blogging. All you need to get started is
-                access to a scanner so that you can scan letters you receive, and
-                to be willing to make a commitment to the people you'll be
-                representing.
-                </p>
+	<td class='group-links'>
+	    <ul>
+		<li class='org{% if chosen_org.name == site.name %} active{% endif %}'>
+		  <a href='{% url profiles.profile_list %}'>{{ site.name }}</a>
+		</li>
+	    {% if orgs %}
+		<li>{% trans "Partners" %}:</li>
+	    {% endif %}
+	    {% for org in orgs %}
+		<li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
+		    {# We don't use get_absolute_url here because independent org doesn't have one #}
+		    <a href='{% url profiles.profile_list org.slug %}'>{{ org.name }}</a>
+		</li>
+	    {% endfor %}
+	    <li {% if chosen_org.slug == "join" %}class='active'{% endif %}>
+	      <a href='{% url profiles.profile_list "join" %}'>{% trans "Join" %}</a>
+	    </li>
+	    </ul>
+	</td>
+	<td class='about'>
+	    {% if chosen_org.slug == "join" %}
+		<h2>
+		{% blocktrans %}
+		  {{ site.name }} partners program
+		{% endblocktrans %}
+		</h2>
+		<p>
+		{% blocktrans %}
+		Do you know someone in prison who would like to blog? {{ site.name }}
+		is growing through the support of volunteers around the world
+		who help to facilitate blogging. All you need to get started is
+		access to a scanner so that you can scan letters you receive, and
+		to be willing to make a commitment to the people you'll be
+		representing.
+		{% endblocktrans %}
+		</p>
 
-                <p>
-                For organizations with multiple writers, Between the Bars can set
-                up a partner page to draw traffic and attention to your writers,
-                and represent your organization and its mission.
-                </p>
+		<p>
+		{% blocktrans %}
+		For organizations with multiple writers, {{ site.name }} can set
+		up a partner page to draw traffic and attention to your writers,
+		and represent your organization and its mission.
+		{% endblocktrans %}
+		</p>
 
-                <p>
-                If you are an individual or organization that is interested in
-                making a commitment to help people in prison express themselves,
-                please contact us at <a
-                href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.
-                </p>
-            {% else %}
-                {% if chosen_org.public %}
-                    {{ chosen_org.about|safe }} 
-                {% else %}
-                    
-                    <p>Independent writers, supported by volunteers and staff for {{ site.name }}:</p>
-                {% endif %}
-                <ul class='partners-user-list'>
-                {% for profile in profiles %}
-                    <li class='person'>
-                        {% if profile.authored_posts_count > 0 %}
-                            <a class='bloglink' 
-                               href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
-                            {{ profile.authored_posts_count }} posts; 
-                            latest {{ profile.latest_post|naturalday }}.
-                        {% else %}
-                            {{ profile }}
-                        {% endif %}
-                        {% if profile.has_public_profile %}
-                            <a href='{{ profile.get_absolute_url }}'>profile</a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-                {% if chosen_org.public %}
-                    <a href='{% url blogs.org_post_list chosen_org.slug %}'>All <em>{{ chosen_org.name }}</em> posts</a>
-                {% endif %}
+		<p>
+		{% blocktrans %}
+		If you are an individual or organization that is interested in
+		making a commitment to help people in prison express themselves,
+		please contact us at <a
+		href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.
+		{% endblocktrans %}
+		</p>
+	    {% else %}
+		{% if chosen_org.public %}
+		    {{ chosen_org.about|safe }}
+		{% else %}
+
+		    <p>
+		      {% blocktrans %}
+		      Independent writers, supported by volunteers and staff for {{ site.name }}:
+		      {% endblocktrans %}
+		    </p>
+		{% endif %}
+		<ul class='partners-user-list'>
+		{% for profile in profiles %}
+		    <li class='person'>
+			{% if profile.authored_posts_count > 0 %}
+			    <a class='bloglink'
+			       href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
+			    {% blocktrans %}
+			    {{ profile.authored_posts_count }} posts;
+			    latest {{ profile.latest_post|naturalday }}.
+			    {% endblocktrans %}
+			{% else %}
+			    {{ profile }}
+			{% endif %}
+			{% if profile.has_public_profile %}
+			    <a href='{{ profile.get_absolute_url }}'>{% trans "profile" %}</a>
+			{% endif %}
+		    </li>
+		{% endfor %}
+		</ul>
+		{% if chosen_org.public %}
+		    <a href='{% url blogs.org_post_list chosen_org.slug %}'>
+		      {% blocktrans %}
+		      All <em>{{ chosen_org.name }}</em> posts
+		      {% endblocktrans %}
+		    </a>
+		{% endif %}
 
 {{ chosen_org.footer|safe }}
-            {% endif %}
-        </td>
+	    {% endif %}
+	</td>
     </tr>
 </table>
 </div>
