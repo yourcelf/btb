@@ -32,6 +32,8 @@ def update_document_images(document_id=None, process_pages=True,
     Apply transformations to the document pages and highlights.
     """
     doc = document or Document.objects.get(id=document_id)
+    if not os.path.exists(doc.file_dir()):
+        os.makedirs(doc.file_dir())
 
     # Be sure to apply page transforms first, so highlight can work from them.
     if process_pages:
