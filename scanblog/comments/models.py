@@ -48,6 +48,11 @@ class Comment(models.Model):
 
     objects = CommentManager()
 
+    def clean(self):
+        # Deal with https://code.djangoproject.com/ticket/5622
+        if not self.ip_address:
+            self.ip_address = None
+
     class QuerySet(OrgQuerySet):
         orgs = ["document__author__organization"]
 

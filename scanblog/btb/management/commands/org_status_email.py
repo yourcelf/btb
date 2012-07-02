@@ -6,6 +6,7 @@ import datetime
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.core.mail import mail_managers
+from django.db.models import Q
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.template import loader, Context
