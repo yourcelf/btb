@@ -50,7 +50,9 @@ def send_org_mail(org):
 
     # Scans.
     scans = Scan.objects.org_filter(org_user).filter(
-            processing_complete=False
+            processing_complete=False,
+        ).exclude(
+            profile__author__managed=False
         ).order_by('created')
     finished_scans =  Scan.objects.org_filter(org_user).filter(
             processing_complete=True
