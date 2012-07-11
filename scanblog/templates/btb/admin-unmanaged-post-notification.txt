@@ -1,14 +1,15 @@
-A blog post was added or edited by user {{ document.author.profile }}.
+{% load i18n %}
+{% trans "A blog post was added or edited by user" %} {{ document.author.profile }}.
 
-View post:
+{% trans "View post" %}:
 <http://{{ site.domain }}{{ document.get_absolute_url }}>
-Edit user:
+{% trans "Edit user" %}:
 <http://{{ site.domain }}{{ document.author.profile.get_edit_url }}>
-Edit user in admin: 
+{% trans "Edit user in admin" %}:
 <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
 
 {{ document.title|safe }}
 ----
 {{ document.body|safe }}
 ----
-Tags: {{ document.tags.all|join:", " }}
+{% trans "Tags" %}: {{ document.tags.all|join:", " }}

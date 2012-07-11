@@ -1,17 +1,18 @@
-The transcription for {{ document.type }} by {{ document.author.profile }} was edited by user: {{ revision.editor.profile }}
+{% load i18n %}
+{% trans "The transcription for" %} {{ document.type }} {% trans "by" %} {{ document.author.profile }} {% trans "was edited by user" %}: {{ revision.editor.profile }}
 
-Actions:
+{% trans "Actions" %}:
 
-Diff:
+{% trans "Diff" %}:
 http://{{ site.domain }}{% url scanning.revision_list document.id %}
-Edit transcription:
+{% trans "Edit transcription" %}:
 http://{{ site.domain }}{% url scanning.transcribe_document document.id %}
-View document:
+{% trans "View document" %}:
 http://{{ site.domain }}{{ document.get_absolute_url }}
 
-Admin functions:
-Edit user: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/
-Delete user: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/delete
+{% trans "Admin functions" %}:
+{% trans "Edit user" %}: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/
+{% trans "Delete user" %}: http://{{ site.domain }}/admin/auth/user/{{ revision.editor.id }}/delete
 
 ----
 {{ revision.body|safe }}

@@ -1,6 +1,7 @@
-A comment has been posted on {{ comment.document.get_title }}:
+{% load i18n %}
+{% trans "A comment has been posted on" %} {{ comment.document.get_title }}:
 
-View on site:
+{% trans "View on site" %}:
 http://{{ site.domain }}{{ comment.get_absolute_url }}
 
 {{ comment.user.profile }}
@@ -8,11 +9,11 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 {{ comment.comment|safe }}
 ----
 
-Moderation functions:
-Delete: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete>
-Edit: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/>
+{% trans "Moderation functions" %}:
+{% trans "Delete" %}: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete>
+{% trans "Edit" %}: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/>
 
-Admin functions:
-Edit user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
-Delete user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete>
+{% trans "Admin functions" %}:
+{% trans "Edit user" %}: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
+{% trans "Delete user" %}: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete>
 {# Can't use base_url here because we can't get RequestContext #}
