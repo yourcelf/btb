@@ -29,7 +29,7 @@
 {{ letter.body|safe }}
 {% endblock %}
 
-\closing{ {% block closing %}Kind Regards,{% endblock %} }
+\closing{ {% block closing %}{% trans "Kind Regards," %}{% endblock %} }
 
 \end{letter}
 

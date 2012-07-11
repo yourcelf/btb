@@ -4,6 +4,7 @@
 
 \renewcommand{\labelitemi}{\underline{\hspace{0.6cm}}} % Show bullets as short lines
 
+{% blocktrans %}
 We'd like to invite you to join \emph{Between the Bars}!
 
 If you'd like to blog with us, please complete each item in the following checklist in order to get started (the checklist is for your use; no need to send it to us):
@@ -20,6 +21,7 @@ If you'd like to blog with us, please complete each item in the following checkl
 \end{itemize}
 
 We hope this answers any questions you might have, but if not, don't hesitate to write us.
+{% endblocktrans %}
 
 {% endblock %}
 {% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

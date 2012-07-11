@@ -1,5 +1,7 @@
+{% blocktrans %}
 Thank you for your request to join the {{ site.name }} blog. We have been overwhelmed by requests from writers all across the country. Unfortunately, this demand has outpaced our ability to process the mail from our currently registered writers. In order to continue to meet our obligations to them, we have begun to add all new requests to a wait-list.
 
 Invitations are sent as space is available in the order requests were received. At this time, we don't have an estimate for how long the wait is. We've added your name and address and will send you the registration materials as soon as we are able to. Please don't send us any posts or profiles until you have received them. Thanks for your patience.
+{% endblocktrans %}
 
 {{ letter.org.mailing_address }}
