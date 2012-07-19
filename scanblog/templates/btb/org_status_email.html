@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load url from future %}
 {% load scanning_text_diffs %}
 <!doctype html>
 <html>
@@ -42,7 +43,7 @@
         <tr>
             <th bgcolor='#eee'>Tickets</th>
             <td>
-                <a href='https://{{ site.domain }}{% url moderation.home %}'>{{ tickets.count }} {% if tickets.important %}<span style='color: red;' title='important'>({{ tickets.important }})</span>{% endif %}</a>
+                <a href='https://{{ site.domain }}{% url "moderation.home" %}'>{{ tickets.count }} {% if tickets.important %}<span style='color: red;' title='important'>({{ tickets.important }})</span>{% endif %}</a>
                 {% if tickets.overdue %}
                     <span style='color: red;'>OVERDUE</span>
                 {% endif %}
@@ -58,7 +59,7 @@
         <tr>
             <th bgcolor='#eee'>Pending</th>
             <td>
-                <a href='https://{{ site.domain }}{% url moderation.home %}#/pending/'>{{ pendingscans.count }}</a>
+                <a href='https://{{ site.domain }}{% url "moderation.home" %}#/pending/'>{{ pendingscans.count }}</a>
                 {% if pendingscans.overdue %}
                     <span style='color: red;'>OVERDUE</span>
                 {% endif %}
@@ -72,7 +73,7 @@
         <tr>
             <th bgcolor='#eee'>Scan Splitting</th>
             <td>
-                <a href='https://{{ site.domain }}{% url moderation.home %}'>{{ scans.count }}</a>
+                <a href='https://{{ site.domain }}{% url "moderation.home" %}'>{{ scans.count }}</a>
                 {% if scans.overdue %}
                     <span style='color: red;'>OVERDUE</span>
                 {% endif %}
@@ -85,7 +86,7 @@
         </tr>
         <tr>
             <th bgcolor='#eee'>Documents</th>
-            <td><a href='https://{{ site.domain }}{% url moderation.home %}'>{{ documents.count }}</a>
+            <td><a href='https://{{ site.domain }}{% url "moderation.home" %}'>{{ documents.count }}</a>
                 {% if documents.overdue %}
                     <span style='color: red;'>OVERDUE</span>
                 {% endif %}
@@ -103,7 +104,7 @@
             <tr>
                 <th bgcolor='#eee'>{{ letter_type }}</th>
                 <td>
-                    <a href='https://{{ site.domain }}{% url moderation.home %}#/mail'>{{ details.count }}</a>
+                    <a href='https://{{ site.domain }}{% url "moderation.home" %}#/mail'>{{ details.count }}</a>
                     {% if details.overdue %}
                         <span style='color: red;'>OVERDUE</span>
                     {% endif %}

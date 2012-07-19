@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load url from future %}
 {% load scanning_text_diffs %}
 <!doctype html>
 <html>
@@ -53,9 +54,9 @@
                 <h2>{{ forloop.counter }}</h2>
                 <a href='{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
                 by {{ doc.author.profile }}
-                <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url scanning.transcribe_document doc.pk %}'>edit transcription</a>,
+                <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>edit transcription</a>,
                 <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
-                <a href='https://{{ site.domain }}{% url scanning.revision_list doc.pk %}'>full diff</a>.
+                <a href='https://{{ site.domain }}{% url "scanning.revision_list" doc.pk %}'>full diff</a>.
         </td></tr>
         <tr>
             <td bgcolor='#eee'>
