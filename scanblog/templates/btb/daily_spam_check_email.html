@@ -31,8 +31,8 @@
         <tr><td bgcolor='#eee'>
             <b>{{ comment.user.profile }}</b> {{ comment.modified|naturalday }} {{ comment.modified|date:"P" }}
             on
-            <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a>
-
+            <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a> 
+            by <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
             (<a href='https://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/'>edit comment</a>,
              <a href='https://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/'>edit user</a>,
              <a href='https://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete'>delete user</a>)

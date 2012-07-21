@@ -45,6 +45,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+COMPRESS_PRECOMPILERS = (
+    ('text/javascript', 'cat'), # this shouldn't be necessary, but is
+    ('text/coffeescript', 'coffee --compile --stdio'),
+)
+
 
 #
 # Other stuff
