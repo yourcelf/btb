@@ -9,7 +9,7 @@ import logging
 import datetime
 import tempfile
 import subprocess
-from PIL import Image
+from PIL import Image, ImageDraw
 import cStringIO as StringIO
 
 from pyPdf import PdfFileWriter, PdfFileReader
@@ -469,6 +469,11 @@ def _apply_page_transforms(doc):
                                 resample=Image.ANTIALIAS
                         )
 
+                    if len(tx.get('redactions', [])) > 0:
+                        draw = ImageDraw.Draw(img)
+                        for r in tx['redactions']:
+                            draw.rectangle([int(d) for d in r], fill="#000000")
+                        del draw
                     if 'crop' in tx and tx['crop'] is not None:
                         img = img.crop([int(a) for a in tx['crop']])
                                 

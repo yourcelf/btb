@@ -529,9 +529,7 @@ class btb.EditDocumentPageView extends Backbone.View
           @trigger "highlightChanged", @highlightRelativeToCrop()
     else if @highlighting
       orig = @highlight
-      @highlight = @highlighter.handleMouse(
-        mx, my, type, @highlight
-      )
+      @highlight = @highlighter.handleMouse(mx, my, type, @highlight)
       $(@canvas).css("cursor", @highlighter.cursor)
       if orig != @highlight
         @renderCanvas()
