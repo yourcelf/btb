@@ -184,6 +184,7 @@ BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 CELERY_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = "amqp"
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
 
 INTERNAL_IPS = ('127.0.0.1',)
