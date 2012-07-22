@@ -358,7 +358,12 @@ class Documents(JSONView):
         # must commit before executing the task (it needs an up-to-date model).
         transaction.commit()
 
-        tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        try:
+            tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        except Exception as e:
+            transaction.rollback()
+            raise e
+        
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
