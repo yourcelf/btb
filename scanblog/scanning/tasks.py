@@ -9,7 +9,7 @@ import logging
 import datetime
 import tempfile
 import subprocess
-from PIL import Image
+from PIL import Image, ImageDraw
 import cStringIO as StringIO
 
 from pyPdf import PdfFileWriter, PdfFileReader
@@ -32,7 +32,9 @@ def update_document_images(document_id=None, process_pages=True,
     Apply transformations to the document pages and highlights.
     """
     doc = document or Document.objects.get(id=document_id)
+    logger.debug("Update document images for {0}.".format(doc.pk))
     if not os.path.exists(doc.file_dir()):
+        logger.debug("Creating directories: {0}".format(doc.file_dir()))
         os.makedirs(doc.file_dir())
 
     # Be sure to apply page transforms first, so highlight can work from them.
@@ -42,8 +44,10 @@ def update_document_images(document_id=None, process_pages=True,
         _create_highlight(doc)
 
     if status is not None:
+        logger.debug("Setting doc {0} status to {1}".format(doc.pk, status))
         doc.status = status
     doc.save()
+    logger.debug("Update document images done.")
 
 @task
 def process_zip(filename, uploader_id, org_id, redirect=None):
@@ -384,25 +388,33 @@ def _create_highlight(doc):
     Create the highlight (teaser image) for the given doc, as specified by
     doc.highlight_transform
     """
+    logger.debug("Create highlight for {0}".format(doc.pk))
     doc_basename = doc.get_basename()
     if doc.highlight and os.path.exists(doc.highlight.path):
+        logger.debug("Removing existing highlight {0}".format(
+            doc.highlight.path
+        ))
         os.remove(doc.highlight.path)
     if doc.highlight_transform:
+        logger.debug("Transform: `{0}`".format(doc.highlight_transform))
         tx = json.loads(doc.highlight_transform)
         if tx:
             documentpage = doc.documentpage_set.get(pk=tx['document_page_id'])
             img = Image.open(documentpage.image)
             img = img.crop([int(a) for a in tx['crop']])
             highlight_fname = "{0}-highlight.jpg".format(doc_basename)
+            logger.debug("Save highlight: {0}".format(highlight_fname))
             img.save(highlight_fname)
             doc.highlight = os.path.relpath(highlight_fname, settings.MEDIA_ROOT)
             doc.save()
+    logger.debug("Save highlight done.")
  
 def _apply_page_transforms(doc):
     """
     Apply the transformations to every DocumentPage in a document, and rebuild
     the PDF.
     """
+    logger.debug("Apply transforms start")
     if doc.pdf and os.path.exists(doc.pdf.path):
         os.remove(doc.pdf.path)
     doc_basename = doc.get_basename()
@@ -423,12 +435,15 @@ def _apply_page_transforms(doc):
                 #debug:
                 #print "Page " + str(page.order) + ":"
                 #print " " + page.transformations
+                logger.debug("Transforming page {0}".format(page.pk))
                 img = Image.open(page.scan_page.image.path)
                 img_filename = "%s-page-%s.jpg" % (doc_basename, page.order)
 
+                logger.debug("Transformations: `{0}`".format(page.transformations))
                 if page.transformations or img.size[0] > 850:
                     tx = json.loads(page.transformations or "{}")
                     if 'rotate' in tx:
+                        logger.debug("Rotating {0}".format(tx['rotate']))
                         # Rotate, but preserve width, and white background.
                         width, height = img.size
                         # Upscale for quality.
@@ -463,15 +478,27 @@ def _apply_page_transforms(doc):
                         collage.paste(img, (0,0), img)
                         img = collage.convert('RGB')
                     elif img.size[0] > 850:
+                        logger.debug("Scale from {0} to 850".format(img.size))
                         # If we are'nt shrinking after rotating, shrink now.
                         img = img.resize(
                                 (850, int(img.size[1] * 850. / img.size[0])),
                                 resample=Image.ANTIALIAS
                         )
 
+                    logger.debug("Checking for redactions.")
+                    if tx and len(tx.get('redactions', [])) > 0:
+                        logger.debug("Redacting")
+                        draw = ImageDraw.Draw(img)
+                        for r in tx['redactions']:
+                            draw.rectangle([int(d) for d in r], fill="#000000")
+                        del draw
+
+                    logger.debug("Checking for cropping.")
                     if 'crop' in tx and tx['crop'] is not None:
+                        logger.debug("Cropping to {0}".format(tx['crop']))
                         img = img.crop([int(a) for a in tx['crop']])
                                 
+                    logger.debug("Storing page.")
                     # In-memory file to write pdf page to
                     page_fhs.append(StringIO.StringIO())
                     # Save page img as pdf.  We must hang on to file
@@ -485,11 +512,14 @@ def _apply_page_transforms(doc):
                     writer.addPage(reader.getPage(page.scan_page.order))
                 # Save transformed file (or copy of untransformed scan page
                 # img)
+                logger.debug("Saving image")
                 img.save(img_filename)
                 page.image = os.path.relpath(img_filename, settings.MEDIA_ROOT)
                 page.save()
 
+            logger.debug("Writing PDF")
             writer.write(doc_fh)
             for fh in page_fhs:
                 fh.close()
+    logger.debug("Apply transforms done")
 
