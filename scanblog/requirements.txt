@@ -1,4 +1,4 @@
-django>=1.4
+django>=1.4.1
 psycopg2
 -e hg+http://bitbucket.org/ubernostrum/django-registration#egg=django-registration
 Celery
