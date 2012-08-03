@@ -5,9 +5,9 @@
 
 {% block body %}
 <h1>{% trans "Frequently Asked Questions" %}</h1>
-<p>{% blocktrans %}
+<p>{% blocktrans with about_community_guidelines=url about_community_guidelines  %}
   Please also see the
-  <a href='{% url about.community_guidelines %}'>community guidelines</a>
+  <a href='{{ about_community_guidelines }}'>community guidelines</a>
   for commenting and transcribing posts.
   {% endblocktrans %}
 </p>

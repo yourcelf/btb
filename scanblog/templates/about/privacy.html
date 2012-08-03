@@ -14,14 +14,14 @@
     {% blocktrans %}
     PLEASE REVIEW BEFORE USING THIS WEBSITE – IF YOU DO NOT AGREE WITH ALL OF
     THE TERMS OF THE BTB PRIVACY POLICY, DO NOT USE THIS WEBSITE.
-    {% blocktrans %}
+    {% endblocktrans %}
 </b></p>
 
-      {% blocktrans %}
+      {% blocktrans with url_home=url home %}
 <p>
 The following discloses the information gathering and dissemination
 practices for the Between the Bars (“BtB”) website available at
-<a href='{% url home %}'>http://betweenthebars.org</a> (the “Site”).
+<a href='{{ url_home }}'>http://betweenthebars.org</a> (the “Site”).
 Your use of the Site constitutes your agreement to this privacy policy
 and consent to the terms herein.
 </p>

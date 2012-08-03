@@ -58,25 +58,25 @@
 
     <h2>{% trans "Leave comments" %}</h2>
     <p>
-      {% blocktrans %}
+      {% blocktrans with url_registration_register=url registration_register url_auth_login=url auth_login %}
 	Registered users can comment on blog posts.  We periodically mail
 	comment feeds back to the authors so they can hear from their fans and
 	continue the discussion.
-	<a href="{% url registration_register %}">Sign up</a> and
-	<a href="{% url auth_login %}">log in</a> today!
+	<a href="{{ url_registration_register }}">Sign up</a> and
+	<a href="{{ url_auth_login }}">log in</a> today!
       {% endblocktrans %}
     </p>
     <h2>{% trans "Transcribe posts" %}</h2>
     <p>
-      {% blocktrans %}
+      {% blocktrans with url_registration_register=url registration_register url_auth_login=url auth_login %}
 	{{ site.name }} relies on visitors to transcribe its bloggers' posts.
 	You can help us out by
-	<a href="{% url registration_register %}">signing up</a> and
-	<a href="{% url auth_login %}">logging in</a>,
+	<a href="{{ url_registration_register }}">signing up</a> and
+	<a href="{{ url_auth_login }}">logging in</a>,
 	and starting to transcribe posts that interest you.  Transcriptions
 	make the blogs more accessible to search engines, translators and
 	visitors.
-      {% blocktrans %}
+      {% endblocktrans %}
     </p>
     <br />
     <br />
