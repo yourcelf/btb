@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: django-btb VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-06 07:06+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-08-06 09:02+0200\n"
 "Last-Translator: Arthur Lutz <arthur.lutz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -241,7 +241,7 @@ msgstr "Visitez les <a href='/blogs/'>blogs</a>"
 
 #: templates/site_base.html:33
 msgid "Blogs"
-msgstr ""
+msgstr "Blogs"
 
 #: templates/site_base.html:34 templates/profiles/profiles_list.html:5
 msgid "People"
@@ -314,9 +314,10 @@ msgstr "Guide de la communauté"
 msgid "Frequently Asked Questions"
 msgstr "Foire Aux Questions"
 
+# Actualités
 #: templates/about/about_base.html:12
 msgid "News"
-msgstr ""
+msgstr "Actualités"
 
 #: templates/about/about_base.html:13
 msgid "Mailing list"
@@ -336,9 +337,10 @@ msgstr ""
 "la communauté</a> qui explique la démarche pour les commentaires et les "
 "retranscriptions.\n"
 
+# Qui est à l'initiative de ce projet ?
 #: templates/about/faq.html:15
 msgid "Who is behind this?"
-msgstr ""
+msgstr "Qui est à l'initiative de ce projet ?"
 
 #: templates/about/faq.html:17
 msgid ""
@@ -351,15 +353,15 @@ msgstr ""
 
 #: templates/about/faq.html:21
 msgid "Why blogging?"
-msgstr ""
+msgstr "Pourquoi un blog ?"
 
 #: templates/about/get_involved.html:2
 msgid "Get involved"
-msgstr ""
+msgstr "Comment s'impliquer ?"
 
 #: templates/about/get_involved.html:4
 msgid "comment ... volunteer ... process mail ..."
-msgstr ""
+msgstr "commentez... participez... gérer du courrier postal..."
 
 #: templates/about/index.html:16
 #, python-format
@@ -618,7 +620,7 @@ msgstr ""
 
 #: templates/about/resources.html:4
 msgid "Resources"
-msgstr ""
+msgstr "Ressources"
 
 #: templates/about/terms.fr.html:7 templates/about/terms.html:7
 msgid "Between the Bars Terms of Use"
@@ -629,605 +631,6 @@ msgid ""
 "\n"
 "    PLEASE REVIEW BEFORE USING THIS WEBSITE &ndash; IF YOU DO NOT AGREE TO "
 "THESE TERMS OF USE, DO NOT USE THIS WEBSITE.\n"
-msgstr ""
-
-#: templates/about/terms.fr.html:13
-#, python-format
-msgid ""
-"\n"
-"<h3>General</h3>\n"
-"<p>\n"
-"Le site Expression Carcerale (\"EC\") est une plateforme de blog pour\n"
-"les personnes incarcérées qui n'ont pas ou un accès limité aux médias\n"
-"de publication. La mission du site est de faciliter la communication\n"
-"entre les prisonniers et le public à travers le site disponible à\n"
-"l'adresse suivante : %(base_url)s (\"le site\").\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"Pour permettre à EC d'opérer ce service de manière effective et\n"
-"responsable, nous avons écrit des règles de bon fonctionnement à\n"
-"destination des utilisateurs du site.  En consultant, utilisant et\n"
-"contribuant à ce site par quelqueconque moyen, vous agréez à ces\n"
-"règles de bon fonctionnement. Ces termes lient juridiquement\n"
-"l'utilisateur et les opérateurs du site EC.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"XXX suppr ? ou au moins notification aux utilisateurs inscrits.\n"
-"FIXME s/Membre/Usager/\n"
-"\n"
-"Les règles énoncées ici peuvent être modifiées avec le temps. Nous\n"
-"nous efforcerons de communiquer les nouveaux termes aux utilisateurs\n"
-"inscrits. Pour les utilisateurs non-inscrits, ceux-ci devront\n"
-"consulter régulièrement ces termes pour prendre connaissance des\n"
-"nouvelles versions.\n"
-"\n"
-"BtB may modify the Terms from time to time, at BtB’s discretion, and such\n"
-"modifications shall be effective upon posting by BtB on the Site.  Your\n"
-"continued use of the Site after BtB posts revised Terms signifies your\n"
-"acceptance of the revised Terms.  It is therefore important that you review "
-"the\n"
-"Terms regularly to ensure you are updated as to any changes.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"Merci de votre compréhension et nous nous tenons à votre disposition\n"
-"pour toute question relative à ces conditions d'utilisation.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"Les Conditions d'Utilisation du Site et ces services :\n"
-"</p>\n"
-"\n"
-"<h3>Disclaimer and Waiver of Certain Damages</h3>\n"
-"<p>\n"
-"THE SITE AND CONTENT AND SERVICES OFFERED AT, THROUGH, OR IN CONNECTION "
-"WITH\n"
-"THE SITE ARE PROVIDED ON AN \"AS IS\" AND \"AS AVAILABLE\" BASIS WITHOUT "
-"WARRANTIES\n"
-"OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO "
-"WARRANTIES\n"
-"OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR\n"
-"OTHERWISE. WITHOUT LIMITATION, WE DISCLAIM ANY AND ALL WARRANTIES REGARDING "
-"THE\n"
-"SECURITY, RELIABILITY, TIMELINESS AND PERFORMANCE OF THE SERVICES OFFERED. "
-"WE\n"
-"MAKE NO WARRANTY, EXPRESS OR IMPLIED, THAT THE BTB SITE, THE CONTENT ON THE\n"
-"SITE, AND THE SERVICES WILL BE UNINTERRUPTED, TIMELY OR ERROR-FREE. SOME\n"
-"JURISDICTIONS DO NOT ALLOW THE DISCLAIMER OF CERTAIN WARRANTIES, SO SOME OF "
-"THE\n"
-"ABOVE DISCLAIMER MAY NOT APPLY TO YOU.\n"
-"\n"
-"Le Service est proposé \" tel que \" sans garantie de quelque nature que\n"
-"ce soit, explicite ou implicite ou que le fonctionnement de la\n"
-"Plateforme soit ininterrompu, rapide, sécurisé.\n"
-"\n"
-"</p>\n"
-"<p>\n"
-"TO THE EXTENT NOT PROHIBITED BY APPLICABLE LAW, IN NO EVENT SHALL BTB BE "
-"LIABLE\n"
-"FOR ANY DIRECT, INDIRECT, SPECIAL, OR CONSEQUENTIAL DAMAGES, REGARDLESS OF "
-"THE\n"
-"NATURE OF THE CLAIM OR THE FORM OF ACTION, ARISING FROM THE CONTENT ON THE\n"
-"SITE, THE SERVICES, OR THE SITE, WHETHER OR NOT WE SHALL HAVE HAD ANY\n"
-"KNOWLEDGE, ACTUAL OR CONSTRUCTIVE, THAT SUCH DAMAGES MIGHT BE INCURRED.\n"
-"</p>\n"
-"\n"
-"<h3>Eligibilité</h3>\n"
-"<p>\n"
-"You must be 18 years of age or older to use this Site.  By using the Site, "
-"you\n"
-"represent and warrant that you are 18 years of age or older.\n"
-"</p>\n"
-"\n"
-"<h3>Account, Password and Security</h3>\n"
-"<p>\n"
-"You may create an account with BtB by providing a username and password.\n"
-"Creating an account will allow you to create a user profile and make\n"
-"contributions to the Site, including but not limited to posting comments "
-"and\n"
-"participating in the transcription process.  Through the transcription "
-"process,\n"
-"accountholders may transcribe posted letters from the prisoners, and/or "
-"edit\n"
-"existing transcriptions to correct errors.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"You are solely responsible for maintaining the confidentiality and security "
-"of\n"
-"your password(s) and accounts(s).  You are entirely responsible for all\n"
-"activities that occur on or through your account(s).\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"Users are prohibited from violating or attempting to violate the security "
-"of\n"
-"the Site, including, without limitation, (a) accessing data not intended "
-"for\n"
-"such user or logging into a server or account which the user is not "
-"authorized\n"
-"to access, (b) attempting to probe, scan or test the vulnerability of a "
-"system\n"
-"or network or to breach security or authentication measures without proper\n"
-"authorization, (c) attempting to interfere with service to any user, host "
-"or\n"
-"network, including, without limitation, via means of submitting a virus to "
-"the\n"
-"Site, overloading, \"flooding,\" \"spamming,\" \"mailbombing\" or \"crashing,"
-"\" (d)\n"
-"sending unsolicited e-mail, including promotions and/or advertising of "
-"products\n"
-"or services, or (e) forging any TCP/IP packet header or any part of the "
-"header\n"
-"information in any e-mail or newsgroup posting. Violations of system or "
-"network\n"
-"security may result in civil or criminal liability. You agree that it is "
-"your\n"
-"responsibility to install anti-virus software and related protections "
-"against\n"
-"viruses, Trojan horses, worms, time bombs, cancelbots or other computer\n"
-"programming routines or engines that are intended to damage, destroy, "
-"disrupt\n"
-"or otherwise impair a computer’s functionality or operation.\n"
-"\n"
-"</p>\n"
-"\n"
-"<h3>Creating Profiles and Posting Comments</h3>\n"
-"<p>\n"
-"Accountholders can create user profiles by adding descriptions and/or "
-"uploading\n"
-"photos.  They can also post comments to the prisoners’ letters.  You alone "
-"are\n"
-"responsible for all content you add to the Site, including but not limited "
-"to\n"
-"the information and photos in your profile and the content in your posts.  "
-"You\n"
-"agree not to post content that includes any defamatory, abusive, obscene,\n"
-"threatening or illegal material, or any other material that infringes on "
-"the\n"
-"ability of others to enjoy the Site or that infringes on the rights of "
-"others.\n"
-"\n"
-"En tant que simple fournisseur d’hébergement, Expression Carcérale ne sera "
-"en\n"
-"aucun cas responsable du contenu des blogs des Membres et des messages\n"
-"que les Visiteurs pourront inscrire, quel que soit le support dudit\n"
-"message, non plus que des contacts passés entre les Membres, les\n"
-"Visiteurs et lesdits tiers, quels qu'ils soient.\n"
-"\n"
-"EC est un fournisseur d’hébergement. En aucun cas, EC ne peut être\n"
-"assimilé à un éditeur ou un auteur relativement aux blogs des Membres.\n"
-"\n"
-"Contenus manifestement illicites :\n"
-"\n"
-"Le contenu publié par l’utilisateur ne doit pas inciter à la haine, à\n"
-"la violence, à l'anorexie, à la fabrication et utilisation\n"
-"d'explosifs, au suicide, au racisme, à l'antisémitisme, à la\n"
-"xénophobie, à l’homophobie, faire l'apologie des crimes de guerre ou\n"
-"des crimes contre l'humanité ;\n"
-"\n"
-"Le contenu publié par l'utilisateur ne doit présenter en aucun cas un\n"
-"caractère pédophile ou pédo-pornographique.\n"
-"\n"
-"Le contenu publié par l’utilisateur ne doit pas inciter à commettre un\n"
-"crime, un délit ou un acte de terrorisme ;\n"
-"\n"
-"Le contenu publié par l’utilisateur ne doit pas inciter à la\n"
-"discrimination d'une personne ou d'un groupe de personne en raison de\n"
-"son appartenance à une ethnie, à une religion, à une race, ou du fait\n"
-"de son orientation sexuelle ou de son handicap.\n"
-"\n"
-"Dans le cadre de ses obligations de surveillance sur les contenus\n"
-"manifestement illicites, édictées par la loi du 21 janvier 2004 pour\n"
-"la confiance en l'économie numérique, l'association EC pourra\n"
-"être amenée à consulter une copie des messages envoyé à l'éditeur d'un\n"
-"blog via le formulaire de contact disponible sur le blog.\n"
-"\n"
-"\n"
-"Contenus litigieux :\n"
-"\n"
-"L'utilisateur s'engage à prendre connaissance avant toute publication\n"
-"des règles et limites relatives à la liberté d'expression. La liberté\n"
-"d'expression autorise la critique, le rapport d'informations vérifiées\n"
-"et prouvées, elle n'autorise pas le dénigrement et la\n"
-"diffamation. Tout dénigrement, diffamation, ou allégation\n"
-"d'informations inexactes ou volontairement tronquées pour en changer\n"
-"le sens peuvent entrainer des poursuites à l'encontre de leur auteur.\n"
-"\n"
-"Le contenu publié par l’utilisateur ne doit pas porter atteinte aux\n"
-"droits à la réputation, à la vie privée de tiers et à l'image ;\n"
-"\n"
-"Le contenu publié par l’utilisateur ne doit pas être, au strict sens\n"
-"de la loi, dénigrant ou diffamatoire.\n"
-"\n"
-"La liberté d'expression autorise la critique dès lors qu'elle est\n"
-"objective, argumentée, et portant sur des faits réels.\n"
-"\n"
-"\n"
-"</p>\n"
-"<p>\n"
-"BtB cannot and does not review every profile or posting made on the Site.  "
-"You\n"
-"should expect the Site to include information and opinions from a variety "
-"of\n"
-"individuals and organizations other than BtB.  BtB does not endorse or\n"
-"guarantee the accuracy of any posting, regardless of whether the posting "
-"comes\n"
-"from a prisoner, a web site user, a guest, or a member of our staff.\n"
-"</p>\n"
-"<p>\n"
-"Although BtB cannot monitor all profiles and postings, BtB reserves the "
-"right\n"
-"(though not the obligation) to delete, move, or edit any profile content or\n"
-"postings for any reason whatsoever.\n"
-"\n"
-"Malgré le fait que EC ne peux surveiller tout le contenu hebergé par\n"
-"le site, EC se reserve le droit (et pas l'obligation) de supprimer,\n"
-"déplacer, ou éditer tout contenu sur le site.\n"
-"\n"
-"alt: EC peut décider, à sa convenance, d'effacer ou de bloquer tout ou\n"
-"partie du contenu d'un blog, notamment dans le cas où le membre ne\n"
-"respecterait pas les présentes conditions. Dans ce cas, EC s'éfforcera\n"
-"de présenter des explications au membre.\n"
-"\n"
-"Suite à la suppresison de contenu ou d'un compte, le Membre ne peux\n"
-"demander à EC une quelconque indemnité.\n"
-"\n"
-"\n"
-"\n"
-"</p>\n"
-"<h3>Transcription</h3>\n"
-"<p>\n"
-"An accountholder can prepare transcriptions of the prisoners’ posted "
-"letters.\n"
-"An accountholder can also edit an existing transcription in order to "
-"correct\n"
-"errors.  You agree not to make changes to a transcription that is already\n"
-"accurate.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"By transcribing a prisoner’s letter, you represent and warrant that you are\n"
-"accurately transcribing the content of the prisoner’s letter.  By making "
-"edits\n"
-"to a transcription, you represent and warrant that the edits are accurate.  "
-"BtB\n"
-"does not endorse or guarantee the accuracy of any transcription.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"BtB reserves the right to lock transcription forms to prevent any further "
-"edits\n"
-"to a prisoner’s letter.  BtB also reserves the right (though not the\n"
-"obligation) to delete, move, or edit any transcriptions that BtB considers\n"
-"unacceptable or inappropriate, whether for legal or other reasons.\n"
-"</p>\n"
-"\n"
-"<h3>Privacy</h3>\n"
-"<p>\n"
-"BtB respects the privacy of our users.  BtB’s Privacy Policy is expressly\n"
-"incorporated herein by reference and made a part of the Terms.  The Privacy\n"
-"Policy is located at\n"
-"<a href='%(url_about_privacy)s'>%(base_url)s%(url_about_privacy)s</a>.\n"
-"</p>\n"
-"<h3>Termination of Account</h3>\n"
-"<p>\n"
-"You may terminate your account via the link on your profile page.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"BtB reserves the right to terminate your account(s), to restrict your access "
-"to\n"
-"your account(s), and/or to delete any content posted through your account"
-"(s),\n"
-"with or without notice, for any or for no reason, and without any liability "
-"to\n"
-"you.  The license granted to BtB by you in any and all content furnished by "
-"you\n"
-"to the Site is irrevocable and survives after termination of your account.\n"
-"</p>\n"
-"<p>\n"
-"If you decide to terminate your account, you may opt to delete the comments "
-"you\n"
-"have posted to the Site.  If you wish to delete your comments, you must do "
-"so\n"
-"at the time you terminate your account.  Once your account is terminated, "
-"you\n"
-"will lose the ability to perform any authenticated functions on the Site,\n"
-"including the ability to delete your comments.\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"Un membre de EC peut demander la suppression de son compte ainsi que\n"
-"des contenus hebergés sur la plate-forme.\n"
-"\n"
-"Téléchargement du contenu lors du départ d'un membre ? \n"
-"\n"
-"?? garder les URLs avec un message \"contenu suuprimé à la demande de "
-"l'auteur\".\n"
-"</p>\n"
-"\n"
-"<p>\n"
-"<h3>Prohibited Site Usage</h3>\n"
-"<p>\n"
-"The Site and/or any portion of the Site may not be reproduced, duplicated,\n"
-"copied, sold, resold, visited or otherwise exploited for any commercial "
-"purpose\n"
-"without our express written consent, except for such reproduction as occurs "
-"in\n"
-"the normal course of reading or viewing the Site using a Web browser. We do "
-"not\n"
-"permit any resale or commercial use of the Site or its contents; any "
-"derivative\n"
-"use of the Site or its contents; or any use of data mining, robots, or "
-"similar\n"
-"data gathering and extraction tools.\n"
-"\n"
-"Il est interdit de collecter ou stocker des données en vue de créer\n"
-"une base de données concernant les Membres du Service, notamment leur\n"
-"noms et prénoms; XXX - moteur de recherche ?\n"
-"\n"
-"\n"
-"</p>\n"
-"\n"
-"EC s’engage à ne pas faire d’usage commercial des informations\n"
-"personnelles concernant ses Membres.\n"
-"\n"
-"\n"
-"<h3>Parental Notice</h3>\n"
-"<p>Pursuant to 47 U.S.C. Section 230(d) as amended, BtB hereby notifies you\n"
-"that parental control protections (such as computer hardware, software, or\n"
-"filter services) are commercially available that may assist you in limiting\n"
-"access to material that is harmful to minors. Information identifying "
-"current\n"
-"providers of such protection is available on the Internet (e.g.,\n"
-"<a href='http://en.wikipedia.org/wiki/List_of_content-"
-"control_software'>http://en.wikipedia.org/wiki/List_of_content-"
-"control_software</a>).\n"
-"</p>\n"
-"\n"
-"<h3>Intellectual Property</h3>\n"
-"<p>\n"
-"By furnishing content to the Site, you grant BtB a non-exclusive, royalty-"
-"free,\n"
-"perpetual, and worldwide license to, among other things, copy, distribute,\n"
-"transmit, publicly display, reproduce, edit, transcribe, translate, and\n"
-"reformat the content you furnish, and/or to incorporate the content you "
-"furnish\n"
-"into a collective work.  This license also allows BtB to, among other "
-"things,\n"
-"periodically print your comments and send the comments to prisoners.  This\n"
-"license is perpetual and applies even after a user’s account has been\n"
-"terminated to content submitted by the user before termination of the "
-"account.\n"
-"Subject only to the rights granted to BtB under this license, you retain\n"
-"ownership of the copyrights and all other rights in the content furnished "
-"by\n"
-"you.\n"
-"</p>\n"
-"<h3>Representations and Warranties of Web Site User</h3>\n"
-"<p>\n"
-"By submitting content to the Site, you represent and warrant, with respect "
-"to\n"
-"all content furnished by you, that you submit to BtB, as follows:\n"
-"</p>\n"
-"\n"
-"<ol>\n"
-"<li>You are the sole author of all content, and all content is original to\n"
-"you.</li>\n"
-"<li>You have the right to submit the content to BtB and to grant BtB the "
-"rights\n"
-"set forth herein.</li>\n"
-"\n"
-"Les Membres garantissent à EC qu'ils disposent des droits nécessaires\n"
-"à la publication et / ou au partage des contenus qu'ils déposent sur\n"
-"la plateforme du Service. Par droits, on entend les droits relevant du\n"
-"Code de la propriété intellectuelle comme les droits d'auteur, de\n"
-"reproduction, de diffusion, le droit des marques… sur tout support\n"
-"existant ou à venir.\n"
-"\n"
-"\n"
-"<li>The content does not violate or constitute the infringement of any "
-"patent,\n"
-"copyright, trademark, trade secret, right of privacy, right of publicity, "
-"moral\n"
-"right, or other intellectual property right or other right of any person or\n"
-"entity.</li>\n"
-"<li>The content, your submission of the content to BtB, and the posting of "
-"the\n"
-"content online do not violate the rights of any person or entity or any "
-"state\n"
-"or federal law or regulation.</li>\n"
-"<li>The content does not contain any threatening, harassing, libelous, "
-"false,\n"
-"defamatory, offensive, obscene, or pornographic material, or other material\n"
-"that would violate any other applicable law or regulation.</li>\n"
-"</ol>\n"
-"\n"
-"<p>\n"
-"By submitting content to BtB, you acknowledge and agree that such content "
-"may\n"
-"be posted on the BtB website and made publicly available to anyone who "
-"wishes\n"
-"to view the content.  You acknowledge and agree that BtB shall have no\n"
-"responsibility, liability, or obligation to you with regard to the content\n"
-"submitted, its protection, its use or misuse in any way whatsoever by any\n"
-"entity, including but not limited to BtB itself.  You acknowledge and agree\n"
-"that BtB will in no event be liable for the editing, removal or disabling "
-"of\n"
-"access to any content under the Terms.\n"
-"\n"
-"\n"
-"Le Membre reconnaît expressément que :\n"
-"\n"
-"- le contenu de son blog est sous sa seule responsabilité tant civile que "
-"pénale en sa qualité d'auteur et d'éditeur du blog,\n"
-"\n"
-"- EC, en tant que fournisseur d’hébergement, n‘est en aucun cas responsable "
-"des contenus que le Membre a publiés ou de toute autre information ou "
-"communication du Membre (que ce soit des textes publiés, images, hyperliens "
-"ou autre contenu),\n"
-"\n"
-"- EC n'assume vis à vis des contenus publiés par le Membre et les Visiteurs "
-"aucune responsabilité quant à leur possible caractère menaçant, "
-"anticonstitutionnel, vulgaire, raciste, pornographique, diffamatoire, "
-"injurieux, offensant, criminel, dégradant ou violant le code de la propriété "
-"intellectuelle et ou portant atteinte aux droits des marques.\n"
-"\n"
-"En tant qu’auteur et éditeur de son blog, le Membre s’engage à respecter sur "
-"son blog les lois et règlements en vigueur en France.\n"
-"\n"
-"La plateforme EC permet en outre à toute personne de lui signaler\n"
-"toutes données constituant une infraction par rapport aux lois et\n"
-"règlements en vigueur, ainsi que contre les infractions à la loi du 29\n"
-"juillet 1881 sur la liberté de la presse.\n"
-"\n"
-"Concernant les demandes de retrait ou de suppression de Blog, de\n"
-"commentaires, de photos, la loi du 21 juin 2004 pour la confiance dans\n"
-"l’économie numérique (LCEN) indique que les hébergeurs ne sont pas\n"
-"responsables d'un contenu litigieux qu'ils hébergent dès lors qu'ils\n"
-"n'a pas été porté régulièrement à leur connaissance le caractère\n"
-"litigieux de ce contenu.\n"
-"\n"
-"Un tiers qui souhaite mettre fin à ce qu'il considère comme un\n"
-"préjudice doit donc initialement prendre contact avec l'éditeur du\n"
-"Site (par l'intermédiaire du formulaire contact présent en bas de\n"
-"Blog), et s'il n'arrive pas à le contacter ou que l'éditeur du Blog\n"
-"refuse de retirer le contenu notifié malgré une décision de justice\n"
-"l'enjoignant à le faire, il devra justifier auprès de l'association EC\n"
-"de cette impossibilité de contacter l'éditeur du Blog ou de faire\n"
-"exécuter cette décision de justice.\n"
-"\n"
-"En tout état de cause, EC se réserve le droit de refuser de\n"
-"donner suite à une notification abusive, c'est à dire une notification\n"
-"qui n'ait pas été porté au préalable à la connaissance de l'éditeur du\n"
-"Blog, ou une notification portant sur un contenu non manifestement\n"
-"illicite.\n"
-"\n"
-"Dés que EC recevra la demande d’information émanant de la plainte d’un\n"
-"utilisateur sur un Blog litigieux, de la part du Procureur de la\n"
-"République, de la police ou de la gendarmerie ou de toute autre\n"
-"autorité judiciaire, EC traitera dans les plus brefs délais cette\n"
-"demande.\n"
-"\n"
-"</p>\n"
-"\n"
-"<h3> ? </h3>\n"
-"<p>\n"
-"    En conformité avec la loi du 6 janvier 1978 relative à\n"
-"    l'informatique, aux fichiers, aux libertés, le traitement\n"
-"    automatisé des données nominatives réalisé à partir du Site\n"
-"    Internet www.over-blog.com a fait l'objet d'une déclaration auprès\n"
-"    de la Commission Nationale de l'Informatique et des Libertés\n"
-"    (CNIL).\n"
-"\n"
-"</p>\n"
-"\n"
-"<h3>Digital Millenium Copyright Act/Copyright Infringement and Notification "
-"Policy</h3>\n"
-"<p>\n"
-"We respect the intellectual property of others.  If you believe that your\n"
-"copyrighted materials have been copied in a way that constitutes copyright\n"
-"infringement, please follow the procedure set forth in our Digital "
-"Millennium\n"
-"Copyright Act Notice Policy, which is located at\n"
-"<a href='%(url_about_dmca)s'>%(base_url)s%(url_about_dmca)s</a> and is\n"
-"expressly incorporated herein by reference and made a part of the Terms.\n"
-"</p>\n"
-"<h3>Termination of Service</h3>\n"
-"<p>\n"
-"BtB disclaims all responsibility and liability for the availability,\n"
-"timeliness, security or reliability of BtB’s services or Site, or any "
-"software\n"
-"provided through the Site. BtB reserves the right to modify, suspend, or\n"
-"discontinue the services or access to the Site without any notice at any "
-"time\n"
-"for any reason and without any liability to you.\n"
-"\n"
-"EC est un espace de libre-expression : aucune censure n'est pratiquée\n"
-"sur les pages des éditeurs de Blogs, qui s'engagent en contrepartie à\n"
-"respecter strictement les lois Françaises. Tout utilisateur peut\n"
-"raconter, argumenter, critiquer ce qu'il désire, dès lors qu'il\n"
-"respecte cette règle de base.\n"
-"\n"
-"</p>\n"
-"<h3>No Waiver of Terms</h3>\n"
-"<p>\n"
-"Failure of BtB to exercise or enforce any right or provision of these Terms\n"
-"shall not be deemed a waiver of such right or provision in that or any "
-"other\n"
-"instance.\n"
-"</p>\n"
-"<h3>Indemnity</h3>\n"
-"<p>\n"
-"You agree to indemnify and hold harmless BtB, its affiliates, subsidiaries,\n"
-"officers and directors, agents, employees and partners, and any parties "
-"with\n"
-"whom BtB may contract to provide its services, from any third party claim "
-"or\n"
-"demand, including reasonable attorneys’ fees for damages and/or costs due to "
-"or\n"
-"arising out of your breach of your obligations under this the Terms.\n"
-"</p>\n"
-"\n"
-"<h3>Severability</h3>\n"
-"<p>\n"
-"If any provision of the Terms shall be deemed unlawful, void, or for any "
-"reason\n"
-"unenforceable, then that provision shall be deemed severable from these "
-"terms\n"
-"and conditions and shall not affect the validity and enforceability of any\n"
-"remaining provisions.\n"
-"\n"
-"Si une partie quelconque des CGU devait s'avérer illégale, invalide ou\n"
-"inapplicable, le terme ou les termes en question seraient effacés des\n"
-"CGU et les termes restants subsisteraient et garderaient leur pleine\n"
-"force et leur plein effet et continueraient à être applicables.\n"
-"\n"
-"Ces CGU sont placées sous l'autorité de la législation Française. Tout\n"
-"désaccord ou conflit qui ne se règle pas par la voie amiable relève de\n"
-"la juridiction des tribunaux compétents.\n"
-"</p>\n"
-"\n"
-"<h3>Governing Law and Entire Agreement</h3>\n"
-"<p>These Terms are governed by the laws of the Commonwealth of "
-"Massachusetts,\n"
-"without regard to the rules of conflict of law that may cause the laws of\n"
-"another jurisdiction to apply. You agree to the sole and exclusive "
-"jurisdiction\n"
-"and venue of the federal or state courts serving Massachusetts in the event "
-"of\n"
-"any dispute of any kind arising from or relating to the Site or Services, "
-"or\n"
-"your use or review of it.  The Terms constitute the entire agreement "
-"between\n"
-"the parties with respect to the subject matter hereof and supersedes and\n"
-"replaces all prior or contemporaneous understandings or agreements, written "
-"or\n"
-"oral, regarding such subject matter. If for any reason a court of competent\n"
-"jurisdiction finds any provision or portion of these Terms to be "
-"unenforceable,\n"
-"the remainder of the Terms will continue in full force and effect.\n"
-"</p>\n"
-"\n"
-"Identification de EC, hébergeur\n"
-"\n"
-"ExpressionCarcerale.fr\n"
-"Association de 1901\n"
-"Adresse : \n"
-"XXXX\n"
-"Publication au JO\n"
-"Site déclaré à la CNIL ? \n"
-"\n"
-"Les serveurs des Sites sont hébergés en France par :\n"
-"Online.fr Dedibox Illiane ? \n"
-"\n"
-"\n"
-"<p>\n"
-"Effective Date of the Agreement is 2010-11-15.\n"
-"</p>\n"
 msgstr ""
 
 #: templates/about/terms.html:13
@@ -1708,7 +1111,7 @@ msgstr "Lire plus"
 
 #: templates/blogs/_post_pagegroup.html:7
 msgid "page"
-msgstr ""
+msgstr "page"
 
 #: templates/blogs/_post_pagegroup.html:11
 msgid "Scanned page"
@@ -1824,7 +1227,7 @@ msgstr "et le supprimer de ce site ?"
 
 #: templates/blogs/delete_post.html:7
 msgid "This can't be undone."
-msgstr "Cette opération ne peut pas être annulée."
+msgstr "Cette opération est irreversible."
 
 #: templates/blogs/delete_post.html:12 templates/blogs/edit_post.html:62
 msgid "Delete post"
@@ -2006,7 +1409,7 @@ msgstr "Commentaires récents"
 
 #: templates/comments/_comment.html:40 templates/notification/notices.html:27
 msgid "delete"
-msgstr ""
+msgstr "supprimer"
 
 #: templates/comments/_comment.html:46
 #, fuzzy
@@ -2020,7 +1423,7 @@ msgstr "Profil scanné"
 
 #: templates/comments/_comment.html:56
 msgid "view as blog post"
-msgstr ""
+msgstr "voir comme un article de blog"
 
 #: templates/comments/_comment_form.html:6
 msgid ""
@@ -2028,7 +1431,7 @@ msgid ""
 "\t    We will print and mail your reply by <span class='comment-maildate'></"
 "span>.\n"
 "\t    "
-msgstr ""
+msgstr "\n        Nous imprimerons et enverrons par la poste votre commentaire le <span class='comment-maildate'></span> au plus tard.\n"
 
 #: templates/comments/_comment_form.html:10
 #, fuzzy
@@ -2047,7 +1450,7 @@ msgstr "Supprimer l'article"
 
 #: templates/comments/delete_comment.html:5
 msgid "Are you sure you want to delete this reply?  There is no undo."
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer cette réponse ? Cette opération est irreversible."
 
 #: templates/comments/edit_comment.html:6
 #, python-format
@@ -2056,7 +1459,7 @@ msgid ""
 "  Please consider our <a href='%(guidelines_url)s'>guidelines</a> while "
 "writing.\n"
 "  "
-msgstr ""
+msgstr "Merci de penser aux <a href='%(guidelines_urls)s'>conditions d'utilisation</a> lorsque vous écrivez."
 
 #: templates/comments/edit_comment.html:17
 #, fuzzy
@@ -2096,16 +1499,16 @@ msgstr "Aperçu"
 
 #: templates/correspondence/base.html:9
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #: templates/correspondence/base.html:12
 #: templates/correspondence/base_letter_list.html:48
 msgid "Sent"
-msgstr ""
+msgstr "Envoyé"
 
 #: templates/correspondence/base.html:15
 msgid "Write a letter"
-msgstr ""
+msgstr "Écrire une lettre"
 
 #: templates/correspondence/base_letter_list.html:7
 #: templates/correspondence/pending.html:3
@@ -2118,69 +1521,69 @@ msgstr "Status d'envoi de la lettre modifié"
 
 #: templates/correspondence/base_letter_list.html:47
 msgid "Recipient"
-msgstr ""
+msgstr "Receveur???"
 
 #: templates/correspondence/base_letter_list.html:49
 msgid "Letters"
-msgstr ""
+msgstr "Lettres"
 
 #: templates/correspondence/base_letter_list.html:50
 msgid "Date created"
-msgstr ""
+msgstr "Date de création"
 
 #: templates/correspondence/base_letter_list.html:51
 msgid "Sender"
-msgstr ""
+msgstr "Émetteur???"
 
 #: templates/correspondence/base_letter_list.html:64
 msgid "Address missing"
-msgstr ""
+msgstr "Adresse manquante"
 
 #: templates/correspondence/base_letter_list.html:66
 msgid "Add one?"
-msgstr ""
+msgstr "Ajouter une adresse ?"
 
 #: templates/correspondence/base_letter_list.html:88
 msgid "Consent form: joined"
-msgstr ""
+msgstr "Formulaire d'accord signé"
 
 #: templates/correspondence/base_letter_list.html:97
 msgid "Signup complete"
-msgstr ""
+msgstr "Inscription complète"
 
 #: templates/correspondence/base_letter_list.html:107
 #, fuzzy
 msgid "First post"
-msgstr "Edition de l'article"
+msgstr "Premier article"
 
 #: templates/correspondence/base_letter_list.html:118
 msgid "Letter"
-msgstr ""
+msgstr "Lettre"
 
 #: templates/correspondence/base_letter_list.html:134
 msgid "Build comment mailing (PDF)"
-msgstr ""
+msgstr "Générer PDF pour envoi des commentaires par voie postale"
 
 #: templates/correspondence/base_letter_list.html:159
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: templates/correspondence/base_letter_list.html:173
 msgid "Show waitlist postcard"
-msgstr ""
+msgstr "Voir liste d'attente"
 
 #: templates/correspondence/base_letter_list.html:175
 #, fuzzy
 msgid "Waitlist"
-msgstr "Liste de discussion"
+msgstr "Liste d'attente"
 
 #: templates/correspondence/delete_letter_confirm.html:2
 msgid "Confirm delete letter"
-msgstr ""
+msgstr "Confirmez la suppression de la lettre"
 
 #: templates/correspondence/delete_letter_confirm.html:6
 msgid "Are you sure you want to delete this letter?"
-msgstr ""
+msgstr "Êtes vous sûr de vouloir supprimer cette lettre ?"
 
 #: templates/correspondence/delete_letter_confirm.html:8
 #, fuzzy
@@ -2196,19 +1599,19 @@ msgstr "Annuler"
 
 #: templates/correspondence/delete_letter_confirm.html:14
 msgid "To"
-msgstr ""
+msgstr "À"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:2
 msgid "Mass mailing spreadsheet"
-msgstr ""
+msgstr "Tableur d'envoi massif"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:4
 msgid "Mass Mailing Spreadsheet"
-msgstr ""
+msgstr "Tableur récapitulatif de publipostage"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:6
 msgid "Spreadsheets for users in the following organizations:"
-msgstr ""
+msgstr "Tableur pour les utilisateurs de l'organisation :"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:10
 #, fuzzy
@@ -2217,68 +1620,68 @@ msgstr "Tous les auteurs"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:16
 msgid "In prison"
-msgstr ""
+msgstr "En prison"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:18
 msgid "In the system, with returned license agreement or without."
-msgstr ""
+msgstr "Inscrit avec un accord signé ou pas."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:22
 msgid "Invitable"
-msgstr ""
+msgstr "Possibilité d'inviter"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:24
 msgid ""
 "On the waitlist or not yet waitlisted -- we could send them an invitation."
-msgstr ""
+msgstr "Sur liste d'attente ou pourrait y être -- nous pourrions leur envoyer une invitation."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:28
 msgid "Waitlistable"
-msgstr ""
+msgstr "Possibilité d'entrer sur la liste d'attente"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:30
 msgid ""
 "We have their name, but we haven't invited them, nor have we sent a waitlist "
 "postcard."
-msgstr ""
+msgstr "Nous avons leurs noms, mais ils ne sont pas encore invités ou sur liste d'attente."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:34
 msgid "Waitlisted"
-msgstr ""
+msgstr "Sur liste d'attente"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:36
 msgid ""
 "We have sent them a waitlist postcard, and we haven't sent an invitation."
-msgstr ""
+msgstr "Lettre de liste d'attente envoyé, pas encore envoyé d'invitation."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:40
 msgid "Invited users in"
-msgstr ""
+msgstr "Utilisateurs invités dans"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:47
 msgid "Invited"
-msgstr ""
+msgstr "Invités"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:49
 msgid ""
 "An invitation has been sent, but license agreement has not been returned."
-msgstr ""
+msgstr "Invitation envoyée, mais accord signé pas encore recu."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:53
 msgid "Enrolled"
-msgstr ""
+msgstr "Inscription complète"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:55
 msgid "In prison, have returned a license agreement."
-msgstr ""
+msgstr "En prison, ont renvoyé un accord signé."
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:59
 msgid "Bloggers with published content"
-msgstr ""
+msgstr "Bloggeurs ayant du contenu publié"
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:61
 msgid "Have a post or profile published."
-msgstr ""
+msgstr "Ont un article ou un profil publié."
 
 #: templates/correspondence/pending.html:6
 #, fuzzy
@@ -2292,11 +1695,11 @@ msgstr "Gérer la correspondance"
 
 #: templates/correspondence/pending.html:11
 msgid "Refreshes all 'automatic' pending correspondence."
-msgstr ""
+msgstr "Mettre à jour toutes les correspondances 'automatiques' en attente."
 
 #: templates/correspondence/pending.html:15
 msgid "Waitlist consent requests"
-msgstr ""
+msgstr "Demande d'inscription sur la liste d'attente"
 
 #: templates/correspondence/pending.html:17
 msgid ""
@@ -2304,52 +1707,52 @@ msgid ""
 "    Generates \"waitlist\" postcards for all consent requests that haven't "
 "received them.\n"
 "    "
-msgstr ""
+msgstr "Génerer les carte postales \"liste d'attente\" pour tous les utilisateurs ayant signé l'accord et qui n'ont pas recu cette correspondance."
 
 #: templates/correspondence/pending.html:25
 msgid "Collated mailings:"
-msgstr ""
+msgstr "Publipostage Collated???"
 
 #: templates/correspondence/pending.html:28
 msgid "Include consent envelopes?"
-msgstr ""
+msgstr "Inclure des envelopes pour renvoi de l'accord ?"
 
 #: templates/correspondence/pending.html:32
 msgid "Before date"
-msgstr ""
+msgstr "Avant la date"
 
 #: templates/correspondence/pending.html:42
 msgid "Include waitlist postcards?"
-msgstr ""
+msgstr "Inclure la carte postale de liste d'attente ?"
 
 #: templates/correspondence/pending.html:48
 msgid ""
 "\n"
 "\t\tInclude \"signup complete\" letters?\n"
 "\t\t"
-msgstr ""
+msgstr "Inclure la lettre d'inscriptin complétée ?"
 
 #: templates/correspondence/pending.html:56
 msgid "Include first posts?"
-msgstr ""
+msgstr "Inclure le premier article publié ?"
 
 #: templates/correspondence/pending.html:62
 #, fuzzy
 msgid "Include comments?"
-msgstr "Tous les commentaires"
+msgstr "Inclure les commentaires ?"
 
 #: templates/correspondence/pending.html:68
 msgid "Include personal letters?"
-msgstr ""
+msgstr "Inclure les lettres personnelles ?"
 
 #: templates/correspondence/pending.html:76
 msgid "Build collated mailing"
-msgstr ""
+msgstr "Générer le publipostage aggrégé"
 
 #: templates/correspondence/pending.html:82
 #, fuzzy
 msgid "Mailings:"
-msgstr "Liste de discussion"
+msgstr "Publipostage"
 
 #: templates/correspondence/sent.html:4 templates/correspondence/sent.html:8
 msgid "Sent correspondence"
@@ -2361,16 +1764,16 @@ msgid ""
 "\n"
 "      Recent comments left for %(recipient_profile)s\n"
 "      "
-msgstr ""
+msgstr "Commentaires récents postés pour %(recipient_profile)s"
 
 #: templates/correspondence/show_commentmailing.html:19
 msgid "Excerpt"
-msgstr ""
+msgstr "Extrait"
 
 #: templates/correspondence/show_commentmailing.html:22
 #, fuzzy
 msgid "Reply ID"
-msgstr "Répondre"
+msgstr "Identifiant de réponse"
 
 #: templates/correspondence/show_commentmailing.html:26
 msgid ""
@@ -2384,7 +1787,7 @@ msgid ""
 "\t\t      reply ID at a time &ndash; to reply to more than\n"
 "\t\t      one set of comments, use a separate page.\n"
 "\t\t      "
-msgstr ""
+msgstr "Pour répondre à ces commentaires, merci de noter l'identifiant de réponse en haut de la page. Ceci nous permet de prévenir la personne ayant écrit le commentaire de votre réponse. Merci de noter un seul identifiant à la fois et d'utiliser des pages séparées pour chaque réponse."
 
 #: templates/feeds/_all.html:1
 #, fuzzy
@@ -2410,11 +1813,11 @@ msgstr "Articles récents"
 #: templates/feeds/_subscriptions.html:3
 #, fuzzy
 msgid "Subscribe"
-msgstr "Retranscris"
+msgstr "S'abonner"
 
 #: templates/feeds/_subscriptions.html:4
 msgid "Get notifications when new letters or replies are posted!"
-msgstr ""
+msgstr "Obtenir une notification lorsque un nouvelle article ou de nouvelles réponses ont été publiées."
 
 #: templates/feeds/_subscriptions.html:7
 #: templates/notification/notice_settings.html:59
@@ -2433,7 +1836,7 @@ msgstr "Articles ayant un tag"
 #: templates/feeds/_subscriptions.html:61
 #: templates/feeds/_subscriptions.html:74
 msgid "email me"
-msgstr ""
+msgstr "envoyez moi un mail"
 
 #: templates/feeds/_subscriptions.html:80
 #, python-format
@@ -2441,7 +1844,7 @@ msgid ""
 "\n"
 "\t\tAll <em>%(site_name)s</em> posts:\n"
 "\t\t"
-msgstr ""
+msgstr "Tous les articles de <em>%(site_name)s</em> :"
 
 #: templates/feeds/_tag.html:1
 #, fuzzy
@@ -2450,109 +1853,109 @@ msgstr "Mes articles"
 
 #: templates/moderation/_dashboard.html:4
 msgid "backend"
-msgstr ""
+msgstr "backend"
 
 #: templates/moderation/_dashboard.html:8
 msgid "Unfinished"
-msgstr ""
+msgstr "Pas fini"
 
 #: templates/moderation/_dashboard.html:9
 msgid "Finished"
-msgstr ""
+msgstr "Fini"
 
 #: templates/moderation/_dashboard.html:11
 msgid "Scans"
-msgstr ""
+msgstr "Scans"
 
 #: templates/moderation/_dashboard.html:17
 msgid "Needs attention"
-msgstr ""
+msgstr "A besoin d'une intervention"
 
 #: templates/moderation/_dashboard.html:21
 #, fuzzy
 msgid "Documents"
-msgstr "Commentaires"
+msgstr "Documents"
 
 #: templates/moderation/_dashboard.html:27
 msgid "Open Tickets"
-msgstr ""
+msgstr "Tickets ouverts"
 
 #: templates/moderation/_dashboard.html:33
 msgid "Outgoing Mail"
-msgstr ""
+msgstr "Courrier sortant"
 
 #: templates/moderation/_dashboard.html:43
 msgid "Enqueued"
-msgstr ""
+msgstr "Dans la file d'attente"
 
 #: templates/moderation/_dashboard.html:44
 msgid "Needed"
-msgstr ""
+msgstr "Needed???"
 
 #: templates/moderation/_notes.html:4
 msgid "Add Note"
-msgstr ""
+msgstr "Ajouter une note"
 
 #: templates/moderation/_notes.html:22
 msgid "Needs further attention?"
-msgstr ""
+msgstr "A besoin d'une intervention ?"
 
 #: templates/moderation/_notes.html:29
 msgid "Add Note/Ticket"
-msgstr ""
+msgstr "Ajouter une note ou un ticket"
 
 #: templates/moderation/_notes.html:36
 msgid "NEEDS ATTENTION"
-msgstr ""
+msgstr "NECESSITE UNE INTERVENTION"
 
 #: templates/moderation/_notes.html:48
 msgid "Assigned to"
-msgstr ""
+msgstr "Assigné à"
 
 #: templates/moderation/_notes.html:57
 #, fuzzy
 msgid "Edit note"
-msgstr "Edition de l'article"
+msgstr "Editer la note"
 
 #: templates/moderation/_notes.html:58
 #, fuzzy
 msgid "Delete note"
-msgstr "Supprimer l'article"
+msgstr "Supprimer la note"
 
 #: templates/moderation/_notes.html:60
 msgid "Mark resolved"
-msgstr ""
+msgstr "Marquer comme résolu"
 
 #: templates/moderation/_scans.html:4
 msgid "Scans needing attention"
-msgstr ""
+msgstr "Scans nécéssitant du travail"
 
 #: templates/moderation/_scans.html:7
 msgid "Documents needing attention"
-msgstr ""
+msgstr "Documents nécessitant du travail"
 
 #: templates/moderation/_scans.html:14 templates/moderation/_scans.html:49
 #, fuzzy
 msgid "Delete scan"
-msgstr "Supprimer l'article"
+msgstr "Supprimer le scan"
 
 #: templates/moderation/_scans.html:18
 msgid "started editing"
-msgstr ""
+msgstr "édition démarrée"
 
 #: templates/moderation/_scans.html:38
 msgid "Warning"
-msgstr ""
+msgstr "Avertissement"
 
 #: templates/moderation/_scans.html:38
 msgid ""
 "started editing this scan <%= btb.englishDateInterval(created, now) %> ago.  "
 "You might hold up a bit so that your changes don't conflict."
-msgstr ""
+msgstr "a commencer à éditer ce scan il y a <%= btb.englishDateInterval(created, now) %>. Merci d'attendre la fin de l'édition pour éviter des conflits de modification."
 
 #: templates/moderation/_scans.html:44
 msgid "Split Scan"
-msgstr ""
+msgstr "Split scan"
 
 #: templates/moderation/_scans.html:45
 #, fuzzy
@@ -2562,23 +1965,23 @@ msgstr "Original (PDF)"
 #: templates/moderation/_scans.html:52
 #, fuzzy
 msgid "Replace scan"
-msgstr "Réponses"
+msgstr "Remplacer le scan"
 
 #: templates/moderation/_scans.html:55
 msgid "Re-parse scan"
-msgstr ""
+msgstr "Re-importer le scan"
 
 #: templates/moderation/_scans.html:58
 msgid "Merge scans"
-msgstr ""
+msgstr "Fusionner les scans"
 
 #: templates/moderation/_scans.html:88
 msgid "Code"
-msgstr ""
+msgstr "Code"
 
 #: templates/moderation/_scans.html:89
 msgid "Scan Code"
-msgstr ""
+msgstr "Code du scan"
 
 #: templates/moderation/_scans.html:95
 #, fuzzy
@@ -2588,138 +1991,138 @@ msgstr "Auteurs"
 #: templates/moderation/_scans.html:111
 #, fuzzy
 msgid "Post"
-msgstr "Publié sur"
+msgstr "Publier"
 
 #: templates/moderation/_scans.html:111
 msgid "Photo"
-msgstr ""
+msgstr "Photo"
 
 #: templates/moderation/_scans.html:114
 msgid "Edit documents"
-msgstr ""
+msgstr "Editer les documents"
 
 #: templates/moderation/base.html:2
 msgid "active"
-msgstr ""
+msgstr "actif"
 
 #: templates/moderation/manage_tasks.html:2
 msgid "Manage tasks"
-msgstr ""
+msgstr "Gérer les tâches"
 
 #: templates/moderation/manage_tasks.html:35
 msgid "Tasks"
-msgstr ""
+msgstr "Tâches"
 
 #: templates/moderation/manage_tasks.html:38
 msgid "Restrict to"
-msgstr ""
+msgstr "Limiter à"
 
 #: templates/moderation/manage_tasks.html:38
 msgid "PENDING"
-msgstr ""
+msgstr "EN ATTENTE"
 
 #: templates/moderation/manage_tasks.html:38
 msgid "SUCCESS"
-msgstr ""
+msgstr "SUCCÈS"
 
 #: templates/moderation/manage_tasks.html:38
 msgid "FAILURE"
-msgstr ""
+msgstr "AYANT UNE ERREUR"
 
 #: templates/moderation/manage_tasks.html:42
 msgid "Link"
-msgstr ""
+msgstr "Lien"
 
 #: templates/moderation/manage_tasks.html:45
 msgid "Result"
-msgstr ""
+msgstr "Résultat"
 
 #: templates/moderation/manage_tasks.html:46
 #: templates/moderation/manage_tasks.html:58
 msgid "Traceback"
-msgstr ""
+msgstr "Traceback"
 
 #: templates/moderation/manage_tasks.html:50
 #, fuzzy
 msgid "waiting page for task"
-msgstr "écrivant pour"
+msgstr "en attente de la page pour la tâche"
 
 #: templates/moderation/manage_tasks.html:50
 msgid "link"
-msgstr ""
+msgstr "lien"
 
 #: templates/moderation/stats.html:7
 #, fuzzy
 msgid "Stats"
-msgstr "Status"
+msgstr "Stats"
 
 #: templates/moderation/stats.html:10
 msgid "Users"
-msgstr ""
+msgstr "Utilisateurs"
 
 #: templates/moderation/stats.html:12
 msgid "Current breakdown"
-msgstr ""
+msgstr "Répartission actuelle"
 
 #: templates/moderation/stats.html:20
 msgid "New users per week"
-msgstr ""
+msgstr "Nouveaux utilisateurs par semaine"
 
 #: templates/moderation/stats.html:30 templates/moderation/stats.html.py:40
 #, fuzzy
 msgid "Posts"
-msgstr "Mes articles"
+msgstr "Articles"
 
 #: templates/moderation/stats.html:32 templates/moderation/stats.html.py:78
 msgid "Totals"
-msgstr ""
+msgstr "Totaux"
 
 #: templates/moderation/stats.html:36
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: templates/moderation/stats.html:45
 #, fuzzy
 msgid "Profiles"
-msgstr "Profile"
+msgstr "Profils"
 
 #: templates/moderation/stats.html:53
 msgid "Timeline (by week)"
-msgstr ""
+msgstr "Ligne de temps (par semaine)"
 
 #: templates/moderation/stats.html:61
 msgid "Impact: Posts"
-msgstr ""
+msgstr "Impact: Articles"
 
 #: templates/moderation/stats.html:68
 msgid "Impact: Pages"
-msgstr ""
+msgstr "Impact: Pages"
 
 #: templates/moderation/stats.html:80
 #, fuzzy
 msgid "Comments published"
-msgstr "Ne peux pas être publié"
+msgstr "Commentaires publiés"
 
 #: templates/moderation/stats.html:82
 msgid "Comments posted per week"
-msgstr ""
+msgstr "Commentaires publiés par semaine"
 
 #: templates/moderation/stats.html:85
 msgid "This graph shows the number of new comments posted per week."
-msgstr ""
+msgstr "Ce graph montre le nombre de nouveaux commentaires postés par semaine."
 
 #: templates/moderation/stats.html:88
 #, fuzzy
 msgid "Commenter Impact"
-msgstr "Commentaire"
+msgstr "Impact des auteurs de commentaires"
 
 #: templates/notification/notice_settings.html:3
 msgid "Notification preferences"
-msgstr ""
+msgstr "Préférences de notification"
 
 #: templates/notification/notice_settings.html:8
 msgid "Communication preferences"
-msgstr ""
+msgstr "Préférences de communication"
 
 #: templates/notification/notice_settings.html:10
 #, fuzzy
@@ -2730,21 +2133,21 @@ msgstr "Adresse email"
 msgid ""
 "You have no email address in your profile, so will receive no email "
 "notifications."
-msgstr ""
+msgstr "Vous n'avez pas d'adresse mail associée à votre profil, vous ne pouvez donc pas recevoir de notification par mail."
 
 #: templates/notification/notice_settings.html:14
 #, fuzzy
 msgid "Add an email address"
-msgstr "Adresse email"
+msgstr "Ajouter une adresse email"
 
 #: templates/notification/notice_settings.html:16
 msgid "Send email notifications for:"
-msgstr ""
+msgstr "Envoyer les notification mail pour :"
 
 #: templates/notification/notice_settings.html:29
 #: templates/notification/notice_settings.html:64
 msgid "Save preferences"
-msgstr ""
+msgstr "Enregistrer les préférences"
 
 #: templates/notification/notice_settings.html:31
 #, python-format
@@ -2754,22 +2157,22 @@ msgid ""
 "<b><a href='mailto:%(from_email)s'>%(from_email)s</a></b> to your address "
 "book.\n"
 "\t  "
-msgstr ""
+msgstr "Pour limiter le risque que nous mails finisent dans votre dossier Spam, merci d'ajouter <b><a href='mailto:%(from_email)s'>%(from_email)s</a></b> à votre carnet d'adresses."
 
 #: templates/notification/notice_settings.html:36
 #, fuzzy
 msgid "Subscriptions"
-msgstr "Retranscription"
+msgstr "Abonnements"
 
 #: templates/notification/notice_settings.html:37
 msgid ""
 "Notifications appear on the site, and according to the preferences above."
-msgstr ""
+msgstr "Les  notifications apparaissent sur le site, selon les préférences ci-dessus."
 
 #: templates/notification/notice_settings.html:47
 #, fuzzy
 msgid "Replies to"
-msgstr "Réponses"
+msgstr "Réponses à"
 
 #: templates/notification/notice_settings.html:59
 #: templates/subscriptions/subscribe_to.html:12
@@ -2779,66 +2182,66 @@ msgstr "Auteurs"
 
 #: templates/notification/notice_settings.html:67
 msgid "You have no subscriptions."
-msgstr ""
+msgstr "Vous n'avez aucun abonnement."
 
 #: templates/notification/notices.html:4
 #: templates/notification/notices.html:11
 msgid "Notifications"
-msgstr ""
+msgstr "Notifications"
 
 #: templates/notification/notices.html:10
 msgid "Subscriptions and communication preferences"
-msgstr ""
+msgstr "Préfénces d'abonnement et de communication"
 
 #: templates/notification/notices.html:13
 msgid "Mark all as read"
-msgstr ""
+msgstr "Marquer comme lus"
 
 #: templates/notification/notices.html:17
 msgid "Message"
-msgstr ""
+msgstr "Message"
 
 #: templates/notification/notices.html:36
 msgid "Delete all messages"
-msgstr ""
+msgstr "Supprimer tous les messages"
 
 #: templates/notification/notices.html:39
 msgid "No notifications."
-msgstr ""
+msgstr "Pas de notification"
 
 #: templates/notification/new_post/notice.html:1
 #: templates/notification/new_reply/notice.html:1
 msgid "from"
-msgstr ""
+msgstr "de"
 
 #: templates/notification/new_reply/notice.html:1
 #, fuzzy
 msgid "to a post you're following"
-msgstr "nouvelle réponse à un article que vous suivez"
+msgstr "à un article que vous suivez"
 
 #: templates/profiles/confirm_delete_scan.html:2
 #: templates/profiles/profile_edit.html:37
 msgid "Remove scan"
-msgstr ""
+msgstr "Supprimer scan"
 
 #: templates/profiles/confirm_delete_scan.html:4
 msgid "Are you sure you want to remove your profile scan?"
-msgstr ""
+msgstr "Êtes vous sûr de vouloir supprimer le scan de votre profil ?"
 
 #: templates/profiles/confirm_delete_scan.html:6
 #, fuzzy
 msgid "Delete"
-msgstr "Supprimer l'article"
+msgstr "Supprimer"
 
 #: templates/profiles/confirm_delete_self.html:2
 #: templates/profiles/profile_edit.html:48
 #, fuzzy
 msgid "Delete account"
-msgstr "Supprimer l'article"
+msgstr "Supprimer le compte"
 
 #: templates/profiles/confirm_delete_self.html:4
 msgid "Delete account permanently?"
-msgstr ""
+msgstr "Supprimer le compte de manière permantente ?"
 
 #: templates/profiles/confirm_delete_self.html:6
 msgid ""
@@ -2847,12 +2250,12 @@ msgid ""
 "will\n"
 "no longer be able to log in and all information about your profile will be\n"
 "removed.\n"
-msgstr ""
+msgstr "Êtes vous sûr de vouloir supprimer ce compte ? Cette opération est irreversible. Vous ne pourrez plus vous authentifier et toutes les informations de votre profil seront supprimées."
 
 #: templates/profiles/confirm_delete_self.html:19
 #, fuzzy
 msgid "Delete comments"
-msgstr "Commentaires récents"
+msgstr "Supprimer les commentaires"
 
 #: templates/profiles/confirm_delete_self.html:22
 msgid ""
@@ -2867,7 +2270,7 @@ msgid ""
 "effort\n"
 "        to remove your information.\n"
 "\t"
-msgstr ""
+msgstr "Note: une fois que quelquechose a été publié sur Internet, il est presque impossible de les supprimer complètement. Les moteurs de recherche et autre sites peuvent conserver des copies de vos commentaires, et ceux-ci ont été imprimés et envoyés par la poste aux auteurs des articles commentés. Nous pouvons néansmoins supprimer ces informations."
 
 #: templates/profiles/confirm_delete_self.html:31
 msgid ""
@@ -2876,24 +2279,24 @@ msgid ""
 "        comments if you don't delete them now.  Either way, your profile\n"
 "        information will no longer be associated with the comments.\n"
 "\t"
-msgstr ""
+msgstr "Une fois que votre compte sera supprimé, il ne sera plus possible de supprimer vos commentaires si vous ne les supprimez pas maintenant. Dans tous les cas, votre profil ne sera plus associé à ces commentaires."
 
 #: templates/profiles/confirm_delete_self.html:38
 msgid ""
 "\n"
 "        If you have any questions or concerns about this, please contact\n"
-"        <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</"
+"        <a href='{{ site_email }}'>{{ site_email }}</"
 "a>.\n"
 "\t"
-msgstr ""
+msgstr "Si vous avez des question ou des remarques à ce sujet, merci de prendre contact avec nous <a href='mailto:{{ site_email }}>{{ site_email }}</a>. "
 
 #: templates/profiles/confirm_delete_self.html:45
 msgid "Delete account permanently"
-msgstr ""
+msgstr "Supprimer le compte définitivement"
 
 #: templates/profiles/groups_list.html:15
 msgid "Partners"
-msgstr ""
+msgstr "Partenaires"
 
 #: templates/profiles/groups_list.html:31
 #, python-format
@@ -2901,7 +2304,7 @@ msgid ""
 "\n"
 "\t\t  %(site.name)s partners program\n"
 "\t\t"
-msgstr ""
+msgstr "Programme de partenariat de %(site.name)s "
 
 #: templates/profiles/groups_list.html:36
 #, python-format
@@ -2915,6 +2318,12 @@ msgid ""
 "\t\trepresenting.\n"
 "\t\t"
 msgstr ""
+"Vous connaissez une personne en détention qui souhaiterais tenir un\n"
+"blog ? %(site.name)s grandi par le support de bénévoles souhaitant\n"
+"permettre aux detenus d'écrire sur un blog. Pour aider l'initiative et\n"
+"participer en tant que partenaire, il vous suffit d'avoir accès à un\n"
+"scanner pour pouvoir scanner les lettres que vous recevez et de\n"
+"vous engager auprès des personnes que vous assistez."
 
 #: templates/profiles/groups_list.html:47
 #, python-format
@@ -2924,7 +2333,7 @@ msgid ""
 "\t\tup a partner page to draw traffic and attention to your writers,\n"
 "\t\tand represent your organization and its mission.\n"
 "\t\t"
-msgstr ""
+msgstr "Pour les organisation assistants plusieurs auteurs, %(site.name) peut mettre en place une page spécifique à cette organisation permettant ainsi de mettre en valeur ces auteurs ainsi que l'organisation en elle même."
 
 #: templates/profiles/groups_list.html:55
 msgid ""
@@ -2932,9 +2341,9 @@ msgid ""
 "\t\tIf you are an individual or organization that is interested in\n"
 "\t\tmaking a commitment to help people in prison express themselves,\n"
 "\t\tplease contact us at <a\n"
-"\t\thref='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.\n"
+"\t\thref='mailto:{{ site_email }}'>{{ site_email }}</a>.\n"
 "\t\t"
-msgstr ""
+msgstr "Si vous êtes un individu ou faites parti d'une organisation souhaitant vous engager en faveur de la liberté d'expression des personnes incarcérées, merci de prendre contact avec nous par mail : <a href='mailto:{{ site_email }}>{{ site_email }}</a>."
 
 #: templates/profiles/groups_list.html:68
 #, python-format
@@ -2943,7 +2352,7 @@ msgid ""
 "\t\t      Independent writers, supported by volunteers and staff for "
 "%(site.name)s:\n"
 "\t\t      "
-msgstr ""
+msgstr "Auteurs indépendents, assistés par des bénévoles pour %{site.name}s:"
 
 #: templates/profiles/groups_list.html:79
 #, python-format
@@ -2960,7 +2369,7 @@ msgid ""
 "\n"
 "\t\t      All <em>%(chosen_org.name)s</em> posts\n"
 "\t\t      "
-msgstr ""
+msgstr "Tous les articles de <em>%(chosen_org.name)s</em>"
 
 #: templates/profiles/profile_detail.html:6
 #: templates/profiles/profile_detail.html:12
@@ -2983,12 +2392,12 @@ msgid ""
 "\n"
 "\t      Read more from %(profile)s's blog\n"
 "\t      "
-msgstr ""
+msgstr "D'autres articles sur le blog de %(profile)s's"
 
 #: templates/profiles/profile_detail.html:86
 #, fuzzy
 msgid "No comments"
-msgstr "Plus de commentaires"
+msgstr "Pas de commentaires"
 
 #: templates/profiles/profile_detail.html:89
 #, fuzzy
@@ -2998,7 +2407,7 @@ msgstr "Retranscription"
 #: templates/profiles/profile_detail.html:94
 #, fuzzy
 msgid "No transcriptions"
-msgstr "Ajouter une transcription"
+msgstr "Pas de transcription"
 
 #: templates/profiles/profile_edit.html:6
 #, python-format
@@ -3249,7 +2658,7 @@ msgstr ""
 
 #: templates/scanning/delete.html:7
 msgid "Delete (no undo)"
-msgstr ""
+msgstr "Supprimer (irreversible)"
 
 #: templates/scanning/delete.html:11
 msgid "pages"
