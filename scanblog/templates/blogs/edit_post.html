@@ -19,11 +19,13 @@
 </h1>
 {% if post.scan_id %}
     <p>
-	{% trans "Sorry: we're still working on the feature to allow you to edit scans
+	{% blocktrans %}
+	Sorry: we're still working on the feature to allow you to edit scans
 	that were uploaded while you were incarcerated.  We're not ready yet!
 	In the mean time, don't hesitate to write us at
-	<a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>
-	and we an make any changes to the posts if you'd like." %}
+	<a href='mailto:{{ site_email }}'>{{ site_email }}</a>
+	and we an make any changes to the posts if you'd like.
+	{% endblocktrans %}
     </p>
     <p>
 	{% trans "If you'd like to remove the post, click &ldquo;Delete post&ldquo; below." %}

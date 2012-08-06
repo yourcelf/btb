@@ -119,7 +119,7 @@
                 {% block footer %}
                 <div class="legal">
                     <ul>
-                        <li><a href='mailto:info@betweenthebars.org'>{% trans "Contact us" %}</a></li>
+                        <li><a href='mailto:{{ site.email }}'>{% trans "Contact us" %}</a></li>
                         <li><a href='{% url about.copyright %}'>{% trans "Copyrights" %}</a></li>
                         <li><a href='{% url about.terms %}'>{% trans "Terms of Use" %}</a></li>
                         <li><a href='{% url about.privacy %}'>{% trans "Privacy Policy" %}</a></li>
