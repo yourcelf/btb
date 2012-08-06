@@ -1,6 +1,7 @@
 import json
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render, redirect
@@ -67,6 +68,7 @@ def list_orgs(request, org_slug):
         'orgs': list(Organization.objects.public()),
         'chosen_org': org,
         'profiles': profiles,
+        'site_email': settings.DEFAULT_FROM_EMAIL,
     })
 
 
@@ -85,7 +87,8 @@ def delete(request, user_id):
     to_delete = User.objects.get(id=user_id)
 
     if request.method != 'POST':
-        return render(request, "profiles/confirm_delete_self.html")
+        return render(request, "profiles/confirm_delete_self.html",
+                      {'site_email' : settings.DEFAULT_FROM_EMAIL})
     # POST
     delete_comments = request.POST.get('delete_comments', False)
     if delete_comments:
