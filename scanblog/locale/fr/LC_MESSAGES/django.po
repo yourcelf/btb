@@ -1431,7 +1431,7 @@ msgid ""
 "\t    We will print and mail your reply by <span class='comment-maildate'></"
 "span>.\n"
 "\t    "
-msgstr "\n        Nous imprimerons et enverrons par la poste votre commentaire le <span class='comment-maildate'></span> au plus tard.\n"
+msgstr "\n        Nous imprimerons et enverrons par la poste votre commentaire le <span class='comment-maildate'></span> au plus tard.\n "
 
 #: templates/comments/_comment_form.html:10
 #, fuzzy
@@ -1456,10 +1456,10 @@ msgstr "Êtes-vous sûr de vouloir supprimer cette réponse ? Cette opération e
 #, python-format
 msgid ""
 "\n"
-"  Please consider our <a href='%(guidelines_url)s'>guidelines</a> while "
+"  Please consider our <a href='{{ guidelines_url }}'>guidelines</a> while "
 "writing.\n"
 "  "
-msgstr "Merci de penser aux <a href='%(guidelines_urls)s'>conditions d'utilisation</a> lorsque vous écrivez."
+msgstr "\nMerci de penser aux <a href='{{ guidelines_url }}'>conditions d'utilisation</a> lorsque vous écrivez."
 
 #: templates/comments/edit_comment.html:17
 #, fuzzy
@@ -1707,7 +1707,7 @@ msgid ""
 "    Generates \"waitlist\" postcards for all consent requests that haven't "
 "received them.\n"
 "    "
-msgstr "Génerer les carte postales \"liste d'attente\" pour tous les utilisateurs ayant signé l'accord et qui n'ont pas recu cette correspondance."
+msgstr "\nGénerer les carte postales \"liste d'attente\" pour tous les utilisateurs ayant signé l'accord et qui n'ont pas recu cette correspondance."
 
 #: templates/correspondence/pending.html:25
 msgid "Collated mailings:"
@@ -1730,7 +1730,7 @@ msgid ""
 "\n"
 "\t\tInclude \"signup complete\" letters?\n"
 "\t\t"
-msgstr "Inclure la lettre d'inscriptin complétée ?"
+msgstr "\nInclure la lettre d'inscriptin complétée ?"
 
 #: templates/correspondence/pending.html:56
 msgid "Include first posts?"
@@ -1764,7 +1764,7 @@ msgid ""
 "\n"
 "      Recent comments left for %(recipient_profile)s\n"
 "      "
-msgstr "Commentaires récents postés pour %(recipient_profile)s"
+msgstr "\nCommentaires récents postés pour %(recipient_profile)s"
 
 #: templates/correspondence/show_commentmailing.html:19
 msgid "Excerpt"
@@ -1787,7 +1787,7 @@ msgid ""
 "\t\t      reply ID at a time &ndash; to reply to more than\n"
 "\t\t      one set of comments, use a separate page.\n"
 "\t\t      "
-msgstr "Pour répondre à ces commentaires, merci de noter l'identifiant de réponse en haut de la page. Ceci nous permet de prévenir la personne ayant écrit le commentaire de votre réponse. Merci de noter un seul identifiant à la fois et d'utiliser des pages séparées pour chaque réponse."
+msgstr "\nPour répondre à ces commentaires, merci de noter l'identifiant de réponse en haut de la page. Ceci nous permet de prévenir la personne ayant écrit le commentaire de votre réponse. Merci de noter un seul identifiant à la fois et d'utiliser des pages séparées pour chaque réponse."
 
 #: templates/feeds/_all.html:1
 #, fuzzy
@@ -1844,7 +1844,7 @@ msgid ""
 "\n"
 "\t\tAll <em>%(site_name)s</em> posts:\n"
 "\t\t"
-msgstr "Tous les articles de <em>%(site_name)s</em> :"
+msgstr "\nTous les articles de <em>%(site_name)s</em> :"
 
 #: templates/feeds/_tag.html:1
 #, fuzzy
@@ -2157,7 +2157,7 @@ msgid ""
 "<b><a href='mailto:%(from_email)s'>%(from_email)s</a></b> to your address "
 "book.\n"
 "\t  "
-msgstr "Pour limiter le risque que nous mails finisent dans votre dossier Spam, merci d'ajouter <b><a href='mailto:%(from_email)s'>%(from_email)s</a></b> à votre carnet d'adresses."
+msgstr "\nPour limiter le risque que nous mails finisent dans votre dossier Spam, merci d'ajouter <b><a href='mailto:%(from_email)s'>%(from_email)s</a></b> à votre carnet d'adresses."
 
 #: templates/notification/notice_settings.html:36
 #, fuzzy
@@ -2250,7 +2250,7 @@ msgid ""
 "will\n"
 "no longer be able to log in and all information about your profile will be\n"
 "removed.\n"
-msgstr "Êtes vous sûr de vouloir supprimer ce compte ? Cette opération est irreversible. Vous ne pourrez plus vous authentifier et toutes les informations de votre profil seront supprimées."
+msgstr "\nÊtes vous sûr de vouloir supprimer ce compte ? Cette opération est irreversible. Vous ne pourrez plus vous authentifier et toutes les informations de votre profil seront supprimées.\n"
 
 #: templates/profiles/confirm_delete_self.html:19
 #, fuzzy
@@ -2270,7 +2270,7 @@ msgid ""
 "effort\n"
 "        to remove your information.\n"
 "\t"
-msgstr "Note: une fois que quelquechose a été publié sur Internet, il est presque impossible de les supprimer complètement. Les moteurs de recherche et autre sites peuvent conserver des copies de vos commentaires, et ceux-ci ont été imprimés et envoyés par la poste aux auteurs des articles commentés. Nous pouvons néansmoins supprimer ces informations."
+msgstr "\nNote: une fois que quelquechose a été publié sur Internet, il est presque impossible de les supprimer complètement. Les moteurs de recherche et autre sites peuvent conserver des copies de vos commentaires, et ceux-ci ont été imprimés et envoyés par la poste aux auteurs des articles commentés. Nous pouvons néansmoins supprimer ces informations."
 
 #: templates/profiles/confirm_delete_self.html:31
 msgid ""
@@ -2279,7 +2279,7 @@ msgid ""
 "        comments if you don't delete them now.  Either way, your profile\n"
 "        information will no longer be associated with the comments.\n"
 "\t"
-msgstr "Une fois que votre compte sera supprimé, il ne sera plus possible de supprimer vos commentaires si vous ne les supprimez pas maintenant. Dans tous les cas, votre profil ne sera plus associé à ces commentaires."
+msgstr "\nUne fois que votre compte sera supprimé, il ne sera plus possible de supprimer vos commentaires si vous ne les supprimez pas maintenant. Dans tous les cas, votre profil ne sera plus associé à ces commentaires."
 
 #: templates/profiles/confirm_delete_self.html:38
 msgid ""
@@ -2288,7 +2288,7 @@ msgid ""
 "        <a href='{{ site_email }}'>{{ site_email }}</"
 "a>.\n"
 "\t"
-msgstr "Si vous avez des question ou des remarques à ce sujet, merci de prendre contact avec nous <a href='mailto:{{ site_email }}>{{ site_email }}</a>. "
+msgstr "\nSi vous avez des question ou des remarques à ce sujet, merci de prendre contact avec nous <a href='mailto:{{ site_email }}>{{ site_email }}</a>. "
 
 #: templates/profiles/confirm_delete_self.html:45
 msgid "Delete account permanently"
@@ -2304,7 +2304,7 @@ msgid ""
 "\n"
 "\t\t  %(site.name)s partners program\n"
 "\t\t"
-msgstr "Programme de partenariat de %(site.name)s "
+msgstr "\nProgramme de partenariat de %(site.name)s "
 
 #: templates/profiles/groups_list.html:36
 #, python-format
@@ -2318,7 +2318,7 @@ msgid ""
 "\t\trepresenting.\n"
 "\t\t"
 msgstr ""
-"Vous connaissez une personne en détention qui souhaiterais tenir un\n"
+"\nVous connaissez une personne en détention qui souhaiterais tenir un\n"
 "blog ? %(site.name)s grandi par le support de bénévoles souhaitant\n"
 "permettre aux detenus d'écrire sur un blog. Pour aider l'initiative et\n"
 "participer en tant que partenaire, il vous suffit d'avoir accès à un\n"
@@ -2326,14 +2326,14 @@ msgstr ""
 "vous engager auprès des personnes que vous assistez."
 
 #: templates/profiles/groups_list.html:47
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "\t\tFor organizations with multiple writers, %(site.name)s can set\n"
 "\t\tup a partner page to draw traffic and attention to your writers,\n"
 "\t\tand represent your organization and its mission.\n"
 "\t\t"
-msgstr "Pour les organisation assistants plusieurs auteurs, %(site.name) peut mettre en place une page spécifique à cette organisation permettant ainsi de mettre en valeur ces auteurs ainsi que l'organisation en elle même."
+msgstr "\nPour les organisation assistants plusieurs auteurs, %(site.name) peut mettre en place une page spécifique à cette organisation permettant ainsi de mettre en valeur ces auteurs ainsi que l'organisation en elle même."
 
 #: templates/profiles/groups_list.html:55
 msgid ""
@@ -2343,16 +2343,16 @@ msgid ""
 "\t\tplease contact us at <a\n"
 "\t\thref='mailto:{{ site_email }}'>{{ site_email }}</a>.\n"
 "\t\t"
-msgstr "Si vous êtes un individu ou faites parti d'une organisation souhaitant vous engager en faveur de la liberté d'expression des personnes incarcérées, merci de prendre contact avec nous par mail : <a href='mailto:{{ site_email }}>{{ site_email }}</a>."
+msgstr "\nSi vous êtes un individu ou faites parti d'une organisation souhaitant vous engager en faveur de la liberté d'expression des personnes incarcérées, merci de prendre contact avec nous par mail : <a href='mailto:{{ site_email }}>{{ site_email }}</a>."
 
 #: templates/profiles/groups_list.html:68
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "\t\t      Independent writers, supported by volunteers and staff for "
 "%(site.name)s:\n"
 "\t\t      "
-msgstr "Auteurs indépendents, assistés par des bénévoles pour %{site.name}s:"
+msgstr "\nAuteurs indépendents, assistés par des bénévoles pour %{site.name}s:"
 
 #: templates/profiles/groups_list.html:79
 #, python-format
@@ -2369,7 +2369,7 @@ msgid ""
 "\n"
 "\t\t      All <em>%(chosen_org.name)s</em> posts\n"
 "\t\t      "
-msgstr "Tous les articles de <em>%(chosen_org.name)s</em>"
+msgstr "\nTous les articles de <em>%(chosen_org.name)s</em>"
 
 #: templates/profiles/profile_detail.html:6
 #: templates/profiles/profile_detail.html:12
@@ -2392,7 +2392,7 @@ msgid ""
 "\n"
 "\t      Read more from %(profile)s's blog\n"
 "\t      "
-msgstr "D'autres articles sur le blog de %(profile)s's"
+msgstr "\nD'autres articles sur le blog de %(profile)s's"
 
 #: templates/profiles/profile_detail.html:86
 #, fuzzy
