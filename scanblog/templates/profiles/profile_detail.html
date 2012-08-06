@@ -71,9 +71,10 @@
 	<p>
 	    <a class='read-more' href='{{profile.get_blog_url}}'>
 	      {% blocktrans %}
-	      Read more from {{ profile }}'s blog{% if profile.blog_name %}: 
-	      {{ profile.blog_name }}{% endif %} &raquo;
+	      Read more from {{ profile }}'s blog
 	      {% endblocktrans %}
+	      {% if profile.blog_name %}: 
+	      {{ profile.blog_name }}{% endif %} &raquo;
 	    </a>
 	</p>
     {% else %}{% if not profile.managed %}
