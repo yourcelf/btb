@@ -12,17 +12,21 @@
         <h3>{% trans "Current breakdown" %}</h3>
         <div class='treemap' id='usersTreemap' style='width: 100%; height: 240px;'></div>
         <div class='about'>
-            {% trans "A treemap showing various user statuses, with the number of users
+            {% blocktrans %}
+	    A treemap showing various user statuses, with the number of users
             in each group in parentheses. Click to zoom in, right-click to zoom
-            out." %}
+            out. 
+	    {% endblocktrans %}
         </div>
 
         <h3>{% trans "New users per week" %}</h3>
         <div class='stackedarea' id='usersStackedArea'></div>
         <div class='about'>
-            {% trans "The number of new users that are added per week.  Spikes in comment
+            {% blocktrans %}
+            The number of new users that are added per week.  Spikes in comment
             count probably indicate spam bot signups.  We have been inviting and
-            enrolling fewer writers since June when we reached capacity." %}
+            enrolling fewer writers since June when we reached capacity.
+            {% endblocktrans %}
         </div>
     </div>
 
@@ -53,23 +57,29 @@
         <h3>{% trans "Timeline (by week)" %}</h3>
         <div class='stackedarea' id='postsStackedArea'></div>
         <div class='about'>
-            {% trans "The timeline shows the number of requests, posts, and profiles
+            {% blocktrans %}
+            The timeline shows the number of requests, posts, and profiles
             received in total per week.  We only started tracking requests on Oct
-            1."%}
+            1.
+            {% endblocktrans %}
         </div>
 
         <h3>{% trans "Impact: Posts" %}</h3>
         <div class='impact' id='postsImpact'></div>
         <div class='about'>
-            {% trans "This graph shows the number of posts ordered by author, to
-            demonstrate the portion of all posts that top contributors make." %}
+            {% blocktrans %}
+            This graph shows the number of posts ordered by author, to
+            demonstrate the portion of all posts that top contributors make.
+            {% endblocktrans %}
         </div>
 
         <h3>{% trans "Impact: Pages" %}</h3>
         <div class='impact' id='pagesImpact'></div>
         <div class='about'>
-            {% trans "This graph shows the contribution by page count.  Some authors
-            post a lot of pages, where others send short form pieces." %}
+            {% blocktrans %}
+            This graph shows the contribution by page count.  Some authors
+            post a lot of pages, where others send short form pieces.
+            {% endblocktrans %}
         </div>
     </div>
 
@@ -88,8 +98,10 @@
         <h3>{% trans "Commenter Impact" %}</h3>
         <div class='impact' id='commenterImpact'></div>
         <div class='about'>
-            {% trans "This graph shows the number of comments posted by particular users.
-            Around 1/4 of the comments posted are from the top 5 contributors." %}
+            {% blocktrans %}
+            This graph shows the number of comments posted by particular users.
+            Around 1/4 of the comments posted are from the top 5 contributors.
+            {% endblocktrans %}
         </div>
     </div>
 
@@ -98,17 +110,21 @@
         <h3>Sent per week</h3>
         <div class='stackedarea' id='lettersStackedArea'></div>
         <div class='about'>
+            {% blocktrans %}
             This shows the breakdown of letters that we send per week.  Over
             the summer of 2011, we had a spike in signup requests (and hence
             waitlist notifications) due to being advertised in a prison
             newsletter.
+            {% endblocktrans %}
         </div>
 
         <h3>Impact</h3>
         <div class='impact' id='lettersImpact'></div>
         <div class='about'>
+            {% blocktrans %}
             This shows the breakdown of recipients of letters we send, showing
             which users receive the largest portion of mail.
+            {% endblocktrans %}
         </div>
     </div>
 
