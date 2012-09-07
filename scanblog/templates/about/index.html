@@ -55,20 +55,22 @@
     and help to reduce recidivism.
       {% endblocktrans %}
     </p>
-
+    
+    {% url registration_register as url_registration_register %}
+    {% url auth_login as url_auth_login %}
     <h2>{% trans "Leave comments" %}</h2>
     <p>
-      {% blocktrans with url_registration_register=url registration_register url_auth_login=url auth_login %}
+      {% blocktrans %}
 	Registered users can comment on blog posts.  We periodically mail
 	comment feeds back to the authors so they can hear from their fans and
 	continue the discussion.
-	<a href="{{ url_registration_register }}">Sign up</a> and
-	<a href="{{ url_auth_login }}">log in</a> today!
+        <a href="{{ url_registration_register }}">Sign up</a> and
+        <a href="{{ url_auth_login }}">log in</a> today!
       {% endblocktrans %}
     </p>
     <h2>{% trans "Transcribe posts" %}</h2>
     <p>
-      {% blocktrans with url_registration_register=url registration_register url_auth_login=url auth_login %}
+      {% blocktrans %}
 	{{ site.name }} relies on visitors to transcribe its bloggers' posts.
 	You can help us out by
 	<a href="{{ url_registration_register }}">signing up</a> and

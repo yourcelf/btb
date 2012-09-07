@@ -1,16 +1,16 @@
-%{ trans "Hello" %},
+{% trans "Hello" %},
 
-%{ trans "Welcome to {{ site.name }}!  You've just joined a community of respectful
+{% trans "Welcome to {{ site.name }}!  You've just joined a community of respectful
 people who value helping to give a voice to the voiceless." %}
 
-%{ trans "To complete your registration, follow this link:" %}
+{% trans "To complete your registration, follow this link:" %}
 {{ base_url }}/accounts/activate/{{ activation_key }}/
 
-%{ trans "This link will expire in {{ expiration_days }} days, so don't delay." %}
+{% trans "This link will expire in {{ expiration_days }} days, so don't delay." %}
 
-%{ trans "See you on {{ site.name }}! "%}
+{% trans "See you on {{ site.name }}! "%}
 
-%{ trans "Sincerely" %},
+{% trans "Sincerely" %},
 
-%{ trans "{{ site.name }} staff" %}
+{% trans "{{ site.name }} staff" %}
 {{ base_url }}

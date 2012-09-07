@@ -1,7 +1,7 @@
 {% extends "blogs/base.html" %}
 {% load humanize %}
 
-{% block title %}{% trans "My posts" }%{% endblock %}
+{% block title %}{% trans "My posts" %}{% endblock %}
 
 {% block body %}
     <a href='{% url blogs.edit_post %}'>&#9997; {% trans "Compose new post" %}</a>

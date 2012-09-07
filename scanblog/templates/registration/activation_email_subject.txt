@@ -1,2 +1,2 @@
 {% load i18n %}
-{{ site.name }} %{ trans "Registration Confirmation" %}
+{{ site.name }} {% trans "Registration Confirmation" %}

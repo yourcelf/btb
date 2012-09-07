@@ -1,11 +1,14 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 
 {% block title %}{% trans "Leave a note" %}{% endblock %}
 
 {% block body %}
 <p>
-{% trans "Thanks for updating the transcription.  Would you like to leave a note for
-the author so they know you've done the work?" %}
+{% blocktrans %}
+Thanks for updating the transcription.  Would you like to leave a note for
+the author so they know you've done the work?
+{% endblocktrans %}
 </p>
 
 <p>

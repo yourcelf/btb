@@ -1,3 +1,4 @@
+{% load i18n %}
 	<div class='comment'>
 	    <a name='c{{ comment.id }}'></a>
 	    <div class='commentbyline'>
@@ -14,15 +15,15 @@
 			</td>
 			<td>
 			    <span class='comment-date'>
-			      {% blocktrans with created_since=comment.created|timesince }
-			      Posted {{ created_since }} ago.
+			      {% blocktrans %}
+			      Posted {{ comment.created|timesince }} ago.
 			      {% endblocktrans %}
 			    </span>
 			    {% if comment.letter_sent %}
 				<span class='comment-date-mailed'>
 				    &check;
-				    {% blocktrans with mailed_since=comment.letter_sent|timesince }
-				    Mailed {{ mailed_since }} ago
+				    {% blocktrans %}
+				    Mailed {{ comment.letter_sent|timesince }} ago
 				    {% endblocktrans %}
 				</span>
 			    {% endif %}

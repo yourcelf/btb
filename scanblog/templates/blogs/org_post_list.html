@@ -1,4 +1,5 @@
 {% extends "blogs/base_post_list.html" %}
+{% load i18n %}
 {% block title %}{% trans "Recent posts from authors in" %} {{ org.name }}{% endblock %}
 {% block heading %}
 <h1>{% trans "Recent posts from authors in" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em></h1>

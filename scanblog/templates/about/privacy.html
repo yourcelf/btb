@@ -1,4 +1,5 @@
 {% extends "about/legal_base.html" %}
+{% load i18n %}
 {% block title %}Privacy Policy{% endblock %}
 {% block body %}
 
@@ -16,8 +17,8 @@
     THE TERMS OF THE BTB PRIVACY POLICY, DO NOT USE THIS WEBSITE.
     {% endblocktrans %}
 </b></p>
-
-      {% blocktrans with url_home=url home %}
+{% url home as url_home %}
+      {% blocktrans %}
 <p>
 The following discloses the information gathering and dissemination
 practices for the Between the Bars (“BtB”) website available at
