@@ -1308,7 +1308,7 @@ msgstr "Guide de la communauté"
 
 #: templates/comments/_comment_form.html:21
 msgid "Send Reply &raquo;"
-msgstr "Envoyé une réponse &raquo;"
+msgstr "Envoyer une réponse &raquo;"
 
 #: templates/comments/delete_comment.html:4
 #: templates/comments/delete_comment.html:10
