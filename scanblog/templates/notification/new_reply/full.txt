@@ -1,3 +1,4 @@
+{% load i18n %}
 {{ comment.user.profile }} {% trans "has replied to" %} "{{ comment.document.get_title }}" {% trans "by" %} {{ comment.document.author.profile }}, {% trans "which you are following" %}.
 
 {% trans "View the reply online" %}:
