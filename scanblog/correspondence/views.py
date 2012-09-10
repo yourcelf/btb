@@ -19,7 +19,7 @@ from comments.models import Comment
 from correspondence.models import Letter, Mailing
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
-from scanning.models import Scan
+from scanning.models import Scan, Document
 from btb.utils import args_method_decorator, JSONView
 
 class Letters(JSONView):
@@ -86,7 +86,9 @@ class Letters(JSONView):
             letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
             return self.json_response(letter.to_dict())
 
-        letters = Letter.objects.mail_filter(request.user).extra(
+        letters = Letter.objects.mail_filter(request.user).filter(
+                recipient__profile__lost_contact=False
+             ).extra(
                 select={
                     'date_order': 
                         'COALESCE("{0}"."sent", "{0}"."created")'.format(
@@ -95,7 +97,7 @@ class Letters(JSONView):
 
                 },
                 order_by=('-date_order',)
-        ).distinct()
+            ).distinct()
         if "sent" in request.GET:
             letters = letters.filter(sent__isnull=False)
         if "unsent" in request.GET:
@@ -187,9 +189,8 @@ def date_to_str(date_or_str):
 
 class CorrespondenceList(JSONView):
     """
-    This slightly ugly one combines scans and correspondence into a single
-    response.  This is to facilitate a threaded view of the conversation with a
-    particular user.
+    This one combines scans and correspondence into a single response.  This is
+    to facilitate a threaded view of the conversation with a particular user.
     """
     @args_method_decorator(permission_required, "correspondence.manage_correspondence")
     def get(self, request, user_id=None):
@@ -200,59 +201,39 @@ class CorrespondenceList(JSONView):
         if user_id:
             scans = scans.filter(author__id=user_id)
             letters = letters.filter(recipient__id=user_id)
-        scans_count = scans.count()
-        letters_count = letters.count()
 
-        # Paginate over scans only, not letters.  Get a ragged number of
-        # entries depending ono the number of letters out.  Grab one more than
-        # the number of scans per page to catch letters falling in the boundary
-        # between pages of scans.  We have to paginate manually because of this --
-        # the built-in paginator won't grab one more than the page length.
+        # Just grab all at once.  Number of letters/scans doesn't get so high
+        # as to make it worth lazy fetching.
+        all_correspondence = list(scans) + list(letters)
+        all_correspondence.sort(
+                key=lambda a: a.sent if hasattr(a, "sent") and a.sent else a.created,
+                reverse=True)
+
         per_page = int(request.GET.get('per_page', 12))
         page_num = int(request.GET.get('page', 1))
-        total_pages = int(scans_count / per_page) + 1
-        if per_page * (page_num - 1) > scans_count or page_num < 1:
+        total_pages = int(len(all_correspondence) / per_page) + 1
+
+        if per_page * (page_num - 1) > len(all_correspondence) or page_num < 1:
             page_num = 1
-        # One extra to catch boundary letters...
-        scans = list(scans[per_page * (page_num - 1) : (per_page * page_num) + 1])
 
-        order_date = '''COALESCE("{0}"."sent", "{0}"."created")'''.format(
-                Letter._meta.db_table
-        )
-        extra_kwargs = {
-            'select': {'order_date': order_date},
-            'order_by': ['-order_date'],
-            'where': [],
-            'params': [],
-        }
-        if page_num > 1:
-            extra_kwargs['where'].append(order_date + " <= %s")
-            extra_kwargs['params'].append(scans[0].created)
-        if page_num < total_pages:
-            end_scan = scans.pop(-1)
-            extra_kwargs['where'].append(order_date + " >= %s")
-            extra_kwargs['params'].append(end_scan.created)
-        letters = list(letters.extra(**extra_kwargs))
-
-        correspondence = []
-        for obj in scans:
+        sliced = all_correspondence[(page_num-1)*per_page : page_num*per_page]
+        results = []
+        for obj in sliced:
             as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.created)
-            correspondence.append({'scan': as_dict})
-        for obj in letters:
-            as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.order_date)
-            correspondence.append({'letter': as_dict})
-        correspondence.sort(key=lambda o: o.values()[0]['order_date'], reverse=True)
-
+            if isinstance(obj, Scan):
+                as_dict['order_date'] = obj.created.isoformat()
+                results.append({'scan': as_dict})
+            else:
+                as_dict['order_date'] = (obj.sent or obj.created).isoformat()
+                results.append({'letter': as_dict})
         return self.json_response({
             'pagination': {
-                'count': scans_count + letters_count,
+                'count': len(all_correspondence),
                 'page': page_num,
                 'pages': total_pages,
                 'per_page': per_page,
             },
-            'results': correspondence
+            'results': results
         })
 
 class Mailings(JSONView):
@@ -311,6 +292,7 @@ class Mailings(JSONView):
         kw = {'auto_generated': True, 'sender': request.user}
         if "enqueued" in types:
             to_send += list(Letter.objects.unsent().mail_filter(request.user).filter(
+                    recipient__profile__lost_contact=False,
                     mailing__isnull=True,
                     auto_generated=False
             ))
@@ -318,27 +300,34 @@ class Mailings(JSONView):
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="waitlist", is_postcard=True, 
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.waitlistable().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.waitlistable().mail_filter(request.user).filter(
+                    lost_contact=False
+                ).distinct())
         if "consent_form" in types:
             cutoff = params.get("consent_cutoff", "") or datetime.datetime.now()
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="consent_form",
                     org=p.user.organization_set.get(), **kw 
                 ) for p in Profile.objects.invitable().mail_filter(request.user).filter(
-                    user__date_joined__lte=cutoff
+                    user__date_joined__lte=cutoff,
+                    lost_contact=False
                 ).distinct())
         if "signup_complete" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="signup_complete",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(
+                    request.user
+                ).filter(lost_contact=False).distinct())
         if "first_post" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="first_post",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).filter(lost_contact=False).distinct())
         if "comments" in types:
-            comments = list(Comment.objects.unmailed().mail_filter(request.user).order_by(
+            comments = list(Comment.objects.unmailed().mail_filter(request.user).filter(
+                document__author__profile__lost_contact=False
+            ).order_by(
                 'document__author', 'document'
             ))
             doc = None
@@ -373,6 +362,37 @@ class Mailings(JSONView):
         mailing.delete()
         return self.json_response("success")
 
+def needed_letters(user, consent_form_cutoff=None):
+    if consent_form_cutoff:
+        consent_forms = Profile.objects.invitable().filter(
+                user__date_joined__lte=consent_form_cutoff,
+                lost_contact=False
+            ).mail_filter(
+                user
+            ).distinct()
+    else:
+        consent_forms = Profile.objects.invitable().mail_filter(
+                user
+            ).distinct()
+    return {
+        "consent_form": consent_forms,
+        "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
+                user).filter(lost_contact=False).distinct(),
+        "first_post": Profile.objects.needs_first_post_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "comments": Profile.objects.needs_comments_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "waitlist": Profile.objects.waitlistable().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "enqueued": Letter.objects.mail_filter(user).filter(
+                sent__isnull=True,
+                recipient__profile__lost_contact=False,
+            ).exclude(mailing__isnull=False),
+    }
+
 class NeededLetters(JSONView):
     @args_method_decorator(permission_required, "correspondence.manage_correspondence")
     def get(self, request):
@@ -381,41 +401,12 @@ class NeededLetters(JSONView):
         automatic letters.  Excludes any letters that have been created, and are
         part of a mailing.
         """
-        if 'consent_form_cutoff' in request.GET:
-            consent_forms = Profile.objects.invitable().filter(
-                    user__date_joined__lte=request.GET.get('consent_form_cutoff')
-                ).mail_filter(
-                    request.user
-                ).distinct().count()
-        else:
-            consent_forms = Profile.objects.invitable().mail_filter(
-                    request.user
-                ).distinct().count()
-
-        # TODO: date-based aggregate of when people signed up (better UI than
-        # the calendar).  Or better yet, a "choose how many to sign up" instead
-        # of "choose from when to sign up".
-
-        return self.json_response({
-            "consent_form": consent_forms,
-            "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "first_post": Profile.objects.needs_first_post_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "comments": Profile.objects.needs_comments_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "waitlist": Profile.objects.waitlistable().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "enqueued": Letter.objects.mail_filter(
-                    request.user
-                ).filter(
-                    sent__isnull=True
-                ).exclude(mailing__isnull=False).count(),
-        })
+        needed = needed_letters(
+               request.user,
+               request.GET.get('consent_form_cutoff', None)
+           )
+        counts = dict((k, v.count()) for k,v in needed.items())
+        return self.json_response(counts)
 
 @permission_required("correspondence.manage_correspondence")
 @transaction.commit_on_success
@@ -604,6 +595,11 @@ def mass_mailing_spreadsheet(request, who=None):
         qs = Profile.objects.needs_first_post_letter()
     elif who == "needs_comments_letter":
         qs = Profile.objects.needs_comments_letter()
+    elif who == "lost_contact":
+        qs = Profile.objects.filter(lost_contact=True)
+
+    if who != "lost_contact":
+        qs = qs.filter(lost_contact=False)
 
     qs = qs.mail_filter(request.user)
 

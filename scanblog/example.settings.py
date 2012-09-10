@@ -38,7 +38,7 @@ DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
 # http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=Gentium_download
 # Be sure to change this to the exact location
-TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
+TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 
 # You'll want to change these as needed...
 NICE_CMD = "/usr/bin/nice"

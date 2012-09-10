@@ -1281,7 +1281,9 @@ a.logo img {
 }
 .slideshow ul li {
   float: left;
-  width: 3em;
+  width: 14%;
+  margin: 0;
+  padding: 0;
   display: block;
   text-align: center;
 }
@@ -2047,7 +2049,7 @@ div.blog-nav-bar .target.open {
   display: block;
 }
 div.blog-nav-bar .target .all {
-  font-size: 200%;
+  font-size: 130%;
 }
 div.blog-nav-bar .comments li {
   margin-bottom: 1em;
@@ -2080,5 +2082,9 @@ img {
 }
 
 .feeds {
+  display: none !important;
+}
+
+.sharing {
   display: none !important;
 }

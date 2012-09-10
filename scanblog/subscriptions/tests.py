@@ -5,14 +5,17 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.test.utils import override_settings
 
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
 from subscriptions.models import Subscription, NotificationBlacklist
 from scanning.models import Document
 from comments.models import Comment
-from annotations.models import Tag
+from annotations.models import Tag, ReplyCode
+from campaigns.models import Campaign
 
+@override_settings(DISABLE_NOTIFICATIONS=False, DISABLE_ADMIN_NOTIFICATIONS=False)
 class TestSubscriptions(BtbMailTestCase):
     fixtures = ["initial_data.json"]
     def setUp(self):
@@ -42,21 +45,13 @@ class TestSubscriptions(BtbMailTestCase):
             )
 
     def test_auto_subscribe_and_comment_notifications(self):
-        """
-        Note: Must have the settings:
-
-            DISABLE_NOTIFICATIONS = False 
-            DISABLE_ADMIN_NOTIFICATIONS = False
-
-        at the time of subscription model module loading for this test to work.
-        """
         doc = Document.objects.create(author=self.author, 
                 editor=self.editor, status="published")
         self.assertEquals(Subscription.objects.count(), 0)
 
         comment = Comment.objects.create(comment="test", 
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
+        self.assertOutboxIsEmpty()
         self.clear_outbox()
 
         self.assertEquals(Subscription.objects.count(), 1)
@@ -65,17 +60,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertEquals(s.subscriber, self.commenter)
 
         # No notification to commenter for their own comments, even when
-        # subscribed, but yes notification for admin.
+        # subscribed.  No notification for admin unless comment is spammy (has
+        # links).
         second_comment = Comment.objects.create(comment="test2",
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
+        self.assertOutboxIsEmpty()
         self.clear_outbox()
 
         # Notification for subscribed comment.
         third_comment = Comment.objects.create(comment="test3",
                 document=doc, user=self.commenter2)
         self.assertOutboxContains([
-            "%sNew comment" % self.admin_subject_prefix,
             "%sNew reply" % self.user_subject_prefix,
         ])
         self.clear_outbox()
@@ -120,6 +115,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
+    def test_campaign_notifications(self):
+        reply_code = ReplyCode.objects.create(code='test-campaign')
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                public=True, 
+                reply_code=reply_code)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                status="published", in_reply_to=reply_code)
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
+        self.clear_outbox()
+
     def test_reply_coded_comment_notifications(self):
         """
         Test notifications for document replies to comments.
@@ -138,10 +144,14 @@ class TestSubscriptions(BtbMailTestCase):
         even if you're multiply subscribed to it.
         """
         tag = Tag.objects.create(name="featured")
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                reply_code=ReplyCode.objects.create(code='test-campaign'))
         Subscription.objects.create(subscriber=self.commenter, author=self.author)
         Subscription.objects.create(subscriber=self.commenter, organization=self.org)
         Subscription.objects.create(subscriber=self.commenter, tag=tag)
-        doc = Document.objects.create(author=self.author, editor=self.editor)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                in_reply_to=campaign.reply_code)
         doc.tags.add(tag)
         doc.status = "published"
         doc.save()
@@ -222,9 +232,6 @@ class TestSubscriptions(BtbMailTestCase):
         Comment.objects.create(document=doc, user=commenter)
         otherCommenter = User.objects.create(username="blah")
         Comment.objects.create(document=doc, user=otherCommenter)
-
-        # (just outbox)
-        self.assertOutboxContains(['%sNew comment' % self.admin_subject_prefix] * 2)
 
     def test_comment_notification_escaping(self):
         doc = Document.objects.create(author=self.author, editor=self.editor, status="published")

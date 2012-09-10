@@ -256,8 +256,10 @@ class Documents(JSONView):
 
     @args_method_decorator(permission_required, "scanning.change_document")
     def get(self, request, obj_id=None):
-        docs = Document.objects.org_filter(request.user, author__profile__managed=True)
+        docs = Document.objects.org_filter(request.user)
         g = request.GET.get
+        if g("author__profile__managed", 0) == "1":
+            docs = docs.filter(author__profile__managed=True)
         if g("author_id", None):
             docs = docs.filter(author__pk=g("author_id"))
         if g("type", None):
@@ -356,7 +358,12 @@ class Documents(JSONView):
         # must commit before executing the task (it needs an up-to-date model).
         transaction.commit()
 
-        tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        try:
+            tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        except Exception as e:
+            transaction.rollback()
+            raise e
+        
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)

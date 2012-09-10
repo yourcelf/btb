@@ -33,7 +33,7 @@ class CommentManager(OrgManager):
 class Comment(models.Model):
     user = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     # The comment itself
     comment = models.TextField(blank=True)
@@ -47,6 +47,11 @@ class Comment(models.Model):
     removed = models.BooleanField()
 
     objects = CommentManager()
+
+    def clean(self):
+        # Deal with https://code.djangoproject.com/ticket/5622
+        if not self.ip_address:
+            self.ip_address = None
 
     class QuerySet(OrgQuerySet):
         orgs = ["document__author__organization"]

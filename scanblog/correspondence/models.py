@@ -12,7 +12,7 @@ from correspondence.generate import generate_file, generate_colation
 
 class LetterManager(OrgManager):
     def unsent(self):
-        return self.filter(sent__isnull=True)
+        return self.filter(sent__isnull=True, recipient__profile__lost_contact=False)
 
     def sent(self):
         return self.filter(sent__isnull=False)

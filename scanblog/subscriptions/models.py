@@ -8,6 +8,7 @@ from scanning.models import Document
 from annotations.models import Tag
 from comments.models import Comment
 from profiles.models import Organization
+from campaigns.models import Campaign
 
 from notification import models as notification
 
@@ -21,6 +22,8 @@ class Subscription(models.Model):
     tag = models.ForeignKey(Tag, related_name="tag_subscriptions",
             blank=True, null=True)
     organization = models.ForeignKey(Organization, related_name="organization_subscriptions",
+            blank=True, null=True)
+    campaign = models.ForeignKey(Campaign, related_name="organization_subscriptions",
             blank=True, null=True)
 
     def __unicode__(self):
@@ -69,6 +72,14 @@ if not settings.DISABLE_NOTIFICATIONS:
         for tag in document.tags.all():
             subs |= Subscription.objects.filter(tag=tag)
         recipients = []
+        if document.in_reply_to_id:
+            campaign = None
+            try:
+                campaign = document.in_reply_to.campaign
+            except Campaign.DoesNotExist:
+                pass
+            if campaign:
+                subs |= Subscription.objects.filter(campaign=campaign)
         for sub in subs:
             if NotificationBlacklist.objects.filter(
                     email=sub.subscriber.email).exists():

@@ -98,6 +98,7 @@ class btb.UserSearch extends btb.PaginatedView
         'click .result': 'chooseResult'
         'click span.add-user-link': 'addUser'
         'click span.cancel-user-search': 'cancel'
+        'click a': 'nothing'
 
     initialize: (options) =>
         filter = if options then options.filter else {}
@@ -108,6 +109,9 @@ class btb.UserSearch extends btb.PaginatedView
         $(@el).html this.template
             term: @userList.filter.q or ""
         this
+
+    nothing: (event) =>
+        event.stopPropagation()
 
     keyUp: (event) =>
         switch event.keyCode
@@ -387,6 +391,8 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
             type: "printout"
             recipient_id: @doc.get("author").id
             document_id: @doc.id
+            # UGLY HACK: depends on the org ID from a completely different UI element
+            org_id: $(".org_id").val()
         }, {
             success: =>
                 @hideLoading()
@@ -518,6 +524,7 @@ class btb.UserStatusTable extends Backbone.View
         btb.EditInPlace.factory [
             [@user, "blogger", $(".blogger", @el), "checkbox"]
             [@user, "managed", $(".managed", @el), "checkbox"]
+            [@user, "lost_contact", $(".lost-contact", @el), "checkbox"]
             [@user, "consent_form_received", $(".consent-form-received", @el), "checkbox"]
             [@user, "is_active", $(".is-active", @el), "checkbox"]
         ]

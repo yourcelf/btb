@@ -169,7 +169,7 @@ After running that script, there will be a single admin user with username
 "admin" and password "admin".  This can be changed in the Django admin site by
 navigating to ``http://localhost:8000/admin/``.
 
-8. Run the dev server!
+7. Run the dev server!
 ----------------------
 
 Django ships with a built-in devserver.  You can run this directly::
@@ -182,3 +182,12 @@ To also auto-compile coffeescript and sass sources, and run the celery deamon, u
 
     ./fromage.py
 
+8. Set the site name in admin
+-----------------------------
+
+In order to download documents as PDF's, you'll need to set the 'Site' object
+so that it isn't the default (unless ``example.com`` resolves as you :)).
+
+To do this, navigate to the admin site: ``http://localhost:8000/admin/``.
+Click ``Sites``, and change the default site to a URL that will resolve
+(probably ``localhost:8000``).

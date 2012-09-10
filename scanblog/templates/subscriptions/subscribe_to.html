@@ -5,12 +5,14 @@
 
 {% block body %}
 
+<<<<<<< HEAD
 <h1>{% trans "Add subscription" %}</h1>
 <p>{% trans "Add a subscription to" %}
 {% if tag %}{% trans "posts tagged" %} &ldquo;{{ tag }}&rdquo;?{% endif %}
 {% if author %}{% trans "posts by" %} {{ author.profile }}?{% endif %}
 {% if document %}{% trans "comments on" %} &ldquo;{{ document.get_title }}&rdquo; {% trans "by" %} {{ document.author.profile }}?{% endif %}
 {% if org %}{% trans "posts from" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em> {% trans "authors" %}{% endif %}
+{% if campaign %}{% trans "posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?" %}{% endif %}
 <form method='post' action=''>{% csrf_token %}<input type='submit' value='{% trans "Sign me up!" %}' /></form>
 <a href='{% url subscriptions.settings %}'>{% trans "Subscription settings" %}</a>
 </p>

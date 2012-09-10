@@ -107,12 +107,16 @@ class Scan(models.Model):
     under_construction = models.BooleanField()
 
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
         orgs = ["author__organization", "org"]
+
+    def save(self, *args, **kwargs):
+        self.modified = datetime.datetime.now()
+        super(Scan, self).save(*args, **kwargs)
 
     def to_dict(self):
         try:
@@ -276,7 +280,7 @@ class Document(models.Model):
     editor = models.ForeignKey(User, related_name='documents_edited',
             help_text="The last person to edit this document.")
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = DocumentManager()
 
@@ -288,6 +292,7 @@ class Document(models.Model):
             self.date_written = datetime.datetime.now()
         if not self.reply_code_id:
             self.reply_code = ReplyCode.objects.create()
+        self.modified = datetime.datetime.now()
         super(Document, self).save(*args, **kwargs)
         self.set_publicness()
         self.update_comment()
@@ -300,7 +305,13 @@ class Document(models.Model):
         # Create comment objects only when the doc is public.  That way,
         # subscription signals are fired at the right moment -- the comment is
         # public and viewable.
+        parent = None
         if self.in_reply_to:
+            try:
+                parent = self.in_reply_to.document
+            except Document.DoesNotExist:
+                pass
+        if parent:
             # Only create a comment object if we are public.
             if self.is_public():
                 try:
@@ -310,7 +321,7 @@ class Document(models.Model):
                     self.comment = Comment.objects.create(
                         user=self.author,
                         removed=False,
-                        document=Document.objects.get(reply_code=self.in_reply_to),
+                        document=parent,
                         comment_doc=self,
                     )
             else:

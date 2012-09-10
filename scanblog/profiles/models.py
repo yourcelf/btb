@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -75,10 +76,12 @@ class ProfileManager(OrgManager):
             ).order_by('display_name')
 
     def bloggers_with_published_content(self):
-        return sorted(list(self.bloggers_with_posts()) +
-                      list(self.bloggers_with_just_profiles()), 
-                key=lambda p: p.display_name)
-
+        return self.bloggers().select_related('user').filter(
+                Q(user__documents_authored__status="published", 
+                  user__documents_authored__type="profile") |
+                Q(user__documents_authored__status="published",
+                  user__documents_authored__type="post")
+              ).distinct().order_by('display_name')
 
     def enrolled(self):
         """ They have returned a consent form. """
@@ -167,6 +170,7 @@ class Profile(models.Model):
 
     blogger = models.BooleanField()
     managed = models.BooleanField()
+    lost_contact = models.BooleanField()
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
     mailing_address = models.TextField(blank=True, default="")
@@ -189,6 +193,7 @@ class Profile(models.Model):
             'date_joined': self.user.date_joined.isoformat(),
             'blogger': self.blogger,
             'managed': self.managed,
+            'lost_contact': self.lost_contact,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,

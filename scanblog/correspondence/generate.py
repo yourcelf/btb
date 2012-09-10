@@ -118,7 +118,9 @@ def first_post_letter(letter):
             'letter': letter
         })
     )
-    # First post, if any
+    # First post, if any.  First post uses a dynamic document rather than the
+    # letter.document field, so that if a document is ever removed/unpublished,
+    # we get the updated "first post" on printout.
     try:
         document = Document.objects.filter(status="published", type="post",
                 author__pk=letter.recipient.pk).order_by('date_written')[0]

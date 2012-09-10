@@ -23,6 +23,7 @@ from comments.models import Comment
 from comments.forms import CommentForm
 from blogs import feeds
 from profiles.models import Profile, Organization
+from campaigns.models import Campaign
 
 #
 # Displaying posts
@@ -96,8 +97,10 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
+
+
 def get_nav_context():
-    tags = list(Tag.objects.filter(post_count__gte=0).order_by('name'))
+    tags = list(Tag.objects.filter(post_count__gte=2).order_by('name'))
     tags.append({
         'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count()
     })
@@ -116,6 +119,7 @@ def get_nav_context():
         'recent_titles': Document.objects.safe().filter(type='post')[:5],
         'recent_authors': Profile.objects.bloggers_with_posts().order_by('-latest_post')[:10],
         'recent_comments': Comment.objects.excluding_boilerplate().order_by('-modified')[:5],
+        'campaigns': Campaign.objects.filter(public=True),
     }
     return nav_context
 
@@ -147,6 +151,31 @@ def posts_by_date(request, template="blogs/all_posts_list.html"):
                 )[pnum*10:pnum*10+7]
     }
     return render(request, template, context)
+
+def show_campaign(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(
+            in_reply_to=campaign.reply_code
+    )
+    context = _paginate(request, posts)
+    pnum = context['page'].number
+    context.update(get_nav_context())
+    context['campaign'] = campaign
+    context['related'] = {
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__status="published",
+                    document__in_reply_to=campaign.reply_code,
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__adult=False,
+            ).select_related(
+                'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
+    return render(request, "blogs/show_campaign.html", context)
 
 def org_post_list(request, slug):
     """
@@ -374,6 +403,13 @@ def all_posts_feed(request):
         'posts': Document.objects.safe().filter(type="post")
     })
 
+def campaign_feed(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    return feeds.posts_feed(request, {
+        'title': campaign.title,
+        'posts': Document.objects.safe().filter(in_reply_to_id=campaign.reply_code_id)
+    })
+
 def org_post_feed(request, slug, filtered=True):
     org = get_object_or_404(Organization, slug=slug, public=True)
     docs = Document.objects.public().filter(
@@ -399,7 +435,7 @@ def post_comments_feed(request, post_id):
 def tagged_post_feed(request, tag):
     return feeds.posts_feed(request, {
         'title': "%s posts" % escape(tag.capitalize()),
-        'posts': Document.objects.public().filter(tags__name=tag.lower())
+        'posts': Document.objects.public().filter(tags__name=tag.lower(), type='post')
     })
 def legacy_author_post_feed(request, author_id, slug):
     # We're stripping out author slugs from feed URLs, so feed readers don't

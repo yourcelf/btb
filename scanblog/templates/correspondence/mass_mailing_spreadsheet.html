@@ -35,6 +35,14 @@
       </a>:
       {% trans "We have sent them a waitlist postcard, and we haven't sent an invitation." %}
     </li>
+    <li>
+	<a href='{{ base }}lost_contact'>
+	{% trans 'Lost Contact' %}
+	</a>: 
+	{% blocktrans %}
+	Letters bounce; so these addresses are useless.  "Lost contact" people don't appear in other lists.
+	{% endblocktrans %}
+    </li>
 </ul>
 <h2>
     {% trans "Invited users in" %}:

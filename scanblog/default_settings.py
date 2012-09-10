@@ -24,6 +24,7 @@ USE_L10N = True
 MEDIA_ROOT = os.path.join(SETTINGS_ROOT, "media")
 MEDIA_URL = '/private_media/'
 UPLOAD_TO = "uploads"
+FILE_UPLOAD_PERMISSIONS = 0664
 
 # Serve PUBLIC_MEDIA_ROOT with webserver, at PUBLIC_MEDIA_URL.  Symlinks for
 # anything public will be added to this directory, so it should be on the same
@@ -44,6 +45,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+COMPRESS_PRECOMPILERS = (
+    ('text/javascript', 'cat'), # this shouldn't be necessary, but is
+    ('text/coffeescript', 'coffee --compile --stdio'),
+)
+
 
 #
 # Other stuff
@@ -97,6 +103,7 @@ INSTALLED_APPS = (
     'profiles',
     'subscriptions',
     'scanning',
+    'campaigns',
 
     # django internal apps
     'django.contrib.auth',
@@ -182,6 +189,7 @@ BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 CELERY_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = "amqp"
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
 
 INTERNAL_IPS = ('127.0.0.1',)

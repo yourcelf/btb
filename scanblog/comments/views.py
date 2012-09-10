@@ -1,3 +1,5 @@
+import datetime
+
 # Create your views here.
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.views import redirect_to_login
@@ -7,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.conf import settings
 
 from comments.models import Comment
 from comments.forms import CommentForm
@@ -33,11 +36,15 @@ def check_comment_editable(fn):
 
 @check_comment_editable
 def edit_comment(request, comment_id=None, comment=None):
+    if settings.COMMENTS_OPEN == False:
+        raise PermissionDenied("Comments are disabled currently.")
+
     form = CommentForm(request.POST or None, initial={
         'comment': comment.comment
     })
     if form.is_valid():
         comment.comment = form.cleaned_data['comment']
+        comment.modified = datetime.datetime.now()
         comment.save()
         return redirect(comment.get_absolute_url())
     return render(request, "comments/edit_comment.html", {

@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 
 from registration.views import register
 from accounts.forms import OptionalEmailForm
@@ -15,8 +15,8 @@ urlpatterns = patterns('accounts.views',
                 'backend': 'accounts.backends.SimpleRegistrationBackend',
                 'form_class': OptionalEmailForm,
             }, name='registration_register'),
-        url(r'^register/closed/$', direct_to_template, {
-                'template': 'registration/registration_closed.html'
-            }, name='registration_disallowed'),
+        url(r'^register/closed/$',
+            TemplateView.as_view(template_name='registration/registration_closed.html'),
+            name='registration_disallowed'),
         (r'', include('registration.auth_urls')),
 )

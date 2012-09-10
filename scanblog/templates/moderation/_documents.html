@@ -125,6 +125,13 @@
         <%= document.comment_count %> comments.
     </div>
 </script>
+<script type="text/template" id="editDocumentInReplyToCampaign">
+    <div>
+        <% if (error) { %><div class='error'><b><%= error %></b></div><% } %>
+        <b>Campaign</b>: <a href='<%= campaign.url %>'><%= campaign.title %></a>
+        (<%= btb.formatDate(campaign.created) %> &ndash; <%= campaign.public ? "public" : "not public yet" %>)
+    </div>
+</script>
 <script type="text/template" id="editDocumentPage">
 <div class='edit-document-page'>
     <div class='controls'>
@@ -135,6 +142,7 @@
         ><span class='rotateR' title='rotate 1 degree clockwise'>&nbsp;</span
         ><span class='move-page-up' title='move this page up'>&nbsp;</span
         ><span class='move-page-down' title='move this page down'>&nbsp;</span
+        ><span class='redact' title='redact image'>R</span
         ><span class='crop' title='crop image'>&nbsp;</span
         ><span class='highlight' title='select highlight'>&nbsp;</span
         >

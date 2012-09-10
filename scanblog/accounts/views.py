@@ -10,11 +10,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.contrib import messages
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
 
 from btb.utils import can_edit_user
 from accounts.forms import OptionalEmailForm
@@ -67,12 +66,12 @@ def change_password(request, user_id):
     else:
         form = Form(request.user)
 
-    return render_to_response("registration/password_change_form.html",{
+    return render(request, "registration/password_change_form.html", {
         'form': form,
         'change_user': user,
-    }, context_instance=RequestContext(request))
+    })
 
 @login_required
 def welcome(request):
-    return direct_to_template(request, template='registration/welcome.html')
+    return render(request, 'registration/welcome.html')
 
