@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: django-btb VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-08 13:59+0200\n"
-"PO-Revision-Date: 2012-08-06 23:39+0100\n"
+"PO-Revision-Date: 2012-09-11 07:51+0200\n"
 "Last-Translator: Arthur Lutz <arthur.lutz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -402,6 +402,8 @@ msgid ""
 "      About %(site.name)s\n"
 "      "
 msgstr ""
+"\n\nÀ propos de %(site.name)s\\n\n"
+" "
 
 #: templates/about/index.html:46
 #, python-format
@@ -421,6 +423,13 @@ msgid ""
 "    and help to reduce recidivism.\n"
 "      "
 msgstr ""
+"\n"
+"<a href='/'>%(site.name)s</a> est une plateforme de blog accessible aux personnes en prison. Étant donné que l'accès à Internet n'est toujours pas possible en milieu carcéral, nous mettons à disposition un outil leur permettant de publier des articles sous forme de blog, en scannant et publiant leur lettres. Avec cette plateforme, les détenus francais peuvent utiliser leur liberté d'expression.\n"
+"\n"
+"Nous aspirons à que cet outil permette le développement de leur créativité, de maintenir un lien avec leur famille et leurs proches, de forger de nouveaux liens entre l'interieur et l'exterieur, ainsi que de promouvoir l'identité de ces personnes par leur expression personnelle.\n"
+"\n"
+"Nous espérons ainsi améliorer le quotidien des détenus et apporter notre pierre à la réduction de la récidive.\n"
+" "
 
 #: templates/about/index.html:61
 #, fuzzy
@@ -1415,6 +1424,7 @@ msgid ""
 "\t\t\t      Posted %(comment.created|timesince)s ago.\n"
 "\t\t\t      "
 msgstr ""
+"\nCommentaire publié il y %(comment.created|timesince)s.\n "
 
 #: templates/comments/_comment.html:25
 #, python-format
@@ -1423,6 +1433,8 @@ msgid ""
 "\t\t\t\t    Mailed %(comment.letter_sent|timesince)s ago\n"
 "\t\t\t\t    "
 msgstr ""
+"\n"
+"\n        Commentaire envoyé par la poste il y a %(comment.letter_sent|timesince)s "
 
 #: templates/comments/_comment.html:35 templates/comments/edit_comment.html:3
 #: templates/comments/edit_comment.html:5
@@ -2134,6 +2146,9 @@ msgid ""
 "            out. \n"
 "\t    "
 msgstr ""
+"\n"
+"Un arbre virtuel montrant les status des utilisateurs avec le nombre d'utilisateurs en parenthèse dans chaque groupe. Clic gauche pour zoomer, clic droit pour dézoomer.\n"
+"  "
 
 #: templates/moderation/stats.html:22
 msgid "New users per week"
@@ -2149,6 +2164,8 @@ msgid ""
 "            enrolling fewer writers since June when we reached capacity.\n"
 "            "
 msgstr ""
+"\n"
+"Le nombre de nouveaux utilisateurs additionnels par semaine. Les pics dans les commentaires sont probabelement des campagnes de spam effectuées par des bots. "
 
 #: templates/moderation/stats.html:34 templates/moderation/stats.html.py:44
 #, fuzzy
@@ -2181,6 +2198,8 @@ msgid ""
 "            1.\n"
 "            "
 msgstr ""
+"\n"
+"Cette ligne de temps montre le nombre de requêtes, d'articles et de profiles par semaine. "
 
 #: templates/moderation/stats.html:67
 msgid "Impact: Posts"
@@ -2194,6 +2213,8 @@ msgid ""
 "make.\n"
 "            "
 msgstr ""
+"\n"
+"Ce graphique montre le nombre d'articles par auteur, ceci montre la proportion d'articles produit par les contributeurs les plus actifs. "
 
 #: templates/moderation/stats.html:76
 msgid "Impact: Pages"
@@ -2206,6 +2227,8 @@ msgid ""
 "            post a lot of pages, where others send short form pieces.\n"
 "            "
 msgstr ""
+"\n"
+"Ce graphique montre les contributions triées par nombre de pages par article. Certains auteurs publient un grand nombre de pages, alors que d'autres publient des articles courts. "
 
 #: templates/moderation/stats.html:90
 #, fuzzy
@@ -2218,7 +2241,7 @@ msgstr "Commentaires publiés par semaine"
 
 #: templates/moderation/stats.html:95
 msgid "This graph shows the number of new comments posted per week."
-msgstr "Ce graph montre le nombre de nouveaux commentaires postés par semaine."
+msgstr "Ce graphique montre le nombre de nouveaux commentaires postés par semaine."
 
 #: templates/moderation/stats.html:98
 #, fuzzy
@@ -3082,7 +3105,7 @@ msgstr "M'enregistrer!"
 #: templates/subscriptions/subscribe_to.html:15
 #, fuzzy
 msgid "Subscription settings"
-msgstr "Révisions de la retranscription"
+msgstr "Préférences d'abonnement"
 
 #: templates/subscriptions/subscribe_to.html:19
 #, python-format
