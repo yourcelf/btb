@@ -1,6 +1,6 @@
 <!-- Piwik -->
 <script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://betweenthebars.org/analytics/" : "http://betweenthebars.org/analytics/");
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://{{ site.domain }}/analytics/" : "http://{{ site.domain }}/analytics/");
     document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
     </script><script type="text/javascript">
     try {
@@ -8,5 +8,5 @@
         piwikTracker.trackPageView();
         piwikTracker.enableLinkTracking();
     } catch( err ) {}
-</script><noscript><p><img src="http://betweenthebars.org/analytics/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+</script><noscript><p><img src="http://{{ site.domain }}/analytics/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->

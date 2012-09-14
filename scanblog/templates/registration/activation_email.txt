@@ -1,3 +1,4 @@
+{% load i18n %}
 {% trans "Hello" %},
 
 {% trans "Welcome to {{ site.name }}!  You've just joined a community of respectful
