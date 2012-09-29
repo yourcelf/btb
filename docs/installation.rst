@@ -21,6 +21,9 @@ System requirements:
  * `mercurial <http://mercurial.selenic.com>`_ (for installing python dependencies)
  * `python-virtualenv <http://www.virtualenv.org/en/latest/>`_
  * `compass <http://compass-style.org/>`_ (for stylesheet compilation)
+ * `node.js <https://github.com/joyent/node>`_
+ * `npm <http://npmjs.org/>`_
+ * `coffee-script <http:/coffeescript.org/>`_
 
 System-specific instructions:
  
@@ -28,9 +31,17 @@ System-specific instructions:
 
     sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all rubygems
 
+    git clone https://github.com/joyent/node.git
+    cd node
+    ./configure
+    make
+    sudo make install
+    curl http://npmjs.org/install.sh | sudo sh
+    sudo npm install -g coffee-script
+    
     cd /tmp
-    curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
-    tar xjvf wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
+    curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2
+    tar xjvf wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2
     sudo cp wkhtmltopdf /usr/local/bin
     sudo gem install compass
  
@@ -46,11 +57,15 @@ System-specific instructions:
         pdftk \
         rubber \
         imagemagick \
-        rabbitmq-server
+        rabbitmq-server \
+	nodejs
 
     # create symlinks to be compatible with other systems
     sudo ln -s virtualenv-2.6 /opt/local/bin/virtualenv
     sudo ln -sf easy_install-2.6 /opt/local/bin/easy_install
+    
+    curl http://npmjs.org/install.sh | sudo sh
+    sudo npm install -g coffee-script
 
     cd /tmp
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-OSX-0.10.0_rc2-static.tar.bz2
