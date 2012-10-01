@@ -36,8 +36,6 @@ System-specific instructions:
     ./configure
     make
     sudo make install
-    curl http://npmjs.org/install.sh | sudo sh
-    sudo npm install -g coffee-script
     
     cd /tmp
     curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2
