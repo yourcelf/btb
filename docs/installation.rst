@@ -22,7 +22,6 @@ System requirements:
  * `python-virtualenv <http://www.virtualenv.org/en/latest/>`_
  * `compass <http://compass-style.org/>`_ (for stylesheet compilation)
  * `node.js <https://github.com/joyent/node>`_
- * `npm <http://npmjs.org/>`_
  * `coffee-script <http:/coffeescript.org/>`_
 
 System-specific instructions:
