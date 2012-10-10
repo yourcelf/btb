@@ -11,6 +11,7 @@ from btb.utils import args_method_decorator, JSONView, date_to_string
 from annotations.models import Note, ReplyCode
 from scanning.models import Document, Scan
 from profiles.models import Profile
+from comments.models import Comment
 
 class ReplyCodes(JSONView):
     @args_method_decorator(permission_required, "scanning.change_document")
@@ -31,7 +32,7 @@ class ReplyCodes(JSONView):
 
 class Notes(JSONView):
     attr_whitelist = ('id', 'user_id', 'document_id', 'scan_id',
-        'created', 'modified', 'resolved', 'important', 'text')
+        'comment_id', 'created', 'modified', 'resolved', 'important', 'text')
     def clean_params(self, request):
         kw = json.loads(request.raw_post_data)
         #TODO: Remove these in client.
@@ -63,6 +64,13 @@ class Notes(JSONView):
                         request.user, pk=kw.pop('scan_id')
                 ).get()
             except Scan.DoesNotExist:
+                raise Http404
+        elif kw.get('comment_id', None):
+            try:
+                rel_obj = Comment.objects.org_filter(
+                        request.user, pk=kw.pop('comment_id')
+                ).get()
+            except Comment.DoesNotExist:
                 raise Http404
         else:
             rel_obj = None
@@ -111,6 +119,9 @@ class Notes(JSONView):
         elif 'scan_id' in request.GET:
             scan = get_object_or_404(Scan, pk=request.GET.get("scan_id"))
             notes = scan.notes.org_filter(request.user).by_resolution()
+        elif 'comment_id' in request.GET:
+            comment = get_object_or_404(Comment, pk=request.GET.get("comment_id"))
+            notes = comment.notes.org_filter(request.user).by_resolution()
         else:
             # All of the above.
             notes = Note.objects.org_filter(request.user).by_resolution()

@@ -74,6 +74,7 @@ class Note(models.Model):
                 'user_id': self.user_id,
                 'scan_id': self.scan_id,
                 'document_id': self.document_id,
+                'comment_id': self.comment_id,
                 'resolved': date_to_string(self.resolved),
                 'important': self.important,
                 'text': self.text,
