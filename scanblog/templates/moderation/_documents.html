@@ -52,7 +52,7 @@
             
         <tr>
             <th>Date added:</th>
-            <td><input type='text' class='doc-date' value='<%= doc.date_written ? btb.formatDate(doc.date_written) : "" %>' placeholder='YYYY-MM-DD' /></td>
+            <td><input type='text' class='doc-date' value='<%= doc.date_written ? btb.formatDateWithZeros(doc.date_written) : "" %>' placeholder='YYYY-MM-DD' /></td>
         </tr>
         <% if (doc.type == "post" || doc.type == "profile") { %>
             <tr>
