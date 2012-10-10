@@ -5,14 +5,6 @@ from django.contrib.auth.models import User
 from scanblog.comments.models import Comment
 
 class TestComments(BtbLiveServerTestCase):
-    def setUp(self):
-        super(TestComments, self).setUp()
-        self.doc = self.create_test_doc()
-
-    def tearDown(self):
-        super(TestComments, self).tearDown()
-        self.doc.delete()
-
     def test_comment_while_not_signed_in(self):
         s = self.selenium
         s.get(self.url("/accounts/logout/"))

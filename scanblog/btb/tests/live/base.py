@@ -68,6 +68,15 @@ class BtbLiveServerTestCase(LiveServerTestCase):
 
     def setUp(self):
         self.add_test_users()
+        self.doc = self.create_test_doc()
+
+    def tearDown(self):
+        self.doc.delete()
+        for username in ("testuser", "testmod", "testauthor", "testunmanaged"):
+            try:
+                User.objects.get(username=username).delete()
+            except User.DoesNotExist:
+                pass
 
     def url(self, arg):
         return "".join((self.live_server_url, arg))

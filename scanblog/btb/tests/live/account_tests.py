@@ -49,16 +49,16 @@ class TestAccounts(BtbLiveServerTestCase):
 
     def leave_a_comment(self, username, password):
         self.sign_in(username, password)
-        self.create_test_doc(self)
+        self.create_test_doc()
         # There's no comment.
         self.assertEquals(Comment.objects.filter(
             user__username=username, comment="My comment").count(), 0)
         # Leave one.
-        self.selenium.get(self.url(doc.get_absolute_url()))
+        self.selenium.get(self.url(self.doc.get_absolute_url()))
         comment_entry = self.selenium.find_element_by_name("comment")
         comment_entry.send_keys("My comment")
         comment_entry.submit()
-        self.assert_current_url_is(doc.get_absolute_url())
+        self.assert_current_url_is(self.doc.get_absolute_url())
         # There is now a comment.
         self.wait(lambda s: Comment.objects.filter(
                 user__username=username, comment="My comment").count() == 1)
