@@ -6,33 +6,10 @@ from django.core import mail
 
 from profiles.models import Organization
 
-# TODO this backports the with self.settings construct in the development
-# versions of Django. When it becomes standard, we don't need this anymore.
-# see http://docs.djangoproject.com/en/dev/topics/testing/#overriding-settings
-class BtbWithSettings:
-    def __init__(self, hash):
-        self.hash = hash
-    def __enter__(self):
-        self.save = {}
-        self.delete = {}
-        for key, value in self.hash.iteritems():
-            try:
-                self.save[key] = getattr(settings, key)
-            except AttributeError:
-                self.delete[key] = True
-            setattr(settings, key, value)
-    def __exit__(self, type, value, traceback):
-        for key, value in self.save.iteritems():
-            setattr(settings, key, value)
-        for key, value in self.delete.iteritems():
-            delattr(settings, key)
+from live import *
 
 class BtbBaseTestCase():
     fixtures = ["initial_data.json"]
-    # see WithSettings
-    def settings(self, *args, **kwargs):
-        return BtbWithSettings(kwargs)
-
     def loginAs(self, name):
         self.assertTrue(self.client.login(username=name, password=name))
 

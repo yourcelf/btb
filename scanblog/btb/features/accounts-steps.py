@@ -27,7 +27,7 @@ def i_see_the_login_form(step):
 
 @step(u'I see the registration form')
 def i_see_the_registration_form(step):
-    world.browser.find_elements_by_class_name("signup-form")
+    world.browser.find_elements_by_class_name("register-form")
 
 @step(u'I am redirected to "([^"]*)"')
 def i_am_redirected_to(step, url):
