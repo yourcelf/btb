@@ -50,7 +50,6 @@ COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee --compile --stdio'),
 )
 
-
 #
 # Other stuff
 #

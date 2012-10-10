@@ -13,6 +13,14 @@ btb.formatDate = (dateOrStr) ->
     d = btb.strToDate(dateOrStr)
     d.getFullYear() + "-" + (1 + d.getMonth()) + "-" + d.getDate()
 
+btb.formatDateWithZeros = (dateOrStr) ->
+    d = btb.strToDate(dateOrStr)
+    month = (1 + d.getMonth())
+    if month < 10 then month = "0#{month}"
+    day = d.getDate()
+    if day < 10 then day = "0#{day}"
+    d.getFullYear() + "-" + month + "-" + d.getDate()
+
 btb.formatDateTime = (dateOrStr) ->
     d = btb.strToDate()
     btb.formatDate(d) + " " + d.getHours() + ":" + d.getMinutes()

@@ -317,6 +317,7 @@ class Documents(JSONView):
 
             doc.adult = kw['adult']
             # Ensure other processes won't try to serve this until we're done building.
+            doc.date_written = kw['date_written']
             doc.status = "unknown"
             doc.save()
 
