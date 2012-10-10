@@ -1,3 +1,4 @@
-from .accounts import TestAccounts
+from .account_tests import TestAccounts
+from .comment_tests import TestComments
 
-__all__ = ['TestAccounts']
+__all__ = ['TestAccounts', 'TestComments']

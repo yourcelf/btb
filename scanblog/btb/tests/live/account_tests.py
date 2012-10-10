@@ -49,15 +49,7 @@ class TestAccounts(BtbLiveServerTestCase):
 
     def leave_a_comment(self, username, password):
         self.sign_in(username, password)
-        doc = Document.objects.get_or_create(
-            body="This is my lovely post.",
-            type="post",
-            title="Lovely",
-            status="published",
-            adult=False,
-            editor=User.objects.get(username="testmod"),
-            author=User.objects.get(username="testunmanaged"),
-        )[0]
+        self.create_test_doc(self)
         # There's no comment.
         self.assertEquals(Comment.objects.filter(
             user__username=username, comment="My comment").count(), 0)

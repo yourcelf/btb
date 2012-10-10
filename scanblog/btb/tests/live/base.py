@@ -8,6 +8,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 from django.contrib.auth.models import User, Group
 from profiles.models import Organization
+from scanning.models import Document
 
 class BtbLiveServerTestCase(LiveServerTestCase):
     @classmethod
@@ -74,7 +75,7 @@ class BtbLiveServerTestCase(LiveServerTestCase):
     def css(self, selector):
         return self.selenium.find_element_by_css_selector(selector)
 
-    def csss(self, classname):
+    def csss(self, selector):
         return self.selenium.find_elements_by_css_selector(selector)
 
     def hard_click(self, el):
@@ -90,6 +91,9 @@ class BtbLiveServerTestCase(LiveServerTestCase):
 
     def assert_current_url_is(self, url):
         self.assertEquals(self.selenium.current_url, self.url(url))
+
+    def assert_redirected_to_login(self):
+        self.wait(lambda s: s.current_url.startswith(self.url("/accounts/login")))
 
     def sign_in(self, username, password):
         s = self.selenium
@@ -109,11 +113,23 @@ class BtbLiveServerTestCase(LiveServerTestCase):
         pword_el = self.selenium.find_element_by_id("id_password")
         pword_el.send_keys(password)
         self.click_button("Login")
+        self.wait(lambda s: not s.current_url.startswith(self.url("/accounts/login")))
         self.assert_current_url_is("/")
         self.assertTrue(username in self.css(".auth").text)
 
     def wait(self, func, timeout=4):
         WebDriverWait(self.selenium, timeout).until(func)
 
-
+    def create_test_doc(self, **kwargs):
+        base = dict(
+            body="This is my lovely post.",
+            type="post",
+            title="Lovely",
+            status="published",
+            adult=False,
+            editor=User.objects.get(username="testmod"),
+            author=User.objects.get(username="testunmanaged"),
+        )
+        base.update(kwargs)
+        return Document.objects.get_or_create(**base)[0]
 
