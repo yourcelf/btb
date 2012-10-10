@@ -1,7 +1,14 @@
 from default_settings import *
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = TEMPLATE_DEBUG = True
+COMPRESS_ENABLED = not DEBUG
+# Workaround for asset bug:
+# https://github.com/jezdez/django_compressor/issues/226
+if not COMPRESS_ENABLED:
+    COMPRESS_ENABLED = True
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
+    COMPRESS_JS_FILTERS = []
+
 BCRYPT_ENABLED = False #Too slow for dev
 THUMBNAIL_DEBUG = DEBUG
 LETTUCE_SERVER_PORT = 8001 # Port for lettuce tests

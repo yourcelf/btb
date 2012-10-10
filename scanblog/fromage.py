@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Quickly autocompile sass and coffeescript and run the server
+# Run the server and async queue.
 #
 
 import os
@@ -20,9 +20,6 @@ if __name__ == "__main__":
         runtests = False
 
     try:
-        autocompile = subprocess.Popen(
-                [MANAGE_PATH, "autocompile"],
-                preexec_fn=os.setsid)
         djcelery    = subprocess.Popen(
                 [MANAGE_PATH, "celeryd", "--verbosity=2"],
                 preexec_fn=os.setsid)
@@ -60,6 +57,6 @@ if __name__ == "__main__":
     finally:
         # Use os.killpg to ensure that shell-launched process groups are all
         # killed, not just the launching process.
-        for proc in [runserver, autocompile, djcelery]:
+        for proc in [runserver, djcelery]:
             os.killpg(proc.pid, signal.SIGTERM)
         sys.exit(return_code)

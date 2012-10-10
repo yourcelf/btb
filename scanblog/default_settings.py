@@ -47,7 +47,9 @@ STATICFILES_FINDERS = (
 )
 COMPRESS_PRECOMPILERS = (
     ('text/javascript', 'cat'), # this shouldn't be necessary, but is
+    ('text/css', 'cat'), # this shouldn't be necessary, but is
     ('text/coffeescript', 'coffee --compile --stdio'),
+    ('text/x-sass', 'sass --compass -I "%s"' % (os.path.join(SETTINGS_ROOT, "static", "css"))),
 )
 
 #
