@@ -1,6 +1,8 @@
 from django.test import LiveServerTestCase
+from django.conf import settings
 
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -13,7 +15,11 @@ from scanning.models import Document
 class BtbLiveServerTestCase(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.selenium = WebDriver()
+        if hasattr(settings, "SELENIUM_FIREFOX_BIN"):
+            firefox_binary = FirefoxBinary(settings.SELENIUM_FIREFOX_BIN)
+            cls.selenium = WebDriver(firefox_binary=firefox_binary)
+        else:
+            cls.selenium = WebDriver()
         cls.selenium.implicitly_wait(4)
         super(BtbLiveServerTestCase, cls).setUpClass()
 
@@ -38,6 +44,12 @@ class BtbLiveServerTestCase(LiveServerTestCase):
         return u
 
     def add_test_users(self):
+        # Admin
+        self.create_user("admin", user_kwargs=dict(
+            is_staff=True,
+            is_superuser=True,
+        ))
+
         # Commenter
         self.create_user("testuser")
 

@@ -474,6 +474,7 @@ def scan_add(request):
             with tempfile.NamedTemporaryFile(delete=False, suffix="scans.zip") as fh:
                 for chunk in request.FILES['file'].chunks():
                     fh.write(chunk)
+                fh.flush()
                 task_id = tasks.process_zip.delay(filename=fh.name, 
                         uploader_id=request.user.pk,
                         org_id=form.cleaned_data['organization'].pk,

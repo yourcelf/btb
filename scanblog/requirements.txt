@@ -20,4 +20,10 @@ South
 pyyaml
 django-debug-toolbar
 reportlab
-selenium<=2.20 # Due to this bug: https://code.google.com/p/selenium/issues/detail?id=3736
+# Due to these bugs:
+#  * https://code.google.com/p/selenium/issues/detail?id=4603
+#  * https://code.google.com/p/selenium/issues/detail?id=3736
+# We need pinned versions of selenium and firefox.  Have found selenium 2.20,
+# and firefox 10.0 to work properly.  Specify the firefox binary to use in
+# settings.SELENIUM_FIREFOX_BIN
+selenium<=2.20

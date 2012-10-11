@@ -2,6 +2,8 @@
 import os.path
 SETTINGS_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+TEST_RUNNER = 'btb.test_runner.BtbTestRunner'
+
 #
 # Locale
 #
@@ -190,7 +192,8 @@ BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 CELERY_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = "amqp"
+CELERY_RESULT_BACKEND = "database"
+
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
 
 INTERNAL_IPS = ('127.0.0.1',)
