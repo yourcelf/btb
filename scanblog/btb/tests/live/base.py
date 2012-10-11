@@ -94,6 +94,11 @@ class BtbLiveServerTestCase(LiveServerTestCase):
         chain.release(None)
         chain.perform()
 
+    def set_checkbox(self, el, value=True):
+        if value and not el.get_attribute("checked") or \
+                (not value and el.get_attribute("checked")):
+            el.click()
+
     def click_button(self, text):
         el = self.selenium.find_element_by_xpath('//input[@value="%s"]' % text)
         el.click()
