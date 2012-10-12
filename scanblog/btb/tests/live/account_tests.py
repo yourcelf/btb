@@ -58,7 +58,10 @@ class TestAccounts(BtbLiveServerTestCase):
         comment_entry = self.selenium.find_element_by_name("comment")
         comment_entry.send_keys("My comment")
         comment_entry.submit()
-        self.assert_current_url_is(self.doc.get_absolute_url())
+        self.assertEquals(
+            self.selenium.current_url.split("#")[0],
+            self.url(self.doc.get_absolute_url())
+        )
         # There is now a comment.
         self.wait(lambda s: Comment.objects.filter(
                 user__username=username, comment="My comment").count() == 1)

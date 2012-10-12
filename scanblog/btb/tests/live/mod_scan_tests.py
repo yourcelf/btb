@@ -106,6 +106,5 @@ class TestModScans(BtbLiveServerTestCase):
         b.get(self.url(
             User.objects.get(username="testauthor").profile.get_absolute_url()
         ))
-        print self.css("title").text
         self.assertTrue("Test Author" in self.css("title").text)
 
