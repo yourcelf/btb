@@ -1,10 +1,8 @@
 import os
 import time
-import shutil
 
 from .base import BtbLiveServerTestCase, NoSuchElementException
 from django.conf import settings
-from django.test.utils import override_settings
 
 from scanning.models import Scan
 from django.contrib.auth.models import User

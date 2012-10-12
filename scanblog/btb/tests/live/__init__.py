@@ -4,8 +4,9 @@ from .flag_tests import TestFlags
 from .frontend_tests import TestFrontend
 from .transcription_tests import TestTranscriptions
 from .mod_upload_tests import TestModUploads
+from .mod_scan_tests import TestModScans
 
 __all__ = [
     'TestAccounts', 'TestComments', 'TestFlags', 'TestFrontend',
-    'TestTranscriptions', 'TestModUploads',
+    'TestTranscriptions', 'TestModUploads', 'TestModScans',
 ]

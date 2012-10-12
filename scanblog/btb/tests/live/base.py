@@ -93,11 +93,13 @@ class BtbLiveServerTestCase(LiveServerTestCase):
     def url(self, arg):
         return "".join((self.live_server_url, arg))
 
-    def css(self, selector):
-        return self.selenium.find_element_by_css_selector(selector)
+    def css(self, selector, scope=None):
+        scope = scope or self.selenium
+        return scope.find_element_by_css_selector(selector)
 
-    def csss(self, selector):
-        return self.selenium.find_elements_by_css_selector(selector)
+    def csss(self, selector, scope=None):
+        scope = scope or self.selenium
+        return scope.find_elements_by_css_selector(selector)
 
     def hard_click(self, el):
         chain = ActionChains(self.selenium)

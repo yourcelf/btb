@@ -6,6 +6,13 @@ from djcelery.backends.database import DatabaseBackend
 from djcelery.models import TaskState
 from django.conf import settings
 
+# Custom test runner that deals with CELERY_ALWAYS_EAGER madness.
+#
+# Djcelery expects you to run tests with CELERY_ALWAYS_EAGER=True, but this
+# prevents TaskMeta objects being written which store the results of tasks.
+# Most of this is copied from CeleryTestSuiteRunnerStoringResult, but it also
+# adds TaskMeta, which that doesn't.
+#
 class BtbTestRunner(CeleryTestSuiteRunner):
     def setup_test_environment(self, **kwargs):
         """ Setting up test environment. """
