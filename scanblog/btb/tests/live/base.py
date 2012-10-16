@@ -143,7 +143,7 @@ class BtbLiveServerTestCase(LiveServerTestCase):
         self.click_button("Login")
         self.wait(lambda s: not s.current_url.startswith(self.url("/accounts/login")))
         self.assert_current_url_is("/")
-        self.assertTrue(username in self.css(".auth").text)
+        self.assertTrue(User.objects.get(username=username).profile.display_name in self.css(".auth").text)
 
     def wait(self, func, timeout=4):
         WebDriverWait(self.selenium, timeout).until(func)

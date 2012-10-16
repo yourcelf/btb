@@ -3,6 +3,7 @@ import os
 os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8082-8999'
 from datetime import datetime
 from djcelery.contrib.test_runner import CeleryTestSuiteRunner
+from celery.task import Task
 from djcelery.backends.database import DatabaseBackend
 from django.conf import settings
 
