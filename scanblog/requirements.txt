@@ -9,7 +9,6 @@ amqplib
 fabric
 django-bcrypt
 -e git+https://github.com/ahupp/python-magic#egg=magic
-lettuce
 django_compressor
 sorl-thumbnail
 python-memcached

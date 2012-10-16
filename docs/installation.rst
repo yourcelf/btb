@@ -178,10 +178,6 @@ Django ships with a built-in devserver.  You can run this directly::
     source $VENV_DIR/bin/activate
     python manage.py runserver
 
-To also auto-compile coffeescript and sass sources, and run the celery deamon, use the included ``fromage.py`` instead::
-
-    ./fromage.py
-
 8. Set the site name in admin
 -----------------------------
 
