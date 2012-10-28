@@ -3,7 +3,7 @@
 {% block title %}Tag Party!{% endblock %}
 {% block css %}
     {% compress css %}
-    <link rel="stylesheet" type='text/css' href="{{STATIC_URL}}css/tagparty.css" />
+    <link rel="stylesheet" type='text/x-sass' href="{{STATIC_URL}}css/tagparty.sass" />
     {% endcompress %}
 {% endblock %}
 
@@ -54,7 +54,7 @@
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/underscore-min.js'></script>
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/backbone-min.js'></script>
 
-    <script type='text/javascript' src='{{STATIC_URL}}js/moderation/tagparty.js'></script>
+    <script type='text/coffeescript' src='{{STATIC_URL}}js/moderation/tagparty.coffee'></script>
     <script type='text/javascript'>
         new btb.TagForm({
             tags: [
