@@ -343,6 +343,7 @@ class btb.EditDocumentPageView extends Backbone.View
     'click .crop':    'toggleCropping'
     'click .highlight': 'toggleHighlighting'
     'click .redact':  'toggleRedacting'
+    'click .white-redact': 'toggleWhiteRedacting'
     'mousemove .page-image': 'mouseMove'
     'mousedown .page-image': 'mouseDown'
 
@@ -357,6 +358,9 @@ class btb.EditDocumentPageView extends Backbone.View
     @highlighter = new Cropper("orange", "rgba(0,0,0,0)")
     @redacter = new MultiCropper("black", "rgba(0, 0, 0, 0)",
                                           "rgba(0, 0, 0, 0.5)")
+    @white_redacter = new MultiCropper("#999999", "rgba(0, 0, 0, 0)",
+                                                "rgba(255, 255, 255, 0.8)")
+
     @highlighting = true
     @mouseIsDown = false
     # Bind mouseup to document, so we hear it even if the mouse strays out
@@ -378,6 +382,9 @@ class btb.EditDocumentPageView extends Backbone.View
       $(".page-image", @el).css("cursor", "crosshair")
     else if @redacting
       $(".redact", @el).addClass("active")
+      $(".page-image", @el).css("cursor", "crosshair")
+    else if @white_redacting
+      $(".white-redact", @el).addClass("active")
       $(".page-image", @el).css("cursor", "crosshair")
     else
       $(".page-image", @el).css("cursor", "normal")
@@ -458,6 +465,8 @@ class btb.EditDocumentPageView extends Backbone.View
       @highlighter.render(@canvas, @highlight, @highlighting)
     if @page.transformations.redactions
       @redacter.render(@canvas, @page.transformations.redactions, @redacting)
+    if @page.transformations.white_redactions
+      @white_redacter.render(@canvas, @page.transformations.white_redactions, @white_redacting)
 
 
   rotateL: => @_rotate(359)
@@ -481,6 +490,7 @@ class btb.EditDocumentPageView extends Backbone.View
     if @cropping
       @highlighting = false
       @redacting = false
+      @white_redacting = false
     @render()
     if trigger
       @trigger "cropping", @cropping
@@ -491,6 +501,7 @@ class btb.EditDocumentPageView extends Backbone.View
     if @highlighting
       @cropping = false
       @redacting = false
+      @white_redacting = false
     @render()
     if trigger
       @trigger "highlighting", @highlighting
@@ -501,6 +512,18 @@ class btb.EditDocumentPageView extends Backbone.View
     if @redacting
       @cropping = false
       @highlighting = false
+      @white_redacting = false
+    @render()
+    if trigger
+      @trigger "white_redacting", @redacting
+
+  toggleWhiteRedacting: => @setWhiteRedacting(not @white_redacting)
+  setWhiteRedacting: (white_redacting, trigger=true) =>
+    @white_redacting = white_redacting
+    if @white_redacting
+      @cropping = false
+      @highlighting = false
+      @redacting = false
     @render()
     if trigger
       @trigger "redacting", @redacting
@@ -540,6 +563,13 @@ class btb.EditDocumentPageView extends Backbone.View
         @page.transformations.redactions = []
       has_changed = @redacter.handleMouse(mx, my, type, @page.transformations.redactions)
       $(@canvas).css("cursor", @redacter.cursor)
+      if has_changed
+        @renderCanvas()
+    else if @white_redacting
+      if not @page.transformations.white_redactions?
+        @page.transformations.white_redactions = []
+      has_changed = @white_redacter.handleMouse(mx, my, type, @page.transformations.white_redactions)
+      $(@canvas).css("cursor", @white_redacter.cursor)
       if has_changed
         @renderCanvas()
 
