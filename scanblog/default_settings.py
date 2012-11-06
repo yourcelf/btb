@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     'registration',
     'djcelery',
     'django_bcrypt',
-    #'lettuce.django',
     'compressor',
     'sorl.thumbnail',
     'notification',
@@ -149,8 +148,6 @@ LOGGING = {
         },
     }
 }
-# Testing
-LETTUCE_APPS = ('btb',)
 
 AUTHENTICATION_BACKENDS = (
     'scanblog.accounts.backends.CaseInsensitiveAuthenticationBackend',
