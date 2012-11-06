@@ -4,10 +4,10 @@ DEBUG = TEMPLATE_DEBUG = True
 COMPRESS_ENABLED = not DEBUG
 # Workaround for asset bug:
 # https://github.com/jezdez/django_compressor/issues/226
-#if not COMPRESS_ENABLED:
-#    COMPRESS_ENABLED = True
-#    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
-#    COMPRESS_JS_FILTERS = []
+if not COMPRESS_ENABLED:
+    COMPRESS_ENABLED = True
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
+    COMPRESS_JS_FILTERS = []
 
 BCRYPT_ENABLED = False #Too slow for dev
 THUMBNAIL_DEBUG = DEBUG
@@ -36,16 +36,16 @@ DATABASES = {
 TYPEPAD_ANTISPAM_API_KEY = "your typepad key"
 
 ADMINS = (
-    ("You", "you@example.com"),
+    ("M.C.", "shidash@media.mit.edu"),
 )
 MANAGERS = ADMINS
 
-SERVER_EMAIL = "you@example.com"
+SERVER_EMAIL = "shidash@media.mit.edu"
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
 # http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=Gentium_download
 # Be sure to change this to the exact location
-TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
+TEXT_IMAGE_FONT = "~/btb/fonts/Gentium102/GenR102.TTF"
 
 # You'll want to change these as needed...
 NICE_CMD = "/usr/bin/nice"

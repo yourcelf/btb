@@ -492,12 +492,6 @@ def _apply_page_transforms(doc):
                         for r in tx['redactions']:
                             draw.rectangle([int(d) for d in r], fill="#000000")
                         del draw
-                    if tx and len(tx.get('white_redactions', [])) > 0:
-                        logger.debug("White redacting")
-                        draw = ImageDraw.Draw(img)
-                        for r in tx['white_redactions']:
-                            draw.rectangle([int(d) for d in r], fill="#ffffff")
-                        del draw
 
                     logger.debug("Checking for cropping.")
                     if 'crop' in tx and tx['crop'] is not None:

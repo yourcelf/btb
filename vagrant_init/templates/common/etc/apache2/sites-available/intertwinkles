@@ -1,0 +1,19 @@
+<VirtualHost *:8080>
+    ServerName $INTERTWINKLES_DOMAIN_NAME
+    <IfModule mod_ssl.c>
+        RedirectMatch (.*) https://$INTERTWINKLES_DOMAIN_NAME$1
+    </IfModule>
+    Include /etc/apache2/site-includes/intertwinkles
+</VirtualHost>
+
+<IFModule mod_ssl.c>
+<VirtualHost *:4433>
+    ServerName $INTERTWINKLES_DOMAIN_NAME
+    Include /etc/apache2/site-includes/intertwinkles
+    SSLEngine on
+    SSLCertificateKeyFile /etc/apache2/ssl/intertwinkles/InterTwinkles.key
+    SSLCertificateFile  /etc/apache2/ssl/intertwinkles/InterTwinkles.crt
+    SSLCACertificateFile /etc/apache2/ssl/intertwinkles/ca.pem
+    $CHAIN_FILE_CONFIG
+</VirtualHost>
+</IfModule>
