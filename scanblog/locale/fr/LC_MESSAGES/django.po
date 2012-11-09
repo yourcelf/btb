@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-btb VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-08 13:59+0200\n"
+"POT-Creation-Date: 2012-11-09 13:47-0500\n"
 "PO-Revision-Date: 2012-09-11 07:51+0200\n"
 "Last-Translator: Arthur Lutz <arthur.lutz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "Adresse email"
 msgid "Email optional."
 msgstr "email optionnel."
 
-#: accounts/views.py:30
+#: accounts/views.py:29
 msgid "Successfully logged out."
 msgstr "Déconnexion réussie."
 
-#: accounts/views.py:65
+#: accounts/views.py:64
 msgid "Password changed successfully."
 msgstr "Mot de passe modifié avec succès."
 
@@ -76,7 +76,7 @@ msgstr ""
 "Si vous entrez quelquechose dans ce champ, votre commentaire sera considéré "
 "comme du spam"
 
-#: comments/views.py:74
+#: comments/views.py:81
 msgid ""
 "A moderator will review that comment shortly. Thanks for helping us run a "
 "tight ship."
@@ -97,15 +97,15 @@ msgstr ""
 msgid "E-mail address"
 msgstr "Adresse email"
 
-#: profiles/forms.py:34
+#: profiles/forms.py:35
 msgid "* Display name"
 msgstr "Nom affiché"
 
-#: profiles/forms.py:34
+#: profiles/forms.py:35
 msgid "Required."
 msgstr "Obligatoire."
 
-#: profiles/models.py:165
+#: profiles/models.py:168
 msgid "Show posts and comments that have been marked as adult?"
 msgstr ""
 "Montre les articles et commentaires qui ont été noté comme du contenu "
@@ -115,20 +115,20 @@ msgstr ""
 msgid "Changes saved."
 msgstr "Changements enregistrés."
 
-#: scanning/models.py:472
+#: scanning/models.py:483
 msgid "Untitled"
 msgstr "Sans titre"
 
-#: scanning/models.py:535
+#: scanning/models.py:546
 msgid "Check if transcription is complete"
 msgstr "Vérifier si la retranscription est complète"
 
-#: scanning/views.py:633
+#: scanning/views.py:640
 msgid "Thanks for your attention to detail.  Transcription updated."
 msgstr ""
 "Merci pour votre attention au détail. La transcription a été mise à jour."
 
-#: scanning/views.py:736
+#: scanning/views.py:743
 msgid ""
 "A moderator will review that post shortly. Thanks for helping us run a tight "
 "ship."
@@ -144,33 +144,47 @@ msgstr "404 - Document introuvable"
 msgid "404 Not Found"
 msgstr "404 Document introuvable"
 
+#: templates/404.html:6
+msgid "Sorry, no page with that address can be found."
+msgstr ""
+
 #: templates/500.html:2
 msgid "500 Internal Server Error"
 msgstr "500 Erreur interne"
 
-#: templates/500.html:6
+#: templates/500.html:4
 msgid ""
-"You can return to the front page here: <a href='http://betweenthebars."
-"org'>http://betweenthebars.org</a>."
+"\n"
+"Sorry, it's not you -- it's us.  A server admin has been notified and will\n"
+"look into fixing this as soon as possible.\n"
+msgstr ""
+
+#: templates/500.html:10
+#, fuzzy, python-format
+msgid ""
+"\n"
+"You can return to the front page here: <a href='http://%(site.domain)s'>"
+"%(site.domain)s</a>.\n"
 msgstr "Vous pouvez retournez sur la page d'acceuil ici : <sitename>"
 
 #: templates/_pagination.html:3
-msgid "Page:"
+#, fuzzy
+msgid "Pages:"
 msgstr "Page:"
 
-#: templates/_pagination.html:5
+#: templates/_pagination.html:6
 msgid "Previous page"
 msgstr "Page précédente"
 
-#: templates/_pagination.html:5
+#: templates/_pagination.html:6
 msgid "Previous"
 msgstr "Précédente"
 
-#: templates/_pagination.html:11
+#: templates/_pagination.html:12
 msgid "Next page"
 msgstr "Page suivante"
 
-#: templates/_pagination.html:11
+#: templates/_pagination.html:12
 msgid "Next"
 msgstr "Suivante"
 
@@ -189,9 +203,9 @@ msgstr "Des histoires humaines en prison"
 #: templates/home.html:19
 #, fuzzy, python-format
 msgid ""
-"is a weblog platform for people in prison, through which the 1% of Americans "
-"who are in prison can tell their stories. Leave a comment &ndash; we'll pass "
-"it on."
+"is a weblog platform for people in prison, through which the 1%% of "
+"Americans who are in prison can tell their stories. Leave a comment &ndash; "
+"we'll pass it on."
 msgstr ""
 "est une plateforme de blogs pour personnes incarcérées. Laissez leur un "
 "message, nous leur envoyons par courrier postal."
@@ -209,18 +223,17 @@ msgid "Amazing stuff."
 msgstr "Incroyable!"
 
 #: templates/home.html:38 templates/feeds/_featured.html:2
-#: templates/feeds/_subscriptions.html:66
+#: templates/feeds/_subscriptions.html:81
 #, fuzzy
 msgid "Featured posts"
 msgstr "Articles sans catégorie"
 
-#: templates/home.html:62 templates/blogs/_blog_cloud.html:61
+#: templates/home.html:62 templates/blogs/_blog_cloud.html:79
 msgid "Recent comments"
 msgstr "Commentaires récents"
 
-#: templates/home.html:65 templates/moderation/_scans.html:21
-#: templates/scanning/_column_diff.html:5
-#: templates/scanning/_column_diff.html:7
+#: templates/home.html:65 templates/scanning/_column_diff.html:6
+#: templates/scanning/_column_diff.html:8
 msgid "ago"
 msgstr "il y a"
 
@@ -228,7 +241,7 @@ msgstr "il y a"
 msgid "By"
 msgstr "Par"
 
-#: templates/home.html:67 templates/blogs/_blog_cloud.html:65
+#: templates/home.html:67 templates/blogs/_blog_cloud.html:83
 msgid "on"
 msgstr "le"
 
@@ -314,14 +327,58 @@ msgstr "Guide de la communauté"
 msgid "Frequently Asked Questions"
 msgstr "Foire Aux Questions"
 
-# Actualités
 #: templates/about/about_base.html:12
-msgid "News"
-msgstr "Actualités"
+msgid "<a href='http://news.{{ site.domain }}'>News</a>"
+msgstr ""
 
 #: templates/about/about_base.html:13
-msgid "Mailing list"
-msgstr "Liste de discussion"
+msgid "<a href='http://crm.{{ site.domain }}'>Mailing list</a>"
+msgstr ""
+
+#: templates/about/copyright.html:3
+#, fuzzy
+msgid "Copyright policy"
+msgstr "Droits d'auteur"
+
+#: templates/about/copyright.html:7
+#, fuzzy, python-format
+msgid ""
+"\n"
+"    %(site_name)s Copyright Policy\n"
+"    "
+msgstr ""
+"\n"
+"\n"
+"À propos de %(site.name)s\\n\n"
+" "
+
+#: templates/about/copyright.html:12
+#, python-format
+msgid ""
+"\n"
+"The %(site_name)s site, design, and content is copyrighted\n"
+"<nobr>&copy; %(year)s %(site.name)s</nobr>, all rights reserved.\n"
+msgstr ""
+
+#: templates/about/copyright.html:18
+msgid ""
+"\n"
+"All blog posts and transcriptions of blog posts are owned and copyrighted "
+"by\n"
+"the blog post authors, who retain all rights.  If you wish to reproduce any\n"
+"blog post, you should seek permission of the original author by contacting "
+"them\n"
+"directly.\n"
+msgstr ""
+
+#: templates/about/copyright.html:27
+#, python-format
+msgid ""
+"\n"
+"All comments are owned by the people who submit them, in accordance with "
+"the\n"
+"<a href='%(about_terms_url)s'>Terms of Use</a>.\n"
+msgstr ""
 
 #: templates/about/faq.html:9
 #, fuzzy, python-format
@@ -402,7 +459,9 @@ msgid ""
 "      About %(site.name)s\n"
 "      "
 msgstr ""
-"\n\nÀ propos de %(site.name)s\\n\n"
+"\n"
+"\n"
+"À propos de %(site.name)s\\n\n"
 " "
 
 #: templates/about/index.html:46
@@ -424,11 +483,20 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"<a href='/'>%(site.name)s</a> est une plateforme de blog accessible aux personnes en prison. Étant donné que l'accès à Internet n'est toujours pas possible en milieu carcéral, nous mettons à disposition un outil leur permettant de publier des articles sous forme de blog, en scannant et publiant leur lettres. Avec cette plateforme, les détenus francais peuvent utiliser leur liberté d'expression.\n"
+"<a href='/'>%(site.name)s</a> est une plateforme de blog accessible aux "
+"personnes en prison. Étant donné que l'accès à Internet n'est toujours pas "
+"possible en milieu carcéral, nous mettons à disposition un outil leur "
+"permettant de publier des articles sous forme de blog, en scannant et "
+"publiant leur lettres. Avec cette plateforme, les détenus francais peuvent "
+"utiliser leur liberté d'expression.\n"
 "\n"
-"Nous aspirons à que cet outil permette le développement de leur créativité, de maintenir un lien avec leur famille et leurs proches, de forger de nouveaux liens entre l'interieur et l'exterieur, ainsi que de promouvoir l'identité de ces personnes par leur expression personnelle.\n"
+"Nous aspirons à que cet outil permette le développement de leur créativité, "
+"de maintenir un lien avec leur famille et leurs proches, de forger de "
+"nouveaux liens entre l'interieur et l'exterieur, ainsi que de promouvoir "
+"l'identité de ces personnes par leur expression personnelle.\n"
 "\n"
-"Nous espérons ainsi améliorer le quotidien des détenus et apporter notre pierre à la réduction de la récidive.\n"
+"Nous espérons ainsi améliorer le quotidien des détenus et apporter notre "
+"pierre à la réduction de la récidive.\n"
 " "
 
 #: templates/about/index.html:61
@@ -486,9 +554,10 @@ msgid ""
 msgstr ""
 
 #: templates/about/privacy.html:9
+#, python-format
 msgid ""
 "\n"
-"  Between the Bars Privacy Policy\n"
+"  %(site.name)s Privacy Policy\n"
 "  "
 msgstr ""
 
@@ -507,8 +576,8 @@ msgid ""
 "\n"
 "<p>\n"
 "The following discloses the information gathering and dissemination\n"
-"practices for the Between the Bars (“BtB”) website available at\n"
-"<a href='%(url_home)s'>http://betweenthebars.org</a> (the “Site”).\n"
+"practices for the %(site.name)s (“BtB”) website available at\n"
+"<a href='%(url_home)s'>%(url_home)s</a> (the “Site”).\n"
 "Your use of the Site constitutes your agreement to this privacy policy\n"
 "and consent to the terms herein.\n"
 "</p>\n"
@@ -618,8 +687,7 @@ msgid ""
 "<p>\n"
 "If you have any questions regarding this privacy policy, you can contact us "
 "by\n"
-"emailing <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</"
-"a>.\n"
+"emailing <a href='mailto:%(site.email)s'>%(site.email)s</a>.\n"
 "</p>\n"
 "\n"
 "<p>\n"
@@ -632,8 +700,9 @@ msgid "Resources"
 msgstr "Ressources"
 
 #: templates/about/terms.html:7
-msgid "Between the Bars Terms of Use"
-msgstr ""
+#, fuzzy
+msgid "{{ site.name }} Terms of Use"
+msgstr "Conditions d'usage"
 
 #: templates/about/terms.html:9
 msgid ""
@@ -1037,7 +1106,7 @@ msgstr ""
 msgid "Categories"
 msgstr "Categories"
 
-#: templates/blogs/_blog_cloud.html:10 templates/blogs/_blog_cloud.html:48
+#: templates/blogs/_blog_cloud.html:10 templates/blogs/_blog_cloud.html:66
 #: templates/blogs/all_posts_list.html:2
 msgid "Recent posts"
 msgstr "Articles récents"
@@ -1058,39 +1127,50 @@ msgstr "Auteurs"
 msgid "Every Page"
 msgstr "Toutes les pages"
 
-#: templates/blogs/_blog_cloud.html:27
+#: templates/blogs/_blog_cloud.html:28
 msgid "Posts by category"
 msgstr "Articles par categorie"
 
-#: templates/blogs/_blog_cloud.html:56
+#: templates/blogs/_blog_cloud.html:39
+#, fuzzy
+msgid "Uncategorized"
+msgstr "Articles sans catégorie"
+
+#: templates/blogs/_blog_cloud.html:49
+msgid "Campaigns"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:74
 msgid "All posts by date"
 msgstr "Tous les articles par date"
 
-#: templates/blogs/_blog_cloud.html:65
+#: templates/blogs/_blog_cloud.html:83
 #: templates/blogs/_post_bottom_line.html:22
 #: templates/blogs/_sharing_buttons.html:3
 #: templates/blogs/all_comments_list.html:7
 #: templates/blogs/author_post_list.html:3
 #: templates/blogs/author_post_list.html:14
 #: templates/blogs/post_detail.html:30
+#: templates/btb/admin-email-transcription-edited.txt:2
 #: templates/notification/notice_settings.html:50
+#: templates/notification/new_reply/full.txt:2
 #: templates/subscriptions/subscribe_to.html:12
 msgid "by"
 msgstr "par"
 
-#: templates/blogs/_blog_cloud.html:68
+#: templates/blogs/_blog_cloud.html:86
 msgid "All comments"
 msgstr "Tous les commentaires"
 
-#: templates/blogs/_blog_cloud.html:73
+#: templates/blogs/_blog_cloud.html:91
 msgid "Authors with recent posts"
 msgstr "Auteurs ayant des articles récents"
 
-#: templates/blogs/_blog_cloud.html:79 templates/profiles/groups_list.html:88
+#: templates/blogs/_blog_cloud.html:97 templates/profiles/groups_list.html:88
 msgid "profile"
 msgstr "profil"
 
-#: templates/blogs/_blog_cloud.html:84
+#: templates/blogs/_blog_cloud.html:102
 #: templates/profiles/profiles_list.html:10
 msgid "All authors"
 msgstr "Tous les auteurs"
@@ -1134,6 +1214,11 @@ msgstr "télétransmis"
 msgid "Original (PDF)"
 msgstr "Original (PDF)"
 
+#: templates/blogs/_post_tag_list.html:5
+#, fuzzy
+msgid "filed under:"
+msgstr "enregistré sous"
+
 #: templates/blogs/_post_title_line.html:23
 msgid "Flag post"
 msgstr "Signaler ce contenu"
@@ -1160,16 +1245,18 @@ msgstr "Ajouter une transcription"
 
 #: templates/blogs/_post_title_line.html:52
 #: templates/blogs/_post_title_line.html:59
+#: templates/btb/admin-email-comment-posted.txt:14
 msgid "Edit"
 msgstr "Éditer"
 
 #: templates/blogs/_post_title_line.html:67 templates/blogs/edit_post.html:38
 #: templates/blogs/manage_posts.html:12
+#: templates/btb/admin-unmanaged-post-notification.txt:15
 msgid "Tags"
 msgstr "Tags"
 
 #: templates/blogs/_post_title_line.html:73
-#: templates/moderation/_common.html:25 templates/moderation/_scans.html:115
+#: templates/moderation/_common.html:25 templates/moderation/_scans.html:118
 #: templates/scanning/transcription_edit.html:117
 msgid "Save"
 msgstr "Enregistrer"
@@ -1327,6 +1414,8 @@ msgid "Can't be published"
 msgstr "Ne peux pas être publié"
 
 #: templates/blogs/manage_posts.html:39
+#: templates/btb/admin-email-comment-posted.txt:4
+#: templates/btb/admin-visitor-profile-notification.txt:4
 msgid "View on site"
 msgstr "Voir sur le site"
 
@@ -1342,31 +1431,32 @@ msgstr "Articles récent des auteurs lié à "
 msgid "By the page"
 msgstr "Par page"
 
-#: templates/blogs/page_picker.html:46
+#: templates/blogs/page_picker.html:45
+#, fuzzy
 msgid ""
-"This page requires javsacript. To browse Between the Bars without "
-"javascript, try"
+"This page requires javsacript. To browse {{ site.name }} without javascript, "
+"try"
 msgstr ""
 "Cette page nécésite javascript. Pour nagiguer <sitename> sans javascript, "
 "essayez "
 
-#: templates/blogs/page_picker.html:46
+#: templates/blogs/page_picker.html:45
 msgid "blogs"
 msgstr "blogs"
 
-#: templates/blogs/page_picker.html:48
+#: templates/blogs/page_picker.html:47
 msgid "Every page"
 msgstr "Toutes les pages"
 
-#: templates/blogs/page_picker.html:51
+#: templates/blogs/page_picker.html:50
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: templates/blogs/page_picker.html:54
+#: templates/blogs/page_picker.html:53
 msgid "That's all so far"
 msgstr "C'est tout pour l'instant"
 
-#: templates/blogs/page_picker.html:55
+#: templates/blogs/page_picker.html:54
 msgid "help us grow"
 msgstr "aidez nous à grandir"
 
@@ -1417,6 +1507,116 @@ msgstr "Articles ayant un tag"
 msgid "Uncategorized posts"
 msgstr "Articles sans catégorie"
 
+#: templates/btb/admin-content-flagged.txt:2
+msgid "A flag was created for"
+msgstr ""
+
+#: templates/btb/admin-content-flagged.txt:2
+msgid "by user"
+msgstr ""
+
+#: templates/btb/admin-content-flagged.txt:4
+msgid "Content URL"
+msgstr ""
+
+#: templates/btb/admin-content-flagged.txt:7
+#, fuzzy
+msgid "Edit flagging user"
+msgstr "Edition de l'article"
+
+#: templates/btb/admin-content-flagged.txt:9
+#, fuzzy
+msgid "Delete flagging user"
+msgstr "Supprimer l'article"
+
+#: templates/btb/admin-content-flagged.txt:12
+#, fuzzy
+msgid "Note content"
+msgstr "Signaler ce contenu"
+
+#: templates/btb/admin-email-comment-posted.txt:2
+#, fuzzy
+msgid "A comment has been posted on"
+msgstr "Tous les commentaires à propos de %s"
+
+#: templates/btb/admin-email-comment-posted.txt:12
+#, fuzzy
+msgid "Moderation functions"
+msgstr "Modération"
+
+#: templates/btb/admin-email-comment-posted.txt:13
+#: templates/profiles/confirm_delete_scan.html:6
+#, fuzzy
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/btb/admin-email-comment-posted.txt:16
+#: templates/btb/admin-email-transcription-edited.txt:13
+#: templates/btb/admin-visitor-profile-notification.txt:10
+msgid "Admin functions"
+msgstr ""
+
+#: templates/btb/admin-email-comment-posted.txt:17
+#: templates/btb/admin-email-transcription-edited.txt:14
+#: templates/btb/admin-unmanaged-post-notification.txt:6
+#: templates/btb/admin-visitor-profile-notification.txt:7
+#, fuzzy
+msgid "Edit user"
+msgstr "Editer la note"
+
+#: templates/btb/admin-email-comment-posted.txt:18
+#: templates/btb/admin-email-transcription-edited.txt:15
+#: templates/btb/admin-visitor-profile-notification.txt:13
+#, fuzzy
+msgid "Delete user"
+msgstr "Supprimer l'article"
+
+#: templates/btb/admin-email-transcription-edited.txt:2
+#, fuzzy
+msgid "The transcription for"
+msgstr "Editeur de retranscription"
+
+#: templates/btb/admin-email-transcription-edited.txt:2
+msgid "was edited by user"
+msgstr ""
+
+#: templates/btb/admin-email-transcription-edited.txt:4
+#, fuzzy
+msgid "Actions"
+msgstr "Abonnements"
+
+#: templates/btb/admin-email-transcription-edited.txt:6
+msgid "Diff"
+msgstr ""
+
+#: templates/btb/admin-email-transcription-edited.txt:8
+#, fuzzy
+msgid "Edit transcription"
+msgstr "Ajouter une transcription"
+
+#: templates/btb/admin-email-transcription-edited.txt:10
+#, fuzzy
+msgid "View document"
+msgstr "Editer les documents"
+
+#: templates/btb/admin-unmanaged-post-notification.txt:2
+msgid "A blog post was added or edited by user"
+msgstr ""
+
+#: templates/btb/admin-unmanaged-post-notification.txt:4
+#, fuzzy
+msgid "View post"
+msgstr "Nouvel article"
+
+#: templates/btb/admin-unmanaged-post-notification.txt:8
+#: templates/btb/admin-visitor-profile-notification.txt:11
+msgid "Edit user in admin"
+msgstr ""
+
+#: templates/btb/admin-visitor-profile-notification.txt:2
+msgid "A profile PDF was uploaded by user"
+msgstr ""
+
 #: templates/comments/_comment.html:18
 #, python-format
 msgid ""
@@ -1424,7 +1624,9 @@ msgid ""
 "\t\t\t      Posted %(comment.created|timesince)s ago.\n"
 "\t\t\t      "
 msgstr ""
-"\nCommentaire publié il y %(comment.created|timesince)s.\n "
+"\n"
+"Commentaire publié il y %(comment.created|timesince)s.\n"
+" "
 
 #: templates/comments/_comment.html:25
 #, python-format
@@ -1434,7 +1636,9 @@ msgid ""
 "\t\t\t\t    "
 msgstr ""
 "\n"
-"\n        Commentaire envoyé par la poste il y a %(comment.letter_sent|timesince)s "
+"\n"
+"        Commentaire envoyé par la poste il y a "
+"%(comment.letter_sent|timesince)s "
 
 #: templates/comments/_comment.html:35 templates/comments/edit_comment.html:3
 #: templates/comments/edit_comment.html:5
@@ -1650,48 +1854,48 @@ msgstr "Annuler"
 msgid "To"
 msgstr "À"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:2
+#: templates/correspondence/mass_mailing_spreadsheet.html:3
 #, fuzzy
 msgid "Mass Mailing spreadsheet"
 msgstr "Tableur d'envoi massif"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:4
+#: templates/correspondence/mass_mailing_spreadsheet.html:5
 msgid "Mass Mailing Spreadsheet"
 msgstr "Tableur récapitulatif de publipostage"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:6
+#: templates/correspondence/mass_mailing_spreadsheet.html:7
 msgid "Spreadsheets for users in the following organizations:"
 msgstr "Tableur pour les utilisateurs de l'organisation :"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:10
+#: templates/correspondence/mass_mailing_spreadsheet.html:11
 #, fuzzy
 msgid "All users in"
 msgstr "Tous les auteurs"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:16
+#: templates/correspondence/mass_mailing_spreadsheet.html:17
 msgid "In prison"
 msgstr "En prison"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:18
+#: templates/correspondence/mass_mailing_spreadsheet.html:19
 msgid "In the system, with returned license agreement or without."
 msgstr "Inscrit avec un accord signé ou pas."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:22
+#: templates/correspondence/mass_mailing_spreadsheet.html:23
 msgid "Invitable"
 msgstr "Possibilité d'inviter"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:24
+#: templates/correspondence/mass_mailing_spreadsheet.html:25
 msgid ""
 "On the waitlist or not yet waitlisted -- we could send them an invitation."
 msgstr ""
 "Sur liste d'attente ou pourrait y être -- nous pourrions leur envoyer une "
 "invitation."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:28
+#: templates/correspondence/mass_mailing_spreadsheet.html:29
 msgid "Waitlistable"
 msgstr "Possibilité d'entrer sur la liste d'attente"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:30
+#: templates/correspondence/mass_mailing_spreadsheet.html:31
 msgid ""
 "We have their name, but we haven't invited them, nor have we sent a waitlist "
 "postcard."
@@ -1699,41 +1903,54 @@ msgstr ""
 "Nous avons leurs noms, mais ils ne sont pas encore invités ou sur liste "
 "d'attente."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:34
+#: templates/correspondence/mass_mailing_spreadsheet.html:35
 msgid "Waitlisted"
 msgstr "Sur liste d'attente"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:36
+#: templates/correspondence/mass_mailing_spreadsheet.html:37
 msgid ""
 "We have sent them a waitlist postcard, and we haven't sent an invitation."
 msgstr "Lettre de liste d'attente envoyé, pas encore envoyé d'invitation."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:40
+#: templates/correspondence/mass_mailing_spreadsheet.html:41
+#, fuzzy
+msgid "Lost Contact"
+msgstr "Nous contacter"
+
+#: templates/correspondence/mass_mailing_spreadsheet.html:43
+msgid ""
+"\n"
+"\tLetters bounce; so these addresses are useless.  \"Lost contact\" people "
+"don't appear in other lists.\n"
+"\t"
+msgstr ""
+
+#: templates/correspondence/mass_mailing_spreadsheet.html:49
 msgid "Invited users in"
 msgstr "Utilisateurs invités dans"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:47
+#: templates/correspondence/mass_mailing_spreadsheet.html:56
 msgid "Invited"
 msgstr "Invités"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:49
+#: templates/correspondence/mass_mailing_spreadsheet.html:58
 msgid ""
 "An invitation has been sent, but license agreement has not been returned."
 msgstr "Invitation envoyée, mais accord signé pas encore recu."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:53
+#: templates/correspondence/mass_mailing_spreadsheet.html:62
 msgid "Enrolled"
 msgstr "Inscription complète"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:55
+#: templates/correspondence/mass_mailing_spreadsheet.html:64
 msgid "In prison, have returned a license agreement."
 msgstr "En prison, ont renvoyé un accord signé."
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:59
+#: templates/correspondence/mass_mailing_spreadsheet.html:68
 msgid "Bloggers with published content"
 msgstr "Bloggeurs ayant du contenu publié"
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:61
+#: templates/correspondence/mass_mailing_spreadsheet.html:70
 msgid "Have a post or profile published."
 msgstr "Ont un article ou un profil publié."
 
@@ -1855,6 +2072,23 @@ msgstr ""
 "commentaire de votre réponse. Merci de noter un seul identifiant à la fois "
 "et d'utiliser des pages séparées pour chaque réponse."
 
+#: templates/correspondence/waitlist-postcard.txt:2
+#, python-format
+msgid ""
+"\n"
+"Thank you for your request to join the %(site.name)s blog. We have been "
+"overwhelmed by requests from writers all across the country. Unfortunately, "
+"this demand has outpaced our ability to process the mail from our currently "
+"registered writers. In order to continue to meet our obligations to them, we "
+"have begun to add all new requests to a wait-list.\n"
+"\n"
+"Invitations are sent as space is available in the order requests were "
+"received. At this time, we don't have an estimate for how long the wait is. "
+"We've added your name and address and will send you the registration "
+"materials as soon as we are able to. Please don't send us any posts or "
+"profiles until you have received them. Thanks for your patience.\n"
+msgstr ""
+
 #: templates/feeds/_all.html:2
 #, fuzzy
 msgid "All posts"
@@ -1902,11 +2136,20 @@ msgstr "Articles ayant un tag"
 #: templates/feeds/_subscriptions.html:32
 #: templates/feeds/_subscriptions.html:47
 #: templates/feeds/_subscriptions.html:61
-#: templates/feeds/_subscriptions.html:74
+#: templates/feeds/_subscriptions.html:76
+#: templates/feeds/_subscriptions.html:89
 msgid "email me"
 msgstr "envoyez moi un mail"
 
-#: templates/feeds/_subscriptions.html:80
+#: templates/feeds/_subscriptions.html:68
+#, python-format
+msgid ""
+"\n"
+"                Posts for &#147;%(campaign_title)s&#148; campaign:\n"
+"\t\t"
+msgstr ""
+
+#: templates/feeds/_subscriptions.html:95
 #, python-format
 msgid ""
 "\n"
@@ -2004,73 +2247,82 @@ msgstr "Scans nécéssitant du travail"
 msgid "Documents needing attention"
 msgstr "Documents nécessitant du travail"
 
-#: templates/moderation/_scans.html:15 templates/moderation/_scans.html:50
+#: templates/moderation/_scans.html:15 templates/moderation/_scans.html:53
 #, fuzzy
 msgid "Delete scan"
 msgstr "Supprimer le scan"
 
 #: templates/moderation/_scans.html:19
-msgid "started editing"
-msgstr "édition démarrée"
+#, python-format
+msgid ""
+"\n"
+"\t\t      <%%= obj.lock.user.display_name %%>\n"
+"\t\t      started editing\n"
+"                      <%%= btb.englishDateInterval(obj.lock.created, obj."
+"lock.now) %%>\n"
+"\t\t      ago.\n"
+"                    "
+msgstr ""
 
-#: templates/moderation/_scans.html:39
+#: templates/moderation/_scans.html:42
 msgid "Warning"
 msgstr "Avertissement"
 
-#: templates/moderation/_scans.html:39
+#: templates/moderation/_scans.html:42
+#, fuzzy, python-format
 msgid ""
-"started editing this scan <%= btb.englishDateInterval(created, now) %> ago.  "
-"You might hold up a bit so that your changes don't conflict."
+"started editing this scan <%%= btb.englishDateInterval(created, now) %%> "
+"ago.  You might hold up a bit so that your changes don't conflict."
 msgstr ""
 "a commencer à éditer ce scan il y a <%= btb.englishDateInterval(created, "
 "now) %>. Merci d'attendre la fin de l'édition pour éviter des conflits de "
 "modification."
 
-#: templates/moderation/_scans.html:45
+#: templates/moderation/_scans.html:48
 msgid "Split Scan"
 msgstr "Split scan"
 
-#: templates/moderation/_scans.html:46
+#: templates/moderation/_scans.html:49
 #, fuzzy
 msgid "Original (pdf)"
 msgstr "Original (PDF)"
 
-#: templates/moderation/_scans.html:53
+#: templates/moderation/_scans.html:56
 #, fuzzy
 msgid "Replace scan"
 msgstr "Remplacer le scan"
 
-#: templates/moderation/_scans.html:56
+#: templates/moderation/_scans.html:59
 msgid "Re-parse scan"
 msgstr "Re-importer le scan"
 
-#: templates/moderation/_scans.html:59
+#: templates/moderation/_scans.html:62
 msgid "Merge scans"
 msgstr "Fusionner les scans"
 
-#: templates/moderation/_scans.html:89
+#: templates/moderation/_scans.html:92
 msgid "Code"
 msgstr "Code"
 
-#: templates/moderation/_scans.html:90
+#: templates/moderation/_scans.html:93
 msgid "Scan Code"
 msgstr "Code du scan"
 
-#: templates/moderation/_scans.html:96
+#: templates/moderation/_scans.html:99
 #, fuzzy
 msgid "Author"
 msgstr "Auteurs"
 
-#: templates/moderation/_scans.html:112
+#: templates/moderation/_scans.html:115
 #, fuzzy
 msgid "Post"
 msgstr "Publier"
 
-#: templates/moderation/_scans.html:112
+#: templates/moderation/_scans.html:115
 msgid "Photo"
 msgstr "Photo"
 
-#: templates/moderation/_scans.html:115
+#: templates/moderation/_scans.html:118
 msgid "Edit documents"
 msgstr "Editer les documents"
 
@@ -2147,7 +2399,9 @@ msgid ""
 "\t    "
 msgstr ""
 "\n"
-"Un arbre virtuel montrant les status des utilisateurs avec le nombre d'utilisateurs en parenthèse dans chaque groupe. Clic gauche pour zoomer, clic droit pour dézoomer.\n"
+"Un arbre virtuel montrant les status des utilisateurs avec le nombre "
+"d'utilisateurs en parenthèse dans chaque groupe. Clic gauche pour zoomer, "
+"clic droit pour dézoomer.\n"
 "  "
 
 #: templates/moderation/stats.html:22
@@ -2165,7 +2419,9 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Le nombre de nouveaux utilisateurs additionnels par semaine. Les pics dans les commentaires sont probabelement des campagnes de spam effectuées par des bots. "
+"Le nombre de nouveaux utilisateurs additionnels par semaine. Les pics dans "
+"les commentaires sont probabelement des campagnes de spam effectuées par des "
+"bots. "
 
 #: templates/moderation/stats.html:34 templates/moderation/stats.html.py:44
 #, fuzzy
@@ -2199,7 +2455,8 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Cette ligne de temps montre le nombre de requêtes, d'articles et de profiles par semaine. "
+"Cette ligne de temps montre le nombre de requêtes, d'articles et de profiles "
+"par semaine. "
 
 #: templates/moderation/stats.html:67
 msgid "Impact: Posts"
@@ -2214,7 +2471,8 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Ce graphique montre le nombre d'articles par auteur, ceci montre la proportion d'articles produit par les contributeurs les plus actifs. "
+"Ce graphique montre le nombre d'articles par auteur, ceci montre la "
+"proportion d'articles produit par les contributeurs les plus actifs. "
 
 #: templates/moderation/stats.html:76
 msgid "Impact: Pages"
@@ -2228,7 +2486,9 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Ce graphique montre les contributions triées par nombre de pages par article. Certains auteurs publient un grand nombre de pages, alors que d'autres publient des articles courts. "
+"Ce graphique montre les contributions triées par nombre de pages par "
+"article. Certains auteurs publient un grand nombre de pages, alors que "
+"d'autres publient des articles courts. "
 
 #: templates/moderation/stats.html:90
 #, fuzzy
@@ -2241,7 +2501,8 @@ msgstr "Commentaires publiés par semaine"
 
 #: templates/moderation/stats.html:95
 msgid "This graph shows the number of new comments posted per week."
-msgstr "Ce graphique montre le nombre de nouveaux commentaires postés par semaine."
+msgstr ""
+"Ce graphique montre le nombre de nouveaux commentaires postés par semaine."
 
 #: templates/moderation/stats.html:98
 #, fuzzy
@@ -2279,6 +2540,24 @@ msgid ""
 "            "
 msgstr ""
 
+#: templates/notification/email_body.txt:2
+msgid "Greetings"
+msgstr ""
+
+#: templates/notification/email_body.txt:9
+#, python-format
+msgid ""
+"\n"
+"You received this email because you are subscribed to receive emails from "
+"%(current_site)s.\n"
+"To manage your %(current_site)s email preferences, please go to:\n"
+"<%(notices_url)s>\n"
+"To unsubscribe from all %(current_site)s notifications, please go to:\n"
+"<http://%(current_site)s%(unsubscribe_url)s>\n"
+"\n"
+"To report abuse, please reply to this email.\n"
+msgstr ""
+
 #: templates/notification/notice_settings.html:4
 msgid "Notification preferences"
 msgstr "Préférences de notification"
@@ -2310,7 +2589,7 @@ msgid "Send email notifications for:"
 msgstr "Envoyer les notification mail pour :"
 
 #: templates/notification/notice_settings.html:30
-#: templates/notification/notice_settings.html:65
+#: templates/notification/notice_settings.html:68
 msgid "Save preferences"
 msgstr "Enregistrer les préférences"
 
@@ -2350,7 +2629,13 @@ msgstr "Réponses à"
 msgid "authors"
 msgstr "Auteurs"
 
-#: templates/notification/notice_settings.html:68
+#: templates/notification/notice_settings.html:63
+msgid ""
+"Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub."
+"campaign.title }}</a></em> campaign"
+msgstr ""
+
+#: templates/notification/notice_settings.html:71
 msgid "You have no subscriptions."
 msgstr "Vous n'avez aucun abonnement."
 
@@ -2379,10 +2664,51 @@ msgstr "Supprimer tous les messages"
 msgid "No notifications."
 msgstr "Pas de notification"
 
+#: templates/notification/new_post/full.txt:1
+msgid "has sent a new letter to"
+msgstr ""
+
+#: templates/notification/new_post/full.txt:3
+msgid "You can read the letter here"
+msgstr ""
+
+#: templates/notification/new_post/full.txt:6
+#, fuzzy
+msgid "has added a new blog post"
+msgstr "voir comme un article de blog"
+
+#: templates/notification/new_post/full.txt:10
+#, fuzzy
+msgid "Read more here"
+msgstr "Lire plus"
+
+#: templates/notification/new_post/full.txt:13
+#, fuzzy
+msgid "Post categories"
+msgstr "Articles par categorie"
+
 #: templates/notification/new_post/notice.html:1
 #: templates/notification/new_reply/notice.html:2
 msgid "from"
 msgstr "de"
+
+#: templates/notification/new_reply/full.txt:2
+#, fuzzy
+msgid "has replied to"
+msgstr "Réponses à"
+
+#: templates/notification/new_reply/full.txt:2
+#, fuzzy
+msgid "which you are following"
+msgstr "à un article que vous suivez"
+
+#: templates/notification/new_reply/full.txt:4
+msgid "View the reply online"
+msgstr ""
+
+#: templates/notification/new_reply/full.txt:8
+msgid "wrote"
+msgstr ""
 
 #: templates/notification/new_reply/notice.html:2
 #, fuzzy
@@ -2397,11 +2723,6 @@ msgstr "Supprimer scan"
 #: templates/profiles/confirm_delete_scan.html:4
 msgid "Are you sure you want to remove your profile scan?"
 msgstr "Êtes vous sûr de vouloir supprimer le scan de votre profil ?"
-
-#: templates/profiles/confirm_delete_scan.html:6
-#, fuzzy
-msgid "Delete"
-msgstr "Supprimer"
 
 #: templates/profiles/confirm_delete_self.html:2
 #: templates/profiles/profile_edit.html:48
@@ -2677,6 +2998,35 @@ msgstr "Vous savez peut-être"
 msgid "login"
 msgstr "s'authentifier"
 
+#: templates/registration/activation_email.txt:2
+msgid "Hello"
+msgstr ""
+
+#: templates/registration/activation_email.txt:7
+msgid "To complete your registration, follow this link:"
+msgstr ""
+
+#: templates/registration/activation_email.txt:10
+msgid "This link will expire in {{ expiration_days }} days, so don't delay."
+msgstr ""
+
+#: templates/registration/activation_email.txt:12
+msgid "See you on {{ site.name }}! "
+msgstr ""
+
+#: templates/registration/activation_email.txt:14
+msgid "Sincerely"
+msgstr ""
+
+#: templates/registration/activation_email.txt:16
+msgid "{{ site.name }} staff"
+msgstr ""
+
+#: templates/registration/activation_email_subject.txt:2
+#, fuzzy
+msgid "Registration Confirmation"
+msgstr "Inscription"
+
 #: templates/registration/login.html:3 templates/registration/login.html:11
 msgid "Login"
 msgstr "S'authentifier"
@@ -2828,10 +3178,11 @@ msgstr ""
 "et nous vous enverons des instructions pour en entrer un nouveau."
 
 #: templates/registration/password_reset_form.html:11
+#, python-format
 msgid ""
 "\n"
 "  If you are an author on this site and have never logged in before,\n"
-"  please <a href='mailto:contact@betweenthebars.org'>contact us</a>\n"
+"  please <a href='mailto:%(site.email)s'>contact us</a>\n"
 "  and we can set up your login account for you.\n"
 "  "
 msgstr ""
@@ -2887,11 +3238,11 @@ msgid "Welcome"
 msgstr "Bienvenu"
 
 #: templates/registration/welcome.html:14
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "Registration successful.  You may now leave comments,\n"
-"transcribe posts, and\"\n"
+"transcribe posts, and\n"
 "<a href='%(edit_profile)s'>edit your profile</a>.\n"
 msgstr ""
 "\n"
@@ -2912,8 +3263,8 @@ msgstr ""
 "la communauté</a> qui explique la démarche pour les commentaires et les "
 "retranscriptions.\n"
 
-#: templates/scanning/_column_diff.html:5
-#: templates/scanning/_column_diff.html:7
+#: templates/scanning/_column_diff.html:6
+#: templates/scanning/_column_diff.html:8
 #: templates/scanning/revision_list.html:25
 #, fuzzy
 msgid "Revision"
@@ -2926,11 +3277,14 @@ msgstr "Laisser un mot"
 #: templates/scanning/after_transcribe_comment.html:8
 msgid ""
 "\n"
-"Thanks for updating the transcription.  Would you like to leave a note for\n"
-"the author so they know you've done the work?\n"
+"Thanks for updating the transcription.  Would you like to leave a note for "
+"the\n"
+"author so they know you've done the work?  Please take a moment to "
+"personalize\n"
+"it, now that you've read their work!\n"
 msgstr ""
 
-#: templates/scanning/after_transcribe_comment.html:15
+#: templates/scanning/after_transcribe_comment.html:16
 msgid "No thanks, skip this"
 msgstr "Non merci, ignorer cette étape"
 
@@ -2989,11 +3343,12 @@ msgid ""
 "if, for example, someone adds an additional page to a profile."
 msgstr ""
 
-#: templates/scanning/reimport.html:4 templates/scanning/reimport.html.py:7
+#: templates/scanning/reimport.html:3 templates/scanning/reimport.html.py:5
+#: templates/scanning/reimport.html:8
 msgid "Reimport scan"
 msgstr "Réimporter le scan"
 
-#: templates/scanning/reimport.html:5
+#: templates/scanning/reimport.html:6
 msgid ""
 "If processing of a scan failed for whatever reason, sometimes reimporting it "
 "will fix garbled or missing images.  This will make any documents associated "
@@ -3099,15 +3454,19 @@ msgid "posts from"
 msgstr "articles de"
 
 #: templates/subscriptions/subscribe_to.html:14
+msgid "posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?"
+msgstr ""
+
+#: templates/subscriptions/subscribe_to.html:15
 msgid "Sign me up!"
 msgstr "M'enregistrer!"
 
-#: templates/subscriptions/subscribe_to.html:15
+#: templates/subscriptions/subscribe_to.html:16
 #, fuzzy
 msgid "Subscription settings"
 msgstr "Préférences d'abonnement"
 
-#: templates/subscriptions/subscribe_to.html:19
+#: templates/subscriptions/subscribe_to.html:20
 #, python-format
 msgid ""
 "\n"
@@ -3117,8 +3476,15 @@ msgid ""
 "email address</a> in your profile.\n"
 msgstr ""
 
-#~ msgid "filed under"
-#~ msgstr "enregistré sous"
+# Actualités
+#~ msgid "News"
+#~ msgstr "Actualités"
+
+#~ msgid "Mailing list"
+#~ msgstr "Liste de discussion"
+
+#~ msgid "started editing"
+#~ msgstr "édition démarrée"
 
 #~ msgid "More"
 #~ msgstr "Plus"
