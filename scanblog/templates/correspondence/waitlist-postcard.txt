@@ -1,3 +1,4 @@
+{% load i18n %}
 {% blocktrans %}
 Thank you for your request to join the {{ site.name }} blog. We have been overwhelmed by requests from writers all across the country. Unfortunately, this demand has outpaced our ability to process the mail from our currently registered writers. In order to continue to meet our obligations to them, we have begun to add all new requests to a wait-list.
 
