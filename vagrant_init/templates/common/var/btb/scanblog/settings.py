@@ -11,7 +11,6 @@ COMPRESS_ENABLED = not DEBUG
 
 BCRYPT_ENABLED = False #Too slow for dev
 THUMBNAIL_DEBUG = DEBUG
-LETTUCE_SERVER_PORT = 8001 # Port for lettuce tests
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 DISABLE_NOTIFICATIONS = False
@@ -132,5 +131,3 @@ LOGGING = {
         },
     }
 }
-
-SELENIUM_FIREFOX_BIN = "/home/tc1/src/firefox/firefox"
