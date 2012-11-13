@@ -1,9 +1,9 @@
 from default_settings import *
 
 DEBUG = TEMPLATE_DEBUG = True
-COMPRESS_ENABLED = not DEBUG
 # Workaround for asset bug:
 # https://github.com/jezdez/django_compressor/issues/226
+#COMPRESS_ENABLED = not DEBUG
 #if not COMPRESS_ENABLED:
 #    COMPRESS_ENABLED = True
 #    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
