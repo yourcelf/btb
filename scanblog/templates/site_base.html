@@ -51,7 +51,7 @@
                                     {% if notice_unseen_count > 0 %}
                                       <a class='notice-unseen-count' 
                                          href='{% url notification_notices %}' 
-                                         title='{{ notice_unseen_count}} unread notification{{ notice_unseen_count|pluralize }}'
+                                         title='{% blocktrans count counter=notice_unseen_count %}{{ counter}} unread notification{% plural %}{{ counter }} unread notifications{% endblocktrans %}'
                                          >{{ notice_unseen_count }}</a>
                                     {% endif %}
                                     <b>{{ user.profile }}</b>
@@ -61,8 +61,8 @@
                                                 <li>
                                                 <a class='notice-unseen-count' 
                                                    href='{% url notification_notices %}' 
-                                                   title='{% blocktrans count notice_unseen_count %}{{ notice_unseen_count}} unread notification{% plural %}{{ notice_unseen_count }} unread notifications{% endblocktrans %}'
-                                                   >{% blocktrans count notice_unseen_count %}{{ notice_unseen_count }} message{% plural %}{{ notice_unseen_count }} messages{% endblocktrans %}</a>
+                                                   title='{% blocktrans count counter=notice_unseen_count %}{{ counter }} unread notification{% plural %}{{ counter }} unread notifications{% endblocktrans %}'
+                                                   >{% blocktrans count counter=notice_unseen_count %}{{ counter }} message{% plural %}{{ counter }} messages{% endblocktrans %}</a>
                                                 <div style='clear: both;'></div>
                                                 </li>
                                             {% endif %}
