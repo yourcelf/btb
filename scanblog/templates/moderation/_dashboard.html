@@ -1,36 +1,37 @@
+{% load i18n %}
 <!-- Templates -->
 <script type='text/template' id="dashboard">
     <div class='dashboard'>
-        <h1>{{ site.name }} backend</h1>
+        <h1>{{ site.name }} {% trans "backend" %}</h1>
         <div style='float: left; width: 49%;'>
             <div class='scans'>
                 <div class='scan-chooser'>
-                    <span data-complete='0' class='needs-attention'>Unfinished</span
-                        ><span data-complete='1' class='published'>Finished</span>
+                    <span data-complete='0' class='needs-attention'>{% trans "Unfinished" %}</span
+                        ><span data-complete='1' class='published'>{% trans "Finished" %}</span>
                 </div>
-                <h2>Scans</h2>
+                <h2>{% trans "Scans" %}</h2>
                 <div class='open-scans'></div>
             </div>
 
             <div class='docs'>
                 <div class='doc-chooser'>
-                    <span data-status='unknown' class='needs-attention'>Needs attention</span
-                        ><span data-status='ready' class='ready'>Ready to publish</span
-                        ><span data-status='published' class='published'>Published</span>
+                    <span data-status='unknown' class='needs-attention'>{% trans "Needs attention"  %}</span
+                        ><span data-status='ready' class='ready'>{% trans "Ready to publish" %}</span
+                        ><span data-status='published' class='published'>{% trans "Published" %}</span>
                 </div>
-                <h2>Documents</h2>
+                <h2>{% trans "Documents" %}</h2>
                 <div class='open-documents'></div>
             </div>
         </div>
         <div style='float: right; width: 49%;'>
             <div class='tickets'>
-                <h2>Open Tickets</h2>
+                <h2>{% trans "Open Tickets" %}</h2>
                 <div class='open-tickets'>
                     <img src='{{ STATIC_URL }}img/spinner.gif' />
                 </div>
             </div>
             <div class='mail'>
-                <h2>Outgoing Mail</h2>
+                <h2>{% trans "Outgoing Mail" %}</h2>
                 <div class='outgoing-mail'>
                     <img src='{{ STATIC_URL }}img/spinner.gif' />
                 </div>
@@ -40,8 +41,8 @@
 </script>
 <script type='text/template' id="dashboardLetters">
     <div class='dashboard-letters'>
-        <b>Enqueued</b>: <a href='#/mail'><%= enqueuedCount %></a><br />
-        <b>Needed</b>
+        <b>{% trans "Enqueued" %}</b>: <a href='#/mail'><%= enqueuedCount %></a><br />
+        <b>{% trans "Needed" %}</b>
         <ul class='needed-list'></ul>
     </div>
 </script>

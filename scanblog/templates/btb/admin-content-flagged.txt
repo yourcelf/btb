@@ -1,14 +1,15 @@
-A flag was created for {{ note.content_object }} by user "{{ note.creator.profile }}".
+{% load i18n %}
+{% trans "A flag was created for" %} {{ note.content_object }} {% trans "by user" %} "{{ note.creator.profile }}".
 
-Content URL:
+{% trans "Content URL" %}:
 http://{{ site.domain }}{{ note.content_object.get_absolute_url }}
 
-Edit flagging user:
+{% trans "Edit flagging user" %}:
 http://{{ site.domain }}/admin/auth/user/{{ user.id }}/
-Delete flagging user:
+{% trans "Delete flagging user" %}:
 http://{{ site.domain }}/admin/auth/user/{{ user.id }}/delete/
 
-Note content:
+{% trans "Note content" %}:
 ----
 {{ note.text|safe }}
 ----

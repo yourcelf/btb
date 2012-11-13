@@ -4,28 +4,41 @@
 
 {% block body %}
 <div style='float: left; width: 50%;' class='login-form'>
-<h2>Have an account?  Login</h2>
+<h2>{% trans "Have an account?  Login" %}</h2>
 <form action='' method='post'>{% csrf_token %}
     <table>
         {{ form }}
-        <tr><td></td><td><input type='submit' value='{% trans "Login" %}' /></td></tr>
+        <tr><td></td><td><input type='submit' value="{% trans 'Login' %}" /></td></tr>
     </table>
 </form>
 <p><a href='{% url auth_password_reset %}'>{% trans "Forgot your password?" %}</a></p>
 </div>
 <div style='float: left; width: 40%;' class='register-form'>
-    <h2>New to {{ site.name }}?  Sign up</h2>
+    <h2>
+      {% blocktrans %} 
+      New to {{ site.name }}?  Sign up
+      {% endblocktrans %}
+    </h2>
     <p>
-        Registered users can leave comments and transcribe posts.  By
-        registering, you are agreeing to the 
-        <a href='{% url about.terms %}'>Terms of Service</a> and 
-        <a href='{% url about.privacy %}'>Privacy Policy</a>.
+      {% url about.terms as url_terms %}
+      {% url about.privacy as url_privacy %}
+        {% blocktrans %}
+	Registered users can leave comments and transcribe posts.  By
+        registering, you are agreeing to the
+        <a href='{{ url_terms }}'>Terms of Service</a> and
+        <a href='{{ url_privacy }}'>Privacy Policy</a>.
+	{% endblocktrans %}
     </p>
 
     <form action='{% url registration_register %}' method='post'>{% csrf_token %}
         <table class='form'>
             {{ reg_form }}
-            <tr><td></td><td><input type='submit' value='{% trans "Register" %}' /></td></tr>
+            <tr>
+	      <td></td>
+	      <td>
+		<input type='submit' value="{% trans 'Register' %}" />
+	      </td>
+	    </tr>
         </table>
     </form>
 
@@ -48,10 +61,10 @@
                     }, function(data, textStatus, jqXHR) {
                         if (data.result === "taken") {
                             $("#regid_username").addClass("error");
-                            $("#regid_username").after("<span class='info'>Sorry, that name is taken.</span>");
+                            $("#regid_username").after("<span class='info'>{% trans "Sorry, that name is taken." %}</span>");
                         } else if (data.result === "available") {
                             $("#regid_username").removeClass("error");
-                            $("#regid_username").after("<span class='info'>Name available.</span>");
+                            $("#regid_username").after("<span class='info'>{% trans "Name available." %}</span>");
                         }
                     }
                 );

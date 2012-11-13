@@ -1,15 +1,16 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 {% block title %}Flag document{% endblock %}
 {% block body %}
-<h1>Flag content</h1>
-<p>A flag lets moderators now that something is not right about a particular post, profile, or comment.  Please help us by flagging any posts that seem to be against our <a href='{{ about.guidelines }}'>guidelines</a>, or have been improperly edited (for example, pages not rotated correctly).
+<h1>{% trans "Flag content" %}</h1>
+<p>{% trans "A flag lets moderators now that something is not right about a particular post, profile, or comment.  Please help us by flagging any posts that seem to be against our <a href='{{ about.guidelines }}'>guidelines</a>, or have been improperly edited (for example, pages not rotated correctly)." %}
 </p>
 <form method='post' action=''>{% csrf_token %}
     <table class='form'>
         {{ form.as_table }}
         <tr>
             <td></td>
-            <td><input type='submit' value='Notify moderators' /></td>
+            <td><input type='submit' value='{% trans "Notify moderators" %}' /></td>
         </tr>
     </table>
 </form>

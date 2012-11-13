@@ -1,17 +1,17 @@
 {% extends "moderation/base.html" %}
-
+{% load i18n %}
 {% block body %}
-<h1>Really delete scan?</h1>
-<p>Are you sure you want to delete this scan? The following documents and any comments they have will also be deleted.</p>
+<h1>{% trans "Really delete scan?" %}</h1>
+<p>{% trans "Are you sure you want to delete this scan? The following documents and any comments they have will also be deleted." %}</p>
 <form method='post' action=''>{% csrf_token %}
-    <input type='submit' value='Delete (no undo)' />
+    <input type='submit' value='{% trans "Delete (no undo)" %}' />
 </form>
 <ul>
     {% for doc in scan.document_set.all %}
-    <li><a href='{{ doc.get_absolute_url }}'>{{ doc.type }}: {{ doc.title }}</a> &ndash; {{ doc.human_status }} ({{doc.documentpage_set.count}} pages, {{ doc.comments.count }} comments)</li>
+    <li><a href='{{ doc.get_absolute_url }}'>{{ doc.type }}: {{ doc.title }}</a> &ndash; {{ doc.human_status }} ({{doc.documentpage_set.count}} {% trans "pages" %}, {{ doc.comments.count }} {% trans "comments" %})</li>
     {% endfor %}
 </ul>
-<h2>Scan pages</h2>
+<h2>{% trans "Scan pages" %}</h2>
 <ul>
     {% for page in scan.scanpage_set.all %}
     <li>

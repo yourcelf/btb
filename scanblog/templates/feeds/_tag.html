@@ -1,1 +1,2 @@
-<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ tag }} posts" href="{% url blogs.tagged_posts_feed tag %}" />
+{% load i18n %}
+<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ tag }} {% trans "posts" %}" href="{% url blogs.tagged_posts_feed tag %}" />

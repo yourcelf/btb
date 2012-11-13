@@ -1,65 +1,74 @@
 {% extends "notification/base.html" %}
+{% load i18n %}
 
-{% block title %}Notification preferences{% endblock %}
+{% block title %}{% trans "Notification preferences" %}{% endblock %}
 
 {% block body %}
 <form method='post' action=''>{% csrf_token %}
 <div class='preferences'>
-    <h2>Communication preferences</h2>
+    <h2>{% trans "Communication preferences" %}</h2>
     {% if user.email %}
-        <p>Your email address: <b>{{ user.email }}</b>.  <a href='{{ user.profile.get_user_edit_url }}'>edit</a></p>
+	<p>{% trans "Your email address" %}: <b>{{ user.email }}</b>.  <a href='{{ user.profile.get_user_edit_url }}'>{% trans "edit" %}</a></p>
     {% else %}
-        <p>You have no email address in your profile, so will receive no email notifications.  <a href='{{ user.profile.get_user_edit_url }}'>Add an email address</a>?</p>
+	<p>
+	  {% trans "You have no email address in your profile, so will receive no email notifications." %}
+	  <a href='{{ user.profile.get_user_edit_url }}'>{% trans "Add an email address" %}</a>?</p>
     {% endif %}
-    <p>Send email notifications for:</p>
-        <table class='form'>
-            {% for row in notice_settings.rows %}
-            <tr>
-                <th>{{ row.notice_type.description }}</th>
-                {% for cell in row.cells %}
-                    <td>
-                        <label for='id_{{ cell.0 }}'>Email</label>
-                        <input type='checkbox' value='on' {% if cell.1 %}checked='checked'{% endif %} id='id_{{ cell.0 }}' name='{{ cell.0 }}' />
-                    </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-            <tr><td colspan='2' style='text-align: right;'><input type='submit' value='Save preferences' /></td></tr>
-        </table>
-        <p>To ensure our emails are not delivered to your spam folder, please add <b><a href='mailto:{{ from_email }}'>{{ from_email }}</a></b> to your address book.</p>
+    <p>{% trans "Send email notifications for:" %}</p>
+	<table class='form'>
+	    {% for row in notice_settings.rows %}
+	    <tr>
+		<th>{{ row.notice_type.description }}</th>
+		{% for cell in row.cells %}
+		    <td>
+			<label for='id_{{ cell.0 }}'>Email</label>
+			<input type='checkbox' value='on' {% if cell.1 %}checked='checked'{% endif %} id='id_{{ cell.0 }}' name='{{ cell.0 }}' />
+		    </td>
+		{% endfor %}
+	    </tr>
+	    {% endfor %}
+	    <tr><td colspan='2' style='text-align: right;'><input type='submit' value='{% trans "Save preferences" %}' /></td></tr>
+	</table>
+	<p>{% blocktrans %}
+	  To ensure our emails are not delivered to your spam folder, please add <b><a href='mailto:{{ from_email }}'>{{ from_email }}</a></b> to your address book.
+	  {% endblocktrans %}
+	</p>
 </div>
-<h2>Subscriptions</h2>
-<p>Notifications appear on the site, and according to the preferences above.</p>
+<h2>{% trans "Subscriptions" %}</h2>
+<p>{% trans "Notifications appear on the site, and according to the preferences above." %}</p>
 {% if subscription_settings %}
     <table class='form'>
-        {% for label, sub in subscription_settings %}
-            <tr>
-                <td>
-                    <input type='checkbox' name='{{ label }}' value='on' checked='checked' />
-                </td>
-                <td>
-                    {% if sub.document_id %}
-                        Replies to &ldquo;{{ sub.document.get_title }}&rdquo; by {{ sub.document.author.profile }}
-                    {% endif %}
-                    {% if sub.author_id %}
-                        Posts by {{ sub.author.profile }}
-                    {% endif %}
-                    {% if sub.tag_id %}
-                        Posts tagged &ldquo;{{ sub.tag }}&rdquo;
-                    {% endif %}
-                    {% if sub.organization_id %}
-                        Posts from <em><a href='{{ sub.organization.get_absolute_url }}'>{{ sub.organization.name }}</a></em> authors
-                    {% endif %}
+	{% for label, sub in subscription_settings %}
+	    <tr>
+		<td>
+		    <input type='checkbox' name='{{ label }}' value='on' checked='checked' />
+		</td>
+		<td>
+		    {% if sub.document_id %}
+			{% trans "Replies to" %}
+			&ldquo;{{ sub.document.get_title }}&rdquo;
+			{% trans "by" %}
+			{{ sub.document.author.profile }}
+		    {% endif %}
+		    {% if sub.author_id %}
+			{% trans "Posts by" %} {{ sub.author.profile }}
+		    {% endif %}
+		    {% if sub.tag_id %}
+			{% trans "Posts tagged" %} &ldquo;{{ sub.tag }}&rdquo;
+		    {% endif %}
+		    {% if sub.organization_id %}
+			{% trans "Posts from" %} <em><a href='{{ sub.organization.get_absolute_url }}'>{{ sub.organization.name }}</a></em> {% trans "authors" %}
+		    {% endif %}
                     {% if sub.campaign_id %}
-                        Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign
+                        {% trans "Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign" %}
                     {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        <tr><td colspan='2'><input type='submit' value='Save preferences' /></td></tr>
+		</td>
+	    </tr>
+	{% endfor %}
+	<tr><td colspan='2'><input type='submit' value='{% trans "Save preferences" %}' /></td></tr>
     </table>
 {% else %}
-    <p>You have no subscriptions.</p>
+    <p>{% trans "You have no subscriptions." %}</p>
 {% endif %}
 </form>
 {% endblock %}

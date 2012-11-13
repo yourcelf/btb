@@ -2,11 +2,11 @@
 {% block nav_upload_active %}active{% endblock %}
 {% block title %}Upload scans{% endblock %}
 {% block body %}
-    <h1>Merge Scan</h1>
-    <p>Choose a PDF file to merge (add to the bottom of) this scan's PDF. Use this if, for example, someone adds an additional page to a profile.</p>
+    <h1>{% trans "Merge Scan" %}</h1>
+    <p>{% trans "Choose a PDF file to merge (add to the bottom of) this scan's PDF. Use this if, for example, someone adds an additional page to a profile." %}</p>
     <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
         {{ form }}
-        <p><input type='submit' value='Upload' class='upload-submit' /></p>
+        <p><input type='submit' value='{% trans "Upload" %}' class='upload-submit' /></p>
     </form>
 {% endblock %}
 

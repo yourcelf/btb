@@ -3,59 +3,66 @@
 
 {% block title %}
     {% if post.pk %}
-        Editing post {{ post.get_title }}
+	{% trans "Editing post" %} {{ post.get_title }}
     {% else %}
-        Compose post
+	{% trans "Compose post" %}
     {% endif %}
 {% endblock %}
 
 {% block body %}
 <h1>
     {% if post.pk %}
-        Editing post {{ post.get_title }}
+	{% trans "Editing post" %} {{ post.get_title }}
     {% else %}
-        Compose post
+	{% trans "Compose post" %}
     {% endif %}
 </h1>
 {% if post.scan_id %}
-    <p> 
-        Sorry: we're still working on the feature to allow you to edit scans
-        that were uploaded while you were incarcerated.  We're not ready yet!
-        In the mean time, don't hesitate to write us at 
-        <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>
-        and we an make any changes to the posts if you'd like.
+    <p>
+	{% blocktrans %}
+	Sorry: we're still working on the feature to allow you to edit scans
+	that were uploaded while you were incarcerated.  We're not ready yet!
+	In the mean time, don't hesitate to write us at
+	<a href='mailto:{{ site_email }}'>{{ site_email }}</a>
+	and we an make any changes to the posts if you'd like.
+	{% endblocktrans %}
     </p>
     <p>
-        If you'd like to remove the post, click &ldquo;Delete post" below.
+	{% trans "If you'd like to remove the post, click &ldquo;Delete post&ldquo; below." %}
     </p>
 {% else %}
     <form method='post' action=''>{% csrf_token %}
-        <table class='edit-post'>
-            {{ form.as_table }}
-            <tr>
-                <th><label for='tags'>Tags</th>
-                <td>
-                    (optional) Comma separated list of categories:
-                    <ul class='tags' name='tags'>
-                        {% if post.pk %}
-                            {% for tag in post.tags.all %}
-                            <li>{{ tag.name }}</li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
-                 </td>
-            </tr>
-            <tr>
-                <td></td><td><input type='submit' value='Save post' class='save-post-button' /></td>
-            </tr>
-        </table>
+	<table class='edit-post'>
+	    {{ form.as_table }}
+	    <tr>
+		<th><label for='tags'>{% trans "Tags" %}</th>
+		<td>
+		    {% trans "(optional) Comma separated list of categories" %}:
+		    <ul class='tags' name='tags'>
+			{% if post.pk %}
+			    {% for tag in post.tags.all %}
+			    <li>{{ tag.name }}</li>
+			    {% endfor %}
+			{% endif %}
+		    </ul>
+		 </td>
+	    </tr>
+	    <tr>
+		<td></td><td>
+		  <input type='submit' value='{% trans "Save post" %}'
+			 class='save-post-button' />
+		</td>
+	    </tr>
+	</table>
     </form>
 {% endif %}
 
 {% if post.pk %}
     <br />
     <br />
-    <a href='{% url blogs.delete_post post.pk %}' class='delete-post-button'>Delete post</a>
+    <a href='{% url blogs.delete_post post.pk %}' class='delete-post-button'>
+      {% trans "Delete post" %}
+    </a>
 {% endif %}
 {% endblock %}
 
@@ -63,12 +70,12 @@
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-ui.min.js'></script>
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-tagit/js/tagit.js'></script>
     <script type='text/javascript'>
-        $(".edit-post ul.tags").tagit({
-            tagSource: "{% url blogs.post_tag_list %}",
-            triggerKeys: ['enter', 'comma', 'tab', ';'],
-            allowNewTags: true,
-            select: true,
-            name: 'tags'
-        });
+	$(".edit-post ul.tags").tagit({
+	    tagSource: "{% url blogs.post_tag_list %}",
+	    triggerKeys: ['enter', 'comma', 'tab', ';'],
+	    allowNewTags: true,
+	    select: true,
+	    name: 'tags'
+	});
     </script>
 {% endblock %}

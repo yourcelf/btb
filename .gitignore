@@ -1,5 +1,6 @@
 # Editor trash/compiled files
 *.pyc
+*~
 *.swp
 .sass-cache
 .DS_Store*

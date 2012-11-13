@@ -1,3 +1,4 @@
+{% load i18n %}
 <script type='text/template' id="pagination">
     <% if (pagination.pages > 1) { %>
         <%= pagination.count %> results. Page:
@@ -21,7 +22,7 @@
 <script type='text/template' id="editorInPlace">{% spaceless %}
     <span class='editor-in-place'>
         <span class='edit-tag'></span><br />
-        <input type='button' value='Save' class='save' />
-        <span class='link-like cancel'>cancel</span>
+        <input type='button' value="{% trans 'Save' %}" class='save' />
+        <span class='link-like cancel'>{% trans "cancel" %}</span>
     </span>
 {% endspaceless %}</script>

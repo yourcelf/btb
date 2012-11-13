@@ -1,8 +1,14 @@
 {% extends "site_base.html" %}
-{% block title %}Edit comment {% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Edit comment" %} {% endblock %}
 {% block body %}
-<h2>Edit comment</h2>
-<p>Please consider our <a href='{% url about.community_guidelines %}'>guidelines</a> while writing.</p>
+<h2>{% trans "Edit comment" %}</h2>
+<p>
+  {% url about.community_guidelines as guidelines_url %}
+  {% blocktrans %}
+  Please consider our <a href='{{ guidelines_url }}'>guidelines</a> while writing.
+  {% endblocktrans %}
+</p>
     <form method='post' action=''>{% csrf_token %}
         <div style='float: left;'>
             {% if form.comment.errors %}
@@ -10,7 +16,7 @@
             {% endif %}
             {{ form.comment }}
             <div style='text-align: right;'>
-                <input type='submit' value='Save changes' />
+                <input type='submit' value='{% trans "Save changes" %}' />
             </div>
             <div style='clear: both;'></div>
         </div>

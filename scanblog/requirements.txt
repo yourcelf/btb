@@ -26,3 +26,4 @@ reportlab
 # and firefox 10.0 to work properly.  Specify the firefox binary to use in
 # settings.SELENIUM_FIREFOX_BIN
 selenium<=2.20
+pytz

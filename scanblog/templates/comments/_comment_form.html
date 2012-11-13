@@ -3,22 +3,24 @@
     <a name='commentform'></a>
     <h3>
         {% if post.author.profile.managed and not post.author.profile.lost_contact %}
-            We will print and mail your reply by <span class='comment-maildate'></span>.  
-        {% endif %}
-        <a href='{% url about.community_guidelines %}'>Guidelines</a></h3>
+	    {% blocktrans %}
+	    We will print and mail your reply by <span class='comment-maildate'></span>.
+	    {% endblocktrans %}
+	{% endif %}
+	<a href='{% url about.community_guidelines %}'>{% trans "Guidelines" %}</a></h3>
     <div style='float: left; clear: both;'>
-        <form method='post' action='#commentform'>{% csrf_token %}
-            {% if comment_form.comment.errors %}
-                <p>{{ comment_form.comment.errors }}</p>
-            {% endif %}
-            {{ comment_form.comment }}
-            {{ comment_form.honey }}
-            <div style='text-align: right;'>
-                <input class='reply-button' 
-                       type='submit' 
-                       value='{% trans "Send Reply &raquo;" %}' />
-            </div>
-        </form>
+	<form method='post' action='#commentform'>{% csrf_token %}
+	    {% if comment_form.comment.errors %}
+		<p>{{ comment_form.comment.errors }}</p>
+	    {% endif %}
+	    {{ comment_form.comment }}
+	    {{ comment_form.honey }}
+	    <div style='text-align: right;'>
+		<input class='reply-button'
+		       type='submit'
+		       value='{% trans "Send Reply &raquo;" %}' />
+	    </div>
+	</form>
     </div>
     <div style='clear: both;'></div>
 </div>

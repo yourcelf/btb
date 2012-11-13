@@ -1,7 +1,8 @@
+{% load i18n %}
 {% with post.tags.all as tags %}
 {% with post.in_reply_to.campaign as campaign %}
 {% if tags or campaign.public %}
-    <span class='post-tag-list'>filed under: 
+    <span class='post-tag-list'>{% trans "filed under:" %}
         {% for tag in tags %}
         <a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}{% endfor %}{% if campaign.public %}{% if tags %}, {% endif %}
             <a href='{{ campaign.get_absolute_url }}'>{{ campaign.title }}</a>

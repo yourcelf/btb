@@ -1,5 +1,6 @@
 {% extends "moderation/base.html" %}
-{% block title %}Manage tasks{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Manage tasks" %}{% endblock %}
 {% block body %}
 <script type='text/javascript'>
     function toggle_traceback(link) {
@@ -32,22 +33,22 @@
         font-family: monospace;
     }
 </style>
-<h1>Tasks</h1>
+<h1>{% trans "Tasks" %}</h1>
 <div id='message'></div>
 <small>
-Restrict to: <a href='?status=PENDING'>PENDING</a> <a href='?status=SUCCESS'>SUCCESS</a> <a href='?status=FAILURE'>FAILURE</a>
+{% trans "Restrict to" %}: <a href='?status=PENDING'>{% trans "PENDING" %}</a> <a href='?status=SUCCESS'>{% trans "SUCCESS" %}</a> <a href='?status=FAILURE'>{% trans "FAILURE" %}</a>
 </small>
 <table style='position: relative;'>
     <tr>
-        <th>Link</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Result</th>
-        <th>Traceback</th>
+        <th>{% trans "Link" %}</th>
+        <th>{% trans "Date" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Result" %}</th>
+        <th>{% trans "Traceback" %}</th>
     </tr>
     {% for task in page.object_list %}
     <tr class='task' style='psoition: relative;'>
-        <td><a href='{% url moderation.wait_for_processing task.task_id %}' title='waiting page for task'>link</a></td>
+        <td><a href='{% url moderation.wait_for_processing task.task_id %}' title='{% trans "waiting page for task" %}'>{% trans "link" %}</a></td>
         <td>{{ task.date_done }}</td>
         <td>
             <span class='{{ task.status }}'>{{ task.status }}</span>
@@ -55,7 +56,7 @@ Restrict to: <a href='?status=PENDING'>PENDING</a> <a href='?status=SUCCESS'>SUC
         <td>{{ task.result }}</td>
         <td style='position: relative;'>
             {% if task.traceback %}
-                <a href='#' onclick='toggle_traceback(this); return false;'>Traceback</a>
+                <a href='#' onclick='toggle_traceback(this); return false;'>{% trans "Traceback" %}</a>
                 <div style='position: relative; display: none;'>
                 <div style='position: absolute; top: 0; right: 0; background-color: #fdd; white-space: pre; scroll: auto; z-index: 1;' class='traceback'>{{ task.traceback }}</div></div>
             {% endif %}

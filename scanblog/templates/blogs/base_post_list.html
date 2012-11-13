@@ -1,4 +1,5 @@
 {% extends "blogs/base.html" %}
+{% load i18n %}
 {# Base post list to be overridden by particular post lists #}
 {% block body %}
 
@@ -20,7 +21,7 @@
 
 {% if page.paginator.num_pages > 1 %}
 
-More posts:
+{{ more_posts }} :
 {% include "_pagination.html" %}
 {% include "blogs/_related.html" %}
 
