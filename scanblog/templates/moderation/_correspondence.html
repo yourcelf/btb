@@ -133,8 +133,10 @@
             Printout of <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
         <% } else if (letter.type == "comments") { %>
             <div class='comments-table'></div>
-        <% } else {%>
-            unknown letter, type: '<%= letter.type %>'
+        <% } else if (letter.type == "refused_original") {%>
+            Return originals &ndash; <i>refused</i> by policy. <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
+        <% } else if (letter.type == "returned_original") {%>
+            Return originals &ndash; requested by author. <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
         <% } %>
     </div>
     <div class='return'>Return:

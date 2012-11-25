@@ -23,6 +23,8 @@ def generate_file(letter):
         'printout': printout,
         'comments': comments_letter,
         'waitlist': waitlist_postcard,
+        'refused_original': refused_original,
+        'returned_original': returned_original,
     }
     if not letter.type:
         return None
@@ -159,6 +161,18 @@ def comments_letter(letter):
 
 def waitlist_postcard(letter):
     return utils.render_postcard("correspondence/waitlist-postcard.txt", {
+        'letter': letter,
+        'address': letter.recipient.profile.full_address(),
+    })
+
+def returned_original(letter):
+    return utils.render_tex_to_pdf("correspondence/returned-original.tex", {
+        'letter': letter,
+        'address': letter.recipient.profile.full_address(),
+    })
+
+def refused_original(letter):
+    return utils.render_tex_to_pdf("correspondence/refused-original.tex", {
         'letter': letter,
         'address': letter.recipient.profile.full_address(),
     })

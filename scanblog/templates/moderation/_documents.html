@@ -14,6 +14,13 @@
     </form>
     <div style='clear: both;'></div>
     <div class='notes'>
+        <div class='queue-return-holder'>
+          Queue for return: <a href='#' class='queue-returned-mail'>return by request</a> |
+          <a href='#' class='queue-refused-mail'><i>refuse</i> by policy</a>
+          <span class='org-chooser'></span>
+          <a href='#/users/<%= doc.author.id %>' title='Edit author'><span class='ui-icon ui-icon-person'></span></a>
+
+        </div>
         <div class='user-notes-table'></div>
         <div class='document-notes-manager'></div>
         <% if (doc.type == "request") { %>

@@ -316,6 +316,9 @@ class btb.CorrespondenceTable extends btb.LetterTable
         @collection = new btb.CorrespondenceList
         @collection.filter = options.filter
 
+    refresh: =>
+      @fetchItems()
+
     render: =>
         $(@el).html @template()
         @collection.each (obj) =>
@@ -357,6 +360,9 @@ class btb.CorrespondenceManager extends Backbone.View
         $(@el).html(@adder.el)
         $(@el).append(@table.el)
         @render()
+
+    refresh: =>
+      @table.refresh()
 
     render: =>
         @adder.render()

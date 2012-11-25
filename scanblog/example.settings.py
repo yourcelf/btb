@@ -3,11 +3,6 @@ from default_settings import *
 DEBUG = TEMPLATE_DEBUG = True
 # Workaround for asset bug:
 # https://github.com/jezdez/django_compressor/issues/226
-#COMPRESS_ENABLED = not DEBUG
-#if not COMPRESS_ENABLED:
-#    COMPRESS_ENABLED = True
-#    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
-#    COMPRESS_JS_FILTERS = []
 
 BCRYPT_ENABLED = False #Too slow for dev
 THUMBNAIL_DEBUG = DEBUG

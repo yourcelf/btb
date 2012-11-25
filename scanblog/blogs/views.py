@@ -215,7 +215,7 @@ def tagged_post_list(request, tag):
     context = _paginate(request, posts)
     pnum = context['page'].number
     if tag:
-        context['tag'] = Tag.objects.get(name=tag.lower())
+        context['tag'] = get_object_or_404(Tag, name=tag.lower())
         context['related'] = {
             'title': u"Other posts tagged with “%s”" % tag,
             'items': DocumentPage.objects.filter(

@@ -42,6 +42,7 @@ class btb.EditDocumentView extends Backbone.View
   template: _.template $("#editDocument").html()
   inReplyToTemplate: _.template $("#editDocumentInReplyTo").html()
   inReplyToCampaignTemplate: _.template $("#editDocumentInReplyToCampaign").html()
+  orgChooserTemplate: _.template $("#letterOrgChooser").html()
   pageSizes:
     small: 0.3
     medium: 0.6
@@ -52,6 +53,8 @@ class btb.EditDocumentView extends Backbone.View
     'click .full': 'pageSizeFull'
     'click .save-doc': 'save'
     'keyup .doc-in-reply-to': 'checkInReplyToCode'
+    'click .queue-returned-mail': 'queueReturn'
+    'click .queue-refused-mail':  'queueRefuse'
 
   initialize: (options=doc: null, num: 1, order: 0) ->
     @doc = options.doc
@@ -137,17 +140,20 @@ class btb.EditDocumentView extends Backbone.View
     @setPageSize()
     switch @doc.get("type")
       when "request"
-        $(".correspondence-list", @el).html(
-          new btb.CorrespondenceManager({
+        @correspondenceManager = new btb.CorrespondenceManager({
             recipient: new btb.User(@doc.get("author"))
-          }).el
-        )
+        })
+        $(".correspondence-list", @el).html(@correspondenceManager.el)
       when "license"
         $(".user-status-table", @el).html(
           new btb.UserStatusTable(user: new btb.User(@doc.get("author"))).render().el
         )
     if @doc.get("in_reply_to")
       @checkInReplyToCode()
+
+    @$(".queue-return-holder .org-chooser").html(@orgChooserTemplate({
+      letter: {recipient: @doc.get("author")}
+    }))
     this
 
   save: =>
@@ -326,6 +332,35 @@ class btb.EditDocumentView extends Backbone.View
     if @replyCodeTimeout
       clearTimeout(@replyCodeTimeout)
     setTimeout(update, 100)
+
+  queueReturn: (event) =>
+    @queueDocumentLetter(event, "returned_original")
+
+  queueRefuse: (event) =>
+    @queueDocumentLetter(event, "refused_original")
+
+  queueDocumentLetter: (event, type) =>
+    event.preventDefault()
+    return_holder = @$(".queue-return-holder")
+    return_holder.addClass("loading")
+    letter = new btb.Letter {
+      type: type
+      recipient_id: @doc.get("author").id
+      document_id: @doc.id
+      org_id: $("[name=org_id]", @$(".queue-return-holder")).val()
+    }
+    letter.save {}, {
+      success: =>
+        @$(".queue-return-holder").removeClass("loading")
+        @$(".queue-return-holder").html("<span class='success'>&check; Return queued.
+            <a href='#/users/#{@doc.get("author").id}'>view user\'s correspondence</a>
+          </span>")
+        @correspondenceManager?.refresh()
+
+      error: =>
+        @$(".queue-return-holder").removeClass("loading")
+        alert("Server error; return not queued.")
+    }
 
 #
 # View for a single page in a document.
