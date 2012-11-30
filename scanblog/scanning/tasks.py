@@ -48,6 +48,7 @@ def update_document_images(document_id=None, process_pages=True,
         doc.status = status
     doc.save()
     logger.debug("Update document images done.")
+    return True
 
 @task
 def process_zip(filename, uploader_id, org_id, redirect=None):

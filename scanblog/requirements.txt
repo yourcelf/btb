@@ -5,7 +5,6 @@ Celery
 django-celery
 pyPdf
 PIL
-amqplib
 fabric
 django-bcrypt
 -e git+https://github.com/ahupp/python-magic#egg=magic

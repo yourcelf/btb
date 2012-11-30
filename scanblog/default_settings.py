@@ -183,13 +183,9 @@ SCAN_PAGES_PER_PAGE = 6
 # Celery async processing
 import djcelery
 djcelery.setup_loader()
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-BROKER_VHOST = "/"
+BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = "database"
+CELERY_RESULT_BACKEND = "amqp"
 
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
 

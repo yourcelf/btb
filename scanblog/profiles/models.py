@@ -87,6 +87,10 @@ class ProfileManager(OrgManager):
         """ They have returned a consent form. """
         return self.bloggers().filter(consent_form_received=True)
 
+    def enrolled_in_contact(self):
+        """ They have returned a consent form, and we haven't lost contact. """
+        return self.enrolled().filter(lost_contact=False)
+
     #
     # Letter-based statuses
     #
