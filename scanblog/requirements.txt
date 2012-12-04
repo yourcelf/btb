@@ -21,3 +21,4 @@ pyyaml
 django-debug-toolbar
 reportlab
 selenium<=2.20 # Due to this bug: https://code.google.com/p/selenium/issues/detail?id=3736
+pytz

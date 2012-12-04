@@ -18,7 +18,7 @@ class ReplyCodes(JSONView):
     def get(self, request):
         codes = ReplyCode.objects.all()
         if "code" in request.GET:
-            codes = codes.filter(code=request.GET['code'])
+            codes = codes.filter(code__iexact=request.GET['code'])
         else:
             raise Http404
         if "document" in request.GET:
