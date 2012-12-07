@@ -9,7 +9,7 @@ from django.test.utils import override_settings
 
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
-from subscriptions.models import Subscription, NotificationBlacklist
+from subscriptions.models import Subscription, NotificationBlacklist, CommentNotificationLog
 from scanning.models import Document
 from comments.models import Comment
 from annotations.models import Tag, ReplyCode
@@ -267,4 +267,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertTrue("This is my fun body text" in msg.message().get_payload(None, True))
         self.assertEquals(mail.outbox, [])
         
+    def test_multiple_comment_notification(self):
+        CommentNotificationLog.objects.all().delete()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.clear_outbox()
+        comment1 = Comment.objects.create(comment="yah", user=self.commenter, document=doc)
+        comment2 = Comment.objects.create(comment="huh", user=self.commenter2, document=doc)
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
+        self.clear_outbox()
+        comment2.comment = "huh edited"
+        comment2.save()
+        self.assertEquals(len(mail.outbox), 0)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
 
