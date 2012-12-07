@@ -313,7 +313,7 @@ class Documents(JSONView):
             if kw['in_reply_to'] == None:
                 doc.in_reply_to = None
             else:
-                doc.in_reply_to = ReplyCode.objects.get(code=kw['in_reply_to'])
+                doc.in_reply_to = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
 
             doc.adult = kw['adult']
             # Ensure other processes won't try to serve this until we're done building.
