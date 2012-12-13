@@ -15,7 +15,7 @@
 {% block body %}
 
 <div class='post-detail {% if not post.currently_published %} unpublished{% endif %}'>
-{% if post.adult and not user.profile.show_inappropriate_posts %}
+{% if post.adult and not user.profile.show_adult_content %}
     {% include "blogs/_inappropriate_post.html" %}
 {% else %}
     {% with tx=post.transcription tx_rev=tx.current %}
