@@ -75,6 +75,9 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None:
             return
         document = instance
+        if document.author is None:
+            return
+
         if not document.is_public():
             return
         subs = Subscription.objects.filter(author=document.author)
@@ -113,6 +116,8 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None or 'created' not in kwargs:
             return
         comment = instance
+        if comment.document is None:
+            return
 
         # Create default subscription for commenter.
         sub, created = Subscription.objects.get_or_create(

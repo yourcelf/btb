@@ -283,7 +283,12 @@ class TestSubscriptions(BtbMailTestCase):
 
     def test_documentless_comment_saving(self):
         self.clear_outbox()
-        comment = Comment.objects.create(comment="hoo", user=self.commenter)
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        Subscription.objects.create(author=self.author, subscriber=self.commenter)
+        comment = Comment.objects.create(comment="A fine comment",
+                user=self.commenter2,
+                document=doc)
+        comment = Comment.objects.create(comment="An admin mistake", user=self.editor)
         self.assertEquals(mail.outbox, [])
 
     def test_moderator_notification_on_content_with_links(self):
