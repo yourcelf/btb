@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.conf import settings
 from django.db.models import signals
@@ -69,9 +70,11 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
 
     @receiver(signals.post_save, sender=Comment)
     def comment_notification(sender, instance, *args, **kwargs):
-        # Send mail immediately if there's something even remotely link-like in
-        # there.  Otherwise, wait for the daily digest.
-        if "http" in instance.comment:
+        # Send mail immediately if there's a link to anything other than
+        # ourselves in there.  Otherwise, wait for the daily digest.
+        site = Site.objects.get_current()
+        has_link_re = re.compile("https?://(?!{0}/)".format(re.escape(site.domain)))
+        if has_link_re.search(instance.comment):
             if instance.user.groups.filter(name='moderators').exists():
                 return
             if instance.comment_doc:
@@ -80,7 +83,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
             mail_managers(subject, render_to_string(
                 "btb/admin-email-comment-posted.txt", {
                     'comment': instance,
-                    'site': Site.objects.get_current(),
+                    'site': site,
                 }))
 
     @receiver(signals.post_save, sender=Note)

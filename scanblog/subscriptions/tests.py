@@ -281,3 +281,41 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertEquals(len(mail.outbox), 0)
         self.assertEquals(CommentNotificationLog.objects.count(), 1)
 
+    def test_documentless_comment_saving(self):
+        self.clear_outbox()
+        comment = Comment.objects.create(comment="hoo", user=self.commenter)
+        self.assertEquals(mail.outbox, [])
+
+    def test_moderator_notification_on_content_with_links(self):
+        # Nothing with no link.
+        self.clear_outbox()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        comment = Comment.objects.create(comment="No link",
+                user=self.commenter,
+                document=doc)
+        self.assertEquals(len(mail.outbox), 0)
+
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+            comment = Comment.objects.create(
+                    comment="{0}://advertiser.com".format(protocol),
+                    user=self.commenter,
+                    document=doc)
+            self.assertEquals(len(mail.outbox), 1)
+        
+
+        # Nothing with self links.
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+            comment = Comment.objects.create(
+                    comment="{0}://{1}/blogs/101/".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ),
+                    user=self.commenter,
+                    document=doc)
+            self.assertEquals(len(mail.outbox), 0)
