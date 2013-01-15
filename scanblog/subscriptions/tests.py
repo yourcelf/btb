@@ -10,7 +10,7 @@ from django.test.utils import override_settings
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
 from subscriptions.models import Subscription, NotificationBlacklist, CommentNotificationLog
-from scanning.models import Document
+from scanning.models import Document, Transcription, TranscriptionRevision
 from comments.models import Comment
 from annotations.models import Tag, ReplyCode
 from campaigns.models import Campaign
@@ -293,8 +293,13 @@ class TestSubscriptions(BtbMailTestCase):
         comment = Comment.objects.create(comment="No link",
                 user=self.commenter,
                 document=doc)
+        TranscriptionRevision.objects.create(
+                transcription=Transcription.objects.create(document=doc),
+                editor=self.commenter,
+                body="No link")
         self.assertEquals(len(mail.outbox), 0)
 
+        # Notification with non-self links
         for protocol in ("http", "https"):
             self.clear_outbox()
             doc = Document.objects.create(author=self.author, editor=self.editor,
@@ -304,13 +309,20 @@ class TestSubscriptions(BtbMailTestCase):
                     user=self.commenter,
                     document=doc)
             self.assertEquals(len(mail.outbox), 1)
-        
+
+            self.clear_outbox()
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://advertiser.com".format(protocol))
+            self.assertEquals(len(mail.outbox), 1)
 
         # Nothing with self links.
         for protocol in ("http", "https"):
             self.clear_outbox()
             doc = Document.objects.create(author=self.author, editor=self.editor,
                     status="published")
+
             comment = Comment.objects.create(
                     comment="{0}://{1}/blogs/101/".format(
                         protocol,
@@ -318,4 +330,13 @@ class TestSubscriptions(BtbMailTestCase):
                     ),
                     user=self.commenter,
                     document=doc)
+
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://{1}/blogs/101.com".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ))
+
             self.assertEquals(len(mail.outbox), 0)

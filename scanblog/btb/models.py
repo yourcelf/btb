@@ -35,6 +35,13 @@ else:
 #
 
 if not settings.DISABLE_ADMIN_NOTIFICATIONS:
+    def has_non_self_link(string):
+        return bool(
+            re.compile("https?://(?!{0}/)".format(
+                re.escape(Site.objects.get_current().domain))
+            ).search(string)
+        )
+
     @receiver(signals.post_save, sender=Document)
     def profile_notification(sender, instance, *args, **kwargs):
         if instance.author.groups.filter(name='moderators').exists():
@@ -57,9 +64,9 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def transcription_notification(sender, instance, *args, **kwargs):
         if instance.editor.groups.filter(name='moderators').exists():
             return
-        # Send mail immediately if there's something even remotely link-like in
-        # there.  Otherwise, wait for the daily digest.
-        if "http" in instance.body:
+        # Send mail immediately if there's a link to anything other than
+        # ourselves in there.  Otherwise, wait for the daily digest.
+        if has_non_self_link(instance.body):
             mail_managers("Transcription edited", render_to_string(
                 "btb/admin-email-transcription-edited.txt", {
                     'document': instance.transcription.document,
@@ -72,9 +79,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
     def comment_notification(sender, instance, *args, **kwargs):
         # Send mail immediately if there's a link to anything other than
         # ourselves in there.  Otherwise, wait for the daily digest.
-        site = Site.objects.get_current()
-        has_link_re = re.compile("https?://(?!{0}/)".format(re.escape(site.domain)))
-        if has_link_re.search(instance.comment):
+        if has_non_self_link(instance.comment):
             if instance.user.groups.filter(name='moderators').exists():
                 return
             if instance.comment_doc:
@@ -83,7 +88,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
             mail_managers(subject, render_to_string(
                 "btb/admin-email-comment-posted.txt", {
                     'comment': instance,
-                    'site': site,
+                    'site':  Site.objects.get_current(),
                 }))
 
     @receiver(signals.post_save, sender=Note)
