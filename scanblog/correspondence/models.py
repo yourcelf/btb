@@ -24,7 +24,9 @@ class Letter(models.Model):
             "first_post", 
             "printout",
             "comments", 
-            "waitlist")
+            "waitlist",
+            "returned_original",
+            "refused_original")
     sender = models.ForeignKey(User, related_name="authored_letters", blank=True)
 
     recipient = models.ForeignKey(User, blank=True, null=True, 

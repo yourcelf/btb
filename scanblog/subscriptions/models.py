@@ -45,6 +45,17 @@ class DocumentNotificationLog(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.document, self.recipient)
 
+class CommentNotificationLog(models.Model):
+    """
+    Log notifications of comments, so that we only send once per comment,
+    even if the comment is edited.
+    """
+    recipient = models.ForeignKey(User)
+    comment = models.ForeignKey(Comment)
+
+    def __unicode__(self):
+        return "%s -> %s" % (self.comment, self.recipient)
+
 class NotificationBlacklist(models.Model):
     """
     Any email in this list will never be sent a notification.  For abuse
@@ -64,6 +75,9 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None:
             return
         document = instance
+        if document.author is None:
+            return
+
         if not document.is_public():
             return
         subs = Subscription.objects.filter(author=document.author)
@@ -102,6 +116,8 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None or 'created' not in kwargs:
             return
         comment = instance
+        if comment.document is None:
+            return
 
         # Create default subscription for commenter.
         sub, created = Subscription.objects.get_or_create(
@@ -119,7 +135,11 @@ if not settings.DISABLE_NOTIFICATIONS:
             # No notification if the subscriber is the comment author. :)
             if sub.subscriber == comment.user:
                 continue
-            recipients.append(sub.subscriber)
+            log, created = CommentNotificationLog.objects.get_or_create(
+                recipient=sub.subscriber, comment=comment
+            )
+            if created:
+                recipients.append(sub.subscriber)
         if recipients:
             notification.send(recipients, "new_reply", {
                 'comment': comment,
