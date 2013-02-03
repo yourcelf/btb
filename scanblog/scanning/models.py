@@ -417,6 +417,12 @@ class Document(models.Model):
         else:
             return self.get_edit_url()
 
+    def mark_favorite_url(self):
+        return "%s?document_id=%s" % (reverse("comments.mark_favorite"), self.pk)
+
+    def unmark_favorite_url(self):
+        return "%s?document_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
+
     def get_edit_url(self):
         return "%s#/process/document/%s" % (reverse("moderation.home"), self.pk)
 

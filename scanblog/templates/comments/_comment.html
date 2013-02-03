@@ -1,3 +1,4 @@
+{% load favorites %}
         <div class='comment'>
             <a name='c{{ comment.id }}'></a>
             <div class='commentbyline'>
@@ -33,6 +34,7 @@
                                    class='comment-flag'
                                    title='Flag comment'>&nbsp;</a>
                             {% endif %}
+                            {% favorites comment %}
                         </td>
                     </tr>
                 </table>

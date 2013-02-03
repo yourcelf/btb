@@ -69,6 +69,7 @@ class BtbLoginTestCase(BtbTestCase):
             user.set_password(user.username)
             user.save()
             user.profile.managed = struct['managed']
+            user.profile.consent_form_received = struct['managed']
             user.profile.save()
             if struct.get('moderates', None):
                 org.moderators.add(user)

@@ -155,6 +155,8 @@ def show_profile(request, user_id):
         org = None
     return render(request, "profiles/profile_detail.html", {
             'document': document,
+            'favorites': profile.user.favorite_set.select_related(
+                'document', 'comment'),
             'profile': profile,
             'org': org,
             'can_edit': can_edit,

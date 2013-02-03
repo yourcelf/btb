@@ -1,3 +1,4 @@
+import json
 import datetime
 
 # Create your views here.
@@ -8,11 +9,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.conf import settings
 
-from comments.models import Comment
+from comments.models import Comment, Favorite
 from comments.forms import CommentForm
+from scanning.models import Document
 from scanning.forms import FlagForm
 from annotations.models import Note
 
@@ -85,3 +87,54 @@ def flag_comment(request, comment_id):
     return render(request, "scanning/flag.html", {
             'form': form,
         })
+
+@login_required
+def mark_favorite(request):
+    """
+    AJAX method to mark a post as a favorite.
+    """
+    document = None
+    comment = None
+    if 'document_id' in request.POST:
+        try:
+            document = Document.objects.safe_for_user(request.user).get(
+                    pk=request.POST.get('document_id'))
+        except Document.DoesNotExist:
+            raise Http404
+    elif 'comment_id' in request.POST:
+        try:
+            comment = Comment.objects.public().get(
+                    pk=request.POST.get('comment_id'))
+        except Comment.DoesNotExist:
+            raise Http404
+    else:
+        return HttpResponseBadRequest("Missing parameters")
+    fav, created = Favorite.objects.get_or_create(
+        user=request.user,
+        document=document,
+        comment=comment)
+    return _favorite_count_response(request, comment or document, True)
+
+@login_required
+def unmark_favorite(request):
+    if 'comment_id' in request.POST:
+        thing = get_object_or_404(Comment, pk=request.POST.get(
+            'comment_id'))
+    elif 'document_id' in request.POST:
+        thing = get_object_or_404(Document, pk=request.POST.get(
+            'document_id'))
+    else:
+        raise Http404
+    try:
+        fav = thing.favorite_set.get(user=request.user)
+        fav.delete()
+    except Favorite.DoesNotExist:
+        pass
+    return _favorite_count_response(request, thing, False)
+
+def _favorite_count_response(request, thing, has_favorited):
+    return render(request, "comments/_favorites.html", {
+        'thing': thing,
+        'num_favorites': thing.favorite_set.count(),
+        'has_favorited': has_favorited,
+    })

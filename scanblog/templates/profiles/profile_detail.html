@@ -76,6 +76,30 @@
             <li>No transcriptions.</li>
         {% endfor %}
         </ul>
+        {% if favorites %}
+        <h2>{% blocktrans %}{{ profile }}'s Favorites{% endblocktrans %}</h2>
+          <ul>
+            {% for favorite in favorites %}
+            <li class='favorite'>
+            {% if favorite.comment %}
+              {% with comment=favorite.comment %}
+              <div class='comment'>
+                <div class='excerpt'>&#147;<span class='quote'>{{ comment.comment|truncatewords:"20" }}</span>&#148;</div>
+                <div class='date'>{{ comment.created|timesince }} ago</div>
+                <span class='author'>By {{ comment.user.profile }}</span> on <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
+              </div>
+              {% endwith %}
+            {% elif favorite.document %}
+              {% with favorite.document as post %}
+                {% include "blogs/_post_title_line.html" %}
+                {% include "blogs/_post_highlight.html" %}
+                {% include "blogs/_post_bottom_line.html" %}
+              {% endwith %}
+            {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
     {% endif %}{% endif %}
 </div>
 

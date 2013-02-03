@@ -299,7 +299,7 @@ class btb.EditDocumentView extends Backbone.View
     
     input.addClass("loading")
     clearTimeout @checkAffiliationSlugTimeout if @checkAffiliationSlugTimeout?
-    setTimeout =>
+    @checkAffiliationSlugTimeout = setTimeout =>
       $.ajax
         url: "/people/affiliations.json"
         type: "GET"

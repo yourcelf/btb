@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from btb.utils import OrgManager, OrgQuerySet
 
@@ -61,6 +62,12 @@ class Comment(models.Model):
             return "%s#c%s" % (self.document.get_absolute_url(), self.pk)
         return ""
 
+    def mark_favorite_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.mark_favorite"), self.pk)
+
+    def unmark_favorite_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
+
     def to_dict(self):
         cd = self.comment_doc
         return {
@@ -87,10 +94,16 @@ class Comment(models.Model):
             blurb = "None"
         return "%s: %s" % (self.user.profile.display_name, blurb)
 
+class FavoriteManager(models.Manager):
+    pass
+
 class Favorite(models.Model):
     user = models.ForeignKey(User)
-    document = models.ForeignKey('scanning.Document')
+    comment = models.ForeignKey(Comment, blank=True, null=True)
+    document = models.ForeignKey('scanning.Document', blank=True, null=True)
     created = models.DateTimeField(default=datetime.datetime.now)
+
+    objects = FavoriteManager()
 
     class QuerySet(OrgQuerySet):
         orgs = ["document__author__organization"]

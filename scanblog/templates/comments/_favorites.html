@@ -1,0 +1,18 @@
+{% load i18n %}
+<span class='favorites-control'>
+  {% if num_favorites > 0 %}
+    <span class='count'
+      title='{% blocktrans count counter=num_favorites %}1 user has marked this as a favorite{% plural %}{{ counter }} users have marked this as a favorite{% endblocktrans %}'>
+      {% blocktrans count counter=num_favorites %}
+        1 Favorite
+      {% plural %}
+        {{ counter }} favorites
+      {% endblocktrans %}
+    </span>
+  {% endif %}
+  {% if has_favorited %}
+    <a class='toggle' href='{{ thing.unmark_favorite_url }}'>{% trans "Remove from favorites" %}</a>
+  {% else %}
+    <a class='toggle' href='{{ thing.mark_favorite_url }}'>{% trans "Add to favorites" %}</a>
+  {% endif %} 
+</span>

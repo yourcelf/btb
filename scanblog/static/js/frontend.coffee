@@ -26,3 +26,25 @@ $(".blog-nav-bar a.toggle").on "click", ->
     $($(this).attr("data-target"), ".blog-nav-bar").hide().slideToggle().addClass("open")
     $(this).addClass("open")
   return false
+
+toggle_favorite = (event) ->
+  event.preventDefault()
+  $(event.currentTarget).addClass("loading")
+  url = $(event.currentTarget).attr("href")
+  params = url.split("?")[1]
+  data = {}
+  for arg in params.split("&")
+    kv = arg.split("=")
+    data[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1])
+  $.ajax {
+    url: url
+    type: 'POST'
+    data: data
+    success: (data) ->
+      replacement = $(data)
+      $(event.currentTarget).closest(".favorites-control").replaceWith(replacement)
+      replacement.find("a.toggle").on("click", toggle_favorite)
+    error: ->
+      alert("Server error")
+  }
+$(".favorites-control a.toggle").on "click", toggle_favorite
