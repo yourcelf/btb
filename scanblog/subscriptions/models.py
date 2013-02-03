@@ -7,7 +7,7 @@ from django.conf import settings
 from scanning.models import Document
 from annotations.models import Tag
 from comments.models import Comment
-from profiles.models import Organization
+from profiles.models import Organization, Affiliation
 from campaigns.models import Campaign
 
 from notification import models as notification
@@ -25,13 +25,15 @@ class Subscription(models.Model):
             blank=True, null=True)
     campaign = models.ForeignKey(Campaign, related_name="organization_subscriptions",
             blank=True, null=True)
+    affiliation = models.ForeignKey(Affiliation, related_name="affiliation_subscriptions",
+            blank=True, null=True)
 
     def __unicode__(self):
         return "%s -> %s" % (self.subscriber, 
-                (self.document or self.author or self.tag))
+            (self.document or self.author or self.tag or self.campaign or self.affiliation))
 
     class Meta:
-        ordering = ['tag', 'author', 'document']
+        ordering = ['tag', 'author', 'document', 'campaign', 'affiliation']
 
 class DocumentNotificationLog(models.Model):
     """
@@ -94,6 +96,8 @@ if not settings.DISABLE_NOTIFICATIONS:
                 pass
             if campaign:
                 subs |= Subscription.objects.filter(campaign=campaign)
+        if document.affiliation:
+            subs |= Subscription.objects.filter(affiliation=document.affiliation)
         for sub in subs:
             if NotificationBlacklist.objects.filter(
                     email=sub.subscriber.email).exists():

@@ -259,6 +259,8 @@ class Document(models.Model):
     # Metadata
     type = models.CharField(max_length=25, choices=DOCUMENT_TYPES)
     title = models.CharField(max_length=255, blank=True)
+    affiliation = models.ForeignKey('profiles.Affiliation',
+            blank=True, null=True)
     in_reply_to = models.ForeignKey('annotations.ReplyCode', 
         related_name="document_replies", blank=True, null=True)
     author = models.ForeignKey(User, related_name='documents_authored')
@@ -267,7 +269,8 @@ class Document(models.Model):
     highlight_transform = models.TextField(blank=True)
 
     # Locking
-    under_construction = models.BooleanField(help_text="Deprecated, don't use.  Use status instead.")
+    under_construction = models.BooleanField(
+        help_text="Deprecated, don't use.  Use status instead.")
 
     # State
     status = models.CharField(max_length=20, choices=STATES, 
@@ -428,6 +431,7 @@ class Document(models.Model):
             'scan_id': self.scan_id,
             'type': self.type,
             'title': self.title,
+            'affiliation': self.affiliation.to_dict() if self.affiliation else None,
             'body': self.body,
             'adult': self.adult,
             'in_reply_to': self.in_reply_to.code if self.in_reply_to else None,

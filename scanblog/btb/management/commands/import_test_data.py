@@ -92,7 +92,7 @@ def load_test_data():
     uploader = User.objects.get(username='uploader')
     commenter = User.objects.create(username="commenter")
     with open(data_file) as fh:
-        data = yaml.load(fh)
+        data = yaml.safe_load(fh)
 
     orgs = {}
 

@@ -109,6 +109,7 @@ class btb.EditDocumentView extends Backbone.View
     $(".choose-user-holder", @el).append userChooser.render().el
     $(".doc-title", @el).change =>
       @doc.set title: $(".doc-title", @el).val()
+    $(".doc-affiliation", @el).on "keyup", @checkAffiliationSlug
     $(".doc-date", @el).change =>
       @doc.set date_written: $(".doc-date", @el).val()
     $(".doc-status", @el).val(@doc.get("status")).change =>
@@ -285,6 +286,42 @@ class btb.EditDocumentView extends Backbone.View
       pv.scale = size
       pv.render()
 
+  checkAffiliationSlug: (event) =>
+    input = @$(".doc-affiliation")
+    details = @$(".doc-affiliation-details")
+    val = input.val()
+    details.html("")
+    if val == ""
+      input.removeClass("error")
+      input.removeClass("loading")
+      @doc.set "affiliation", null
+      return
+    
+    input.addClass("loading")
+    clearTimeout @checkAffiliationSlugTimeout if @checkAffiliationSlugTimeout?
+    setTimeout =>
+      $.ajax
+        url: "/people/affiliations.json"
+        type: "GET"
+        data:
+          slug: val
+        success: (data) =>
+          input.removeClass "loading"
+          if data.pagination.count != 1
+            input.addClass("error")
+            details.html("Affiliation code not found.")
+            @doc.set "affiliation", null
+          else
+            input.removeClass("error")
+            result = data.results[0]
+            details.html(result.title)
+            @doc.set "affiliation", result
+        error: =>
+          input.removeClass "loading"
+          alert "Server Error"
+          window.console?.log?("checkAffiliationSlug", arguments)
+    , 100
+
   checkInReplyToCode: (event) =>
     input = $(".doc-in-reply-to", @el)
     details = $(".doc-in-reply-to-details", @el)
@@ -309,7 +346,6 @@ class btb.EditDocumentView extends Backbone.View
             input.addClass("error")
           else
             result = data.results[0]
-            input.removeClass("loading")
             if (result.document and
                 @doc.get("author").id != result.document.author.id)
               error = "Warning: document author doesn't match" +
@@ -329,6 +365,7 @@ class btb.EditDocumentView extends Backbone.View
         error: =>
           input.removeClass("loading")
           alert "Server error"
+          window.console?.log?("checkInReplyToCode", arguments)
     if @replyCodeTimeout
       clearTimeout(@replyCodeTimeout)
     setTimeout(update, 100)
