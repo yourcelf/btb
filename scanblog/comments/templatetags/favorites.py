@@ -13,6 +13,7 @@ def favorites(context, model, user=None):
         'thing': model,
         'num_favorites': model.favorite_set.count(),
         'has_favorited': has_favorited,
+        'user': user,
     })
 
 

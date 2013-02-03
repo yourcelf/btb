@@ -137,4 +137,5 @@ def _favorite_count_response(request, thing, has_favorited):
         'thing': thing,
         'num_favorites': thing.favorite_set.count(),
         'has_favorited': has_favorited,
+        'user': request.user,
     })

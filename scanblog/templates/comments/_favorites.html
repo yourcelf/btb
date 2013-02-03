@@ -10,9 +10,11 @@
       {% endblocktrans %}
     </span>
   {% endif %}
-  {% if has_favorited %}
-    <a class='toggle' href='{{ thing.unmark_favorite_url }}'>{% trans "Remove from favorites" %}</a>
-  {% else %}
-    <a class='toggle' href='{{ thing.mark_favorite_url }}'>{% trans "Add to favorites" %}</a>
-  {% endif %} 
+  {% if user.is_authenticated %}
+    {% if has_favorited %}
+      <a class='toggle' href='{{ thing.unmark_favorite_url }}'>{% trans "Remove from favorites" %}</a>
+    {% else %}
+      <a class='toggle' href='{{ thing.mark_favorite_url }}'>{% trans "Add to favorites" %}</a>
+    {% endif %} 
+  {% endif %}
 </span>
