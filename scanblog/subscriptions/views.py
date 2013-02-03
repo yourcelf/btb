@@ -12,7 +12,7 @@ from notification.models import Notice, NoticeType, NoticeSetting, NOTICE_MEDIA,
 from subscriptions.models import Subscription
 from scanning.models import Document
 from annotations.models import Tag
-from profiles.models import Organization
+from profiles.models import Organization, Affiliation
 from campaigns.models import Campaign
 
 @login_required
@@ -39,6 +39,19 @@ def subscribe_to_campaign(request, slug):
         return redirect("subscriptions.settings")
     return render(request, "subscriptions/subscribe_to.html", {
         'campaign': campaign,
+    })
+
+@login_required
+def subscribe_to_affiliation(request, affiliation_id):
+    affiliation = get_object_or_404(Affiliation, pk=affiliation_id, public=True)
+    if request.method == "POST":
+        sub, created = Subscription.objects.get_or_create(
+                subscriber=request.user,
+                affiliation=affiliation,
+        )
+        return redirect("subscriptions.settings")
+    return render(request, "subscriptions/subscribe_to.html", {
+        'affiliation': affiliation,
     })
 
 @login_required

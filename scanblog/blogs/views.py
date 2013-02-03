@@ -22,7 +22,7 @@ from scanning.models import Document, DocumentPage
 from comments.models import Comment
 from comments.forms import CommentForm
 from blogs import feeds
-from profiles.models import Profile, Organization
+from profiles.models import Profile, Organization, Affiliation
 from campaigns.models import Campaign
 
 #
@@ -120,6 +120,7 @@ def get_nav_context():
         'recent_authors': Profile.objects.bloggers_with_posts().order_by('-latest_post')[:10],
         'recent_comments': Comment.objects.excluding_boilerplate().order_by('-modified')[:5],
         'campaigns': Campaign.objects.filter(public=True),
+        'affiliations': Affiliation.objects.filter(public=True),
     }
     return nav_context
 
@@ -176,6 +177,29 @@ def show_campaign(request, slug):
             )[pnum*10:pnum*10+7]
     }
     return render(request, "blogs/show_campaign.html", context)
+
+def show_affiliation(request, slug):
+    affiliation = get_object_or_404(Affiliation, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(affiliation=affiliation)
+    context = _paginate(request, posts)
+    pnum = context['page'].number
+    context.update(get_nav_context())
+    context['affiliation'] = affiliation
+    context['related'] = {
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__status="published",
+                    document__affiliation=affiliation,
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__adult=False,
+            ).select_related(
+                'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
+    return render(request, "blogs/show_affiliation.html", context)
 
 def org_post_list(request, slug):
     """
@@ -408,6 +432,13 @@ def campaign_feed(request, slug):
     return feeds.posts_feed(request, {
         'title': campaign.title,
         'posts': Document.objects.safe().filter(in_reply_to_id=campaign.reply_code_id)
+    })
+
+def affiliation_feed(request, slug):
+    affiliation = get_object_or_404(Affiliation, slug=slug, public=True)
+    return feeds.posts_feed(request, {
+        'title': affiliation.title,
+        'posts': Document.objects.safe().filter(affiliation=affiliation),
     })
 
 def org_post_feed(request, slug, filtered=True):

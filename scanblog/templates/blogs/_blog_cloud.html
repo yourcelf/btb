@@ -45,7 +45,21 @@
                     </div>
                 </div>
             {% endif %}
-            <a href='/campaigns/blog4hr/' style='float: right;'><img src='/static/campaigns/blog4hr-small-banner.png' alt='Blog for Human Rights Day 2012' /></a>
+            {% if affiliations %}
+                <div style='display: inline-block'>
+                    <h3>Groups</h3>
+                    <div class='column'>
+                        <table>
+                        {% for affiliation in affiliations %}
+                            <tr class='tag'>
+                                <td><span class='count'>{{ affiliation.document_set.safe.count }}</span></td>
+                                <td><span class='name'><a href='{{ affiliation.get_absolute_url }}'>{{ affiliation.title }}</a></span></td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
         </div>
         <div class='target recent {{ posts_open }}'>

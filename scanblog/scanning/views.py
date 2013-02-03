@@ -21,7 +21,7 @@ from scanning.models import *
 from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
 from annotations.models import Tag, Note, ReplyCode
-from profiles.models import Organization, Profile
+from profiles.models import Organization, Profile, Affiliation
 from comments.forms import CommentForm
 
 def get_boolean(val):
@@ -310,10 +310,17 @@ class Documents(JSONView):
                     doc.comment.delete()
             except (Comment.DoesNotExist):
                 pass
-            if kw['in_reply_to'] == None:
+            if kw['in_reply_to'] is None:
                 doc.in_reply_to = None
             else:
                 doc.in_reply_to = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
+
+            # Set affiliation, if any
+            try:
+                doc.affiliation = Affiliation.objects.org_filter(request.user).get(
+                        pk=kw['affiliation']['id'])
+            except (TypeError, KeyError, Affiliation.DoesNotExist):
+                doc.affiliation = None
 
             doc.adult = kw['adult']
             # Ensure other processes won't try to serve this until we're done building.
