@@ -180,6 +180,7 @@ def remove_comment(request, comment_id):
                     'notices_url': reverse("notification_notice_settings"),
                     'recipient': comment.user,
                     'removal': removal,
+                    'message': removal.comment_author_message,
                 })
                 send_mail(
                    subject=subject,

@@ -46,7 +46,6 @@
 
     <hr>
     <h2>{{ form.reason.label }}</h2>
-    {% if form.errors %}<div class='error'>{{ form.errors }}</div>{% endif %}
     <p class='help-text'>What is the reason for removing this comment? This will set defaults for the notification messages as well.</p>
     {{ form.reason }} {% if perms.change_removalreason %}<a href='/admin/comments/removalreason/'>edit reasons</a>{% endif %}
     <h2>{{ form.web_message.label }}</h2>
@@ -102,7 +101,9 @@
           compile it into a letter.
         </h3>
         <p>The cryptic error message we got was:</p>
-        {{ form.post_author_message.errors }}
+        <pre>{{ form.post_author_message.errors }}</pre>
+        <br />
+        <p>Usually, errors are the result of special characters like &amp;, _, or % &ndash; try putting a "\" before them (e.g. \&amp;, \_, \%).  Contact <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a> if you don't understand how to fix this.</p>
       </div>
     {% endif %}
     {% if blogger_notified %}

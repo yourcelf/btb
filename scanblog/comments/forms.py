@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 from comments.models import Comment, CommentRemoval
 from correspondence.models import Letter
+from correspondence.utils import LatexCompileError
 
 COMMENT_MAX_LENGTH = getattr(settings, 'COMMENT_MAX_LENGTH', 3000)
 
@@ -45,6 +46,7 @@ class CommentRemovalForm(forms.ModelForm):
         exclude = ['date']
 
     def clean(self):
+        super(CommentRemovalForm, self).clean()
         data = self.cleaned_data
         # Ensure that the comment is not changed by the form.
         data['comment'] = self.instance.comment
@@ -72,10 +74,11 @@ class CommentRemovalForm(forms.ModelForm):
                 error = None
                 try:
                     filename = letter.get_file()
-                except utils.LatexCompileError as e:
+                except LatexCompileError as e:
                     error = e
                 finally:
                     letter.delete()
                 if error:
-                    raise ValidationError(error.message)
+                    self._errors["post_author_message"] = error.message
+                    del data["post_author_message"]
         return data
