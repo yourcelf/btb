@@ -232,7 +232,7 @@ class btb.LetterRow extends Backbone.View
         $(@el).html @template
             letter: @letter.toJSON()
             commaddress: @letter.get("org")?.mailing_address.replace(/\n/g, ", ")
-        if @letter.get("type") == "comments"
+        if @letter.get("type") == "comments" or @letter.get("type") == "comment_removal"
             # Add a comments table...
             commentsTable = new btb.CommentsMailingTable
                 modelParams: @letter.get "comments"

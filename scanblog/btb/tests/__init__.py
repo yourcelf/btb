@@ -36,6 +36,9 @@ class BtbMailTestCase(BtbTestCase):
         for i in range(len(mail.outbox)):
             mail.outbox.pop()
 
+    def get_outbox(self):
+        return mail.outbox
+
 class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
     pass
 
@@ -69,6 +72,7 @@ class BtbLoginTestCase(BtbTestCase):
             user.set_password(user.username)
             user.save()
             user.profile.managed = struct['managed']
+            user.profile.consent_form_received = struct['managed']
             user.profile.save()
             if struct.get('moderates', None):
                 org.moderators.add(user)

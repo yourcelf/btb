@@ -1,4 +1,4 @@
-        <div class='comment'>
+        <div class='comment{% if comment.removed %} removed{% endif %}'>
             <a name='c{{ comment.id }}'></a>
             <div class='commentbyline'>
                 <table>
@@ -12,7 +12,7 @@
                         </td>
                         <td>
                             <span class='comment-date'>Posted {{ comment.created|timesince }} ago.</span>
-                            {% if comment.letter_sent %}
+                            {% if comment.letter_sent and not comment.removed %}
                                 <span class='comment-date-mailed'>
                                     &check;
                                     Mailed {{ comment.letter_sent|timesince }} ago
@@ -20,7 +20,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if perms.change_comment or user == comment.user and not comment.letter_sent %}
+                            {% if user == comment.user and not comment.letter_sent %}
                                 <a href='{% url comments.edit_comment comment.pk %}' 
                                     class='comment-edit'
                                     title ='Edit comment'>edit</a
@@ -33,23 +33,37 @@
                                    class='comment-flag'
                                    title='Flag comment'>&nbsp;</a>
                             {% endif %}
+                            {% if perms.comments.change_comment %}
+                              <a href='{% url comments.spam_can_comment comment.pk %}'>spam</a>
+                              |
+                              <a href='{% url comments.moderator_remove comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
+                            {% endif %}
                         </td>
                     </tr>
                 </table>
             </div>
-            <div class='commentbody'>
-                {% if comment.comment_doc_id %}
-                    {% with post=comment.comment_doc %}
-                        (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
-                        {% with documentpages=post.documentpage_set.all %}
-                            {% with documentpage_count=documentpages.count %}
-                                {% include "blogs/_post_pages.html" %} 
-                            {% endwith %}
-                        {% endwith %}
-                    {% endwith %}
-                {% else %}
-                    {{comment.comment|linebreaksbr}}
-                {% endif %}
-            </div>
+            {% if comment.removed %}
+              {% with removal=comment.commentremoval %}
+                <div class='commentbody'>
+                  <h4>Comment removed by staff</h4>
+                  {{ removal.web_message|urlize|linebreaks }}
+                </div>
+              {% endwith %}
+            {% else %}
+              <div class='commentbody'>
+                  {% if comment.comment_doc_id %}
+                      {% with post=comment.comment_doc %}
+                          (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
+                          {% with documentpages=post.documentpage_set.all %}
+                              {% with documentpage_count=documentpages.count %}
+                                  {% include "blogs/_post_pages.html" %} 
+                              {% endwith %}
+                          {% endwith %}
+                      {% endwith %}
+                  {% else %}
+                      {{comment.comment|linebreaksbr}}
+                  {% endif %}
+              </div>
+            {% endif %}
             <br style='clear: both;' />
         </div>

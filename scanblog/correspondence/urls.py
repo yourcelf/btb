@@ -5,6 +5,7 @@ from correspondence.views import CorrespondenceList, Letters, Mailings, NeededLe
 letter_id = "(?P<letter_id>\d+)"
 mailing_id = "(?P<mailing_id>\d+)"
 user_id = "(?P<user_id>\d+)"
+comment_id = "(?P<comment_id>\d+)"
 
 
 urlpatterns = patterns('correspondence.views',
@@ -22,7 +23,9 @@ urlpatterns = patterns('correspondence.views',
         name='correspondence.recent_comments_letter'),
     url(r'^preview_letter/$', 'preview_letter', 
         name='correspondence.preview_letter'),
-
+    url(r'^comment_removal_letter_preview_frame/{0}$'.format(comment_id),
+        'comment_removal_letter_preview_frame', 
+        name='correspondence.comment_removal_letter_preview_frame'),
     url(r'^collate_mailing/{0}?$'.format(mailing_id), 'get_mailing_file', 
         name='correspondence.collate_mailing'),
     url(r'^clear_cache/{0}?$'.format(mailing_id), 'clear_mailing_cache',

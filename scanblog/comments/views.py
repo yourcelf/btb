@@ -1,18 +1,25 @@
+import json
 import datetime
 
 # Create your views here.
-from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.views import redirect_to_login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
-from django.http import Http404
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
+from django.db.models.deletion import Collector
+from django.http import Http404
+from django.shortcuts import redirect, render, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy as _
 
-from comments.models import Comment
-from comments.forms import CommentForm
+from comments.models import Comment, CommentRemoval, RemovalReason, \
+        CommentRemovalNotificationLog
+from correspondence.models import Letter
+from comments.forms import CommentForm, CommentRemovalForm
 from scanning.forms import FlagForm
 from annotations.models import Note
 
@@ -54,6 +61,9 @@ def edit_comment(request, comment_id=None, comment=None):
 
 @check_comment_editable
 def delete_comment(request, comment_id=None, comment=None):
+    """
+    This is a function for users to delete their own comments.
+    """
     if request.method == "POST":
         url = comment.document.get_absolute_url()
         comment.delete()
@@ -85,3 +95,130 @@ def flag_comment(request, comment_id):
     return render(request, "scanning/flag.html", {
             'form': form,
         })
+
+@permission_required("comments.change_comment")
+def spam_can_comment(request, comment_id):
+    try:
+        comment = Comment.objects.org_filter(request.user).get(
+                pk=comment_id, comment_doc__isnull=True)
+    except Comment.DoesNotExist:
+        raise Http404
+    # Only moderators can delete; and exclude bloggers, superusers, and
+    # moderators from being deleted.
+    can_del_user = request.user.has_perm("auth.delete_user") \
+            and not comment.user.is_superuser \
+            and not comment.user.groups.filter(name='moderators').exists() \
+            and not comment.user.profile.managed
+
+    if request.method == 'POST':
+        redirect_url = comment.document.get_absolute_url()
+        if can_del_user and request.POST.get("delete_user"):
+            comment.user.delete()
+            messages.success(request, "User and all user's content deleted.")
+        else:
+            comment.removed = True
+            comment.save()
+            messages.success(request, "Comment removed.")
+        return redirect(redirect_url)
+
+    also_deleted = None
+    if can_del_user:
+        # Get a list of things that will be deleted if the user is.
+        collector = Collector(using='default')
+        collector.collect([comment.user])
+        also_deleted = []
+        for model, instance in collector.instances_with_model():
+            if instance != comment.user:
+                also_deleted.append((instance._meta.object_name, instance))
+    return render(request, "comments/spam_can_comment.html", {
+        'comment': comment,
+        'can_del_user': can_del_user,
+        'also_deleted': also_deleted,
+    })
+
+@permission_required("comments.change_comment")
+def remove_comment(request, comment_id):
+    try:
+        comment = Comment.objects.org_filter(request.user).get(
+                pk=comment_id)
+    except Comment.DoesNotExist:
+        raise Http404
+
+    try:
+        removal = CommentRemoval.objects.get(comment=comment)
+    except CommentRemoval.DoesNotExist:
+        removal = CommentRemoval(comment=comment)
+
+    # Have we sent the commenter a notice already?
+    commenter_notified = CommentRemovalNotificationLog.objects.filter(
+            comment=comment).exists()
+    # Have we sent the blogger a notice already?
+    blogger_notified = Letter.objects.filter(type="comment_removal",
+            comments=comment).exists()
+
+    form = CommentRemovalForm(request.POST or None, instance=removal)
+
+    # Don't allow changing of comment message if they've already been notified.
+    if commenter_notified:
+        del form.fields['comment_author_message']
+    # Don't allow changing of blogger's message if they've already been notified.
+    if blogger_notified:
+        del form.fields['post_author_message']
+
+    if form.is_valid():
+        comment.removed = True
+        comment.save()
+        removal = form.save()
+        if removal.comment_author_message.strip() != u"" and comment.user.email:
+            log, created = CommentRemovalNotificationLog.objects.get_or_create(
+                    comment=comment)
+            if created:
+                subject = render_to_string("comments/removal-email-subject.txt", {
+                    'removal': removal
+                }).strip()
+                body = render_to_string("comments/removal-email-body.txt", {
+                    'notices_url': reverse("notification_notice_settings"),
+                    'recipient': comment.user,
+                    'removal': removal,
+                })
+                send_mail(
+                   subject=subject,
+                   message=body,
+                   from_email=settings.DEFAULT_FROM_EMAIL,
+                   recipient_list=[comment.user.email])
+
+        return redirect(comment.get_absolute_url())
+    reasons = {}
+    for reason in RemovalReason.objects.org_filter(request.user):
+        reasons[reason.pk] = {
+            "default_web_message": reason.default_web_message,
+            "default_comment_author_message": reason.default_comment_author_message,
+            "default_post_author_message": reason.default_post_author_message,
+        }
+    return render(request, "comments/remove_comment.html", {
+        'commenter_notified': commenter_notified,
+        'blogger_notified': blogger_notified,
+        'form': form,
+        'removal': removal,
+        'comment': comment,
+        'reasons_json': json.dumps(reasons),
+    })
+
+@permission_required("comments.change_comment")
+def unremove_comment(request, comment_id):
+    try:
+        comment = Comment.objects.org_filter(request.user).get(
+                pk=comment_id)
+    except Comment.DoesNotExist:
+        raise Http404
+    if request.method == "POST":
+        try:
+            comment.commentremoval.delete()
+        except CommentRemoval.DoesNotExist:
+            pass
+        comment.removed = False
+        comment.save()
+        return redirect(comment.get_absolute_url())
+    return render(request, "comments/unremove_comment.html", {
+        'comment': comment
+    })

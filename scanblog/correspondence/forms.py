@@ -44,4 +44,3 @@ class MailForm(forms.ModelForm):
     class Meta:
         model = Letter
         exclude = ['type', 'comments', 'created', 'sent']
-

@@ -1,0 +1,5 @@
+{% load tex_tags %}{{ message|safe }}
+
+The comment was:
+
+\begin{quote}{{ comment.comment|tex_escape }}\end{quote}
