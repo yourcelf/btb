@@ -209,7 +209,7 @@ def remove_comment(request, comment_id):
 def unremove_comment(request, comment_id):
     try:
         comment = Comment.objects.org_filter(request.user).get(
-                pk=comment_id)
+                pk=comment_id, commentremoval__isnull=False)
     except Comment.DoesNotExist:
         raise Http404
     if request.method == "POST":
@@ -221,5 +221,6 @@ def unremove_comment(request, comment_id):
         comment.save()
         return redirect(comment.get_absolute_url())
     return render(request, "comments/unremove_comment.html", {
-        'comment': comment
+        'comment': comment,
+        'removal': comment.commentremoval,
     })

@@ -32,7 +32,15 @@
 {% with org=comment.document.author.organization_set.get %}
 
 <h1>Remove Comment</h1>
-  <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url comments.spam_can_comment comment.pk %}'>this form</a> instead)</p>
+  {% if removal.pk %}
+    <p>
+      <b>This comment has been removed.</b> You can edit the messages that haven't been sent below.
+      Changed your mind? <a href='{% url comments.moderator_unremove comment.pk %}'>Restore (unremove) this comment</a>.
+    </p>
+  {% else %}
+    <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url comments.spam_can_comment comment.pk %}'>this form</a> instead)</p>
+  {% endif %}
+
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
             <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by
             <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a>
