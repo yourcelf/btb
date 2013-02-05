@@ -1,5 +1,5 @@
 class btb.Document extends Backbone.Model
-url: -> btb.DocumentList.prototype.baseUrl + "/" + @id
+  url: -> btb.DocumentList.prototype.baseUrl + "/" + @id
 
 class btb.DocumentList extends btb.FilteredPaginatedCollection
   model: btb.Document

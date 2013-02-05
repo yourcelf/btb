@@ -43,7 +43,7 @@
 
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
             <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by
-            <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a>
+            <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a></p>
     <blockquote>
       {{ comment.comment|linebreaks }}
     </blockquote>
