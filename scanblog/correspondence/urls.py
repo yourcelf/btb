@@ -1,11 +1,13 @@
 from django.conf.urls.defaults import *
 
-from correspondence.views import CorrespondenceList, Letters, Mailings, NeededLetters
+from correspondence.views import CorrespondenceList, Letters, Mailings, \
+        NeededLetters, CustomMassMailings
 
 letter_id = "(?P<letter_id>\d+)"
 mailing_id = "(?P<mailing_id>\d+)"
 user_id = "(?P<user_id>\d+)"
 comment_id = "(?P<comment_id>\d+)"
+custom_mass_mailing_id = "(?P<custom_mass_mailing_id>\d+)"
 
 
 urlpatterns = patterns('correspondence.views',
@@ -13,6 +15,8 @@ urlpatterns = patterns('correspondence.views',
     url(r'^letters.json(/{0})?'.format(letter_id), Letters.as_view()),
     url(r'^mailings.json(/{0})?'.format(mailing_id), Mailings.as_view()),
     url(r'^needed_letters.json', NeededLetters.as_view()),
+    url(r'^custom_mass_mailings.json(/{0})?'.format(custom_mass_mailing_id),
+        CustomMassMailings.as_view()),
     url(r'^mass_mailing_spreadsheet/(?P<who>.*)', 'mass_mailing_spreadsheet',
         name='correspondence.mass_mailing_spreadsheet'),
     url(r'^envelope/{0}?(/(?P<reverse>return))?$'.format(user_id), 'print_envelope', 

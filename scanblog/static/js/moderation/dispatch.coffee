@@ -13,6 +13,9 @@ class btb.ScanModerationRouter extends Backbone.Router
 
         "mail":                     "mail"
         "mail/:path":               "mail"
+        "massmailing":              "massmailingList"
+        "massmailing/show":         "massmailingItem"
+        "massmailing/show/:id":   "massmailingItem"
 
     dashboard: =>
         $("#app").html(
@@ -53,6 +56,18 @@ class btb.ScanModerationRouter extends Backbone.Router
     mail: (path) =>
         $("#app").html(
             new btb.OutgoingMailView(path).render().el
+        )
+        @updateActiveURL()
+
+    massmailingList: () =>
+        $("#app").html(
+            new btb.CustomMassMailingListView().render().el
+        )
+        @updateActiveURL()
+
+    massmailingItem: (id) =>
+        $("#app").html(
+            new btb.CustomMassMailingItemView(id).render().el
         )
         @updateActiveURL()
 

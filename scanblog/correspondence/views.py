@@ -671,3 +671,14 @@ def mass_mailing_spreadsheet(request, who=None):
         who, datetime.datetime.now().strftime("%Y-%m-%d")
     )
     return response
+
+class CustomMassMailings(JSONView):
+    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    def get(self):
+        pass
+    def post(self):
+        pass
+    def put(self):
+        pass
+    def delete(self):
+        pass

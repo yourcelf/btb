@@ -38,6 +38,13 @@ class btb.NeededLetters extends Backbone.Model
             return base + "?" + $.param consent_form_cutoff: @get "consent_form_cutoff"
         return base
 
+class btb.CustomMassMailing extends Backbone.Model
+    url: =>
+        baseUrl = btb.CustomMassMailingList.prototype.baseUrl
+        if @get("id") then baseUrl + "/" + @get("id") else baseUrl
+class btb.CustomMassMailingList extends btb.FilteredPaginatedCollection
+    model: btb.CustomMassMailing
+    baseUrl: "/correspondence/custom_mass_mailings.json"
 
 #
 # Views
@@ -696,4 +703,98 @@ class btb.OutgoingMailView extends Backbone.View
         if @_fetchLetterDelay?
             clearTimeout @_fetchLetterDelay
         @_fetchLetterDelay = setTimeout(@fetchLetters, 100)
+
+
+#
+# Custom mass mailings
+#
+
+class btb.CustomMassMailingListView extends Backbone.View
+    template: _.template $("#customMassMailingListViewTemplate").html()
+    initialize: ->
+        @table = new btb.TabularList {
+            collection: new btb.CustomMassMailingList()
+            columns: [
+                { heading: "Name", render: (obj) ->
+                    "<a href='#/massmailing/show/#{obj.id}'>#{obj.get("name")}</a>"
+                },
+                btb.TabularList.prototype.dateColumn("modified"),
+                { heading: "Count", render: (obj) -> obj.get("recipients").length }
+            ]
+        }
+
+    render: =>
+        @$el.html @template()
+        @$(".tabular-list").html(@table.render().el)
+        @table.$el.addClass("form")
+        this
+
+class btb.CustomMassMailingItemView extends Backbone.View
+    template: _.template $("#customMassMailingItemViewTemplate").html()
+    orgTemplate: _.template $("#letterOrgChooser").html()
+    itemTemplate: _.template $("#customMassMailingRecipientTemplate").html()
+    initialize: (id) ->
+        if id
+            @model = new btb.CustomMassMailing({id})
+            @model.fetch {
+                success: @render
+                error: -> console.log(arguments) ; alert("Server Error")
+            }
+        else
+            @model = new btb.CustomMassMailing({
+              org_id: btb.ORGANIZATIONS[0]["id"]
+              recipients: []
+            })
+
+    render: =>
+        @$el.html @template({
+          model: @model.toJSON()
+          orgs: btb.ORGANIZATIONS
+        })
+
+        # Name
+        name_editor = new btb.EditInPlace({
+            model: @model
+            field: "name"
+        })
+        name_editor.on "save", (model) =>
+            unless @model.id
+                btb.app.navigate("massmailing/show/#{model.id}", trigger: false)
+            @model = model
+        @$(".cmm-name").html(name_editor.render().el)
+
+        # Org
+        @$("[name=org_id]").on "change", (event) =>
+          event.preventDefault()
+          @model.save {org_id: $(event.currentTarget).val()}, {
+            error: -> console.log(arguments) ; alert("ServerError")
+          }
+
+        # Members
+        userChooser = new btb.UserSearch()
+        userChooser.bind "chosen", (user) =>
+          unless _.find(@model.get("recipients"), (u) -> u.id == user.id)
+            @model.get("recipients").unshift(user)
+            @renderItem(user)
+            @renderCount()
+          @$("tr[data-user-id=#{user.id}]").effect("highlight", 5000)
+          @model.save {}, {error: -> console.log(arguments) ; alert("Server Error")}
+        @$(".user-chooser-holder").html(userChooser.render().el)
+        @renderItems()
+        @renderCount()
+        this
+
+    renderItems: =>
+      @$(".cmm-items").html()
+      recipients = @model.get("recipients")
+      for user in recipients
+        @renderItem(user)
+
+    renderItem: (user) =>
+      row = $(@itemTemplate({user}))
+      @$(".cmm-items").append(row)
+      $(".user-compact", row).html(new btb.UserCompact({user}).render().el)
+
+    renderCount: =>
+      @$(".total-count").html(@model.get("recipients").length)
 

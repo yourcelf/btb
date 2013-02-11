@@ -207,3 +207,23 @@ class Mailing(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+class MassMailing(models.Model):
+    name = models.CharField(max_length=255)
+    org = models.ForeignKey('profiles.Organization')
+    letter = models.ForeignKey(Letter, blank=True, null=True)
+    created = models.DateTimeField(default=datetime.datetime.now)
+    modified = models.DateTimeField()
+    recipients = models.ManyToManyField(User)
+    file = models.FileField(upload_to="tmp", blank=True)
+
+    objects = OrgManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ['org']
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-modified']

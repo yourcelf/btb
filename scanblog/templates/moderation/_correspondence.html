@@ -233,7 +233,8 @@
         <h1>Outgoing Mail</h1>
     </div>
     <div style='float: left; margin-top: 1.5em;'>
-        <a href='{% url correspondence.mass_mailing_spreadsheet "" %}'>Address spreadsheet</a>
+      <a href='{% url correspondence.mass_mailing_spreadsheet "" %}'>Address spreadsheet</a> 
+      <a href='#/massmailing'>Custom mass mailings</a>
     </div>
     <div style='clear: both;'></div>
     <div class='build-mailing'></div>
@@ -339,4 +340,38 @@
     </div>
     <div style='clear: both;'></div>
 </div>
+</script>
+<script type='text/template' id='customMassMailingListViewTemplate'>
+  <h1>Custom Mass Mailings</h1>
+  <a href='#/massmailing/show'>New Mass Mailing</a>
+  <div class='tabular-list'></div>
+</script>
+<script type='text/template' id='customMassMailingItemViewTemplate'>
+
+  <table><tr><td>Mailing name:&nbsp;</td><td><h2><span class='cmm-name'></span></h2></td></tr></table>
+
+<p>Sending organization:
+  <select class='org' name='org_id'>
+    <% for (var i = 0; i < orgs.length; i++) { %>
+      <option value='<%= orgs[i].id %>' <%= orgs[i].id == model.org_id ? "selected" : "" %>>
+        <%= orgs[i].name %>
+      </option>
+    <% } %>
+  </select>
+</p>
+<p><a href='TODO'>Download Mailing</a></p>
+<h3>Recipients</h3>
+<div class='user-chooser-holder'></div>
+Total: <span class='total-count'></span>
+<table class='cmm-items'></table>
+</script>
+<script type='text/template' id='customMassMailingRecipientTemplate'>
+  <tr class='item' style='clear: both;' data-user-id='<%= user.id %>'>
+    <td class='user-compact'></td>
+    <td>
+      <div class='remove remove-recipient'>
+        <span data-user-id='<%= user.id %>' class='ui-icon ui-icon-trash link-like'></span>
+      </div>
+    </td>
+  </tr>
 </script>

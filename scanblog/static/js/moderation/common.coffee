@@ -136,7 +136,7 @@ class btb.TabularList extends btb.PaginatedView
     
     render: =>
         $(@el).html $("<tr/>").html(
-            _.map(@columns, (c) -> "<th>#{ c.heading }</td>").join("")
+            _.map(@columns, (c) -> "<th>#{ c.heading }</th>").join("")
         )
         @collection.each (obj) =>
             tr = $("<tr/>")
@@ -245,6 +245,7 @@ class btb.EditInPlace extends Backbone.View
                     $(@el).removeClass(".loading")
                     @model = model
                     $(@el).parent().effect "highlight"
+                    @trigger "saved", model
                 error: =>
                     $(@el).removeClass(".loading")
                     $(@el).parent().addClass "ui-state-error"
