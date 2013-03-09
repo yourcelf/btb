@@ -12,6 +12,7 @@ django.log
 dev.db
 *.htpasswd
 scanblog/bin/*
+scanblog/venv/
 !scanblog/bin/install.sh
 scanblog/deploy/*
 !scanblog/deploy/.gitkeep
