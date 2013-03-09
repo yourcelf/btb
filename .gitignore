@@ -11,10 +11,10 @@ fabfile.py
 django.log
 dev.db
 *.htpasswd
-scanblog/bin/
+scanblog/bin/*
+!scanblog/bin/install.sh
 scanblog/deploy/*
 !scanblog/deploy/.gitkeep
-
 
 # Production files
 scanblog/media/cache

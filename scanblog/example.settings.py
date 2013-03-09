@@ -126,4 +126,4 @@ LOGGING = {
     }
 }
 
-SELENIUM_FIREFOX_BIN = "/home/tc1/src/firefox/firefox"
+SELENIUM_FIREFOX_BIN = os.path.join(SETTINGS_ROOT, "bin", "firefox", "firefox")

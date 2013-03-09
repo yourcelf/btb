@@ -1,0 +1,4 @@
+language: python
+python: "2.7"
+install: "./scanblog/bin/install.sh"
+script: "cd scanblog && python manage.py test && DISPLAY=:99.0 xvfb-run python manage.py test btb"
