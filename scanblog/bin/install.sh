@@ -26,9 +26,8 @@ sudo gem install --no-ri --no-rdoc compass
 sudo npm install -g coffee-script
 
 # Download latest webkit, and ancient firefox.
-cd $BIN_DIR
-curl -L https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2 | tar xjv
-curl -L https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/10.0/linux-i686/en-US/firefox-10.0.tar.bz2 | tar xjv
+curl -L https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2 | tar -xjv -C $BIN_DIR 
+curl -L https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/10.0/linux-i686/en-US/firefox-10.0.tar.bz2 | tar xjv -C $BIN_DIR 
 
 # Copy settings.
 cp $BIN_DIR/../example.settings.py $BIN_DIR/../settings.py
