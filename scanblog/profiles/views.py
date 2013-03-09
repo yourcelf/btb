@@ -280,9 +280,7 @@ class UsersJSON(JSONView):
                             ).exclude(
                                 user__username__icontains=word
                             ).exclude(
-                                user__mailing_address__icontains=word
-                            ).exclude(
-                                pk__exact=word
+                                mailing_address__icontains=word
                             )
                     try:
                         pk = int(word)
