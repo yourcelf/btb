@@ -42,7 +42,7 @@ TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 # You'll want to change these as needed...
 NICE_CMD = "/usr/bin/nice"
 PDFTK_CMD = '/usr/bin/pdftk'
-WKHTMLTOPDF_CMD = os.path.join(SETTINGS_ROOT, 'bin', 'wkhtmltopdf')
+WKHTMLTOPDF_CMD = os.path.join(SETTINGS_ROOT, 'bin', 'wkhtmltopdf-i386')
 RUBBER_PIPE_CMD = '/usr/bin/rubber-pipe'
 PDFINFO_CMD = '/usr/bin/pdfinfo'
 CONVERT_CMD = '/usr/bin/convert'
