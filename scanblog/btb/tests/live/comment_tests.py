@@ -16,6 +16,7 @@ class TestComments(BtbLiveServerTestCase):
 
         self.wait(lambda s: s.current_url.startswith(self.url("/accounts/login")))
         s.find_element_by_name("username").send_keys("testuser")
+        time.sleep(0.1) #ugh
         s.find_element_by_name("password").send_keys("testuser")
         s.find_element_by_xpath('//input[@type="submit"]').submit()
         self.wait(lambda s: not s.current_url.startswith(self.url("/accounts/login")))

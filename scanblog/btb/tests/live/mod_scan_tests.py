@@ -60,7 +60,10 @@ class TestModScans(BtbLiveServerTestCase):
                 self.assertFail("Can't find type '%s'" % hsh['type'])
 
         self.css(".save").click()
-        self.wait(lambda b: "disabled" not in self.css(".switch-to-edit-documents").get_attribute("class"))
+        try:
+            self.wait(lambda b: "disabled" not in self.css(".switch-to-edit-documents").get_attribute("class"))
+        except StaleElementReferenceException:
+            pass
 
         #
         # Edit the documents
@@ -98,6 +101,7 @@ class TestModScans(BtbLiveServerTestCase):
         self.css("select.doc-status", doc_el).send_keys("published")
         self.css(".save-doc", doc_el).click()
         self.wait(lambda b: Document.objects.get(pk=pk2).status == "published")
+        time.sleep(0.1) #ugh
 
         # Verify pages.
         b.get(self.url("/blogs/"))

@@ -17,7 +17,6 @@ django-pagination
 django-urlcrypt
 South
 pyyaml
-django-debug-toolbar
 reportlab
 # Due to these bugs:
 #  * https://code.google.com/p/selenium/issues/detail?id=4603
@@ -25,5 +24,5 @@ reportlab
 # We need pinned versions of selenium and firefox.  Have found selenium 2.20,
 # and firefox 10.0 to work properly.  Specify the firefox binary to use in
 # settings.SELENIUM_FIREFOX_BIN
-selenium<=2.20
+selenium==2.31.0
 pytz
