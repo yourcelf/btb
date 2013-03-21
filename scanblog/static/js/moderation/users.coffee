@@ -234,7 +234,7 @@ class btb.InPlaceUserChooser extends Backbone.View
 
     initialize: (user) ->
         @user = user
-        @userChooser = new btb.UserSearch
+        @userChooser = new btb.UserSearch(filter: {in_org: 1})
         @userChooser.bind "chosen", (model) =>
             @choose model
             @trigger "chosen", (model)
