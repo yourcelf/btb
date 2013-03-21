@@ -16,7 +16,9 @@ class Campaign(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     body = models.TextField()
-    organizations = models.ManyToManyField('profiles.Organization')
+    organizations = models.ManyToManyField('profiles.Organization',
+            help_text="Which organizations are allowed to mark posts"
+                      " as being part of this campaign?")
     reply_code = models.OneToOneField('annotations.ReplyCode')
     public = models.BooleanField()
 

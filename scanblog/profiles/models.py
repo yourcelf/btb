@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
@@ -318,6 +319,67 @@ class Organization(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class AffiliationManager(OrgManager):
+    def public(self): return self.all().public()
+    def private(self): return self.all().private()
+
+class Affiliation(models.Model):
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True,
+            help_text="Use this to identify this affiliation when editing documents.")
+    logo = models.ImageField(upload_to="public/uploads/affiliations/",
+            blank=True, null=True)
+    list_body = models.TextField(
+            help_text="HTML for the top of the group page.")
+    detail_body = models.TextField(
+            help_text="HTML to append to individual posts for this group.")
+    organizations = models.ManyToManyField(Organization,
+            help_text="Which organizations are allowed to mark posts"
+                      " as belonging to this affiliation?")
+    public = models.BooleanField(
+            help_text="If false, the affiliation won't be listed publicly.")
+
+    order = models.IntegerField(
+            default=0,
+            help_text="Use to set the order for the list of affiliations on"
+                      " the categories view. Lower numbers come first.")
+    created = models.DateTimeField(default=datetime.datetime.now)
+    modified = models.DateTimeField(blank=True)
+
+    objects = AffiliationManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ["organizations"]
+
+        def public(self):
+            return self.filter(public=True)
+        def private(self):
+            return self.filter(public=False)
+    
+    class Meta:
+        ordering = ['order', '-created']
+
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'slug': self.slug,
+            'logo_url': self.logo.url if self.logo else None
+        }
+
+    def total_num_responses(self):
+        return self.document_set.count()
+
+    def get_absolute_url(self):
+        return reverse("blogs.show_affiliation", args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        self.modified = datetime.datetime.now()
+        return super(Affiliation, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.slug
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance=None, **kwargs):

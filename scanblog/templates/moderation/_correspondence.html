@@ -137,6 +137,9 @@
             Return originals &ndash; <i>refused</i> by policy. <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
         <% } else if (letter.type == "returned_original") {%>
             Return originals &ndash; requested by author. <a href='<%= letter.document.url %>'><%= letter.document.type %></a>
+        <% } else if (letter.type == "comment_removal") { %>
+            Notice that a comment was <em>removed</em>:
+            <div class='comments-table' style='opacity: 0.5;'></div>
         <% } %>
     </div>
     <div class='return'>Return:
@@ -204,6 +207,11 @@
             <span class='choice comments'>
                 <input checked="checked"  type='checkbox' name='comments' id='comments' />
                 <label for='comments'>Comments (<span class='count'></span>)</label>
+            </span>
+
+            <span class='choice comment_removal'>
+                <input checked="checked" type='checkbox' name='comment_removal' id='comment_removal' />
+                <label for='comment_removal'>Comment removal (<span class='count'></span>)</label>
             </span>
             
             <span class='choice enqueued'>

@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Preview comment removal letter</title>
+    <style type='text/css'>
+      .error { color: red; }
+    </style>
+  </head>
+<body>
+  {% if error %}
+    <div class='error'>
+      <h2>LaTeX compile error</h2>
+      <p>There is a problem with the letter body.</p>
+      <p>The error message is as follows:</p>
+      <pre>{{ error.message }}</pre>
+      <p>Usually, errors are the result of special characters like &amp;, _, or % &ndash; try putting a "\" before them (e.g. \&amp;, \_, \%).  Contact <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a> if you don't understand how to fix this.</p>
+    </div>
+  {% endif %}
+  <form id='preview_letter_form' action='{% url correspondence.comment_removal_letter_preview_frame comment.id %}' method='post'>{% csrf_token %}
+    <input type='hidden' name='body' value='' />
+  </form>
+</body>

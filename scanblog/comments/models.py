@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 from btb.utils import OrgManager, OrgQuerySet
@@ -7,6 +8,13 @@ from btb.utils import OrgManager, OrgQuerySet
 class CommentManager(OrgManager):
     def public(self):
         return self.filter(removed=False, document__status="published")
+
+    def public_and_tombstoned(self):
+        return self.filter(
+                Q(removed=False) |
+                Q(~Q(commentremoval__web_message=u""),
+                  removed=True, commentremoval__isnull=False)
+            )
 
     def excluding_boilerplate(self):
         return self.public().exclude(
@@ -17,9 +25,8 @@ class CommentManager(OrgManager):
                 comment_doc__isnull=False
             )
 
-
     def with_mailed_annotation(self):
-        return self.public().annotate(letter_sent=models.Max('letter__sent'))
+        return self.public_and_tombstoned().annotate(letter_sent=models.Max('letter__sent'))
 
     def unmailed(self):
         return self.public().filter(
@@ -86,6 +93,64 @@ class Comment(models.Model):
         else:
             blurb = "None"
         return "%s: %s" % (self.user.profile.display_name, blurb)
+
+class RemovalReason(models.Model):
+    """
+    This is a class describing messages left behind when a comment is removed,
+    and policy for notifications.  Use it when removing comments, where you
+    want a side effect like a notification to the comment author or 
+    """
+    name = models.CharField(max_length=255, unique=True)
+    organizations = models.ManyToManyField("profiles.Organization",
+            help_text="To which organizations will this removal reason be visible?")
+    default_web_message = models.TextField(
+        help_text="Default message to display in place of the removed comment."
+                  " If blank, no web message will be left.",
+        blank=True
+    )
+    default_comment_author_message = models.TextField(
+        help_text="Default message to send to commenters, if any."
+                  " If blank, commenters won't be notified.",
+        blank=True
+    )
+    default_post_author_message = models.TextField(
+        help_text="Default message to send to post authors, if any."
+                  " If blank, post authors won't be notified.",
+        blank=True
+    )
+
+    objects = OrgManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ["organizations"]
+
+    def __unicode__(self):
+        return self.name
+
+class CommentRemovalManager(OrgManager):
+    def needing_letters(self):
+        return self.exclude(post_author_message=u"").exclude(
+                comment__letter__type="comment_removal")
+
+class CommentRemoval(models.Model):
+    comment = models.OneToOneField(Comment)
+    reason = models.ForeignKey(RemovalReason, blank=True, null=True)
+    web_message = models.TextField(blank=True)
+    comment_author_message = models.TextField(blank=True)
+    post_author_message = models.TextField(blank=True)
+    date = models.DateTimeField(default=datetime.datetime.now)
+
+    objects = CommentRemovalManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ["comment__document__author__organization"]
+
+    def __unicode__(self):
+        return "%s: %s" % (self.comment.pk, self.date)
+
+class CommentRemovalNotificationLog(models.Model):
+    comment = models.OneToOneField(Comment)
+    date = models.DateTimeField(default=datetime.datetime.now)
 
 class Favorite(models.Model):
     user = models.ForeignKey(User)

@@ -441,3 +441,20 @@ class TestOrgPermissions(TestCase):
                 set([member0.profile, member1.profile]))
         self.assertEquals(set(Profile.objects.mail_filter(mod1)),
                 set([member1.profile]))
+
+    def test_search_users(self):
+        org0, mod0, member0, org1, mod1, member1 = self._org_vars()
+        # Test that the users.json search works for positive and negative
+        # queries.
+        self._json_results(mod0.username, "mod",
+            "/people/users.json?per_page=6&blogger=true&in_org=1&q=memb",
+            set([member0.pk]))
+        self._json_results(mod0.username, "mod",
+            "/people/users.json?per_page=6&blogger=true&in_org=1&q=foo",
+            set([]))
+        self._json_results(mod0.username, "mod",
+            "/people/users.json?per_page=6&blogger=true&in_org=1&q=-memb",
+            set([]))
+        self._json_results(mod0.username, "mod",
+            "/people/users.json?per_page=6&blogger=true&in_org=1&q=-foo",
+            set([member0.pk]))

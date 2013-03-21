@@ -15,10 +15,12 @@
 {% block body %}
 
 <div class='post-detail {% if not post.currently_published %} unpublished{% endif %}'>
-{% if post.adult and not user.profile.show_inappropriate_posts %}
+{% if post.adult and not user.profile.show_adult_content %}
     {% include "blogs/_inappropriate_post.html" %}
 {% else %}
     {% with tx=post.transcription tx_rev=tx.current %}
+
+        {% if post.affiliation %}{{ post.affiliation.detail_body|safe }}{% endif %}
 
         {% include "blogs/_post_title_line.html" %}
 
@@ -105,7 +107,7 @@
 
 {# What's next? #}
 {% include "blogs/_related.html" %}
-{% with feed_author=post.author comment_feed_obj=post %}
+{% with feed_author=post.author comment_feed_obj=post document=post %}
 {% include "feeds/_subscriptions.html" %}
 {% endwith %}
 {# / #}

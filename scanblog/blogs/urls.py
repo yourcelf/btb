@@ -44,4 +44,8 @@ urlpatterns = patterns('blogs.views',
     # Campaigns
     url(r'^campaigns/(?P<slug>[-\w]+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
     url(r'^campaigns/(?P<slug>[-\w]+)/$', 'show_campaign', name='blogs.show_campaign'),
+
+    # Affiliations
+    url(r'^group/(?P<slug>[-\w]+)/feed/$', 'affiliation_feed', name='blogs.affiliation_feed'),
+    url(r'^group/(?P<slug>[-\w]+)/$', 'show_affiliation', name='blogs.show_affiliation'),
 )

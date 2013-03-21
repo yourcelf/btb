@@ -1,0 +1,11 @@
+{% extends "blogs/base_post_list.html" %}
+{% block title %}{{ affiliation.title }}{% endblock %}
+{% block heading %}
+
+{% if page.number == 1 %}
+    {{ affiliation.list_body|safe }}
+{% else %}
+    <h1>{{ affiliation.title }}</h1>
+{% endif %}
+
+{% endblock %}

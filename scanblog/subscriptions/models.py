@@ -7,7 +7,7 @@ from django.conf import settings
 from scanning.models import Document
 from annotations.models import Tag
 from comments.models import Comment
-from profiles.models import Organization
+from profiles.models import Organization, Affiliation
 from campaigns.models import Campaign
 
 from notification import models as notification
@@ -25,13 +25,15 @@ class Subscription(models.Model):
             blank=True, null=True)
     campaign = models.ForeignKey(Campaign, related_name="organization_subscriptions",
             blank=True, null=True)
+    affiliation = models.ForeignKey(Affiliation, related_name="affiliation_subscriptions",
+            blank=True, null=True)
 
     def __unicode__(self):
         return "%s -> %s" % (self.subscriber, 
-                (self.document or self.author or self.tag))
+            (self.document or self.author or self.tag or self.campaign or self.affiliation))
 
     class Meta:
-        ordering = ['tag', 'author', 'document']
+        ordering = ['tag', 'author', 'document', 'campaign', 'affiliation']
 
 class DocumentNotificationLog(models.Model):
     """
@@ -44,6 +46,17 @@ class DocumentNotificationLog(models.Model):
 
     def __unicode__(self):
         return "%s -> %s" % (self.document, self.recipient)
+
+class CommentNotificationLog(models.Model):
+    """
+    Log notifications of comments, so that we only send once per comment,
+    even if the comment is edited.
+    """
+    recipient = models.ForeignKey(User)
+    comment = models.ForeignKey(Comment)
+
+    def __unicode__(self):
+        return "%s -> %s" % (self.comment, self.recipient)
 
 class NotificationBlacklist(models.Model):
     """
@@ -64,6 +77,9 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None:
             return
         document = instance
+        if document.author is None:
+            return
+
         if not document.is_public():
             return
         subs = Subscription.objects.filter(author=document.author)
@@ -80,6 +96,8 @@ if not settings.DISABLE_NOTIFICATIONS:
                 pass
             if campaign:
                 subs |= Subscription.objects.filter(campaign=campaign)
+        if document.affiliation:
+            subs |= Subscription.objects.filter(affiliation=document.affiliation)
         for sub in subs:
             if NotificationBlacklist.objects.filter(
                     email=sub.subscriber.email).exists():
@@ -102,6 +120,8 @@ if not settings.DISABLE_NOTIFICATIONS:
         if instance is None or 'created' not in kwargs:
             return
         comment = instance
+        if comment.document is None:
+            return
 
         # Create default subscription for commenter.
         sub, created = Subscription.objects.get_or_create(
@@ -119,7 +139,11 @@ if not settings.DISABLE_NOTIFICATIONS:
             # No notification if the subscriber is the comment author. :)
             if sub.subscriber == comment.user:
                 continue
-            recipients.append(sub.subscriber)
+            log, created = CommentNotificationLog.objects.get_or_create(
+                recipient=sub.subscriber, comment=comment
+            )
+            if created:
+                recipients.append(sub.subscriber)
         if recipients:
             notification.send(recipients, "new_reply", {
                 'comment': comment,

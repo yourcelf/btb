@@ -9,8 +9,8 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 ----
 
 Moderation functions:
-Delete: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete>
-Edit: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/>
+spam: <http://{{ site.domain }}{% url comments.spam_can_comment comment.id %}>
+abuse: <http://{{ site.domain }}{% url comments.moderator_remove comment.id %}>
 
 Admin functions:
 Edit user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>

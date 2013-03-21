@@ -16,7 +16,7 @@ from django.contrib.sites.models import Site
 from django.db.models import Count
 
 from btb.utils import args_method_decorator, JSONView, can_edit_user, can_edit_profile
-from profiles.models import Profile, Organization
+from profiles.models import Profile, Organization, Affiliation
 from profiles.forms import get_profile_form, UserFormNoEmail, ProfileUploadForm
 from scanning.models import Scan, Document
 from scanning.tasks import process_scan_to_profile, move_scan_file
@@ -280,9 +280,7 @@ class UsersJSON(JSONView):
                             ).exclude(
                                 user__username__icontains=word
                             ).exclude(
-                                user__mailing_address__icontains=word
-                            ).exclude(
-                                pk__exact=word
+                                mailing_address__icontains=word
                             )
                     try:
                         pk = int(word)
@@ -395,3 +393,15 @@ class OrganizationsJSON(JSONView):
         return self.json_response({
             'results': [o.to_dict() for o in orgs]
         })
+
+class AffiliationsJSON(JSONView):
+    @args_method_decorator(permission_required, "auth.change_user")
+    def get(self, request):
+        affiliations = Affiliation.objects.org_filter(
+                request.user
+            ).filter(
+                slug__iexact=request.GET.get("slug", "")
+            )
+        return self.paginated_response(request, affiliations)
+
+

@@ -9,8 +9,8 @@ from django.test.utils import override_settings
 
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
-from subscriptions.models import Subscription, NotificationBlacklist
-from scanning.models import Document
+from subscriptions.models import Subscription, NotificationBlacklist, CommentNotificationLog
+from scanning.models import Document, Transcription, TranscriptionRevision
 from comments.models import Comment
 from annotations.models import Tag, ReplyCode
 from campaigns.models import Campaign
@@ -267,4 +267,81 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertTrue("This is my fun body text" in msg.message().get_payload(None, True))
         self.assertEquals(mail.outbox, [])
         
+    def test_multiple_comment_notification(self):
+        CommentNotificationLog.objects.all().delete()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.clear_outbox()
+        comment1 = Comment.objects.create(comment="yah", user=self.commenter, document=doc)
+        comment2 = Comment.objects.create(comment="huh", user=self.commenter2, document=doc)
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
+        self.clear_outbox()
+        comment2.comment = "huh edited"
+        comment2.save()
+        self.assertEquals(len(mail.outbox), 0)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
 
+    def test_documentless_comment_saving(self):
+        self.clear_outbox()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        Subscription.objects.create(author=self.author, subscriber=self.commenter)
+        comment = Comment.objects.create(comment="A fine comment",
+                user=self.commenter2,
+                document=doc)
+        comment = Comment.objects.create(comment="An admin mistake", user=self.editor)
+        self.assertEquals(mail.outbox, [])
+
+    def test_moderator_notification_on_content_with_links(self):
+        # Nothing with no link.
+        self.clear_outbox()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        comment = Comment.objects.create(comment="No link",
+                user=self.commenter,
+                document=doc)
+        TranscriptionRevision.objects.create(
+                transcription=Transcription.objects.create(document=doc),
+                editor=self.commenter,
+                body="No link")
+        self.assertEquals(len(mail.outbox), 0)
+
+        # Notification with non-self links
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+            comment = Comment.objects.create(
+                    comment="{0}://advertiser.com".format(protocol),
+                    user=self.commenter,
+                    document=doc)
+            self.assertEquals(len(mail.outbox), 1)
+
+            self.clear_outbox()
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://advertiser.com".format(protocol))
+            self.assertEquals(len(mail.outbox), 1)
+
+        # Nothing with self links.
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+
+            comment = Comment.objects.create(
+                    comment="{0}://{1}/blogs/101/".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ),
+                    user=self.commenter,
+                    document=doc)
+
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://{1}/blogs/101.com".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ))
+
+            self.assertEquals(len(mail.outbox), 0)

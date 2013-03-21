@@ -1,3 +1,5 @@
+import os
+
 from django.test import LiveServerTestCase
 from django.conf import settings
 
@@ -16,6 +18,17 @@ class BtbLiveServerTestCase(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         if hasattr(settings, "SELENIUM_FIREFOX_BIN"):
+            if not os.path.exists(settings.SELENIUM_FIREFOX_BIN):
+                parent = os.path.dirname(settings.SELENIUM_FIREFOX_BIN)
+                while not os.path.exists(parent):
+                    parent = os.path.dirname(parent)
+                raise OSError(
+                    "Firefox binary '%s' missing. Nearest parent: %s, contents: %s" % (
+                        settings.SELENIUM_FIREFOX_BIN,
+                        parent,
+                        os.listdir(parent)
+                    )
+                )
             firefox_binary = FirefoxBinary(settings.SELENIUM_FIREFOX_BIN)
             cls.selenium = WebDriver(firefox_binary=firefox_binary)
         else:

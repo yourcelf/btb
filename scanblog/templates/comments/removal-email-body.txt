@@ -1,0 +1,10 @@
+{% extends "notification/email_body.txt" %}
+
+{% block message %}
+{{ block.super }}
+
+The removed comment was:
+
+"{{ removal.comment.comment }}"
+
+{% endblock %}

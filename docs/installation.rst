@@ -21,18 +21,19 @@ System requirements:
  * `mercurial <http://mercurial.selenic.com>`_ (for installing python dependencies)
  * `python-virtualenv <http://www.virtualenv.org/en/latest/>`_
  * `compass <http://compass-style.org/>`_ (for stylesheet compilation)
+ * `coffee script <http://coffeescript.org/>`_ (for script compilation)
 
 System-specific instructions:
  
  * Ubuntu::
 
-    sudo apt-get install poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all rubygems
+    sudo apt-get install git mercurial poppler-utils pdftk imagemagick rubber rabbitmq-server python-dev postgresql-server-dev-all rubygems nodejs npm texlive-fonts-extra texlive-fonts-recommended texlive-font-utils texlive-generic-recommended texlive-latex-extra texlive-latex-recommended ttf-sil-gentium
 
     cd /tmp
-    curl -O https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
-    tar xjvf wkhtmltopdf-0.11.0_rc1-i386.tar.bz2
-    sudo cp wkhtmltopdf /usr/local/bin
+    curl -L https://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2 | tar xjv > wkhtmltopdf
+    sudo mv wkhtmltopdf /usr/local/bin
     sudo gem install compass
+    sudo npm install -g coffee-script
  
  * OS X (using `MacPorts <http://www.macports.org/>`_ -- install that first)::
 
@@ -58,6 +59,9 @@ System-specific instructions:
     sudo cp wkhtmltopdf /usr/local/bin
 
     #XXX: need instructions for installing compass (http://compass-style.org)
+    #XXX: need instructions for installing coffeescript (http://coffeescript.org)
+    #XXX: need instructions for installing latex
+    #XXX: need instructions for installing Gentium font (http://scripts.sil.org/cms/scripts/render_download.php?&format=file&media_id=Gentium_102_W&filename=Gentium_102_W.zip)
 
 
 2. Set up project directory
@@ -65,16 +69,16 @@ System-specific instructions:
 
 Set up a directory to put project files/etc in::
 
-    BTB_DIR=~/work/btb # or whatever you like...
-    mkdir -p $BTB_DIR
+    INSTALL_DIR=~/projects/ # or whatever you like...
+    mkdir -p $INSTALL_DIR
 
-The rest of this documentation assumes there is a ``BTB_DIR`` environment variable.
+The rest of this documentation assumes there is a ``INSTALL_DIR`` environment variable.
 
 3. Clone the repository
 -----------------------
 Download the code::
 
-    cd $BTB_DIR
+    cd $INSTALL_DIR
     git clone http://github.com/yourcelf/btb.git btb
 
 4. Set up ``virtualenv`` and install python library dependencies
@@ -82,75 +86,44 @@ Download the code::
 
 Set up a virtualenv into which to install python dependencies.  Python dependencies are listed in the file ``scanblog/requirements.txt``::
 
-    VENV_DIR=~/work/btb/venv # or whatever you like
+    VENV_DIR=$INSTALL_DIR/btb/venv # or whatever you like
     virtualenv --no-site-packages $VENV_DIR
     source $VENV_DIR/bin/activate
     easy_install pip
-    pip install -r $BTB_DIR/btb/scanblog/requirements.txt
+    pip install -r $INSTALL_DIR/btb/scanblog/requirements.txt
 
-5. Fonts
---------
-
-To render postcards and letters, as well as to give it that stylish look, a couple of fonts need to be installed.
-
-Gentium
-+++++++
-
-* Ubuntu::
-
-    sudo apt-get install ttf-sil-gentium
-
-* OS X::
-
-    cd $BTB_DIR
-    mkdir fonts
-    cd fonts
-    curl "http://scripts.sil.org/cms/scripts/render_download.php?&format=file&media_id=Gentium_102_W&filename=Gentium_102_W.zip" -o Gentium_102_W.zip
-    unzip Gentium_102_W.zip
-
-Web fonts
-+++++++++
-
-``wkhtmltopdf`` doesn't properly render non-local webfonts, so it is necessary to install the webfont used on BtB locally.
-
-* Ubuntu::
-
-    sudo cp $BTB_DIR/btb/scanblog/static/fonts/*.ttf /usr/local/share/fonts/
-
-* OS X: TODO
-
-Latex fonts
-+++++++++++
-
-In order to render pretty letters, LaTeX needs its fonts too.
-
-    TODO -- one or more of ``texlive-fonts-extra``, ``texlive-fonts-recommended``, ``texlive-font-utils``, ``texlive-generic-recommended``, ``texlive-latex-extra``, ``texlive-latex-recommended``...
-
-6. Configure BtB
+5. Configure BtB
 ----------------
 
 Copy ``example.settings.py`` to ``settings.py``, then edit it to reflect your settings::
 
-    cd $BTB_DIR/btb/scanblog
+    cd $INSTALL_DIR/btb/scanblog
     cp example.settings.py settings.py
 
 Be sure to change:
 
 * ADMINS and SERVER_EMAIL to a suitable name/email
-* TEXT_IMAGE_FONT to the Gentium font path, e.g., ``~/work/btb/fonts/Gentium102/GenR102.TTF``
+* TEXT_IMAGE_FONT to the Gentium font path, e.g., ``/usr/share/fonts/gentium/GenR102.TTF``
 * Set the path to external executables as appropriate: ``NICE_CMD``, ``PDFTK_CMD``, ``WKHTMLTOPDF_CMD``, ``RUBBER_PIPE_CMD``, ``PDFINFO_CMD``, ``PDFTOTEXT_CMD``, ``CONVERT_CMD``
 * Change ``SECRET_KEY`` to something long and random (it's used for hashing authentication cookies).
 * If it's a production site, you'll want to use a database other than sqlite,
   as it doesn't support concurrent writes.  Set this in the ``DATABASES``
   configuration. (sqlite works fine for development)
 
-7. Set up database
+Due to `this bug <https://github.com/jezdez/django_compressor/issues/226>`_, as a work around to ensure that images and fonts are served properly in development mode, add symlinks to the compiled asset directory::
+
+    mkdirs -p $INSTALL_DIR/btb/scanblog/site_static/CACHE
+    cd $INSTALL_DIR/btb/scanblog/site_static/CACHE
+    ln -s ../../static/img .
+    ln -s ../../static/fonts .
+
+6. Set up database
 ------------------
 
 Load the initial database, and run initial migrations::
 
     source $VENV_DIR/bin/activate
-    cd $BTB_DIR/btb/scanblog
+    cd $INSTALL_DIR/btb/scanblog
 
     python manage.py syncdb --noinput
     python manage.py migrate
@@ -158,7 +131,7 @@ Load the initial database, and run initial migrations::
 
     # Create superuser
     python manage.py shell  <<-EOF
-    from shell import *
+    from sh import *
     u = User.objects.create(username='admin', is_superuser=True, is_staff=True)
     u.set_password('admin')
     u.save()
@@ -174,7 +147,7 @@ navigating to ``http://localhost:8000/admin/``.
 
 Django ships with a built-in devserver.  You can run this directly::
 
-    cd $BTB_DIR/btb/scanblog
+    cd $INSTALL_DIR/btb/scanblog
     source $VENV_DIR/bin/activate
     python manage.py runserver
 
