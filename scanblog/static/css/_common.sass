@@ -198,6 +198,9 @@
   +button($normalfg, $normalbg, $hoverfg, $hoverbg, $activefg, $activebg)
   padding: 5px 10px 5px 7px
 
+.anchor-button
+  +anchor-button($normalfg: white, $normalbg: #8cb9f5, $hoverbg: #549BF7, $activebg: #351BE0)
+
 body
   font-family: $serif
   background: url("../img/white_grain.png") repeat
@@ -423,6 +426,19 @@ input.loading
 
 .commentbody
   margin-left: 1em
+
+.comment.removed
+  opacity: 0.5
+  .commentbody
+    padding: 0.5em
+    background-color: #ffe
+    color: #300
+    border: 1px dotted #300
+    h4
+      font-weight: bold
+      font-style: normal
+    
+
 
 .link-like
   +link-like

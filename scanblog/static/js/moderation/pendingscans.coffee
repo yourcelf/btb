@@ -34,7 +34,7 @@ class btb.PendingScans extends btb.PaginatedView
     render: =>
         $(@el).html @template
             orgs: btb.ORGANIZATIONS
-        userChooser = new btb.UserSearch
+        userChooser = new btb.UserSearch(filter: {in_org: 1})
         userChooser.bind "chosen", (user) => @addPendingScan(user)
         $(".user-chooser-holder", @el).html userChooser.render().el
         @renderItems()
