@@ -33,8 +33,8 @@
             on
             <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a> 
             by <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
-            (<a href='https://{{ site.domain }}{% url comments.moderator_remove comment.pk %}}'>remove</a>,
-             <a href='https://{{ site.domain }}{% url comments.span_can_comment comment.pk %}'>spam</a>)
+            (<a href='https://{{ site.domain }}{% url "comments.moderator_remove" comment.pk %}}'>remove</a>,
+             <a href='https://{{ site.domain }}{% url "comments.spam_can_comment" comment.pk %}'>spam</a>)
         </td></tr>
         <tr><td bgcolor='#ffe'>
             {{ comment.comment|linebreaksbr }}
@@ -51,7 +51,7 @@
     <table>
         <tr><td bgcolor='#ddd'>
                 <h2>{{ forloop.counter }}</h2>
-                <a href='{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
                 by {{ doc.author.profile }}
                 <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>edit transcription</a>,
                 <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
