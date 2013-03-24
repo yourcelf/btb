@@ -370,11 +370,11 @@ def questions(request):
                 unknown_count += 1
                 state = "Unknown %s" % unknown_count
             states[state].append(profile)
-        items = [(len(v), k, v) for k,v in states.items()]
+        items = [(len(v), k, sorted(v, key=lambda p: p.user.date_joined)) for k,v in states.items()]
         items.sort()
         items.reverse()
         rows = [
-            (s, c, ", ".join(sorted(author_link(p) for p in ps))) for c, s, ps in items
+            (s, c, ", ".join(author_link(p) for p in ps)) for c, s, ps in items
         ]
         return render(request, "moderation/question_answer.html", {
             'question': questions[q],
