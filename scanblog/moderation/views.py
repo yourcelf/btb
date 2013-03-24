@@ -1,4 +1,6 @@
 import json
+import re
+from collections import defaultdict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required, login_required
@@ -6,6 +8,7 @@ from django.core import paginator
 from django.db.models import Count
 from django.http import Http404
 from djcelery.models import TaskMeta
+from django.contrib.localflavor.us.us_states import STATES_NORMALIZED
 
 from scanning.models import Document, Scan, DocumentPage, EditLock
 from scanning import tasks as scanning_tasks
@@ -225,6 +228,166 @@ def stats(request):
     return render(request, "moderation/stats.html", {
         'stats': json.dumps(stats, default=dthandler)
     })
+
+#XXX better permission needed here
+@permission_required("correspondence.manage_correspondence")
+def questions(request):
+    q = request.GET.get('q', None)
+    questions =  {
+        'comment_gap': "How long after a post is published do comments keep coming in?",
+        'writers_by_recency': "List of writers by how recently they posted.",
+        'writers_by_volume': "List of writers by number of posts.",
+        'letter_post_ratio': "Ratio of posts published to letters sent for each writer.",
+        'comments_to_posts': "Ratio of comments received to posts published for each writer.",
+        'states': "How many writers in which states?",
+    }
+
+    author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
+
+
+    if not q:
+        return render(request, "moderation/questions_index.html", {
+            'questions': sorted(questions.items())
+        })
+    elif q == "comment_gap":
+        counter = defaultdict(int)
+        for comment in Comment.objects.public().filter(comment_doc__isnull=True):
+            gap = (comment.created - comment.document.date_written).days
+            counter[gap] += 1
+        header_row = [
+            "Days", "Count", "Total percentage so far"
+        ]
+        rows = []
+        accum = 0
+        total = sum(counter.values())
+        for days, count in sorted(counter.items()):
+            accum += count
+            rows.append((days, count, "%2.2f" % (100. * accum / total)))
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': header_row,
+            'rows': rows,
+        })
+
+    elif q == "writers_by_recency":
+        date_profile = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            try:
+                latest = profile.user.documents_authored.filter(status='published').order_by('-date_written')[0]
+            except IndexError:
+                continue
+            date_profile.append((
+                latest.date_written.strftime("%Y-%m-%d"),
+                author_link(profile),
+            ))
+        date_profile.sort()
+        date_profile.reverse()
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ["", "Date", "Author"],
+            'rows': [(i + 1, d, p) for i,(d,p) in enumerate(date_profile)]
+        })
+    elif q == "writers_by_volume":
+        volume_profile = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            volume_profile.append((
+                profile.user.documents_authored.filter(status='published').count(),
+                author_link(profile),
+            ))
+        volume_profile.sort()
+        volume_profile.reverse()
+        total = sum(v for v,p in volume_profile)
+        rows = [(v, "%2.2f" % (100. * v / total), p) for v,p in volume_profile]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Number of posts", 
+                "Percentage of all posts",
+                "Author",
+            ],
+            'rows': rows,
+        })
+    elif q == "letter_post_ratio":
+        posts_vs_letters_profile = []
+        for profile in Profile.objects.filter(blogger=True).select_related('user'):
+            posts = profile.user.documents_authored.filter(status='published').count()
+            letters = profile.user.received_letters.filter(sent__isnull=False).count()
+            if letters == 0:
+                ratio = 0
+            else:
+                ratio = float(posts) / letters
+            posts_vs_letters_profile.append((
+                ratio, posts, letters, profile
+            ))
+        posts_vs_letters_profile.sort()
+        posts_vs_letters_profile.reverse()
+        rows = [("%.4f" % r, p, l, author_link(a)) for r,p,l,a in posts_vs_letters_profile]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Ratio of posts to letters",
+                "Total posts",
+                "Total letters",
+                "Author"
+            ],
+            'rows': rows,
+        })
+    elif q == "comments_to_posts":
+        comments_to_posts = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            comments = Comment.objects.public().filter(
+                    comment_doc__isnull=True,
+                    document__author=profile.user).count()
+            posts = profile.user.documents_authored.filter(status='published').count()
+            if posts == 0:
+                ratio = 0
+            else:
+                ratio = comments / float(posts)
+            comments_to_posts.append((ratio, comments, posts, profile))
+        rows = [
+            ("%.4f" % r, c, p, author_link(a)) for r,c,p,a in reversed(sorted(comments_to_posts))
+        ]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Ratio of comments to posts",
+                "Total comments",
+                "Total posts",
+                "Author"
+            ],
+            'rows': rows,
+        })
+    elif q == "states":
+        states = defaultdict(list)
+        unknown_count = 0
+        for profile in Profile.objects.enrolled():
+            parts = re.split("[^a-zA-Z0-9\.]", profile.mailing_address)
+            for word in parts[::-1]:
+                if word.lower() in STATES_NORMALIZED:
+                    state = STATES_NORMALIZED[word.lower()]
+                    break
+            else:
+                unknown_count += 1
+                state = "Unknown %s" % unknown_count
+            states[state].append(profile)
+        items = [(len(v), k, v) for k,v in states.items()]
+        items.sort()
+        items.reverse()
+        rows = [
+            (s, c, ",".join(author_link(p) for p in ps)) for c, s, ps in items
+        ]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                'State', 'Count', 'Authors'
+            ],
+            'rows': rows,
+        })
+
+
+    raise Http404
+
+
 
 @permission_required("scanning.add_scan")
 def page_picker(request):

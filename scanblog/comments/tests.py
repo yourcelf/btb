@@ -91,8 +91,7 @@ class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
         (spam, url) = self._make_spam()
         res = self.client.post(url)
         self.assertEquals(Comment.objects.get(pk=spam.pk).removed, True)
-        self.assertFalse(
-                CommentRemoval.objects.filter(comment=spam).exists())
+        self.assertFalse(CommentRemoval.objects.filter(comment=spam).exists())
         # No mail notifications for spam.
         self.assertOutboxIsEmpty()
 
@@ -249,9 +248,6 @@ class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
 
         self.assertEquals(set(CommentRemoval.objects.needing_letters()),
                           set())
-
-
-
 
     def test_remove_with_blogger_notice(self):
         (abuse, url) = self._make_abuse("reader")
