@@ -25,6 +25,7 @@ def generate_file(letter):
         'waitlist': waitlist_postcard,
         'refused_original': refused_original,
         'returned_original': returned_original,
+        'comment_removal': comment_removal,
     }
     if not letter.type:
         return None
@@ -176,6 +177,13 @@ def refused_original(letter):
         'letter': letter,
         'address': letter.recipient.profile.full_address(),
     })
+
+def comment_removal(letter):
+    return utils.render_tex_to_pdf("correspondence/comment-removal.tex", {
+            'letter': letter,
+            'comment': letter.comments.get(),
+            'message': letter.body,
+        })
 
 def generate_colation(mailing):
     """

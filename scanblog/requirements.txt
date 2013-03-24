@@ -1,23 +1,22 @@
-django>=1.4.1
+django==1.4.5
 psycopg2
--e hg+http://bitbucket.org/ubernostrum/django-registration#egg=django-registration
+-e hg+http://bitbucket.org/ubernostrum/django-registration@27bccd108cdef30dc0a91ed1968be17bb1e60da4#egg=django_registration-dev
 Celery
 django-celery
 pyPdf
-PIL
+pillow
 amqplib
 fabric
 django-bcrypt
--e git+https://github.com/ahupp/python-magic#egg=magic
+python-magic
 django_compressor
 sorl-thumbnail
 python-memcached
--e git+https://github.com/yourcelf/django-notification@master#egg=django-notification
+-e git+https://github.com/yourcelf/django-notification@8bd0d787ed1842540d6152d92ca542e7ef6df661#egg=django_notification-dev
 django-pagination
 django-urlcrypt
 South
 pyyaml
-django-debug-toolbar
 reportlab
 # Due to these bugs:
 #  * https://code.google.com/p/selenium/issues/detail?id=4603
@@ -25,5 +24,5 @@ reportlab
 # We need pinned versions of selenium and firefox.  Have found selenium 2.20,
 # and firefox 10.0 to work properly.  Specify the firefox binary to use in
 # settings.SELENIUM_FIREFOX_BIN
-selenium<=2.20
+selenium==2.31.0
 pytz

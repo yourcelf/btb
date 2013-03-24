@@ -18,6 +18,8 @@ urlpatterns = patterns('subscriptions.views',
         name='subscriptions.document'),
     url(r'^subscribe/campaign/(?P<slug>[-\w]+)$', 'subscribe_to_campaign',
         name='subscriptions.campaign'),
+    url(r'^subscribe/affiliation/(?P<affiliation_id>\d+)$', 'subscribe_to_affiliation',
+        name='subscriptions.affiliation'),
 
     # Notification addendum
     url(r'^toggle_notice/(?P<notice_id>\d+)$', 'ajax_set_notice_seen',

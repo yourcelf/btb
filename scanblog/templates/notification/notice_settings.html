@@ -39,10 +39,10 @@
                 </td>
                 <td>
                     {% if sub.document_id %}
-                        Replies to &ldquo;{{ sub.document.get_title }}&rdquo; by {{ sub.document.author.profile }}
+                      Replies to &ldquo;<a href='{{ sub.document.get_absolute_url }}'>{{ sub.document.get_title }}</a>&rdquo; by {{ sub.document.author.profile }}
                     {% endif %}
                     {% if sub.author_id %}
-                        Posts by {{ sub.author.profile }}
+                      Posts by <a href='{{ sub.author.profile.get_blog_url }}'>{{ sub.author.profile }}</a>
                     {% endif %}
                     {% if sub.tag_id %}
                         Posts tagged &ldquo;{{ sub.tag }}&rdquo;
@@ -52,6 +52,9 @@
                     {% endif %}
                     {% if sub.campaign_id %}
                         Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign
+                    {% endif %}
+                    {% if sub.affiliation_id %}
+                        Posts from <em><a href='{{ sub.affiliation.get_absolute_url }}'>{{ sub.affiliation.title }}</a></em>
                     {% endif %}
                 </td>
             </tr>

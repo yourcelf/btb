@@ -1,6 +1,6 @@
 {% load urlcrypt_tags %}Greetings,
 
-{{ message }}
+{% block message %}{{ message }}{% endblock %}
 
 -----
 

@@ -15,7 +15,7 @@ from django.conf import settings
 from django.db.models import Q, Count
 from django.db import transaction
 
-from comments.models import Comment
+from comments.models import Comment, CommentRemoval
 from correspondence.models import Letter, Mailing
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
@@ -342,6 +342,23 @@ class Mailings(JSONView):
                     )
                     to_send.append(letter)
                 letter.comments.add(c)
+        if "comment_removal" in types:
+            removals = list(CommentRemoval.objects.needing_letters().mail_filter(request.user).filter(
+                comment__document__author__profile__lost_contact=False
+            ).order_by(
+                'comment__document__author', 'comment__document'
+            ))
+            for removal in removals:
+                letter = Letter.objects.create(
+                    type="comment_removal",
+                    recipient=removal.comment.document.author,
+                    org=removal.comment.document.author.organization_set.get(),
+                    body=removal.post_author_message,
+                    send_anonymously=True,
+                    **kw)
+                letter.comments.add(removal.comment)
+                to_send.append(letter)
+
         mailing.letters.add(*to_send)
         return self.json_response(mailing.light_dict())
 
@@ -391,6 +408,9 @@ def needed_letters(user, consent_form_cutoff=None):
                 sent__isnull=True,
                 recipient__profile__lost_contact=False,
             ).exclude(mailing__isnull=False),
+        "comment_removal": CommentRemoval.objects.needing_letters().filter(
+                comment__document__author__profile__lost_contact=False
+            ).distinct(),
     }
 
 class NeededLetters(JSONView):
@@ -511,6 +531,42 @@ def preview_letter(request):
         response = show_letter(request, letter.pk)
         letter.delete()
         return response
+    return HttpResponseBadRequest("POST required")
+
+@permission_required("correspondence.manage_correspondence")
+def comment_removal_letter_preview_frame(request, comment_id):
+    comment = utils.mail_filter_or_404(request.user, Comment, pk=comment_id)
+    recipient = comment.document.author
+    org = comment.document.author.organization_set.get()
+    error = None
+    if request.method == "POST":
+        letter = Letter.objects.create(
+            type="comment_removal",
+            recipient=recipient,
+            org=org,
+            body=request.POST.get("body"),
+            sender=request.user,
+            send_anonymously=True,
+            sent=datetime.datetime.now()
+        )
+        letter.comments.add(comment)
+        response = None
+        try:
+            response = show_letter(request, letter.pk)
+        except utils.LatexCompileError as e:
+            error = e
+        finally:
+            letter.delete()
+        if response:
+            return response
+    return render(request, "correspondence/comment_removal_letter_preview_frame.html", {
+        'comment': comment,
+        'recipient': recipient,
+        'org': org,
+        'error': error,
+    })
+
+        
 
 @permission_required("correspondence.manage_correspondence")
 def show_letter(request, letter_id=None):

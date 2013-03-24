@@ -14,3 +14,9 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 admin.site.register(Organization, OrganizationAdmin)
 
+class AffiliationAdmin(admin.ModelAdmin):
+    model = Affiliation
+    list_display = ('title', 'public', 'created', 'total_num_responses')
+    prepopulated_fields = {"slug": ("title",)}
+    exclude = ('modified', 'created')
+admin.site.register(Affiliation, AffiliationAdmin)

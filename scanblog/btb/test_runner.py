@@ -33,4 +33,4 @@ class BtbTestRunner(CeleryTestSuiteRunner):
                            "campaigns", "comments", "correspondence",
                            "moderation", "profiles", "scanning",
                            "subscriptions")
-        super(BtbTestRunner, self).run_tests(test_labels, **kwargs)
+        return super(BtbTestRunner, self).run_tests(test_labels, **kwargs)

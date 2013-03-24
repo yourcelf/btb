@@ -63,7 +63,19 @@
 
                 ["change_user", "auth", "user"],
                 ["delete_user", "auth", "user"],
-                ["add_user", "auth", "user"]
+                ["add_user", "auth", "user"],
+
+                ["change_comment", "comments", "comment"],
+                ["delete_comment", "comments", "comment"],
+                ["add_comment", "comments", "comment"],
+
+                ["change_commentremoval", "comments", "commentremoval"],
+                ["delete_commentremoval", "comments", "commentremoval"],
+                ["add_commentremoval", "comments", "commentremoval"],
+
+                ["change_removalreason", "comments", "removalreason"],
+                ["delete_removalreason", "comments", "removalreason"],
+                ["add_removalreason", "comments", "removalreason"]
             ]
         }
     },

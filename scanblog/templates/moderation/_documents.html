@@ -50,11 +50,20 @@
         </tr>
 
         <% if (doc.type == "post") { %>
-        <tr>
+          <tr>
 
-            <th>Title:</th>
-            <td><input type='text' class='doc-title' value='<%= doc.title %>' placeholder='Untitled' /></td>
-        </tr>
+              <th>Title:</th>
+              <td><input type='text' class='doc-title' value='<%= doc.title %>' placeholder='Untitled' /></td>
+          </tr>
+          <tr>
+              <th>Affiliation:</th>
+              <td>This document belongs to the group:
+                  <input type='text' class='doc-affiliation' value='<%= doc.affiliation ? doc.affiliation.slug : "" %>' placeholder='None' />
+                  <div class='doc-affiliation-details'>
+                    <%= doc.affiliation ? doc.affiliation.title : "" %>
+                  </div>
+              </td>
+          </tr>
         <% } %>
             
         <tr>
