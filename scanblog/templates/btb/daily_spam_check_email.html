@@ -33,8 +33,8 @@
             on
             <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a> 
             by <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
-            (<a href='https://{{ site.domain }}{% url comments.moderator_remove comment.pk %}}'>remove</a>,
-             <a href='https://{{ site.domain }}{% url comments.span_can_comment comment.pk %}'>spam</a>)
+            (<a href='https://{{ site.domain }}{% url "comments.moderator_remove" comment.pk %}}'>remove</a>,
+             <a href='https://{{ site.domain }}{% url "comments.spam_can_comment" comment.pk %}'>spam</a>)
         </td></tr>
         <tr><td bgcolor='#ffe'>
             {{ comment.comment|linebreaksbr }}
