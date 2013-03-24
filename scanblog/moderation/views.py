@@ -374,7 +374,7 @@ def questions(request):
         items.sort()
         items.reverse()
         rows = [
-            (s, c, ",".join(author_link(p) for p in ps)) for c, s, ps in items
+            (s, c, ", ".join(sorted(author_link(p) for p in ps))) for c, s, ps in items
         ]
         return render(request, "moderation/question_answer.html", {
             'question': questions[q],
