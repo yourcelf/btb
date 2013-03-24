@@ -51,7 +51,7 @@
     <table>
         <tr><td bgcolor='#ddd'>
                 <h2>{{ forloop.counter }}</h2>
-                <a href='{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
                 by {{ doc.author.profile }}
                 <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>edit transcription</a>,
                 <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
