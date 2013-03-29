@@ -1,6 +1,8 @@
 import json
 import re
 from collections import defaultdict
+from difflib import SequenceMatcher
+#from moderation.diff_match_patch import *
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required, login_required
@@ -10,7 +12,8 @@ from django.http import Http404
 from djcelery.models import TaskMeta
 from django.contrib.localflavor.us.us_states import STATES_NORMALIZED
 
-from scanning.models import Document, Scan, DocumentPage, EditLock
+from scanning.models import Document, Scan, DocumentPage, EditLock, \
+        TranscriptionRevision
 from scanning import tasks as scanning_tasks
 from profiles.models import Profile, Organization
 from annotations.models import Tag
@@ -240,6 +243,8 @@ def questions(request):
         'letter_post_ratio': "Ratio of posts published to letters sent for each writer.",
         'comments_to_posts': "Ratio of comments received to posts published for each writer.",
         'states': "How many writers in which states?",
+        'transcribers': "Who does transcriptions? (SLOW)",
+#        'transcribed': "What gets transcribed?",
     }
 
     author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
@@ -383,11 +388,108 @@ def questions(request):
             ],
             'rows': rows,
         })
+    elif q == "transcribers":
+        import locale
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        transcribers = defaultdict(lambda: {
+            'posts': set(),
+            'additions': 0,
+            'deletions': 0,
+        })
+        prev = None
+        for rev in TranscriptionRevision.objects.select_related(
+                    'transcription', 'editor'
+                ).order_by('transcription__document', 'revision'):
+            if prev and rev.transcription.document_id != prev.transcription.document_id:
+                prev = None
+            ed = transcribers[rev.editor.username]
+            ed['posts'].add(rev.transcription.document_id)
+            if not prev:
+                ed['additions'] += len(rev.body)
+            else:
+                additions, deletions = _sequence_matcher_count_additions_deletions(
+                    rev.body, prev.body
+                )
+                ed['additions'] += additions
+                ed['deletions'] += deletions
+            prev = rev
+        rows = [(
+                u, len(d['posts']), d['additions'], d['deletions']
+            ) for (u,d) in transcribers.iteritems()]
+        rows.sort(key=lambda r: r[1])
+        rows.reverse()
+        rows = [(
+                i + 1,
+                u,
+                p,
+                locale.format("%d", d, grouping=True),
+                locale.format("%d", a, grouping=True),
+            ) for i, (u, p, d, a) in enumerate(rows)]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ['',
+                'Username',
+                'Number of posts',
+                'Total characters added',
+                'Total characters removed',
+            ],
+            'rows': rows
+        })
+#    elif q == "transcribed":
+#        posts = defaultdict(lambda: {
+#            'complete': False, 'dates': [], 'size': 0, 'author_pk': None,
+#            'title': None, 'url': None,
+#        })
+#        post_authors = defaultdict(set)
+#        cur = None
+#        struct = None
+#        for rev in TranscriptionRevision.objects.select_related(
+#                    'transcription', 'transcription__document'
+#                ).order_by('transcription__document', 'revision'):
+#            if not cur or cur.transcription != rev.transcription:
+#                struct = posts[rev.transcription.document.pk]
+#                cur = rev
+#            struct['complete'] = rev.transcription.complete
+#            struct['dates'].append(rev.modified)
+#            struct['size'] = len(rev.body)
+#            struct['author_pk'] = rev.transcription.document.author.pk
+#            post_authors[rev.transcription.document.author.pk].add(
+#                rev.transcription.document.pk
+#            )
+#        rows = []
+#        for pk, struct in posts.iteritems():
 
 
     raise Http404
 
 
+# NOTE: Default performance of this is slower than default performance of
+# sequence matcher; though it could be possible to tweak it to be more
+# performant.
+#def _dmp_count_additions_deletions(s1, s2):
+#    additions = 0
+#    deletions = 0
+#    diffs = diff_match_patch().diff_main(s1, s2)
+#    for (op, string) in diffs:
+#        if op == diff_match_patch.DIFF_DELETE:
+#            deletions += 1
+#        elif op == diff_match_patch.DIFF_INSERT:
+#            additions += 1
+#    return additions, deletions
+
+def _sequence_matcher_count_additions_deletions(s1, s2):
+    additions = 0
+    deletions = 0
+    sm = SequenceMatcher(None, s1, s2)
+    for opcode, a0, a1, b0, b1 in sm.get_opcodes():
+        if opcode == 'insert':
+            additions += b1 - b0
+        elif opcode == 'delete':
+            deletions += a1 - a0
+        elif opcode == 'replace':
+            additions += b1 - b0
+            deletions += a1 - a0
+    return additions, deletions
 
 @permission_required("scanning.add_scan")
 def page_picker(request):
