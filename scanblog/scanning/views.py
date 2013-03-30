@@ -265,7 +265,7 @@ class Documents(JSONView):
         if g("type", None):
             docs = docs.filter(type=g("type"))
         if g("idlist", None):
-            ids = g("idlist").split(".")
+            ids = [a for a in g("idlist").split(".") if a]
             if not ids:
                 raise Http404
             docs = [b for a,b in sorted(docs.in_bulk(ids).items())]
