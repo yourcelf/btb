@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from scanning.models import Document
 from comments.models import Comment
-from annotations.models import ReplyCode
+from annotations.models import ReplyCode, Note
 from profiles.models import Organization
 from btb.tests import BtbMailTestCase
 
@@ -137,3 +137,51 @@ class FlagTest(BtbMailTestCase):
         res = c.post(url, {'reason': 'oh my!!'})
         self.assertEquals(res.status_code, 302)
         self.assertOutboxContains(["%sContent flagged" % self.admin_subject_prefix])
+        msg = self.get_outbox()[0].message().as_string()
+        reader = User.objects.get(username="reader")
+        self.assertTrue("/admin/auth/user/{0}/".format(reader.pk) in msg)
+        self.assertTrue("/admin/auth/user/{0}/delete".format(reader.pk) in msg)
+
+
+    def test_spam_trip(self):
+        """
+        If the user posts in a manner that looks like spam, ban them.
+        """
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        url1 = reverse("scanning.flag_document", args=[doc.pk])
+
+        comment = Comment.objects.create(
+                user=self.reader, comment="My comment", document=doc
+            )
+        url2 = reverse("comments.flag_comment", args=[comment.pk])
+
+        # Once each for comment flag and scan flag.
+        for url in (url1, url2):
+            Note.objects.all().delete()
+            reader = User.objects.get(username="reader")
+            reader.is_active = True
+            reader.save()
+
+            self.assertTrue(c.login(username="reader", password="reader"))
+            self.clear_outbox()
+
+            res = c.post(url, {
+                'reason': "Tips to save wedding dresses"
+            }, follow=True)
+            self.assertEquals(res.redirect_chain, [(u'http://testserver/', 302)])
+            self.assertOutboxIsEmpty()
+            self.assertTrue("Your account has been suspended" in res.content)
+            reader = User.objects.get(username="reader")
+            self.assertFalse(reader.is_active)
+            self.assertEquals(Note.objects.count(), 1)
+            note = Note.objects.get()
+            self.assertEquals(note.text, "User auto-banned for flag spam")
+            self.assertEquals(note.user, reader)
+            self.assertEquals(note.creator, reader)
+
+            # now that we're inactive, we shouldn't be able to flag...
+            res = c.post(url, {
+                'reason': "Ain't no thang"
+            })
+            self.assertEquals(res.status_code, 302)

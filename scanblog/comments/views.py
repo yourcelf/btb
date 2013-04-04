@@ -2,7 +2,7 @@ import json
 import datetime
 
 # Create your views here.
-from django.contrib.auth.views import redirect_to_login
+from django.contrib.auth.views import redirect_to_login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -21,7 +21,7 @@ from comments.models import Comment, CommentRemoval, RemovalReason, \
 from correspondence.models import Letter
 from comments.forms import CommentForm, CommentRemovalForm
 from scanning.forms import FlagForm
-from annotations.models import Note
+from annotations.models import Note, handle_flag_spam
 
 def check_comment_editable(fn):
     def wrapped(request, comment_id): 
@@ -43,6 +43,8 @@ def check_comment_editable(fn):
 
 @check_comment_editable
 def edit_comment(request, comment_id=None, comment=None):
+    if not request.user.is_active:
+        raise PermissionDenied
     if settings.COMMENTS_OPEN == False:
         raise PermissionDenied("Comments are disabled currently.")
 
@@ -78,9 +80,15 @@ def flag_comment(request, comment_id):
     """
     Flag a comment. 
     """
+    if not request.user.is_active:
+        raise PermissionDenied
     comment = get_object_or_404(Comment, pk=comment_id)
     form = FlagForm(request.POST or None)
     if form.is_valid():
+        if handle_flag_spam(request.user, form.cleaned_data['reason']):
+            messages.info(request, _(u"Your account has been suspended due to behavior that looks like spam. If this is an error, please contact us using the contact link at the bottom of the page."))
+            logout(request)
+            return redirect("/")
         ticket, created = Note.objects.get_or_create(
             creator=request.user,
             text="FLAG from user. \n %s" % form.cleaned_data['reason'],

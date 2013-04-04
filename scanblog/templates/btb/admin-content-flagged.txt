@@ -4,9 +4,9 @@ Content URL:
 http://{{ site.domain }}{{ note.content_object.get_absolute_url }}
 
 Edit flagging user:
-http://{{ site.domain }}/admin/auth/user/{{ user.id }}/
+http://{{ site.domain }}/admin/auth/user/{{ note.creator.id }}/
 Delete flagging user:
-http://{{ site.domain }}/admin/auth/user/{{ user.id }}/delete/
+http://{{ site.domain }}/admin/auth/user/{{ note.creator.id }}/delete/
 
 Note content:
 ----

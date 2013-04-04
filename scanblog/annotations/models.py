@@ -103,6 +103,27 @@ class Note(models.Model):
     class Meta:
         ordering = ['-important', '-created']
 
+def handle_flag_spam(user, flag_reason):
+    """
+    Determine if this flag looks like spam, and disable the user account if it
+    does.
+
+    Returns True if the flag is to be regarded as spam, False otherwise.
+    """
+    # Simple dumb check -- just check against a blacklist of flags. We can get
+    # fancier if the flag spammers do.
+    if flag_reason in set([
+                "Tips to save wedding dresses",
+            ]):
+        user.is_active = False
+        user.save()
+        user.notes.create(creator=user,
+                text="User auto-banned for flag spam",
+                important=True)
+        return True
+    return False
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True, db_index=True)
 

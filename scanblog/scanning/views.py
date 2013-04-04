@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
+from django.contrib.auth.views import logout
 
 from btb.utils import args_method_decorator, JSONView
 
@@ -20,7 +21,7 @@ from scanning import utils, tasks
 from scanning.models import * 
 from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
-from annotations.models import Tag, Note, ReplyCode
+from annotations.models import Tag, Note, ReplyCode, handle_flag_spam
 from profiles.models import Organization, Profile, Affiliation
 from comments.forms import CommentForm
 
@@ -739,9 +740,15 @@ def flag_document(request, document_id):
     """
     Flag a post. 
     """
+    if not request.user.is_active:
+        raise PermissionDenied
     doc = get_object_or_404(Document, pk=document_id)
     form = FlagForm(request.POST or None)
     if form.is_valid():
+        if handle_flag_spam(request.user, form.cleaned_data['reason']):
+            messages.info(request, _(u"Your account has been suspended due to behavior that looks like spam. If this is an error, please contact us using the contact link at the bottom of the page."))
+            logout(request)
+            return redirect("/")
         ticket, created = Note.objects.get_or_create(
             creator=request.user,
             text="FLAG from user. \n %s" % form.cleaned_data['reason'],
