@@ -448,16 +448,18 @@ def questions(request):
         ).exclude(groups__name="moderator").order_by('date_joined')
         rows = [(
            author_link(u.profile),
+           u.email,
            u.date_joined.strftime("%Y-%m-%d"),
            u.last_login.strftime("%Y-%m-%d"),
         ) for u in users]
         rows.sort(key=lambda u: u[-1])
         rows.reverse()
-        rows = [(i + 1, a, b, c) for i, (a, b, c) in enumerate(rows)]
+        rows = [(i + 1,) + r for i, r in enumerate(rows)]
         return render(request, "moderation/question_answer.html", {
             'question': questions[q],
             'header_row': ['',
                 'Username',
+                'Email',
                 'Date joined',
                 'Last login',
             ],
@@ -471,19 +473,21 @@ def questions(request):
 
         rows = [(
             author_link(u.profile),
+            u.email,
             u.date_joined.strftime("%Y-%m-%d"),
-            u.last_login.strftime("%Y-%m-%d"),
+            u.last_login.strftime("%Y-%m-%d %H:%M:%S"),
             "<br />".join(
                 n.text for n in u.notes.all()
             )
         ) for u in users]
         rows.sort(key=lambda u: u[-1])
         rows.reverse()
-        rows = [(i + 1, a, b, c, d) for i, (a, b, c, d) in enumerate(rows)]
+        rows = [(i + 1,) + r for i, r in enumerate(rows)]
         return render(request, "moderation/question_answer.html", {
             'question': questions[q],
             'header_row': ['',
                 'Username',
+                'Email',
                 'Date joined',
                 'Last login',
                 'Notes (if any)',
