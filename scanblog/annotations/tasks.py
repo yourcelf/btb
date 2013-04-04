@@ -7,7 +7,6 @@ from annotations.models import Note
 
 @task
 def send_flag_notification_email(note_id):
-    print "mailing?", note_id
     try:
         note = Note.objects.select_related('user').get(pk=note_id)
     except Note.DoesNotExist:
