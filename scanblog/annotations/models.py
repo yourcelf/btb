@@ -133,6 +133,7 @@ def handle_flag_spam(user, flag_reason):
         user.save()
         user.notes.create(creator=user,
                 text="User auto-banned for flag spam",
+                resolved=datetime.datetime.now(),
                 important=True)
         return True
     return False

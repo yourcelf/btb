@@ -246,6 +246,7 @@ def questions(request):
         'transcribers': "Who does transcriptions? (SLOW)",
 #        'transcribed': "What gets transcribed?",
         'inactive_commenters': "Inactive/shell commenter accounts, with no comments, transcriptions, subscriptions, or anything?",
+        'disabled_commenters': "Disabled commenter accounts.",
     }
 
     author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
@@ -442,7 +443,8 @@ def questions(request):
                 comment__isnull=True,
                 transcriptionrevision__isnull=True,
                 subscriptions__isnull=True,
-                is_staff=False
+                is_staff=False,
+                is_active=True
         ).exclude(groups__name="moderator").order_by('date_joined')
         rows = [(
            author_link(u.profile),
@@ -461,7 +463,33 @@ def questions(request):
             ],
             'rows': rows,
         })
+    elif q == "disabled_commenters":
+        users = User.objects.select_related('profile').filter(
+                profile__blogger=False,
+                is_active=False
+        ).order_by('date_joined')
 
+        rows = [(
+            author_link(u.profile),
+            u.date_joined.strftime("%Y-%m-%d"),
+            u.last_login.strftime("%Y-%m-%d"),
+            "<br />".join(
+                n.text for n in u.notes.all()
+            )
+        ) for u in users]
+        rows.sort(key=lambda u: u[-1])
+        rows.reverse()
+        rows = [(i + 1, a, b, c, d) for i, (a, b, c, d) in enumerate(rows)]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ['',
+                'Username',
+                'Date joined',
+                'Last login',
+                'Notes (if any)',
+            ],
+            'rows': rows
+        })
 
 #    elif q == "transcribed":
 #        posts = defaultdict(lambda: {
