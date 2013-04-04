@@ -22,6 +22,7 @@ from correspondence.models import Letter
 from comments.forms import CommentForm, CommentRemovalForm
 from scanning.forms import FlagForm
 from annotations.models import Note, handle_flag_spam
+from annotations.tasks import send_flag_notification_email
 
 def check_comment_editable(fn):
     def wrapped(request, comment_id): 
@@ -96,6 +97,11 @@ def flag_comment(request, comment_id):
             important=form.cleaned_data['urgent'],
             comment=comment,
         )
+        # Queue up an async process to send notification email in 2 minutes (we
+        # delay to trap spam floods).
+        if created:
+             send_flag_notification_email.apply_async(
+                     args=[ticket.pk], countdown=120)
         messages.info(request, _(u"A moderator will review that comment shortly. Thanks for helping us run a tight ship."))
         return redirect(comment.document.get_absolute_url())
 

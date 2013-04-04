@@ -185,3 +185,29 @@ class FlagTest(BtbMailTestCase):
                 'reason': "Ain't no thang"
             })
             self.assertEquals(res.status_code, 302)
+
+    def test_flooding_spam_trap(self):
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        url = reverse('scanning.flag_document', args=[doc.pk])
+        self.assertTrue(c.login(username="reader", password="reader"))
+
+        Note.objects.all().delete()
+        self.clear_outbox()
+
+        threshold = 2
+        for i in range(threshold + 1):
+            res = c.post(url, {
+                'reason': "Flood me %s" % i
+            }, follow=True)
+
+            if i <= threshold:
+                self.assertEquals(Note.objects.count(), i + 1)
+                # Can't test that emails weren't sent yet, as the test runner
+                # ignores the delay argument and executes the email task
+                # immediately, regardless.
+                #self.assertEquals(len(self.get_outbox()), 0)
+            else:
+                reader = User.objects.get(username='reader')
+                self.assertEquals(Note.objects.count(), 0)
+                self.assertFalse(reader.is_active)

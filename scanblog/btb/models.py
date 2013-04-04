@@ -91,14 +91,14 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
                     'site':  Site.objects.get_current(),
                 }))
 
-    @receiver(signals.post_save, sender=Note)
-    def flag_notification(sender, instance, *args, **kwargs):
-        # Send flags immediately.
-        if 'created' in kwargs and "FLAG" in instance.text:
-            if instance.creator.groups.filter(name='moderators').exists():
-                return
-            mail_managers("Content flagged", render_to_string(
-                "btb/admin-content-flagged.txt", {
-                    'note': instance,
-                    'site': Site.objects.get_current(),
-                }))
+#    @receiver(signals.post_save, sender=Note)
+#    def flag_notification(sender, instance, *args, **kwargs):
+#        # Send flags immediately.
+#        if 'created' in kwargs and "FLAG" in instance.text:
+#            if instance.creator.groups.filter(name='moderators').exists():
+#                return
+#            mail_managers("Content flagged", render_to_string(
+#                "btb/admin-content-flagged.txt", {
+#                    'note': instance,
+#                    'site': Site.objects.get_current(),
+#                }))

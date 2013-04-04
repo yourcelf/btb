@@ -22,6 +22,7 @@ from scanning.models import *
 from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
 from annotations.models import Tag, Note, ReplyCode, handle_flag_spam
+from annotations.tasks import send_flag_notification_email
 from profiles.models import Organization, Profile, Affiliation
 from comments.forms import CommentForm
 
@@ -756,6 +757,11 @@ def flag_document(request, document_id):
             important=form.cleaned_data['urgent'],
             document=doc,
         )
+        # Queue up an async process to send notification email in 2 minutes (we
+        # delay to trap spam floods).
+        if created:
+            send_flag_notification_email.apply_async(
+                    args=[ticket.pk], countdown=120)
         messages.info(request, _(u"A moderator will review that post shortly. Thanks for helping us run a tight ship."))
         return redirect(doc.get_absolute_url())
 

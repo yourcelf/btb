@@ -112,9 +112,23 @@ def handle_flag_spam(user, flag_reason):
     """
     # Simple dumb check -- just check against a blacklist of flags. We can get
     # fancier if the flag spammers do.
+    spam = False
     if flag_reason in set([
                 "Tips to save wedding dresses",
+                "Help me choose my dress!!",
             ]):
+        spam = True
+        recent_flags = []
+    else:
+        recent_flags = list(Note.objects.filter(
+            creator=user,
+            text__icontains="FLAG",
+            created__gte=datetime.datetime.now() - datetime.timedelta(seconds=60)
+        ))
+        spam = len(recent_flags) > 2
+    if spam:
+        for note in recent_flags:
+            note.delete()
         user.is_active = False
         user.save()
         user.notes.create(creator=user,
