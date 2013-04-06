@@ -480,7 +480,7 @@ def questions(request):
                 n.text for n in u.notes.all()
             )
         ) for u in users]
-        rows.sort(key=lambda u: u[-1])
+        rows.sort(key=lambda u: u[-2])
         rows.reverse()
         rows = [(i + 1,) + r for i, r in enumerate(rows)]
         return render(request, "moderation/question_answer.html", {
