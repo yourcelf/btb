@@ -4,7 +4,7 @@ psycopg2
 Celery
 django-celery
 pyPdf
-pillow
+pillow<2.0.0
 amqplib
 fabric
 django-bcrypt
