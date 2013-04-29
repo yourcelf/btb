@@ -164,7 +164,7 @@ class btb.EditDocumentView extends Backbone.View
     if @doc.get("type") == "post" and not @doc.get("highlight_transform")?.crop?.length > 0
       errors.push("Please add a highlighted section to a page.")
 
-    d = new Date(@doc.get("date_written"))
+    d = btb.strToDate(@doc.get("date_written"))
     if isNaN d.getTime()
       errors.push("Please enter a valid date, in YYYY-MM-DD format.")
       $(".doc-date", @el).addClass("error")

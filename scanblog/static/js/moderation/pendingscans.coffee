@@ -11,7 +11,7 @@ class btb.PendingScanList extends btb.FilteredPaginatedCollection
         # Hack: if we don't have a date, assume we were just created, and use
         # 'now'.
         if ps.get("created")
-            date = new Date(ps.get "created")
+            date = btb.strToDate(ps.get "created")
         else
             date = new Date()
         return -(date.getTime())

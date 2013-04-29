@@ -21,7 +21,9 @@ class TestModScans(BtbLiveServerTestCase):
 
         self.sign_in("testmod", "testmod")
         b.get(self.url("/moderation/#/pending"))
-        self.css(".user-chooser-trigger").send_keys("Test Author")
+        self.css(".user-chooser-trigger").send_keys("T")
+        time.sleep(0.5)
+        self.css(".user-search").send_keys("est Author")
         self.wait(lambda b: "Test Author" in self.css(".name-and-details").text)
         self.css(".name-and-details").click()
         self.wait(lambda b: "Test Author" in self.css(".pending-scan-list .display-name").text)
@@ -88,7 +90,7 @@ class TestModScans(BtbLiveServerTestCase):
         chain.move_to_element_with_offset(canvas, 20, 20)
         chain.click_and_hold(None)
         chain.move_by_offset(300, 100)
-        chain.release(None)
+        #chain.release(None) # HACK -- remove release to make it work with recent FF.
         chain.perform()
 
         self.css(".save-doc", doc_el).click()
