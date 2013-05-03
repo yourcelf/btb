@@ -2,6 +2,7 @@ import json
 import re
 from collections import defaultdict
 from difflib import SequenceMatcher
+from datetime import datetime, timedelta
 #from moderation.diff_match_patch import *
 
 from django.shortcuts import render, redirect
@@ -238,6 +239,7 @@ def questions(request):
     q = request.GET.get('q', None)
     questions =  {
         'comment_gap': "How long after a post is published do comments keep coming in?",
+        'writers_by_recency_with_volume': "List of writers by how recently they posted, with number of posts in the last 6 months.",
         'writers_by_recency': "List of writers by how recently they posted.",
         'writers_by_volume': "List of writers by number of posts.",
         'letter_post_ratio': "Ratio of posts published to letters sent for each writer.",
@@ -293,6 +295,27 @@ def questions(request):
             'question': questions[q],
             'header_row': ["", "Date", "Author"],
             'rows': [(i + 1, d, p) for i,(d,p) in enumerate(date_profile)]
+        })
+    elif q == "writers_by_recency_with_volume":
+        date_profile = []
+        cutoff = datetime.now() - timedelta(days=180)
+        for profile in Profile.objects.enrolled().select_related('user'):
+            docs = profile.user.documents_authored.filter(status='published')
+            try:
+                latest = docs.order_by('-date_written')[0]
+            except IndexError:
+                continue
+            date_profile.append((
+                latest.date_written.strftime("%Y-%m-%d"),
+                author_link(profile),
+                docs.filter(date_written__gte=cutoff).count()
+            ))
+        date_profile.sort()
+        date_profile.reverse()
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ["", "Date", "Author", "Post count"],
+            'rows': [(i + 1, d, p, c) for i,(d,p, c) in enumerate(date_profile)]
         })
     elif q == "writers_by_volume":
         volume_profile = []
