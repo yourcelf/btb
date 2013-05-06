@@ -16,7 +16,7 @@ def generate_letter_task(letter_id):
 @task
 def combine_pdfs_task(pdf_files):
     from correspondence import utils
-    combined = utils.combine_pdfs(pdf_files)
+    combined = utils.combine_pdfs(*pdf_files)
     return combined
 
 
