@@ -5,6 +5,7 @@ import codecs
 import datetime
 import tempfile
 import subprocess
+from cStringIO import StringIO
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import permission_required
@@ -671,3 +672,49 @@ def mass_mailing_spreadsheet(request, who=None):
         who, datetime.datetime.now().strftime("%Y-%m-%d")
     )
     return response
+
+@permission_required("correspondence.manage_correspondence")
+def mailing_label_sheet(request):
+    if request.GET.get("ids"):
+        try:
+            ids = [int(i) for i in request.GET.get("ids").split(",")]
+        except Exception:
+            return HttpResponse("Error parsing ids parameter")
+    else:
+        return HttpResponse("Try adding 'ids' parameter")
+    
+    profiles = Profile.objects.in_bulk(ids)
+    missing = []
+    pages = []
+    for i, id_ in enumerate(ids):
+        if i % 30 == 0:
+            page = []
+            pages.append(page)
+        if id_ in profiles:
+            page.append(profiles[id_])
+        else:
+            missing.append(id_)
+    if missing:
+        return HttpResponse("Can't find result for ids: %s" % missing)
+
+    pdf_files = []
+    for page in pages:
+        labels = utils.MailingLabelSheet()
+        addresses = [p.full_address() for p in page]
+        labels.draw(addresses)
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
+            name = fh.name
+        labels.save(name, fmt="pdf")
+        pdf_files.append(name)
+    combined = utils.combine_pdfs(*pdf_files)
+    for filename in pdf_files:
+        os.remove(filename)
+    response = HttpResponse(mimetype='application/pdf')
+    with open(combined, 'rb') as fh:
+        response.write(fh.read())
+    response['Content-Disposition'] = 'attachment; filename=labels.pdf'
+    os.remove(combined)
+    return response
+
+
+
