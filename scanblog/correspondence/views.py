@@ -702,10 +702,19 @@ def mailing_label_sheet(request):
         labels = utils.MailingLabelSheet()
         addresses = [p.full_address() for p in page]
         labels.draw(addresses)
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as fh:
+            jpg_name = fh.name
+        labels.save(jpg_name)
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
-            name = fh.name
-        labels.save(name, fmt="pdf")
-        pdf_files.append(name)
+            pdf_name = fh.name
+        proc = subprocess.Popen([
+            settings.CONVERT_CMD,
+            jpg_name,
+            "-density", str(labels.density),
+            pdf_name])
+        proc.communicate()
+        os.remove(jpg_name)
+        pdf_files.append(pdf_name)
     combined = utils.combine_pdfs(*pdf_files)
     for filename in pdf_files:
         os.remove(filename)

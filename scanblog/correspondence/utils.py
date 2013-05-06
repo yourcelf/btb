@@ -306,11 +306,15 @@ class MailingLabelSheet(TextImage):
             m = 0.125 * self.density
             dims = self.get_dims(row, col)
             dims = ((dims[0][0] + m, dims[0][1] + m), (dims[1][0] + m, dims[1][1] + m))
-            if len(address.split("\n")) > 4:
+            lines = address.split("\n")
+            if len(lines) > 5:
+                lines = [lines[0] + " " + lines[1]] + lines[2:]
+                address = "\n".join(lines)
+                font_size = 40
+            if len(lines) > 4:
                 font_size = 40
             else:
                 font_size = 46
-            
             self.draw_wrapped_text(address, dims, font_size=font_size, par_height=0)
 
     def draw_bounds(self):
