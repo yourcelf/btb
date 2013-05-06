@@ -715,7 +715,7 @@ def mailing_label_sheet(request):
         proc.communicate()
         os.remove(jpg_name)
         pdf_files.append(pdf_name)
-    combined = utils.combine_pdfs(*pdf_files)
+    combined = tasks.combine_pdfs_task.delay(*pdf_files).get()
     for filename in pdf_files:
         os.remove(filename)
     response = HttpResponse(mimetype='application/pdf')
