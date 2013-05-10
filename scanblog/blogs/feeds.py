@@ -64,6 +64,31 @@ def posts_feed(request, context):
     feed.write(response, 'utf-8')
     return response
 
+def full_posts_feed(request, context):
+    feed = _feed(request, title=context['title'])
+    for post in context['posts'][:10]:
+        profile = post.author.profile
+        descr = render_to_string("blogs/_full_post_feed.html", {
+            "post": post,
+            "profile": profile,
+        }, context_instance=RequestContext(request))
+
+        feed.add_item(
+            title=post.get_title(),
+            #HACK -- making URLs absolute
+            # make an absolute link to get a valid TAG URI fails if a port is
+            # included with domain (see Django bug #8758).
+            link=feed.site_base + post.get_absolute_url()[1:],
+            description=descr,
+            author_name=profile.display_name,
+            author_link=profile.get_absolute_url(),
+            pubdate=post.date_written,
+        )
+
+    response = HttpResponse(mimetype=feed.mime_type)
+    feed.write(response, 'utf-8')
+    return response
+
 def all_comments_feed(request, comments):
     feed = _feed(request, title=_("All comments on %s" % Site.objects.get_current().name))
     for comment in comments:

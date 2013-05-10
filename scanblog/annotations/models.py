@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from btb.utils import date_to_string, OrgQuerySet, OrgManager
 
@@ -144,6 +145,9 @@ class Tag(models.Model):
 
     post_count = models.IntegerField(default=0, 
         help_text="Denormalized count of posts with this tag.")
+
+    def get_absolute_url(self):
+        return reverse("blogs.tagged_posts", args=[self.name])
 
     def __unicode__(self):
         return self.name

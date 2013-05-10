@@ -421,22 +421,27 @@ def save_tags(request, post_id):
 # Feeds
 #
 
+def _choose_feed(request, context):
+    if request.GET.get('full'):
+        return feeds.full_posts_feed(request, context)
+    return feeds.posts_feed(request, context)
+
 def all_posts_feed(request):
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Recent posts from all authors",
         'posts': Document.objects.safe().filter(type="post")
     })
 
 def campaign_feed(request, slug):
     campaign = get_object_or_404(Campaign, slug=slug, public=True)
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': campaign.title,
         'posts': Document.objects.safe().filter(in_reply_to_id=campaign.reply_code_id)
     })
 
 def affiliation_feed(request, slug):
     affiliation = get_object_or_404(Affiliation, slug=slug, public=True)
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': affiliation.title,
         'posts': Document.objects.safe().filter(affiliation=affiliation),
     })
@@ -449,7 +454,7 @@ def org_post_feed(request, slug, filtered=True):
      ).distinct()
     if filtered:
         docs = docs.filter(adult=False)
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Recent posts from %s" % org.name,
         'posts': docs,
     })
@@ -464,7 +469,7 @@ def post_comments_feed(request, post_id):
     return feeds.post_comments_feed(request, document)
 
 def tagged_post_feed(request, tag):
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "%s posts" % escape(tag.capitalize()),
         'posts': Document.objects.public().filter(tags__name=tag.lower(), type='post')
     })
@@ -479,7 +484,7 @@ def author_post_feed(request, author_id):
     except IndexError:
         raise Http404
     posts = author.documents_authored.public().filter(type="post")
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Posts by %s" % unicode(author.profile),
         'posts': posts,
     })

@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load public_url %}
+{% load thumbnail %}
+
+<h1 class='title'><a href='{{ post.get_absolute_url|site_url }}'>{{ post.get_title }}</a></h1>
+<ul class='links'>
+  <li>By <span class='author-name'>{{ profile.display_name }}</span></li>
+  <li><a class='author-blog' href='{{ profile.get_blog_url|site_url }}'>Author's blog</a></li>
+  {% if profile.has_public_profile %}
+  <li><a class='author-profile' href='{{ profile.get_absolute_url|site_url }}'>Author's profile</a></li>
+  {% endif %}
+  <li>Tags:
+    <span class='tags'>
+    {% with post.tags.all as tags %}
+    {% with post.in_reply_to.campaign as campaign %}
+    {% if tags or campaign.public %}
+    {% for tag in tags %}<a href='{{ tag.get_absolute_url|site_url }}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}{% endfor %}{% if campaign.public %}{% if tags %}, {% endif %}<a href='{{ campaign.get_absolute_url|site_url }}'>{{ campaign.title }}</a>{% endif %}
+    {% endif %}
+    {% endwith %}
+    {% endwith %}
+    </span>
+  </li>
+</ul>
+
+<div class='pages'>
+{% for page in post.documentpage_set.all %}
+  {% thumbnail page.image.path "100" as im %}
+    <img src='{{ page.image.url|public_url|site_url }}' data-thumbnail='{{ im.url|public_url|site_url }}'/><br />
+  {% endthumbnail %}
+{% endfor %}
+</div>
+
+<h2>Transcription</h2>
+{% with tx=post.transcription tx_rev=tx.current %}
+    {% if tx.complete %}
+      <span class='transcription-status' data-status='complete'>Fully transcribed</span>
+    {% elif tx %}
+      <span class='transcription-status' data-status='partial'>Partially transcribed</span>
+    {% else %}
+      <span class='transcription-status' data-status='missing'>Not transcribed yet</span>
+    {% endif %}
+  {% if tx_rev %}
+    <div class='transcription'>
+      {{ tx_rev.body|linebreaks }}
+    </div>
+  {% endif %}
+{% endwith %}

@@ -16,6 +16,7 @@ from sorl.thumbnail.helpers import ThumbnailError
 from annotations.models import ReplyCode
 from comments.models import Comment
 from btb.utils import OrgManager, OrgQuerySet
+from scanning.templatetags.public_url import public_url
 
 TMP_UPLOAD = os.path.join(settings.UPLOAD_TO, "tmp")
 
@@ -23,10 +24,6 @@ def public_path(private_path):
     return os.path.join(
         settings.PUBLIC_MEDIA_ROOT,
         os.path.relpath(private_path, settings.MEDIA_ROOT))
-
-def public_url(private_url):
-    return "%s%s" % (settings.PUBLIC_MEDIA_URL,
-            private_url[len(settings.MEDIA_URL):])
 
 #
 # Models and managers
