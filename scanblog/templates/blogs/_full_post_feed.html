@@ -31,7 +31,7 @@
 </div>
 
 <h2>Transcription</h2>
-{% with tx=post.transcription tx_rev=tx.current %}
+{% with tx=post.transcription %}
     {% if tx.complete %}
       <span class='transcription-status' data-status='complete'>Fully transcribed</span>
     {% elif tx %}
@@ -39,9 +39,7 @@
     {% else %}
       <span class='transcription-status' data-status='missing'>Not transcribed yet</span>
     {% endif %}
-  {% if tx_rev %}
-    <div class='transcription'>
-      {{ tx_rev.body|linebreaks }}
-    </div>
-  {% endif %}
+    {% if tx %}
+      <div class='transcription'>{{ tx.current.body|linebreaks }}</div>
+    {% endif %}
 {% endwith %}
