@@ -533,13 +533,14 @@ def questions(request):
         for pk in comment_recipients:
             comment_counts[pk] += 1
 
-        rows = [(
-            i,
+        rows = [[
             author_link(profile),
             page_counts.get(profile.pk, 0),
             comment_counts.get(profile.pk, 0),
-        ) for i,profile in enumerate(Profile.objects.bloggers_with_published_content())]
-        rows.sort(key=lambda u: u[2], reverse=True)
+        ] for profile in Profile.objects.bloggers_with_published_content()]
+        rows.sort(key=lambda u: u[1], reverse=True)
+        for i,row in enumerate(rows):
+            row.insert(0, i + 1)
 
         return render(request, "moderation/question_answer.html", {
             'question': questions[q],
