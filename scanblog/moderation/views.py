@@ -249,6 +249,7 @@ def questions(request):
 #        'transcribed': "What gets transcribed?",
         'inactive_commenters': "Inactive/shell commenter accounts, with no comments, transcriptions, subscriptions, or anything?",
         'disabled_commenters': "Disabled commenter accounts.",
+        'pages_and_comments_per_author': "What is the total published page count, and total number of comments, for each author?",
     }
 
     author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
@@ -516,6 +517,39 @@ def questions(request):
                 'Notes (if any)',
             ],
             'rows': rows
+        })
+    elif q == "pages_and_comments_per_author":
+        # Get page counts
+        page_authors = DocumentPage.objects.filter(document__status='published').values_list(
+                'document__author', flat=True)
+        page_counts = defaultdict(int)
+        for pk in page_authors:
+            page_counts[pk] += 1
+
+        # Get comment counts
+        comment_recipients = Comment.objects.public().values_list(
+                'document__author', flat=True)
+        comment_counts = defaultdict(int)
+        for pk in comment_recipients:
+            comment_counts[pk] += 1
+
+        rows = [(
+            i,
+            author_link(profile),
+            page_counts.get(profile.pk, 0),
+            comment_counts.get(profile.pk, 0),
+        ) for i,profile in enumerate(Profile.objects.bloggers_with_published_content())]
+        rows.sort(key=lambda u: u[2], reverse=True)
+
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                '',
+                'User',
+                'page count',
+                'comment count',
+            ],
+            'rows': rows,
         })
 
 #    elif q == "transcribed":
