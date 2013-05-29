@@ -6,7 +6,13 @@ btb.strToDate = (dateOrStr) ->
     if _.isString dateOrStr
         parts = [parseInt(part, 10) for part in dateOrStr.split(/[^0-9]+/g)][0]
         # Months are rendered as 0-11 in javascript
-        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5])
+        return new Date(
+          parts[0],
+          parts[1] - 1,
+          parts[2],
+          parts[3] or 0,
+          parts[4] or 0,
+          parts[5] or 0)
     return dateOrStr
 
 btb.formatDate = (dateOrStr) ->
