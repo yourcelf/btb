@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 import re
 from collections import defaultdict
@@ -250,6 +252,7 @@ def questions(request):
         'inactive_commenters': "Inactive/shell commenter accounts, with no comments, transcriptions, subscriptions, or anything?",
         'disabled_commenters': "Disabled commenter accounts.",
         'pages_and_comments_per_author': "What is the total published page count, and total number of comments, for each author?",
+        'poets': u"Who writes posts tagged with “poetry\"?",
     }
 
     author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
@@ -551,6 +554,49 @@ def questions(request):
                 'comment count',
             ],
             'rows': rows,
+        })
+    elif q == "poets":
+        posts = Document.objects.filter(
+                status="published", tags__name="poetry"
+            ).values_list('author_id', flat=True)
+        count = defaultdict(int)
+        for author_id in posts:
+            count[author_id] += 1
+
+        authors = Profile.objects.in_bulk(count.keys())
+
+        latests = Document.objects.filter(
+                author_id__in=count.keys()
+            ).values_list(
+                'author_id', 'date_written'
+            ).order_by('-date_written')
+        latest_date = {}
+        for author_id, date_written in latests:
+            if author_id not in latest_date:
+                latest_date[author_id] = date_written
+        order = latest_date.items()
+        order.sort(key=lambda d: d[1], reverse=True)
+
+        rows = []
+        for i, (author_id, latest_post) in enumerate(order):
+            profile = authors[author_id]
+            rows.append([
+                i,
+                author_link(profile),
+                count[author_id],
+                latest_post.strftime("%Y-%m-%d"),
+                u"<pre>%s</pre>" % profile.full_address(),
+            ])
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'rows': rows,
+            'header_row': [
+                '',
+                'User',
+                'Posts tagged \'poetry\'',
+                'Date of latest post of any kind',
+                'Address'
+            ],
         })
 
 #    elif q == "transcribed":
