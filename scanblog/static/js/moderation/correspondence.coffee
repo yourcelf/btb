@@ -178,6 +178,7 @@ class btb.LetterRow extends Backbone.View
     resendLetter: (event) =>
         @showLoading()
         copy = @letter.clone()
+        copy.set {"document_id": @letter.get("document")?.id}
         copy.save {"id": null, "sent": null, "created": undefined},
             success: (model) =>
                 @hideLoading()
