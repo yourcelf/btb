@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     args = ''
     help = 'Publish ready-to-publish documents, if ready.'
-    MAX_AGE = datetime.timedelta(days=3)
+    MAX_AGE = datetime.timedelta(days=6)
 
     def handle(self, *args, **options):
         try:
@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
 # A mock document object which just tracks created, modified, and published.
 class Doc(object):
-    MAX_AGE = datetime.timedelta(days=3)
+    MAX_AGE = datetime.timedelta(days=6)
     PUBLISHING_HOURS = (7, 23) # min and max clock hours for publishing
 
     def __init__(self, created, published):
