@@ -8,6 +8,9 @@ from django.utils.encoding import force_unicode
 from django.utils.feedgenerator import Atom1Feed
 from django.utils.translation import ugettext as _
 
+from scanning.templatetags.public_url import public_url, site_url
+from scanning.models import Transcription
+
 class Atom1FeedWithBase(Atom1Feed):
     """ 
     Atom1 feed that expresses the xml:base attribute allowing relative URIs 
@@ -21,13 +24,22 @@ class Atom1FeedWithBase(Atom1Feed):
         attr['xml:base'] = self.site_base
         return attr
 
-def _feed(request, title, description=None):
+class Atom1FeedWithImages(Atom1FeedWithBase):
+    def add_item_elements(self, handler, item):
+        super(Atom1FeedWithImages, self).add_item_elements(handler, item)
+        if item['images']:
+            handler.addQuickElement(u"images", u"\n".join(item['images']))
+        handler.addQuickElement(u"transcription",
+                item.get('transcription', u''),
+                {u'status': item.get('transcription_status', u'missing')})
+
+def _feed(request, title, klass=Atom1FeedWithBase):
     site = Site.objects.get_current()
     feed_uri = request.build_absolute_uri()
-    feed = Atom1FeedWithBase(
+    feed = klass(
             title=u"%s: %s" % (site.name, title),
             link=re.sub("\/feed$", '', feed_uri),
-            description=description or title,
+            description=title,
             feed_url=feed_uri,
             site_base="http://%s/" % request.get_host(),
     )
@@ -65,13 +77,26 @@ def posts_feed(request, context):
     return response
 
 def full_posts_feed(request, context):
-    feed = _feed(request, title=context['title'])
+    feed = _feed(request, title=context['title'], klass=Atom1FeedWithImages)
     for post in context['posts'][:10]:
         profile = post.author.profile
         descr = render_to_string("blogs/_full_post_feed.html", {
             "post": post,
             "profile": profile,
         }, context_instance=RequestContext(request))
+
+        try:
+            tx = post.transcription
+            tx_current = tx.current()
+        except (Transcription.DoesNotExist, AttributeError):
+            tx = None
+            tx_current = None
+        if tx and tx_current:
+            tx_body = tx_current.body
+            tx_status = "complete" if tx.complete else "partial"
+        else:
+            tx_body = ""
+            tx_status = "missing"
 
         feed.add_item(
             title=post.get_title(),
@@ -83,6 +108,9 @@ def full_posts_feed(request, context):
             author_name=profile.display_name,
             author_link=profile.get_absolute_url(),
             pubdate=post.date_written,
+            images=[site_url(public_url(p.image.url)) for p in post.documentpage_set.all()],
+            transcription=tx_body,
+            transcription_status=tx_status
         )
 
     response = HttpResponse(mimetype=feed.mime_type)
