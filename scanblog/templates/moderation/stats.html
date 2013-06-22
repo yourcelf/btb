@@ -83,6 +83,10 @@
 
     <div class='stats-block'>
         <h2>Letters</h2>
+        <table class='stats'>
+            <tr><th></th><th>Received</th><th>Sent</th>
+            <tr><th>Letters</th><td class='total-letters-sent'></td><td class='total-letters-received'></td><td class='ready-posts'></td></tr>
+        </table>
         <h3>Sent per week</h3>
         <div class='stackedarea' id='lettersStackedArea'></div>
         <div class='about'>
@@ -120,6 +124,8 @@
     $(".published-profiles").html(data.documents.profiles.published)
     $(".ready-profiles").html(data.documents.profiles.ready_to_publish)
     $(".total-comments").html(data.comments.total)
+    $(".total-letters-sent").html(data.letters.total.sent)
+    $(".total-letters-received").html(data.letters.total.received)
     btb.stats.impactChart("commenterImpact", data.comments.impact, "username", "users", "comments")
     btb.stats.impactChart("postsImpact", data.documents.post_impact, "display_name", "users", "posts")
     btb.stats.impactChart("pagesImpact", data.documents.page_impact, "display_name", "users", "pages")

@@ -213,7 +213,11 @@ def stats(request):
                 Profile.objects.active().annotate(
                     count=Count('user__received_letters')
                 ).filter(count__gt=0).values('count', 'display_name')
-            )
+            ),
+            'totals': {
+                'sent': Letter.objects.filter(sent__isnull=False).count(),
+                'received': Scan.objects.count(),
+            },
         },
         'comments': {
             'total': Comment.objects.public().count(),
