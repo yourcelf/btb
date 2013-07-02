@@ -548,8 +548,7 @@ def print_envelopes(request):
     zip_stringio = StringIO()
     zip_builder = zipfile.ZipFile(zip_stringio, "w")
     for jpeg, name in envelopes:
-        zip_builder.writestr("%s/%s" % (zipname, name), jpeg.getvalue(),
-                zipfile.ZIP_DEFLATED)
+        zip_builder.writestr("%s/%s" % (zipname, name), jpeg.getvalue())
     zip_builder.close()
     response = HttpResponse(mimetype='application/zip')
     response.write(zip_stringio.getvalue())
