@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 import codecs
+import zipfile
 import datetime
 import tempfile
 import subprocess
@@ -515,6 +516,44 @@ def print_envelope(request, user_id=None, reverse=None, address=None):
     response.write(stringio.getvalue())
     response['Content-Disposition'] = 'attachment; filename=%s-envelope.jpg' % \
             slugify(to_address.split('\n')[0])
+    return response
+
+@permission_required('correspondence.manage_correspondence')
+def print_envelopes(request):
+    if request.GET.get("ids"):
+        try:
+            ids = [int(i) for i in request.GET.get("ids").split(",")]
+        except Exception:
+            return HttpResponse("Error parsing ids parameter")
+    else:
+        return HttpResponse("Try adding 'ids' parameter")
+    profiles = Profile.objects.select_related('user').in_bulk(ids)
+    missing = []
+    for pk in ids:
+        if pk not in profiles:
+            missing.append(pk)
+    if missing:
+        return HttpResponse("Can't find result for ids: %s" % missing)
+    envelopes = []
+    # NOTE: inefficient -- n+1 queries. Could be improved but not worth it for
+    # the small expected query size.
+    for pk, profile in profiles.iteritems():
+        envelopes.append((utils.build_envelope(
+            to_address=profile.full_address(),
+            from_address=profile.user.organization_set.get().mailing_address
+        ), "%s.jpg" % profile.get_blog_slug()))
+    zipname = "envelopes-%s" % (datetime.datetime.now().strftime("%Y-%m-%d"))
+
+    # Do it all in memory for fun and profit.
+    zip_stringio = StringIO()
+    zip_builder = zipfile.ZipFile(zip_stringio, "w")
+    for jpeg, name in envelopes:
+        zip_builder.writestr("%s/%s" % (zipname, name), jpeg.getvalue(),
+                zipfile.ZIP_DEFLATED)
+    zip_builder.close()
+    response = HttpResponse(mimetype='application/zip')
+    response.write(zip_stringio.getvalue())
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % zipname
     return response
 
 @permission_required("correspondence.manage_correspondence")

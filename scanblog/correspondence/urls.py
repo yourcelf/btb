@@ -31,4 +31,5 @@ urlpatterns = patterns('correspondence.views',
     url(r'^clear_cache/{0}?$'.format(mailing_id), 'clear_mailing_cache',
         name='correspondence.clear_mailing_cache'),
     url(r'^mailing_labels/$', 'mailing_label_sheet', name='correspondence.mailing_labels'),
+    url(r'^envelopes/$', 'print_envelopes', name='correspondence.envelopes'),
 )
