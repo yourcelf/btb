@@ -107,13 +107,12 @@ class btb.SplitScanView extends Backbone.View
     template: _.template $("#splitScan").html()
     lockTemplate: _.template $("#splitScanEditLockWarning").html()
 
-    minimumTypes: ["post", "profile", "photo", "request", "license"]
-    addableTypes: ["post", "profile", "photo", "request"]
+    minimumTypes: ["post", "profile", "request", "license"]
 
     typeColors:
         "post": ["#0f0", "#00f", "#0a0", "#00a"]
         "profile": ["#0ff"]
-        "photo": ["#f0f", "#a0a", "#606"]
+        #"photo": ["#f0f", "#a0a", "#606"]
         "request": ["#f00"]
         "license": ["#ff0"]
         "ignore": ["#000"]
@@ -125,7 +124,7 @@ class btb.SplitScanView extends Backbone.View
         'click .prev': 'prevPage'
         'click .pagestatus': 'jumpToPage'
         'click .add-post': 'addPostChoice'
-        'click .add-photo': 'addPhotoChoice'
+        #'click .add-photo': 'addPhotoChoice'
         'click .save': 'save'
         'click .page-size-chooser span': 'setPageSize'
         'keyup .choose-code input': 'chooseCode'
@@ -153,7 +152,7 @@ class btb.SplitScanView extends Backbone.View
             when 32,78,39  then @nextPage(event) # spacebar, n, right
             when 8,80,37 then @prevPage(event) # backspace, p, left
             when 61,187 then @addPostChoice(event) # equals/plus
-            when 220 then @addPhotoChoice(event) # back slash
+            #when 220 then @addPhotoChoice(event) # back slash
             #when 13        then @save(event) # enter
             when 73, 192 then @ignoreView._toggleChoice(event) # i, backtick
             else
@@ -234,7 +233,7 @@ class btb.SplitScanView extends Backbone.View
             @selectPage(@currentPageIndex)
 
     addPostChoice: (event) => @userAddChoice("post")
-    addPhotoChoice: (event) => @userAddChoice("photo")
+    #addPhotoChoice: (event) => @userAddChoice("photo")
 
     removeChoice: (type) =>
         alert("TODO")
