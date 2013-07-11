@@ -13,7 +13,7 @@ def send_flag_notification_email(note_id):
         return
     if not note.creator.is_active:
         return
-    mail_admins("Content flagged", render_to_string(
+    mail_managers("Content flagged", render_to_string(
         "btb/admin-content-flagged.txt", {
             'note': note,
             'site': Site.objects.get_current()
