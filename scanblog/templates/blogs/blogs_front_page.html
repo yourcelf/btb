@@ -4,5 +4,13 @@
     {% with categories_open="open" %}{{ block.super }}{% endwith %}
 {% endblock %}
 {% block heading %}
-<h1>Recent posts by date</h1>
+<h1>Recent posts by date
+  {% if transcribed == "complete" %}
+    (transcribed)
+  {% elif transcribed == "partial" %}
+    (partially transcribed)
+  {% elif transcribed == "none" %}
+    (not transcribed)
+  {% endif %}
+</h1>
 {% endblock %}

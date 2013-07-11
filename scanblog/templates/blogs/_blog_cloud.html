@@ -18,11 +18,7 @@
                             <tr class='tag'><td>
                                 <span class='count'>{{ tag.post_count }}</span>
                             </td><td>
-                                {% if tag.name %}
-                                    <span class='name'><a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name|title }}</a></span>
-                                {% else %}
-                                    <span class='uncategorized'><a href='{% url blogs.tagged_posts %}'>Uncategorized</a></span>
-                                {% endif %}
+                                <span class='name'><a href='{{ tag.url }}'>{{ tag.name|title }}</a></span>
                             </td></tr>
                         {% endfor %}
                         </table>

@@ -100,20 +100,42 @@ def author_post_list(request, author_id=None, slug=None):
 
 
 def get_nav_context():
-    tags = list(Tag.objects.filter(post_count__gte=2).order_by('name'))
-    tags.append({
-        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count()
+    tag_list = []
+    for tag in Tag.objects.filter(post_count__gte=2).order_by('name'):
+        tag_list.append({
+            'post_count': tag.post_count,
+            'name': tag.name,
+            'url': reverse("blogs.tagged_posts", args=[tag.name])
+        })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count(),
+        'name': 'Uncategorized',
+        'url': reverse("blogs.tagged_posts"),
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__complete=True).count(),
+        'name': 'Transcribed',
+        'url': reverse("blogs.home") + "?transcribed=complete",
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__complete=False).count(),
+        'name': 'Partially transcribed',
+        'url': reverse("blogs.home") + "?transcribed=partial",
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__isnull=True).count(),
+        'name': 'Not transcribed',
+        'url': reverse("blogs.home") + "?transcribed=none",
     })
     # Sort tags into columns.
     columns = []
-    logger = logging.getLogger("django.request")
-    if tags:
-        per_column = max(5, int(math.ceil(len(tags) / 5.)))
-        for i in range(0, len(tags), per_column):
-            columns.append([])
-            for j in range(0, per_column):
-                if i + j < len(tags):
-                    columns[-1].append(tags[i + j])
+    per_column = max(5, int(math.ceil(len(tag_list) / 5.)))
+    for i in range(0, len(tag_list), per_column):
+        columns.append([])
+        for j in range(0, per_column):
+            if i + j < len(tag_list):
+                tag = tag_list[i+j]
+                columns[-1].append(tag_list[i+j])
     nav_context = {
         'tag_columns': columns,
         'recent_titles': Document.objects.safe().filter(type='post')[:5],
@@ -134,9 +156,19 @@ def posts_by_date(request, template="blogs/all_posts_list.html"):
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
     )
+    transcribed = request.GET.get("transcribed")
+    if transcribed == "complete":
+        posts = posts.filter(transcription__complete=True)
+    elif transcribed == "partial":
+        posts = posts.filter(transcription__complete=False)
+    elif transcribed == "none":
+        posts = posts.filter(transcription__isnull=True)
+    else:
+        transcribed = None
     context = _paginate(request, posts)
     pnum = context['page'].number
     context.update(get_nav_context())
+    context['transcribed'] = transcribed
     context['related'] = {
             'items': DocumentPage.objects.filter(
                         order=0,
