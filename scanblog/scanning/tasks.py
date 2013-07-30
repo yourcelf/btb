@@ -139,7 +139,14 @@ def split_scan(scan_id=None, redirect=None, scan=None):
     # Check that the pdf works, and try to fix if not.
     try:
         with open(scan.pdf.path, 'rb') as fh:
-            PdfFileReader(fh)
+            reader = PdfFileReader(fh)
+            try:
+                if 'Quartz' in reader.getDocumentInfo()['/Producer']:
+                    # Assume that anything produced by Mac OS X Quartz needs to be
+                    # fixed. It's buggy.
+                    raise PdfReadError()
+            except KeyError:
+                pass
     except PdfReadError:
         logger.debug("Error reading pdf %s, try to fix." % scan.pdf.path)
         _fix_pdf(scan.pdf.path)
