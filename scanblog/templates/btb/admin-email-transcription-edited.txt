@@ -1,11 +1,12 @@
+{% load url from future %}
 The transcription for {{ document.type }} by {{ document.author.profile }} was edited by user: {{ revision.editor.profile }}
 
 Actions:
 
 Diff:
-http://{{ site.domain }}{% url scanning.revision_list document.id %}
+http://{{ site.domain }}{% url "scanning.revision_list" document.id %}
 Edit transcription:
-http://{{ site.domain }}{% url scanning.transcribe_document document.id %}
+http://{{ site.domain }}{% url "scanning.transcribe_document" document.id %}
 View document:
 http://{{ site.domain }}{{ document.get_absolute_url }}
 

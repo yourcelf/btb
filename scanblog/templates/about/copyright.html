@@ -1,4 +1,5 @@
 {% extends "about/legal_base.html" %}
+{% load url from future %}
 
 {% block title %}Copyright policy{% endblock %}
 {% block body %}
@@ -16,7 +17,7 @@ directly.
 </p>
 <p>
 All comments are owned by the people who submit them, in accordance with the 
-<a href='{% url about.terms %}'>Terms of Use</a>.
+<a href='{% url "about.terms" %}'>Terms of Use</a>.
 </p>
 </div>
 {% endblock body %}

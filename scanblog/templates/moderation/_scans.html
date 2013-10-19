@@ -1,3 +1,4 @@
+{% load url from future %}
 <!-- Process -->
 
 <script type='text/template' id="processManager">
@@ -11,7 +12,7 @@
 <script type='text/template' id="processItem">
     <li>
         <div class="date"><%= btb.formatDate(obj.created) %>
-        <a class='delete-scan' href='{% url scanning.scan_delete %}<%= obj.id %>' title='Delete scan'><span class='ui-icon ui-icon-trash'></span></a>
+        <a class='delete-scan' href='{% url "scanning.scan_delete" %}<%= obj.id %>' title='Delete scan'><span class='ui-icon ui-icon-trash'></span></a>
         <a class='scan' href='<%= obj.edit_url %>'>
             <% if (obj.lock) { %>
                 <span class='being-edited'><%= obj.lock.user.display_name %>
@@ -44,16 +45,16 @@
         <h1>Split Scan</h1>
         <a href='<%= scan.pdf %>'>Original (pdf)</a>
         <div style='float: right;'>
-            <a href='{% url scanning.scan_delete %}<%= scan.id %>'
+            <a href='{% url "scanning.scan_delete" %}<%= scan.id %>'
                 class='delete-scan'
                 >Delete scan</a
-            ><a href='{% url scanning.scan_replace %}<%= scan.id %>'
+            ><a href='{% url "scanning.scan_replace" %}<%= scan.id %>'
                 class='replace-scan'
                 >Replace scan</a
-            ><!--<a href='{% url scanning.scan_reimport %}<%= scan.id %>'
+            ><!--<a href='{% url "scanning.scan_reimport" %}<%= scan.id %>'
                 class='reparse-scan'
                 >Re-parse scan</a
-            >--><a href='{% url scanning.scan_merge %}<%= scan.id %>'
+            >--><a href='{% url "scanning.scan_merge" %}<%= scan.id %>'
                 class='merge-scan'
                 >Merge scans</a
             >

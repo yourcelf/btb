@@ -1,4 +1,5 @@
 {% extends "blogs/base.html" %}
+{% load url from future %}
 
 {% block title %}By the page{% endblock %}
 
@@ -41,13 +42,13 @@
     }
 </style>
 <noscript>
-    This page requires javsacript.  To browse Between the Bars without javascript, try <a href='{% url blogs.home %}'>blogs</a>.
+    This page requires javsacript.  To browse Between the Bars without javascript, try <a href='{% url "blogs.home" %}'>blogs</a>.
 </noscript>
 <h1>Every page</h1>
 <div id='pagepicker'></div>
 <div class='pagepicker-loading'><img src='{{ STATIC_URL }}img/spinner.gif'> Loading...</div>
 <div class='helpusgrow' style='display: none; clear: both;'>
-    That's all so far &ndash; <a href='{% url profiles.profile_list "join" %}'>help us grow</a>.
+    That's all so far &ndash; <a href='{% url "profiles.profile_list" "join" %}'>help us grow</a>.
 </div>
 {% endblock %}
 

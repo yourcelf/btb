@@ -1,3 +1,4 @@
+{% load url from future %}
 <script type="text/template" id="editDocumentsManager">
     <div class='edit-documents'>
         <h1>Editing <%= numdocs %> document<%= numdocs == 1 ? "" : "s" %></h1>
@@ -9,7 +10,7 @@
     <% if (num > 1) { %>
         <h2>Document <%= order + 1%> of <%= num %> (<%= doc.pages.length %> pages)</h2>
     <% } %>
-    <form action='{% url scanning.delete_doc %}<%= doc.id %>' method='post' onsubmit='return confirm("Really delete this document?  There is no undo.");' class='delete-doc'>{% csrf_token %}
+    <form action='{% url "scanning.delete_doc" %}<%= doc.id %>' method='post' onsubmit='return confirm("Really delete this document?  There is no undo.");' class='delete-doc'>{% csrf_token %}
         <input type='submit' class='delete-doc' value='Delete document'>
     </form>
     <div style='clear: both;'></div>

@@ -1,3 +1,4 @@
+{% load url from future %}
         <div class='comment{% if comment.removed %} removed{% endif %}'>
             <a name='c{{ comment.id }}'></a>
             <div class='commentbyline'>
@@ -21,22 +22,22 @@
                         </td>
                         <td>
                             {% if user == comment.user and not comment.letter_sent %}
-                                <a href='{% url comments.edit_comment comment.pk %}' 
+                                <a href='{% url "comments.edit_comment" comment.pk %}' 
                                     class='comment-edit'
                                     title ='Edit comment'>edit</a
-                                ><a href='{% url comments.delete_comment comment.pk %}' 
+                                ><a href='{% url "comments.delete_comment" comment.pk %}' 
                                     class='comment-delete'
                                     title='Delete comment'>delete</a>
                             {% endif %}
                             {% if user != comment.user %}
-                                <a href='{% url comments.flag_comment comment.pk %}' 
+                                <a href='{% url "comments.flag_comment" comment.pk %}' 
                                    class='comment-flag'
                                    title='Flag comment'>&nbsp;</a>
                             {% endif %}
                             {% if perms.comments.change_comment %}
-                              <a href='{% url comments.spam_can_comment comment.pk %}'>spam</a>
+                              <a href='{% url "comments.spam_can_comment" comment.pk %}'>spam</a>
                               |
-                              <a href='{% url comments.moderator_remove comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
+                              <a href='{% url "comments.moderator_remove" comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
                             {% endif %}
                         </td>
                     </tr>

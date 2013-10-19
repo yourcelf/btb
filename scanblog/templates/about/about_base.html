@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 
 {% load i18n %}
 
@@ -7,8 +8,8 @@
 
 {% block nav_about_active %}active{% endblock %}
 {% block subnav %}
-    <a href='{% url about.community_guidelines %}'>{% trans "Community Guidelines" %}</a>
-    <a href='{% url about.faq %}'>{% trans "Frequently Asked Questions" %}</a>
+    <a href='{% url "about.community_guidelines" %}'>{% trans "Community Guidelines" %}</a>
+    <a href='{% url "about.faq" %}'>{% trans "Frequently Asked Questions" %}</a>
     <a href='http://news.betweenthebars.org'>News</a>
     <a href='http://crm.betweenthebars.org'>Mailing list</a>
 {% endblock %}

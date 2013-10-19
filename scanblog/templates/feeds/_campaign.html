@@ -1,2 +1,3 @@
-<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ campaign.title }}" href="{% url blogs.campaign_feed campaign.slug %}" />
+{% load url from future %}
+<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ campaign.title }}" href="{% url "blogs.campaign_feed" campaign.slug %}" />
 

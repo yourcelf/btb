@@ -1,3 +1,4 @@
+{% load url from future %}
 <html>
   <head>
     <title>Preview comment removal letter</title>
@@ -15,7 +16,7 @@
       <p>Usually, errors are the result of special characters like &amp;, _, or % &ndash; try putting a "\" before them (e.g. \&amp;, \_, \%).  Contact <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a> if you don't understand how to fix this.</p>
     </div>
   {% endif %}
-  <form id='preview_letter_form' action='{% url correspondence.comment_removal_letter_preview_frame comment.id %}' method='post'>{% csrf_token %}
+  <form id='preview_letter_form' action='{% url "correspondence.comment_removal_letter_preview_frame" comment.id %}' method='post'>{% csrf_token %}
     <input type='hidden' name='body' value='' />
   </form>
 </body>

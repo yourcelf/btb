@@ -1,3 +1,4 @@
+{% load url from future %}
 <script type="text/template" id="letterMenu">
         Add letter: <select class='type-chooser'>
             <option value="">--------</option>
@@ -36,7 +37,7 @@
     <div class='custom-letter'>
         <h2>Write a letter</h2>
         <div class='letter-error'></div>
-        <form method='post' action='{% url correspondence.preview_letter %}'>{% csrf_token %}
+        <form method='post' action='{% url "correspondence.preview_letter" %}'>{% csrf_token %}
             Return address: <span class='org-chooser'></span><br />
 
             <textarea class='letter-body' name='body'><%= letter.body || "" %></textarea><br />
@@ -86,12 +87,12 @@
                     <% } %>
                     <% if (letter.type != "") { %>
                         <li class='print-letter' 
-                            onclick="window.location.href='{% url correspondence.show_letter %}<%= letter.id %>'"
+                            onclick="window.location.href='{% url "correspondence.show_letter" %}<%= letter.id %>'"
                             ><span class='ui-icon ui-icon-script'></span>Print</li>
                     <% } %>
                     <% if (letter.is_postcard == false) { %>
                         <li class='print-envelope'
-                            onclick="window.location.href='{% url correspondence.print_envelope %}<%= letter.recipient ? letter.recipient.id : "?address=" + letter.recipient_address %>'" 
+                            onclick="window.location.href='{% url "correspondence.print_envelope" %}<%= letter.recipient ? letter.recipient.id : "?address=" + letter.recipient_address %>'" 
                             ><span class='ui-icon ui-icon-mail-closed'></span>Envelope</li>
                     <% } %>
                     <% if (letter.sent) { %>
@@ -233,7 +234,7 @@
         <h1>Outgoing Mail</h1>
     </div>
     <div style='float: left; margin-top: 1.5em;'>
-        <a href='{% url correspondence.mass_mailing_spreadsheet "" %}'>Address spreadsheet</a>
+        <a href='{% url "correspondence.mass_mailing_spreadsheet" "" %}'>Address spreadsheet</a>
     </div>
     <div style='clear: both;'></div>
     <div class='build-mailing'></div>
@@ -273,7 +274,7 @@
         <div class='overlay'>
             <ul>
                 <li class='download' 
-                    onclick="window.location.href='{% url correspondence.collate_mailing %}<%= mailing.id %>'"
+                    onclick="window.location.href='{% url "correspondence.collate_mailing" %}<%= mailing.id %>'"
                     ><span class='ui-icon ui-icon-note'></span>Download all</li>
                 <% if (mailing.date_finished) { %>
                     <li class='mark-unsent'><span class='ui-icon ui-icon-close'></span>Mark unsent</li>

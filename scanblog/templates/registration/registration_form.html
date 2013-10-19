@@ -1,13 +1,14 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{% trans "Registration" %}{% endblock %}
 {% block body %}
 <h1>{% trans "New user registration" %}</h1>
 
-{% url about.community_guidelines as community_guidelines %}
-{% url about.terms as terms %}
-{% url about.privacy as privacy %}
+{% url "about.community_guidelines" as community_guidelines %}
+{% url "about.terms" as terms %}
+{% url "about.privacy" as privacy %}
 
 <p>
 {% blocktrans %}

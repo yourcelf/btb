@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% block title %}Remove comment{% endblock %}
 
 {% block css %}
@@ -35,10 +36,10 @@
   {% if removal.pk %}
     <p>
       <b>This comment has been removed.</b> You can edit the messages that haven't been sent below.
-      Changed your mind? <a href='{% url comments.moderator_unremove comment.pk %}'>Restore (unremove) this comment</a>.
+      Changed your mind? <a href='{% url "comments.moderator_unremove" comment.pk %}'>Restore (unremove) this comment</a>.
     </p>
   {% else %}
-    <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url comments.spam_can_comment comment.pk %}'>this form</a> instead)</p>
+    <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url "comments.spam_can_comment" comment.pk %}'>this form</a> instead)</p>
   {% endif %}
 
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
@@ -136,7 +137,7 @@
       <br />
       <br />
       {% if not blogger_notified and perms.correspondence.manage_correspondence %}
-        <iframe id="letter_preview" src="{% url correspondence.comment_removal_letter_preview_frame comment.pk %}"></iframe>
+        <iframe id="letter_preview" src="{% url "correspondence.comment_removal_letter_preview_frame" comment.pk %}"></iframe>
         <div><a href='#' class='preview-letter'>Preview rendered letter</a></div>
       {% endif %}
     </div>

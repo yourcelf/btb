@@ -1,4 +1,5 @@
 {% extends "profiles/base.html" %}
+{% load url from future %}
 
 {% load i18n %}
 {% load public_url %}
@@ -13,7 +14,7 @@
     <div>{% if org.public %}{{ org.footer|safe }}{% endif %}</div>
     <div class='controls'>
         {% if can_edit %}
-            <a class='edit-profile-button' href='{% url profiles.profile_edit profile.pk %}'>Edit settings</a>
+            <a class='edit-profile-button' href='{% url "profiles.profile_edit" profile.pk %}'>Edit settings</a>
         {% endif %}
         {% if document  %}
                 {% with tx=post.transcription %}
@@ -25,7 +26,7 @@
                         {% endif %}
                     {% else %}
                         {% if transcription_open and perms.scanning.add_transcription %}
-                            <a class='transcribe-top-button' href='{% url scanning.transcribe_document document.pk %}'>&#9997; Add transcription</a>
+                            <a class='transcribe-top-button' href='{% url "scanning.transcribe_document" document.pk %}'>&#9997; Add transcription</a>
                         {% endif %}
                     {% endif %}
                  {% endwith %}
@@ -45,8 +46,8 @@
             {% if transcription_open and not document.transcription.locked and perms.scanning.change_transcription %}
                 <small> 
                     &mdash; 
-                    <a href='{% url scanning.transcribe_document document.id %}'>{% trans "edit" %}</a>, 
-                    <a href='{% url scanning.revision_list document.id %}'>{% trans "revisions" %}</a>
+                    <a href='{% url "scanning.transcribe_document" document.id %}'>{% trans "edit" %}</a>, 
+                    <a href='{% url "scanning.revision_list" document.id %}'>{% trans "revisions" %}</a>
                 </small>
             {% endif %}
             </h2>

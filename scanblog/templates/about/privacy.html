@@ -1,4 +1,5 @@
 {% extends "about/legal_base.html" %}
+{% load url from future %}
 {% block title %}Privacy Policy{% endblock %}
 {% block body %}
 
@@ -12,7 +13,7 @@
 <p>
 The following discloses the information gathering and dissemination practices
 for the Between the Bars (“BtB”) website available at 
-<a href='{% url home %}'>http://betweenthebars.org</a>
+<a href='{% url "home" %}'>http://betweenthebars.org</a>
 (the “Site”).  Your use of the Site constitutes your agreement to this privacy
 policy and consent to the terms herein.  
 </p>

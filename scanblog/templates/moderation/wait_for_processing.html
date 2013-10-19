@@ -1,4 +1,5 @@
 {% extends "moderation/base.html" %}
+{% load url from future %}
 {% block title %}Processing{% endblock %}
 
 {% block body %}
@@ -21,7 +22,7 @@ You will be redirected when we are finished.
     function poll() {
         $.ajax({
             type: 'GET',
-            url: "{% url celery-task_status task_id %}", 
+            url: "{% url "celery-task_status" task_id %}", 
             success: function(data) {
                 if (data.task.status == "SUCCESS") {
                     if (data.task.result) {
@@ -37,7 +38,7 @@ You will be redirected when we are finished.
                     $('.info').removeClass('ui-state-highlight');
                     $(".info").html("Task exited with errors.");
                     {% if perms.scanning.change_scan %}
-                        $(".info").append("<a href='{% url moderation.manage_tasks %}'>View task</a>.")
+                        $(".info").append("<a href='{% url "moderation.manage_tasks" %}'>View task</a>.")
                     {% endif %}
                     document.title = "FAIL";
                     $("h2").html("FAIL");

@@ -1,4 +1,5 @@
 {% extends "about/legal_base.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{% trans "Terms of Use" %}{% endblock %}
@@ -150,7 +151,7 @@ unacceptable or inappropriate, whether for legal or other reasons.
 BtB respects the privacy of our users.  BtB’s Privacy Policy is expressly
 incorporated herein by reference and made a part of the Terms.  The Privacy
 Policy is located at 
-<a href='{% url about.privacy %}'>{{ base_url }}{% url about.privacy %}</a>.
+<a href='{% url "about.privacy" %}'>{{ base_url }}{% url "about.privacy" %}</a>.
 </p>
 <h3>Termination of Account</h3>
 <p>
@@ -246,7 +247,7 @@ We respect the intellectual property of others.  If you believe that your
 copyrighted materials have been copied in a way that constitutes copyright
 infringement, please follow the procedure set forth in our Digital Millennium
 Copyright Act Notice Policy, which is located at 
-<a href='{% url about.dmca %}'>{{ base_url }}{% url about.dmca %}</a> and is
+<a href='{% url "about.dmca" %}'>{{ base_url }}{% url "about.dmca" %}</a> and is
 expressly incorporated herein by reference and made a part of the Terms.
 </p>
 <h3>Termination of Service</h3>

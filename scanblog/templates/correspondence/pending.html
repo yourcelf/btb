@@ -1,23 +1,24 @@
 {% extends "correspondence/base_letter_list.html" %}
+{% load url from future %}
 {% load i18n %}
 {% block title %}{% trans "Manage correspondence" %}{% endblock %}
 
 {% block header %}
 <h2>Pending correspondence</h2>
 <p>
-    <form method='post'  action="{% url correspondence.generate_process_letters %}">{% csrf_token %}
+    <form method='post'  action="{% url "correspondence.generate_process_letters" %}">{% csrf_token %}
         <input type='submit' value='Update pending correspondence' /><br />
     </form>
     Refreshes all 'automatic' pending correspondence.
 </p>
 <p>
-    <form method='post' action='{% url correspondence.add_unconsented_to_waitlist %}'>{% csrf_token %}
+    <form method='post' action='{% url "correspondence.add_unconsented_to_waitlist" %}'>{% csrf_token %}
         <input type='submit' value='Waitlist consent requests' /><br />
     </form>
     Generates "waitlist" postcards for all consent requests that haven't received them.
 </p>
 
-<form method='get' action='{% url correspondence.collate_mailing %}'>
+<form method='get' action='{% url "correspondence.collate_mailing" %}'>
     <table>
         <tr>
             <th colspan='2'>Collated mailings:</th>

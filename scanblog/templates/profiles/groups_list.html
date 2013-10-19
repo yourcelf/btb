@@ -1,4 +1,5 @@
 {% extends "profiles/base.html" %}
+{% load url from future %}
 {% load humanize %}
 {% block title %}People{% if chosen_org %} : {{ chosen_org.name }}{% endif %}{% endblock %}
 {% block body %}
@@ -8,17 +9,17 @@
     <tr>
         <td class='group-links'>
             <ul>
-                <li class='org{% if chosen_org.name == site.name %} active{% endif %}'><a href='{% url profiles.profile_list %}'>{{ site.name }}</a></li>
+                <li class='org{% if chosen_org.name == site.name %} active{% endif %}'><a href='{% url "profiles.profile_list" %}'>{{ site.name }}</a></li>
             {% if orgs %}
                 <li>Partners:</li>
             {% endif %}
             {% for org in orgs %}
                 <li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
                     {# We don't use get_absolute_url here because independent org doesn't have one #}
-                    <a href='{% url profiles.profile_list org.slug %}'>{{ org.name }}</a>
+                    <a href='{% url "profiles.profile_list" org.slug %}'>{{ org.name }}</a>
                 </li>
             {% endfor %}
-            <li {% if chosen_org.slug == "join" %}class='active'{% endif %}><a href='{% url profiles.profile_list "join" %}'>Join</a></li>
+            <li {% if chosen_org.slug == "join" %}class='active'{% endif %}><a href='{% url "profiles.profile_list" "join" %}'>Join</a></li>
             </ul>
         </td>
         <td class='about'>
@@ -70,7 +71,7 @@
                 {% endfor %}
                 </ul>
                 {% if chosen_org.public %}
-                    <a href='{% url blogs.org_post_list chosen_org.slug %}'>All <em>{{ chosen_org.name }}</em> posts</a>
+                    <a href='{% url "blogs.org_post_list" chosen_org.slug %}'>All <em>{{ chosen_org.name }}</em> posts</a>
                 {% endif %}
 
 {{ chosen_org.footer|safe }}

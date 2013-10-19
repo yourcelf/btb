@@ -1,10 +1,11 @@
 {% extends "blogs/base.html" %}
+{% load url from future %}
 {% load humanize %}
 
 {% block title %}My posts{% endblock %}
 
 {% block body %}
-    <a href='{% url blogs.edit_post %}'>&#9997; Compose new post</a>
+    <a href='{% url "blogs.edit_post" %}'>&#9997; Compose new post</a>
     <table class='my-posts'>
         {% if posts %}
             <tr>
@@ -17,7 +18,7 @@
         {% endif %}
         {% for post in posts %}
             <tr {% if post.status == "unknown " %}class='draft'{% endif %}>
-                <td><a class='edit-post' href='{% url blogs.edit_post post.pk %}'>{{ post.get_title }}</a></td>
+                <td><a class='edit-post' href='{% url "blogs.edit_post" post.pk %}'>{{ post.get_title }}</a></td>
                 <td>{{ post.tags.all|join:", " }}</td>
                 <td>
                     {% if post.status == "unknown" %}

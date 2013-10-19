@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% block nav_blogs_active %}active{% endblock %}
 
 {% block css %}
@@ -9,8 +10,8 @@
 
 {% block subnav %}
 {% if user.profile.blogger and not user.profile.managed %}
-    <a href='{% url blogs.manage_posts %}'>&#9776; My Blog Posts</a>
-    <a href='{% url blogs.edit_post %}'>&#9997; Compose</a>
+    <a href='{% url "blogs.manage_posts" %}'>&#9776; My Blog Posts</a>
+    <a href='{% url "blogs.edit_post" %}'>&#9997; Compose</a>
 {% endif %}
 {% include "blogs/_blog_cloud.html" %}
 {% endblock %}
@@ -21,7 +22,7 @@
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-tagit/js/tagit.js'></script>
     <script type='text/javascript'>
         $(".tagform ul.tags").tagit({
-            tagSource: "{% url blogs.post_tag_list %}",
+            tagSource: "{% url "blogs.post_tag_list" %}",
             triggerKeys: ['enter', 'comma', 'tab'],
             allowNewTags: false,
             select: true

@@ -1,11 +1,12 @@
 {% extends "moderation/base.html" %}
+{% load url from future %}
 {% block title %}Mass mailing spreadsheet{% endblock %}
 {% block body %}
 <h1>Mass Mailing Spreadsheet</h1>
 <p>
 Spreadsheets for users in the following organizations:
 </p>
-{% url correspondence.mass_mailing_spreadsheet as base %}
+{% url "correspondence.mass_mailing_spreadsheet" as base %}
 <h2>
     All users in:
     <i>{% for org in orgs %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</i>

@@ -1,3 +1,4 @@
+{% load url from future %}
 A comment has been posted on {{ comment.document.get_title }}:
 
 View on site:
@@ -9,8 +10,8 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 ----
 
 Moderation functions:
-spam: <http://{{ site.domain }}{% url comments.spam_can_comment comment.id %}>
-abuse: <http://{{ site.domain }}{% url comments.moderator_remove comment.id %}>
+spam: <http://{{ site.domain }}{% url "comments.spam_can_comment" comment.id %}>
+abuse: <http://{{ site.domain }}{% url "comments.moderator_remove" comment.id %}>
 
 Admin functions:
 Edit user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>

@@ -1,4 +1,5 @@
 {% extends "profiles/base.html" %}
+{% load url from future %}
 
 {% block title %}Add subscription{% endblock %}
 
@@ -13,7 +14,7 @@
 {% if campaign %}posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?{% endif %}
 {% if affiliation %}posts in the group &ldquo;{{ affiliation.title }}&rdquo;?{% endif %}
 <form method='post' action=''>{% csrf_token %}<input type='submit' value='Sign me up!' /></form>
-<a href='{% url subscriptions.settings %}'>Subscription settings</a>
+<a href='{% url "subscriptions.settings" %}'>Subscription settings</a>
 </p>
 {% if not user.email %}
 <p>

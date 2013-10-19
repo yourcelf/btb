@@ -1,8 +1,9 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% block title %}Edit comment {% endblock %}
 {% block body %}
 <h2>Edit comment</h2>
-<p>Please consider our <a href='{% url about.community_guidelines %}'>guidelines</a> while writing.</p>
+<p>Please consider our <a href='{% url "about.community_guidelines" %}'>guidelines</a> while writing.</p>
     <form method='post' action=''>{% csrf_token %}
         <div style='float: left;'>
             {% if form.comment.errors %}

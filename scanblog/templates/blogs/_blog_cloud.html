@@ -1,10 +1,11 @@
+{% load url from future %}
 <div class='blog-nav-bar'>
     <div class='subnav'>
-        <a class='toggle {{ categories_open }}' href='{% url blogs.home %}' data-target='.categories'>Categories</a>
-        <a class='toggle {{ posts_open }}' href='{% url blogs.home %}' data-target='.recent'>Recent posts</a>
-        <a class='toggle {{ comments_open }}' href='{% url blogs.comments %}' data-target='.comments'>Comments</a>
-        <a class='toggle {{ authors_open }}' href='{% url profiles.profile_list %}' data-target='.authors'>Authors</a>
-        <a href='{% url blogs.page_picker %}' class='every-page'>Every Page</a>
+        <a class='toggle {{ categories_open }}' href='{% url "blogs.home" %}' data-target='.categories'>Categories</a>
+        <a class='toggle {{ posts_open }}' href='{% url "blogs.home" %}' data-target='.recent'>Recent posts</a>
+        <a class='toggle {{ comments_open }}' href='{% url "blogs.comments" %}' data-target='.comments'>Comments</a>
+        <a class='toggle {{ authors_open }}' href='{% url "profiles.profile_list" %}' data-target='.authors'>Authors</a>
+        <a href='{% url "blogs.page_picker" %}' class='every-page'>Every Page</a>
     </div>
     <div class='targets'>
         <div class='target categories tag-list {{ categories_open }}'>
@@ -66,7 +67,7 @@
                         <a href='{{ post.get_absolute_url }}'>{{ post.get_title }}</a>, by {{ post.author.profile }}
                     </li>
                 {% endfor %}
-                <li class='all'><a href='{% url blogs.home %}'>All posts by date</a></li>
+                <li class='all'><a href='{% url "blogs.home" %}'>All posts by date</a></li>
             </ul>
         </div>
         <div class='target comments {{ comments_open }}'>
@@ -76,7 +77,7 @@
                 <li><span class='date'>{{ comment.created|date:"b d, Y" }}:</span> <a href='{{ comment.document.get_absolute_url }}' class='comment-text'>&ldquo;{{ comment.comment|truncatewords:25 }}&rdquo;</a>
                 <br />on <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by {{ comment.document.author.profile }}</li>
                 {% endfor %}
-                <li class='all'><a href='{% url blogs.comments %}'>All comments</a></li>
+                <li class='all'><a href='{% url "blogs.comments" %}'>All comments</a></li>
             </ul>
         </div>
         <div class='target authors {{ authors_open }}'>
@@ -90,7 +91,7 @@
                         {% endif %}
                     </li>
                 {% endfor %}
-                <li class='all'><a href='{% url profiles.profile_list %}'>All authors</a></li>
+                <li class='all'><a href='{% url "profiles.profile_list" %}'>All authors</a></li>
             </ul>
         </div>
     </div>

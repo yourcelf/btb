@@ -1,4 +1,5 @@
 {% extends "moderation/base.html" %}
+{% load url from future %}
 {% block title %}Manage tasks{% endblock %}
 {% block body %}
 <script type='text/javascript'>
@@ -47,7 +48,7 @@ Restrict to: <a href='?status=PENDING'>PENDING</a> <a href='?status=SUCCESS'>SUC
     </tr>
     {% for task in page.object_list %}
     <tr class='task' style='psoition: relative;'>
-        <td><a href='{% url moderation.wait_for_processing task.task_id %}' title='waiting page for task'>link</a></td>
+        <td><a href='{% url "moderation.wait_for_processing" task.task_id %}' title='waiting page for task'>link</a></td>
         <td>{{ task.date_done }}</td>
         <td>
             <span class='{{ task.status }}'>{{ task.status }}</span>
