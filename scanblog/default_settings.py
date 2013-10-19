@@ -193,7 +193,7 @@ BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "amqp"
 
-TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
+TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 
 INTERNAL_IPS = ('127.0.0.1',)
 
