@@ -26,3 +26,4 @@ reportlab
 # settings.SELENIUM_FIREFOX_BIN
 selenium==2.31.0
 pytz
+django-localflavor

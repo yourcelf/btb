@@ -13,7 +13,7 @@ from django.core import paginator
 from django.db.models import Count
 from django.http import Http404
 from djcelery.models import TaskMeta
-from django.contrib.localflavor.us.us_states import STATES_NORMALIZED
+from localflavor.us.us_states import STATES_NORMALIZED
 
 from scanning.models import Document, Scan, DocumentPage, EditLock, \
         TranscriptionRevision
