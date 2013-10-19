@@ -15,6 +15,7 @@ from profiles.models import Organization
 from scanning.models import Document
 
 class BtbLiveServerTestCase(LiveServerTestCase):
+    fixtures = ["initial_data.json"]
     @classmethod
     def setUpClass(cls):
         if hasattr(settings, "SELENIUM_FIREFOX_BIN"):

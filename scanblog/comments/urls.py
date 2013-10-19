@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 comment_id = "(?P<comment_id>\d+)"
 

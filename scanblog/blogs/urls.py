@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 post_id = "(?P<post_id>\d+)"
 author_id = "(?P<author_id>\d+)"

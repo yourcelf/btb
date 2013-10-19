@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 task_id = '(?P<task_id>[\w\d\-\.]+)'
 

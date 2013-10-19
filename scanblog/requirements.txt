@@ -1,4 +1,4 @@
-django==1.4.8
+django>1.5
 psycopg2
 django-registration
 Celery
@@ -14,7 +14,7 @@ sorl-thumbnail
 python-memcached
 -e git+https://github.com/yourcelf/django-notification@8bd0d787ed1842540d6152d92ca542e7ef6df661#egg=django_notification-dev
 django-pagination
-django-urlcrypt
+-e git+https://github.com/yourcelf/django-urlcrypt.git#egg=django_urlcrypt
 South
 pyyaml
 reportlab

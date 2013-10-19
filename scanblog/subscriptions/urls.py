@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 user_id = "(?P<user_id>\d+)"
 

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load url from future %}
 {% load compress %}
 <!DOCTYPE html>
 <html>
@@ -27,22 +28,22 @@
                     {% block nav %}
                         <div class='nav-left'>
                             {% block nav_logo_icon %}
-                            <a class='logo' href="{% url home %}"><img src='{{ STATIC_URL}}img/v2-icon-cd.png' alt='{{ site.name }}' /></a>
+                            <a class='logo' href="{% url "home" %}"><img src='{{ STATIC_URL}}img/v2-icon-cd.png' alt='{{ site.name }}' /></a>
                             {% endblock %}
-                            <a class='home {% block nav_home_active %}{% endblock %}' href="{% url home %}">{% block nav_home_text %}{{ site.name }}{% endblock %}</a>
-                            <a class='blogs {% block nav_blogs_active %}{% endblock %}' href="{% url blogs.home %}">{% trans "Blogs" %}</a>
-                            <a class='blogs {% block nav_people_active %}{% endblock %}' href="{% url profiles.profile_list %}">{% trans "People" %}</a>
-                            <a class='about {% block nav_about_active %}{% endblock %}' href="{% url about %}">{% trans "About" %}</a>
+                            <a class='home {% block nav_home_active %}{% endblock %}' href="{% url "home" %}">{% block nav_home_text %}{{ site.name }}{% endblock %}</a>
+                            <a class='blogs {% block nav_blogs_active %}{% endblock %}' href="{% url "blogs.home" %}">{% trans "Blogs" %}</a>
+                            <a class='blogs {% block nav_people_active %}{% endblock %}' href="{% url "profiles.profile_list" %}">{% trans "People" %}</a>
+                            <a class='about {% block nav_about_active %}{% endblock %}' href="{% url "about" %}">{% trans "About" %}</a>
 
                             {# Authenticated nav #}
                             {% if perms.scanning.add_scan or perms.blogs.cahnge_post or perms.correspondence.manage_correspondence %}
                                 |
                             {% endif %}
                             {% if perms.scanning.change_scan %}
-                                <a class="{% block nav_moderation_active %}{% endblock %} authenticated" href="{% url moderation.home %}">{% trans "Moderation" %}</a>
+                                <a class="{% block nav_moderation_active %}{% endblock %} authenticated" href="{% url "moderation.home" %}">{% trans "Moderation" %}</a>
                             {% endif %}
                             {% if perms.scanning.add_scan %}
-                                <a class="{% block nav_upload_active %}{% endblock %} authenticated" href="{% url scanning.scan_add %}">{% trans "Upload" %}</a>
+                                <a class="{% block nav_upload_active %}{% endblock %} authenticated" href="{% url "scanning.scan_add" %}">{% trans "Upload" %}</a>
                             {% endif %}
                         </div>
                         <div class='auth'>
@@ -50,7 +51,7 @@
                                 <div class='menu-trigger'>
                                     {% if notice_unseen_count > 0 %}
                                     <a class='notice-unseen-count' 
-                                       href='{% url notification_notices %}' 
+                                       href='{% url "notification_notices" %}' 
                                        title='{{ notice_unseen_count}} unread notification{{ notice_unseen_count|pluralize }}'
                                        >{{ notice_unseen_count }}</a>
                                     {% endif %}
@@ -60,30 +61,30 @@
                                             {% if notice_unseen_count > 0 %}
                                                 <li>
                                                 <a class='notice-unseen-count' 
-                                                   href='{% url notification_notices %}' 
+                                                   href='{% url "notification_notices" %}' 
                                                    title='{{ notice_unseen_count}} unread notification{{ notice_unseen_count|pluralize }}'
                                                    >{{ notice_unseen_count }} message{{ notice_unseen_count|pluralize }}</a>
                                                 <div style='clear: both;'></div>
                                                 </li>
                                             {% endif %}
-                                            <li><a href="{% url profiles.own_profile_show %}">{% trans "Profile" %}</a></li>
-                                            {% if user.is_staff %}<li><a href="{% url admin:index %}">{% trans "Admin" %}</a></li>
+                                            <li><a href="{% url "profiles.own_profile_show" %}">{% trans "Profile" %}</a></li>
+                                            {% if user.is_staff %}<li><a href="{% url "admin:index" %}">{% trans "Admin" %}</a></li>
                                     {% endif %}
                                             {% if user.profile.blogger and not user.profile.managed %}
                                             <li>
-                                                <a href='{% url blogs.manage_posts %}'>&#9776; My Posts</a>
+                                                <a href='{% url "blogs.manage_posts" %}'>&#9776; My Posts</a>
                                             </li>
                                             <li>
-                                                <a href='{% url blogs.edit_post %}'>&#9997; Compose</a>
+                                                <a href='{% url "blogs.edit_post" %}'>&#9997; Compose</a>
                                             </li>
                                             {% endif %}
-                                            <li><a href="{% url auth_logout %}?next={% url home %}">{% trans "Logout" %}</a></li>
+                                            <li><a href="{% url "auth_logout" %}?next={% url "home" %}">{% trans "Logout" %}</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             {% else %}
-                                <a href="{% url auth_login %}?next={% url home %}">{% trans "Sign in" %}</a> {% trans "or" %} 
-                                <a href="{% url registration_register %}"><b>{% trans "Join" %}</b></a>
+                                <a href="{% url "auth_login" %}?next={% url "home" %}">{% trans "Sign in" %}</a> {% trans "or" %} 
+                                <a href="{% url "registration_register" %}"><b>{% trans "Join" %}</b></a>
                             {% endif %}
                         </div>
                     {% endblock %}
@@ -120,10 +121,10 @@
                 <div class="legal">
                     <ul>
                         <li><a href='mailto:info@betweenthebars.org'>{% trans "Contact us" %}</a></li>
-                        <li><a href='{% url about.copyright %}'>{% trans "Copyrights" %}</a></li>
-                        <li><a href='{% url about.terms %}'>{% trans "Terms of Use" %}</a></li>
-                        <li><a href='{% url about.privacy %}'>{% trans "Privacy Policy" %}</a></li>
-                        <li><a href='{% url about.dmca %}'>{% trans "DMCA" %}</a></li>
+                        <li><a href='{% url "about.copyright" %}'>{% trans "Copyrights" %}</a></li>
+                        <li><a href='{% url "about.terms" %}'>{% trans "Terms of Use" %}</a></li>
+                        <li><a href='{% url "about.privacy" %}'>{% trans "Privacy Policy" %}</a></li>
+                        <li><a href='{% url "about.dmca" %}'>{% trans "DMCA" %}</a></li>
                     </ul>
                 </div>
                 <div class='sponsor'><a href='http://civic.mit.edu'><img src='{{STATIC_URL}}img/C4FCM_Logo_small_light.png' alt='Center for Civic Media'/></a></div>
