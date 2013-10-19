@@ -1,6 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
- 
+
 class CaseInsensitiveAuthenticationBackend(ModelBackend):
   """
   By default ModelBackend does case _sensitive_ username authentication, which isn't what is
@@ -15,12 +15,3 @@ class CaseInsensitiveAuthenticationBackend(ModelBackend):
         return None
     except User.DoesNotExist:
       return None
-
-from registration.backends.simple import SimpleBackend
-
-class SimpleRegistrationBackend(SimpleBackend):
-
-    def post_registration_redirect(self, request, user):
-        if 'after_login' in request.session:
-            return (request.session.pop('after_login'), (), {})
-        return ("accounts-post-registration", (), {})

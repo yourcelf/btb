@@ -25,6 +25,7 @@ class TestModScans(BtbLiveServerTestCase):
         time.sleep(0.5)
         self.css(".user-search").send_keys("est Author")
         self.wait(lambda b: "Test Author" in self.css(".name-and-details").text)
+        time.sleep(0.5)
         self.css(".name-and-details").click()
         self.wait(lambda b: "Test Author" in self.css(".pending-scan-list .display-name").text)
         pk = int(self.css(".user-id-raw").get_attribute("value"))
@@ -103,14 +104,16 @@ class TestModScans(BtbLiveServerTestCase):
         self.css("select.doc-status", doc_el).send_keys("published")
         self.css(".save-doc", doc_el).click()
         self.wait(lambda b: Document.objects.get(pk=pk2).status == "published")
-        time.sleep(0.1) #ugh
+        time.sleep(0.5) #ugh
 
         # Verify pages.
         b.get(self.url("/blogs/"))
+        time.sleep(0.5)
         self.assertTrue("My Nature" in self.css("h2").text)
 
         b.get(self.url(
             User.objects.get(username="testauthor").profile.get_absolute_url()
         ))
-        self.assertTrue("Test Author" in self.css("title").text)
+        time.sleep(0.5)
+        self.assertTrue("Test Author" in b.title)
 

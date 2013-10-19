@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import time
 from .base import BtbLiveServerTestCase
 
 from scanning.models import PendingScan
@@ -26,6 +28,7 @@ class TestModIncoming(BtbLiveServerTestCase):
         self.wait(lambda b: PendingScan.objects.missing().count() == 1)
 
         # Reload, and see that the pending scan list is empty.
+        time.sleep(0.5) # Wait for any AJAX requests to finish before navigating.
         b.get(self.url("/moderation/"))
         b.find_element_by_link_text("Moderation").click()
         b.find_element_by_link_text("Incoming mail").click()

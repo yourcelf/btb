@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 
 from btb.utils import can_edit_user
 from accounts.forms import OptionalEmailForm
+from registration.backends.simple.views import RegistrationView
 
 def login(request, *args, **kwargs):
     kwargs['extra_context'] = {
@@ -75,3 +76,10 @@ def change_password(request, user_id):
 def welcome(request):
     return render(request, 'registration/welcome.html')
 
+class OptionalEmailRegistrationView(RegistrationView):
+    form_class = OptionalEmailForm
+
+    def get_success_url(self, request, user):
+        if 'after_login' in request.session:
+            return request.session.pop('after_login')
+        return reverse("accounts-post-registration")

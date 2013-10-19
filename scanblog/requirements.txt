@@ -1,6 +1,6 @@
 django==1.4.8
 psycopg2
--e hg+http://bitbucket.org/ubernostrum/django-registration@27bccd108cdef30dc0a91ed1968be17bb1e60da4#egg=django_registration-dev
+django-registration
 Celery
 django-celery
 pyPdf
@@ -18,12 +18,6 @@ django-urlcrypt
 South
 pyyaml
 reportlab
-# Due to these bugs:
-#  * https://code.google.com/p/selenium/issues/detail?id=4603
-#  * https://code.google.com/p/selenium/issues/detail?id=3736
-# We need pinned versions of selenium and firefox.  Have found selenium 2.20,
-# and firefox 10.0 to work properly.  Specify the firefox binary to use in
-# settings.SELENIUM_FIREFOX_BIN
-selenium==2.31.0
+selenium
 pytz
 django-localflavor

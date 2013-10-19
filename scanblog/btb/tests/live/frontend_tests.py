@@ -52,6 +52,6 @@ class TestFrontend(BtbLiveServerTestCase):
                 ):
             self.selenium.get(self.url(link))
             # Selenium webdriver does not expose status codes; do this instead.
-            self.assertFalse("404" in self.css("title").text)
+            self.assertFalse("404" in self.selenium.title)
 
 
