@@ -12,7 +12,7 @@ python-magic
 django_compressor
 sorl-thumbnail
 python-memcached
--e git+https://github.com/yourcelf/django-notification@8bd0d787ed1842540d6152d92ca542e7ef6df661#egg=django_notification-dev
+-e git+https://github.com/yourcelf/django-notification.git@2b61f91a331eb22b8103f7a9bade00f8b117b279#egg=django_notification
 django-pagination
 -e git+https://github.com/yourcelf/django-urlcrypt.git#egg=django_urlcrypt
 South
