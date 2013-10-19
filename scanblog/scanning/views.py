@@ -78,7 +78,7 @@ class ScanSplits(JSONView):
     }
     """
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         return kw
 
     @args_method_decorator(permission_required, "scanning.change_scan")
@@ -253,7 +253,7 @@ class MissingHighlight(Exception):
 
 class Documents(JSONView):
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         return kw
 
     @args_method_decorator(permission_required, "scanning.change_document")
@@ -408,7 +408,7 @@ class PendingScans(JSONView):
     
     @args_method_decorator(permission_required, "scanning.add_pendingscan")
     def post(self, request, obj_id=None):
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         try:
             org = Organization.objects.org_filter(
                     request.user, pk=params["org_id"]
@@ -438,7 +438,7 @@ class PendingScans(JSONView):
         except PendingScan.DoesNotExist:
             raise PermissionDenied
 
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         if 'missing' in params:
             if params['missing'] == 1:
                 ps.completed = datetime.datetime.now()

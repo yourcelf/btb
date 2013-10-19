@@ -34,7 +34,7 @@ class Notes(JSONView):
     attr_whitelist = ('id', 'user_id', 'document_id', 'scan_id',
         'comment_id', 'created', 'modified', 'resolved', 'important', 'text')
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         #TODO: Remove these in client.
         for key in ('object', 'object_type', 'creator'):
             kw.pop(key, None)

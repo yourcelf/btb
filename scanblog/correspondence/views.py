@@ -38,7 +38,7 @@ class Letters(JSONView):
         """
         Parameters for put and post.
         """
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         # TODO: Remove this at the client side.
         for key in ('order_date', 'org', 'document', 'recipient_address', 'sender'):
             kw.pop(key, None)
@@ -243,7 +243,7 @@ class Mailings(JSONView):
     JSON CRUD for Mailing models
     """
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         if 'date_finished' in kw:
             if 'date_finished' in kw:
                 if kw['date_finished'] == True:

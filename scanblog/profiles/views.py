@@ -317,7 +317,7 @@ class UsersJSON(JSONView):
     @args_method_decorator(permission_required, "auth.add_user")
     def post(self, request, obj_id=None):
         missing = set()
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         for key in ("display_name", "mailing_address", "blogger", "managed", 
                     "email", "blog_name", "org_id"):
             if not key in params:
@@ -360,7 +360,7 @@ class UsersJSON(JSONView):
 
     @args_method_decorator(permission_required, "auth.change_user")
     def put(self, request, obj_id):
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         user = Profile.objects.org_filter(request.user).get(pk=params['id']).user
         dirty = False
         for param in ('is_active', 'username', 'email'):
