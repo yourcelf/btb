@@ -374,6 +374,7 @@ class btb.SplitScanView extends Backbone.View
             })
         $(".page-image img").load =>
             @setPageScale parseFloat $.cookie("scanpagesize") or 1
+        $(".choose-code input").focus()
         this
 
     chooseCode: (event) =>
