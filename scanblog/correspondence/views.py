@@ -200,9 +200,28 @@ class CorrespondenceList(JSONView):
         letters = Letter.objects.mail_filter(request.user)
 
         user_id = user_id or request.GET.get('user_id', None)
+        print request.GET
+        try:
+            incoming = bool(int(request.GET.get("incoming")))
+        except ValueError:
+            incoming = True
+        try:
+            outgoing = bool(int(request.GET.get("outgoing")))
+        except ValueError:
+            outgoing = True
+
+        if not incoming and not outgoing:
+            incoming = outgoing = True
+
         if user_id:
-            scans = scans.filter(author__id=user_id)
-            letters = letters.filter(recipient__id=user_id)
+            if incoming:
+                scans = scans.filter(author__id=user_id)
+            else:
+                scans = []
+            if outgoing:
+                letters = letters.filter(recipient__id=user_id)
+            else:
+                letters = []
 
         # Just grab all at once.  Number of letters/scans doesn't get so high
         # as to make it worth lazy fetching.

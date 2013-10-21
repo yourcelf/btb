@@ -313,12 +313,36 @@ class btb.LetterTable extends btb.PaginatedView
 # A tabular, paginated view of LetterRow and CorrespondenceScanRow instances.
 #
 class btb.CorrespondenceTable extends btb.LetterTable
+    events:
+        'click .filter-all': 'setFilterAll'
+        'click .filter-incoming': 'setFilterIncoming'
+        'click .filter-outgoing': 'setFilterOutgoing'
+        'change [name=per-page]': 'setPerPage'
     initialize: (options={filter: {}}) ->
         @collection = new btb.CorrespondenceList
-        @collection.filter = options.filter
+        @collection.filter = options.filter or {}
+        # Default to both if neither is chosen.
+        if not @collection.filter.incoming and not @collection.filter.outgoing
+            @collection.filter.incoming = 1
+            @collection.filter.outgoing = 1
 
     refresh: =>
-      @fetchItems()
+        @fetchItems()
+
+    setFilterAll: (event)      => @setFilter(event, {outgoing: 1, incoming: 1})
+    setFilterIncoming: (event) => @setFilter(event, {outgoing: 0, incoming: 1})
+    setFilterOutgoing: (event) => @setFilter(event, {outgoing: 1, incoming: 0})
+    setPerPage: (event)        => @setFilter(event, {
+        per_page: parseInt(@$("[name=per-page]").val())
+    })
+
+    setFilter: (event, params) =>
+        event?.preventDefault()
+        @collection.filter = _.extend(@collection.filter or {}, params)
+        console.log @collection.filter.incoming, @collection.filter.outgoing
+        @fetchItems()
+        # Update display
+        @renderFilter()
 
     render: =>
         $(@el).html @template()
@@ -340,7 +364,19 @@ class btb.CorrespondenceTable extends btb.LetterTable
             $(@el).append row.render().el
         @addPaginationRow()
         $(@el).addClass("letter-table")
+        @renderFilter()
         this
+
+    renderFilter: =>
+        @$("[name=per-page]").val(@collection.filter.per_page or 12)
+        @$(".filter-letters .chosen").removeClass("chosen")
+        if @collection.filter.incoming and @collection.filter.outgoing
+            @$(".filter-all").addClass("chosen")
+        else if @collection.filter.incoming
+            @$(".filter-incoming").addClass("chosen")
+        else if @collection.filter.outgoing
+            @$(".filter-outgoing").addClass("chosen")
+
 
 # 
 # Holder for a letter adder/editor and correspondence table that work together.
@@ -349,8 +385,7 @@ class btb.CorrespondenceManager extends Backbone.View
     initialize: (options) ->
         @recipient = options.recipient
 
-        @table = new btb.CorrespondenceTable
-            filter: { user_id: @recipient.id, per_page: 5}
+        @table = new btb.CorrespondenceTable({filter: { user_id: @recipient.id, per_page: 12}})
         @table.bind "editLetter", (letter) => @editLetter(letter)
         @table.fetchItems()
 

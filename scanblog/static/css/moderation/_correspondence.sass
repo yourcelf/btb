@@ -55,6 +55,19 @@
     border: 1px solid white
     background-color: white
 
+  .filter-letters
+    text-align: right
+    a
+      +flat-button
+    a.filter-all
+      +flat-button-position(left)
+    a.filter-incoming
+      +flat-button-position(middle)
+    a.filter-outgoing
+      +flat-button-position(right)
+    a.chosen
+      background-color: #fed
+
 
 .outgoing-mail
   &, & label

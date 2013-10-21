@@ -55,8 +55,21 @@
     <%= btb.formatDate(scan.order_date) %>
 </script>
 <script type='text/template' id='letterTableHeading'>
-    <div class='fetch-loading' style='display: none;'>
+    <div class='fetch-loading' style='display: none; float: left;'>
         <img src='{{ STATIC_URL }}img/spinner.gif' />
+    </div>
+    <div class='filter-letters'>
+      Per page:
+      <select name='per-page'>
+        <option value='6'>6</option>
+        <option value='12'>12</option>
+        <option value='24'>24</option>
+        <option value='48'>48</option>
+        <option value='96'>96</option>
+      </select>
+      <a href='#' class='filter-all chosen'>All</a
+      ><a href='#' class='filter-incoming'>Incoming</a
+      ><a href='#' class='filter-outgoing'>Outgoing</a>
     </div>
 </script>
 <script type='text/template' id='letterRow'>
@@ -190,7 +203,7 @@
             </span>
 
             <span class='choice consent_form'>
-                <input checked="checked"  type='checkbox' name='consent_form' id='consent_form' 
+                <input type='checkbox' name='consent_form' id='consent_form' 
                 /><label for='consent_form'>Invitations (<span class='count'></span>)</label>
                 (Cutoff <input name='consent_form_cutoff' class='consent-form-cutoff'>)
             </span>
