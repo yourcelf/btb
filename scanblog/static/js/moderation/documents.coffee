@@ -707,6 +707,17 @@ class Cropper
         ctx.strokeRect(x-m, y1-m, 2*m, 2*m) # SW
         ctx.strokeRect(x + (x1-x)/2 -m, y1-m, 2*m, 2*m) # S
         ctx.strokeRect(x1-m, y1-m, 2*m, 2*m) # SE
+        
+        # Close handle
+        ctx.strokeRect(x1+m, y-5*m, 4*m, 4*m)
+        ctx.beginPath()
+        ctx.moveTo(x1+m, y-5*m)
+        ctx.lineTo(x1+5*m, y-m)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(x1+5*m, y-5*m)
+        ctx.lineTo(x1+m, y-m)
+        ctx.stroke()
 
   handleMouse: (mx, my, type, crop) =>
     directions = ""
@@ -730,6 +741,10 @@ class Cropper
         else
           cursor = "move"
           directions = "+"
+      else if (x1 + m/2) <= mx <= (x1 + 5*m/2) and (y - m/2) >= my >= (y - 5*m/2)
+        # Inside close handle
+        cursor = "pointer"
+        directions = "x"
     @cursor = cursor or "crosshair"
     if type == "down"
       if crop and not directions
@@ -740,11 +755,15 @@ class Cropper
         directions: directions
         crop: (d for d in crop if crop)
     else if type == "up"
-      @mouseDownState = {}
-      if crop
-        [x, y, x1, y1] = crop
-        if x - x1 == 0 or y - y1 == 0
-          return null
+      if "x" == @mouseDownState?.directions
+        @mouseDownState = {}
+        return null
+      else
+        @mouseDownState = {}
+        if crop
+          [x, y, x1, y1] = crop
+          if x - x1 == 0 or y - y1 == 0
+            return null
     else if type == "move" and @mouseDownState?.x?
       if crop
         [x, y, x1, y1] = crop
@@ -858,9 +877,9 @@ class MultiCropper
             cursor = "move"
             directions = "+"
         else if (x1 + m/2) <= mx <= (x1 + 5*m/2) and (y - m/2) >= my >= (y - 5*m/2)
+          # Inside close handle
           cursor = "pointer"
           directions = "x"
-          # Inside close handle
         if directions
           matches.push({
             cursor: cursor
