@@ -318,7 +318,7 @@ class Document(models.Model):
                     comment = self.comment
                 except Comment.DoesNotExist:
                     comment = Comment()
-                commemt.user = self.author
+                comment.user = self.author
                 comment.removed = False
                 comment.document = parent
                 comment.comment_doc = self

@@ -5,11 +5,15 @@
                 <table>
                     <tr>
                         <td>
-                        {% if comment.user.has_public_profile %}
-                            <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
-                        {% else %}
-                            {{ comment.user.profile }}
-                        {% endif %}
+                          {% if comment.removed %}
+                            <em>[removed]</em>
+                          {% else %}
+                            {% if comment.user.has_public_profile %}
+                                <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
+                            {% else %}
+                                {{ comment.user.profile }}
+                            {% endif %}
+                          {% endif %}
                         </td>
                         <td>
                             <span class='comment-date'>Posted {{ comment.created|timesince }} ago.</span>

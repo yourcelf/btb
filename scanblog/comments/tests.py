@@ -168,6 +168,8 @@ class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
 
         res = self.client.get(abuse.document.get_absolute_url())
         self.assertTrue("This is a tombstone..." in res.content)
+        self.assertTrue("[removed]" in res.content)
+        self.assertFalse(abuse.user.profile.display_name in res.content)
 
     def test_remove_with_commenter_notice(self):
         (abuse, url) = self._make_abuse("reader")
