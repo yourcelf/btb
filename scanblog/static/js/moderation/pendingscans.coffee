@@ -21,6 +21,7 @@ class btb.PendingScans extends btb.PaginatedView
     itemTemplate: _.template $("#pendingScanItem").html()
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
         'click input.pending-scan-missing': 'pendingScanMissing'
         'click .remove-pending-scan': 'removePendingScan'
         'click .show-missing': 'showMissing'
@@ -92,6 +93,12 @@ class btb.PendingScans extends btb.PaginatedView
 
     turnPage: (event) =>
         @pendingScanList.filter.page = @newPageFromEvent event
+        @setPageLoading()
+        @fetchItems()
+
+    setPerPage: (event) =>
+        event.preventDefault()
+        @pendingScanList.filter.per_page = parseInt(@$(event.currentTarget).val())
         @setPageLoading()
         @fetchItems()
 

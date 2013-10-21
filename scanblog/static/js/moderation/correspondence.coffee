@@ -257,6 +257,7 @@ class btb.LetterTable extends btb.PaginatedView
     template: _.template $("#letterTableHeading").html()
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
 
     initialize: (options={filter: {}}) ->
         @collection = new btb.LetterList
@@ -302,12 +303,13 @@ class btb.LetterTable extends btb.PaginatedView
 
     turnPage: (event) =>
         @collection.filter.page = @newPageFromEvent event
-        @setPageLoading()
-        @collection.fetch
-            success: =>
-                @render()
-            error: => alert "Server error #{@collection.url()}"
+        @fetchItems()
 
+    setPerPage: (event) =>
+        event.preventDefault()
+        @collection.filter.per_page = $(event.currentTarget).val()
+        @fetchItems()
+     
 
 #
 # A tabular, paginated view of LetterRow and CorrespondenceScanRow instances.
@@ -317,7 +319,10 @@ class btb.CorrespondenceTable extends btb.LetterTable
         'click .filter-all': 'setFilterAll'
         'click .filter-incoming': 'setFilterIncoming'
         'click .filter-outgoing': 'setFilterOutgoing'
-        'change [name=per-page]': 'setPerPage'
+        'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
+
+
     initialize: (options={filter: {}}) ->
         @collection = new btb.CorrespondenceList
         @collection.filter = options.filter or {}
@@ -332,9 +337,6 @@ class btb.CorrespondenceTable extends btb.LetterTable
     setFilterAll: (event)      => @setFilter(event, {outgoing: 1, incoming: 1})
     setFilterIncoming: (event) => @setFilter(event, {outgoing: 0, incoming: 1})
     setFilterOutgoing: (event) => @setFilter(event, {outgoing: 1, incoming: 0})
-    setPerPage: (event)        => @setFilter(event, {
-        per_page: parseInt(@$("[name=per-page]").val())
-    })
 
     setFilter: (event, params) =>
         event?.preventDefault()
@@ -346,6 +348,7 @@ class btb.CorrespondenceTable extends btb.LetterTable
 
     render: =>
         $(@el).html @template()
+        @addPaginationRow()
         @collection.each (obj) =>
             if obj.get("letter")?
                 row = new btb.LetterRow(new btb.Letter obj.get "letter")
@@ -368,7 +371,6 @@ class btb.CorrespondenceTable extends btb.LetterTable
         this
 
     renderFilter: =>
-        @$("[name=per-page]").val(@collection.filter.per_page or 12)
         @$(".filter-letters .chosen").removeClass("chosen")
         if @collection.filter.incoming and @collection.filter.outgoing
             @$(".filter-all").addClass("chosen")

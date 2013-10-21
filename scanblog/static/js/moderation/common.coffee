@@ -122,9 +122,12 @@ class btb.PaginatedView extends Backbone.View
             if i < 10 or Math.abs(p.page - i) < 5 or i > p.pages - 10
                 links.push(i)
 
-        el.html @paginationTemplate
+        el.html(@paginationTemplate({
+            per_page: collection.filter?.per_page or 12
             pagination: p
             pageLinksToShow: links
+        }))
+        @$(".per-page").val(collection.filter?.per_page or 12)
         this
 
     newPageFromEvent: (event) -> parseInt $.trim $(event.currentTarget).text()
@@ -135,6 +138,7 @@ class btb.TabularList extends btb.PaginatedView
     tagName: 'table'
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
 
     initialize: (options) ->
         @collection = options.collection
@@ -158,12 +162,20 @@ class btb.TabularList extends btb.PaginatedView
             # Chrome bug setting class using attr with jQuery 1.6... 
             pag.addClass "pagination"
             $(@el).append $("<tr/>").html(pag)
-            @renderPagination @collection, pag
+            @renderPagination(@collection, pag)
         this
 
     turnPage: (event) =>
         @collection.filter.page = @newPageFromEvent event
         $(@el).addClass(".loading")
+        @fetchItems()
+
+    setPerPage: (event) =>
+        event?.preventDefault()
+        @collection.filter.per_page = parseInt(@$("select.per-page").val())
+        @fetchItems()
+
+    fetchItems: =>
         @setPageLoading()
         @collection.fetch
             success: =>

@@ -31,6 +31,7 @@ class btb.ProcessItemListView extends btb.PaginatedView
     itemTemplate: _.template($("#processItem").html())
     events:
         "click span.pagelink": "turnPage"
+        "change select.per-page": "setPerPage"
 
     defaultFilter: {}
 
@@ -72,6 +73,11 @@ class btb.ProcessItemListView extends btb.PaginatedView
     turnPage: (event) =>
         page = @newPageFromEvent(event)
         @list.filter.page = page
+        @fetch()
+
+    setPerPage: (event) =>
+        event.preventDefault()
+        @list.filter.per_page = parseInt(@$(event.currentTarget).val())
         @fetch()
 
 class btb.ProcessDocListView extends btb.ProcessItemListView

@@ -1,6 +1,15 @@
 <script type='text/template' id="pagination">
-    <% if (pagination.pages > 1) { %>
-        <%= pagination.count %> results. Page:
+    <% if (pagination.pages > 0) { %>
+        <%= pagination.count %> results.
+        <span class='per-page-holder'>
+          Per page: <select name='per-page' class='per-page'>
+              <option value='6'>6</option>
+              <option value='12'>12</option>
+              <option value='24'>24</option>
+              <option value='96'>96</option>
+          </select>
+        </span>
+        Page:
         <% var prevPage = 0; %>
         <% for (var i = 0; i < pageLinksToShow.length ; i++) { %>
             <% var p = pageLinksToShow[i]; %>
