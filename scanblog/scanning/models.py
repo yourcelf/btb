@@ -315,15 +315,14 @@ class Document(models.Model):
             # Only create a comment object if we are public.
             if self.is_public():
                 try:
-                    self.comment.removed = False
-                    self.comment.save()
+                    comment = self.comment
                 except Comment.DoesNotExist:
-                    self.comment = Comment.objects.create(
-                        user=self.author,
-                        removed=False,
-                        document=parent,
-                        comment_doc=self,
-                    )
+                    comment = Comment()
+                commemt.user = self.author
+                comment.removed = False
+                comment.document = parent
+                comment.comment_doc = self
+                comment.save()
             else:
                 # If we've gone non-public, mark the comment removed rather
                 # than deleting.  That way, we don't re-fire subscriptions if
@@ -408,7 +407,10 @@ class Document(models.Model):
 
     def get_absolute_url(self):
         if self.type == "post":
-            return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
+            try:
+                return self.comment.get_absolute_url()
+            except Comment.DoesNotExist:
+                return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
         elif self.type == "profile":
             return reverse("profiles.profile_show", args=[self.author.pk])
         else:
