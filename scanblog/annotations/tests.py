@@ -211,3 +211,28 @@ class FlagTest(BtbMailTestCase):
                 reader = User.objects.get(username='reader')
                 self.assertEquals(Note.objects.count(), 0)
                 self.assertFalse(reader.is_active)
+
+    def test_to_dict(self):
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        note = Note.objects.create(creator=self.editor, document=doc, text="Oh my")
+        expected = {
+            'id': note.pk,
+            'user_id': None,
+            'scan_id': None,
+            'document_id': doc.id,
+            'document_author': doc.author.profile.to_dict(),
+            'comment_id': None,
+            'resolved': None,
+            'important': False,
+            'text': "Oh my",
+            'object': doc.to_dict(),
+            'object_type': "document",
+            'creator': self.editor.profile.to_dict(),
+            'modified': note.modified.isoformat(),
+            'created': note.created.isoformat(),
+        }
+        got = note.to_dict()
+        self.assertEquals(sorted(expected.keys()), sorted(got.keys()))
+        for key in expected.keys():
+            self.assertEquals(expected[key], got[key])

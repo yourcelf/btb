@@ -70,10 +70,15 @@ class Note(models.Model):
 
     def to_dict(self):
         obj = self.content_object()
+        if obj._meta.object_name.lower() == "document" and obj.author:
+            author = obj.author.profile.to_dict()
+        else:
+            author = None
         props = {
                 'id': self.pk,
                 'user_id': self.user_id,
                 'scan_id': self.scan_id,
+                'document_author': author,
                 'document_id': self.document_id,
                 'comment_id': self.comment_id,
                 'resolved': date_to_string(self.resolved),
