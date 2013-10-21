@@ -90,6 +90,10 @@ class btb.EditDocumentView extends Backbone.View
           for view in @pageViews
             if view != pv
               view.setRedacting(redacting, false)
+        pv.bind "white_redacting", (redacting) =>
+          for view in @pageViews
+            if view != pv
+              view.setWhiteRedacting(redacting, false)
         pv.bind "cropping", (cropping) =>
           for view in @pageViews
             if view != pv
