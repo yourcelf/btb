@@ -312,7 +312,7 @@ class Documents(JSONView):
                     doc.comment.delete()
             except (Comment.DoesNotExist):
                 pass
-            if kw['in_reply_to'] is None:
+            if not kw['in_reply_to']:
                 doc.in_reply_to = None
             else:
                 doc.in_reply_to = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
