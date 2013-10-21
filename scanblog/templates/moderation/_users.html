@@ -248,7 +248,8 @@
         </select><br />
         Adult: <input type='checkbox' class='adult' <%| adult ? "checked: 'checked'" : "" %> />
     </form>
-    <span class='queue-printout'>Queue printout</span>
+    <span class='queue-printout'>Queue printout</span><br />
+    Reply ID: <span class='mono'><%= reply_id %></span>
 </script>
 <script type='text/template' id="missingCheckbox">
     <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />

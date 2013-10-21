@@ -369,9 +369,13 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
     initialize: (doc) ->
         @doc = doc
     render: =>
-        $(@el).html @template adult: @doc.get("adult")
-        $(".status", @el).val _.escapeHTML @doc.get("status")
+        $(@el).html(@template({
+            adult: @doc.get("adult")
+            reply_id: @doc.get("reply_code")
+        }))
+        $(".status", @el).val(_.escapeHTML(@doc.get("status")))
         this
+
     updateStatus: (event) =>
         @showLoading()
         @doc.save({status: $(event.currentTarget).val()}, {
