@@ -175,7 +175,9 @@
 <script type='text/template' id="userDetail">
     <div class='user-detail'>
         <div class='left-column'>
-            <h1><%= user.display_name %> <span class='state'></span></h1>
+            <h1 style='display: inline-block;'><%= user.display_name %></h1>
+            <span class='user-state'></span>
+            <div style='clear: left; vertical-align: bottom;'></div>
             <table class='user-info'>
                 <tr>
                     <th>Name</th><td class='display-name'></td>

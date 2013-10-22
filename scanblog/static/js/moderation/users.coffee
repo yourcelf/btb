@@ -299,7 +299,7 @@ class btb.UserCompact extends Backbone.View
                         "<span class='highlight'>$1</span>"
                     )
         $(@el).html @template {user: fields}
-        $(".state", @el).html @stateTemplate {user: fields}
+        $(".user-state", @el).html @stateTemplate {user: fields}
         this
 
 #
@@ -553,6 +553,7 @@ class btb.UserDetail extends Backbone.View
         @fetchUser(options.userId) if options.userId
 
     render: =>
+      
         $(@el).html @template()
         userChooser = new btb.UserSearch(filter: {in_org: 1})
         userChooser.bind "chosen", (user) => @chooseUser(user)
@@ -573,7 +574,8 @@ class btb.UserDetail extends Backbone.View
         $(".user-status-table", @el).html(
             new btb.UserStatusTable(user: @user).render().el
         )
-        $(".state", @el).html @stateTemplate {user: userFields}
+        @$(".user-state").html @stateTemplate {user: userFields}
+        console.log @$(".user-state")
 
         userId = @user.get "id"
         licenses = new btb.LicenseDocumentTabularList(userId)

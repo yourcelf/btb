@@ -200,7 +200,6 @@ class CorrespondenceList(JSONView):
         letters = Letter.objects.mail_filter(request.user)
 
         user_id = user_id or request.GET.get('user_id', None)
-        print request.GET
         try:
             incoming = bool(int(request.GET.get("incoming")))
         except ValueError:
