@@ -35,6 +35,7 @@ class BtbLiveServerTestCase(LiveServerTestCase):
         else:
             cls.selenium = WebDriver()
         cls.selenium.implicitly_wait(4)
+        cls.selenium.set_window_size(1024, 768)
         super(BtbLiveServerTestCase, cls).setUpClass()
 
     @classmethod
