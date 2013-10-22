@@ -57,6 +57,7 @@ class btb.NoteViewTable extends btb.PaginatedView
         @collection.filter.per_page or= 6
         @fetchItems()
         $(@el).addClass("note-table")
+        @hideForSinglePage = true
 
     render: =>
         $(@el).html("")

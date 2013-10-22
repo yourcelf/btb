@@ -1,5 +1,5 @@
 <script type='text/template' id="pagination">
-    <% if (pagination.count > 0) { %>
+    <% if (pagination.count > 0 && (pageLinksToShow.length > 1 || !hideForSinglePage)) { %>
         <%= pagination.count %> results.
         <span class='per-page-holder'>
           Per page: <select name='per-page' class='per-page'>

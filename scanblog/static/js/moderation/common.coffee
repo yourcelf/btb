@@ -126,6 +126,7 @@ class btb.PaginatedView extends Backbone.View
             per_page: collection.filter?.per_page or 12
             pagination: p
             pageLinksToShow: links
+            hideForSinglePage: @hideForSinglePage
         }))
         @$(".per-page").val(collection.filter?.per_page or 12)
         this

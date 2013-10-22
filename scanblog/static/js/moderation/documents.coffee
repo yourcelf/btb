@@ -63,6 +63,7 @@ class btb.EditDocumentView extends Backbone.View
     'keyup .doc-in-reply-to': 'checkInReplyToCode'
     'click .queue-returned-mail': 'queueReturn'
     'click .queue-refused-mail':  'queueRefuse'
+    'click .stow': 'toggleStow'
 
   initialize: (options=doc: null, num: 1, order: 0) ->
     @doc = options.doc
@@ -76,6 +77,9 @@ class btb.EditDocumentView extends Backbone.View
 
   stickifyMetadata: =>
     btb.stickyPlace(@$(".metadata"))
+
+  toggleStow: =>
+    @$(".metadata").toggleClass("stowed")
 
   render: =>
     $(@el).html @template(doc: @doc.toJSON(), num: @num, order: @order)

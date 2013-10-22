@@ -93,16 +93,33 @@
   //  float: right
   //  width: 50%
 
+  .stow
+    float: left
+    margin-left: -5px
+    margin-top: -5px
+    +flat-button
+    -webkit-user-select: none
+    -moz-user-select: none
+    -ms-user-select: none
+    user-select: none
+
   .pages
     float: left
     width: 850px
   .metadata
+    box-shadow: -1px 2px 5px #999
+    padding: 5px
+    -webkit-transition: right 200ms
+    -moz-transition: right 200ms
+    transition: right 200ms
+    &.stowed
+      right: -410px
     position: absolute
     top: 0
     right: 0
     overflow: auto
     width: 450px
-    background-color: rgba(255, 255, 255, 0.9)
+    background-color: rgba(255, 255, 255, 0.95)
 
     table
       width: 100%
