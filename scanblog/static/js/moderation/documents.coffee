@@ -86,14 +86,18 @@ class btb.EditDocumentView extends Backbone.View
               view.clearHighlight()
         pv.bind "movePageUp", => @swapPages(page.order - 1, page.order)
         pv.bind "movePageDown", => @swapPages(page.order, page.order + 1)
+
         pv.bind "redacting", (redacting) =>
           for view in @pageViews
             if view != pv
+              console.log view, redacting
               view.setRedacting(redacting, false)
-        pv.bind "white_redacting", (redacting) =>
+
+        pv.bind "white_redacting", (whiteRedacting) =>
           for view in @pageViews
             if view != pv
-              view.setWhiteRedacting(redacting, false)
+              view.setWhiteRedacting(whiteRedacting, false)
+
         pv.bind "cropping", (cropping) =>
           for view in @pageViews
             if view != pv
@@ -594,7 +598,7 @@ class btb.EditDocumentPageView extends Backbone.View
       @white_redacting = false
     @render()
     if trigger
-      @trigger "white_redacting", @redacting
+      @trigger "redacting", @redacting
 
   toggleWhiteRedacting: => @setWhiteRedacting(not @white_redacting)
   setWhiteRedacting: (white_redacting, trigger=true) =>
@@ -605,7 +609,7 @@ class btb.EditDocumentPageView extends Backbone.View
       @redacting = false
     @render()
     if trigger
-      @trigger "redacting", @redacting
+      @trigger "white_redacting", @white_redacting
 
   mouseDown: (event) =>
     @mouseIsDown = true

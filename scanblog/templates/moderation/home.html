@@ -22,13 +22,14 @@
     <a href='tagparty'>Tag party</a>
 {% endblock %}
 {% block body %}
-    <div id='app'>
-    </div>
+    <div id='app'></div>
 {% endblock %}
 {% block scripts %}
 <script type='text/javascript'>
     if (typeof window.btb == "undefined") { window.btb = {}; }
     btb.ORGANIZATIONS = {{ organizations_json|safe }};
+    var page = document.getElementById('page');
+    page.className = "wide";
 </script>
 
 {# BtB app templates #}
