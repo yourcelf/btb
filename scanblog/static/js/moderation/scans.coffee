@@ -240,11 +240,19 @@ class btb.SplitScanView extends Backbone.View
         @typeCount[type] = (@typeCount[type] or 0) + 1
         title = type
         if @typeCount[type] > 1
-            title = "#{title} #{@typeCount[type]} (<u>#{@choices.length + 1}</u>)"
+            console.log @choices, @typeCount
+            for i in [@choices.length-1..0]
+                console.log i, @choices[i]
+                choice = @choices[i]
+                if choice.get("type") == type
+                    pos = i + 1
+                    @choices.splice(pos, 0, doc)
+                    break
+            title = "#{title} #{@typeCount[type]} (<u>#{pos + 1}</u>)"
         else
             title = title.replace(new RegExp("(#{@typeAccelerators[type]})"), "<u>$1</u>")
+            @choices.push doc
         doc.set choiceTitle: title
-        @choices.push doc
 
     userAddChoice: (type) =>
         doc = new btb.Document type: type
