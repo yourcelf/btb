@@ -123,6 +123,13 @@ class btb.SplitScanView extends Backbone.View
         "license": ["#ff0"]
         "ignore": ["#000"]
 
+    typeAccelerators:
+        "post": "o"
+        "profile": "f"
+        "request": "r"
+        "license": "l"
+        "ignore": "i"
+
     events:
         'click .switch-to-edit-documents': 'switchToDocumentView'
         'mouseover div.page-image': 'mouseOverPage'
@@ -178,6 +185,7 @@ class btb.SplitScanView extends Backbone.View
                     @choiceViews[index]._toggleChoice(event)
 
     loadSplit: (split) =>
+        console.log(split)
         @split = split
         @choices = []
         @typeCount = {}
@@ -188,7 +196,7 @@ class btb.SplitScanView extends Backbone.View
                 @addChoice(new btb.Document type: type)
         
         # Add "ignored" choices if we have them.
-        @ignoreChoice = new btb.Document pages: [], choiceTitle: "ignore"
+        @ignoreChoice = new btb.Document pages: [], choiceTitle: "<u>i</u>gnore"
         if @split.get("scan").processing_complete
             @ignoreChoice.set(pages: @getUnassignedIds())
 
@@ -232,7 +240,9 @@ class btb.SplitScanView extends Backbone.View
         @typeCount[type] = (@typeCount[type] or 0) + 1
         title = type
         if @typeCount[type] > 1
-            title += " "  + @typeCount[type]
+            title = "#{title} #{@typeCount[type]} (<u>#{@choices.length + 1}</u>)"
+        else
+            title = title.replace(new RegExp("(#{@typeAccelerators[type]})"), "<u>$1</u>")
         doc.set choiceTitle: title
         @choices.push doc
 
@@ -388,7 +398,8 @@ class btb.SplitScanView extends Backbone.View
             })
         $(".page-image img").load =>
             @setPageScale parseFloat $.cookie("scanpagesize") or 1
-        $(".choose-code input").focus()
+        unless @$(".choose-code input").val()
+            @$(".choose-code input").focus()
         this
 
     chooseCode: (event) =>

@@ -102,8 +102,17 @@ class ScanSplits(JSONView):
             "lock": lock.to_dict() if lock.user_id != request.user.id else None
         }
 
-        documents = Document.objects.distinct().filter(scan__pk=scan.pk)
+        # This will select a duplicate document for each scan page it contains.
+        documents = Document.objects.order_by(
+            'documentpage__scan_page__order'
+        ).distinct().filter(scan__pk=scan.pk)
+
+        # Since we got duplicates, filter them down here.
+        visited = set()
         for doc in documents:
+            if doc.id in visited:
+                continue
+            visited.add(doc.id)
             split['documents'].append({
                 "id": doc.pk,
                 "type": doc.type,
