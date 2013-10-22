@@ -291,3 +291,19 @@ btb.EditInPlace.factory = (modelsets) ->
         editors.push editor
     editors
 
+btb.stickyPlace = (el) ->
+  scroll = $(window).scrollTop()
+  win_height = $(window).height()
+  parent = el.offsetParent()
+  py1 = parent.position().top
+  py2 = py1 + parent.height()
+  height = el.height()
+
+  top = Math.max(
+    py1,
+    Math.min(py2 - height, scroll)
+  ) - py1
+  el.css({
+    top: top + "px"
+    maxHeight: win_height
+  })

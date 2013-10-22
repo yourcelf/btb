@@ -14,46 +14,11 @@ class btb.ScanModerationRouter extends Backbone.Router
         "mail":                     "mail"
         "mail/:path":               "mail"
 
-    dashboard: =>
-        $("#app").html(
-            new btb.Dashboard().render().el
-        )
-        @updateActiveURL()
-
-    pending: =>
-        $("#app").html(
-            new btb.PendingScans().render().el
-        )
-        @updateActiveURL()
-
-    users: (userId) =>
-        $("#app").html(
-            new btb.UserDetail( { userId: userId }).render().el
-        )
-        @updateActiveURL()
-
-    processScanList: () =>
-        $("#app").html(
-            new btb.ProcessingManager().render().el
-        )
-        @updateActiveURL()
-
-    processScan: (scanId) =>
-        $("#app").html(
-            new btb.SplitScanView(scanId).render().el
-        )
-        @updateActiveURL()
-
-    processDocument: (idlist) =>
-        $("#app").html(
-            new btb.EditDocumentManager(documents: idlist.split(".")).render().el
-        )
-        @updateActiveURL()
-
-    mail: (path) =>
-        $("#app").html(
-            new btb.OutgoingMailView(path).render().el
-        )
+    _show: (view) =>
+        @view?.remove()
+        @view = view
+        $("#app").html(@view.el)
+        @view.render()
         @updateActiveURL()
 
     updateActiveURL: =>
@@ -61,6 +26,16 @@ class btb.ScanModerationRouter extends Backbone.Router
         $("#subnav a").removeClass "active"
         if path_stub == "" then path_stub = "#"
         $('#subnav a[href="' + path_stub + '"]').addClass "active"
+
+    dashboard:                => @_show(new btb.Dashboard())
+    pending:                  => @_show(new btb.PendingScans())
+    users:           (userId) => @_show(new btb.UserDetail({userId}))
+    mail:              (path) => @_show(new btb.OutgoingMailView(path))
+    processScanList:          => @_show(new btb.ProcessingManager())
+    processScan:     (scanId) => @_show(new btb.SplitScanView(scanId))
+    processDocument: (idlist) => @_show(new btb.EditDocumentManager({
+        documents: idlist.split(".")
+    }))
 
 btb.app = new btb.ScanModerationRouter()
 Backbone.history.start()

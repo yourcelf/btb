@@ -1,4 +1,6 @@
 .edit-document
+  .document-controls
+    position: relative
   &.request
     background-color: rgba(255, 220, 220, 0.1)
   &.post,&.profile
@@ -92,15 +94,18 @@
   //  width: 50%
 
   .pages
-    float: right
+    float: left
     width: 850px
   .metadata
-    background-color: rgba(255, 255, 255, 0.5)
-    float: left
+    position: absolute
+    top: 0
+    right: 0
+    overflow: auto
     width: 450px
+    background-color: rgba(255, 255, 255, 0.9)
+
     table
       width: 100%
     .save-doc
       margin-top: 1em
       margin-bottom: 1em
-

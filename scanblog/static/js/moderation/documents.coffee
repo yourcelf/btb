@@ -19,10 +19,13 @@ class btb.EditDocumentManager extends Backbone.View
   initialize: (options=documents: []) ->
     @documents = new btb.DocumentList
     @documents.filter.idlist = options.documents.join(".")
-    @documents.fetch
-      success: @render
+    @documents.fetch({success: @render})
+    @docviews = []
 
   render: =>
+    view.remove() for view in @docviews
+    @docviews = []
+
     if @documents.length > 0
       $(@el).html @template( numdocs: @documents.length )
       i = 0
@@ -33,7 +36,12 @@ class btb.EditDocumentManager extends Backbone.View
           order: i
         i++
         $(".document-list", @el).append docview.render().el
+        @docviews.push(docview)
     this
+
+  remove: =>
+    view.remove() for view in @docviews
+    super()
 
 #
 # View for a single document, with many pages.
@@ -60,6 +68,14 @@ class btb.EditDocumentView extends Backbone.View
     @doc = options.doc
     @num = options.num
     @order = options.order
+    $(window).on "scroll", @stickifyMetadata
+
+  remove: =>
+    $(window).off "scroll", @stickifyMetadata
+    super()
+
+  stickifyMetadata: =>
+    btb.stickyPlace(@$(".metadata"))
 
   render: =>
     $(@el).html @template(doc: @doc.toJSON(), num: @num, order: @order)
@@ -166,6 +182,7 @@ class btb.EditDocumentView extends Backbone.View
     @$(".queue-return-holder .org-chooser").html(@orgChooserTemplate({
       letter: {recipient: @doc.get("author")}
     }))
+    @$(".metadata").css("max-height", $(window).height())
     this
 
   save: =>
