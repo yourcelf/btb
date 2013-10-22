@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     args = ''
     help = 'Publish ready-to-publish documents, if ready.'
-    MAX_AGE = datetime.timedelta(days=6)
 
     def handle(self, *args, **options):
         try:
