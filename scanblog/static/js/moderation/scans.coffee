@@ -154,6 +154,7 @@ class btb.SplitScanView extends Backbone.View
         # Don't capture events if we're in an input.
         if $("input:focus, textarea:focus").length > 0
             return
+        return if event.shiftKey or event.ctrlKey or event.metaKey
         switch event.keyCode
             when 32,78,39  then @nextPage(event) # spacebar, n, right
             when 8,80,37 then @prevPage(event) # backspace, p, left
@@ -161,13 +162,20 @@ class btb.SplitScanView extends Backbone.View
             #when 220 then @addPhotoChoice(event) # back slash
             #when 13        then @save(event) # enter
             when 73, 192 then @ignoreView._toggleChoice(event) # i, backtick
-            else
-                if 48 <= event.keyCode <= 57 # 0 to 9
-                    index = (event.keyCode - 48) - 1
-                    if index == -1
-                        index = 9
-                    if index < @choiceViews.length
-                        @choiceViews[index]._toggleChoice(event)
+            when 79 # o -> first pOst
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "post")?._toggleChoice(event)
+            when 70 # f -> first proFile
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "profile")?._toggleChoice(event)
+            when 76 # l -> license
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "license")?._toggleChoice(event)
+            when 82 # r -> request
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "request")?._toggleChoice(event)
+            when 48,49,50,51,52,53,54,55,56,57 # 0 to 9
+                index = (event.keyCode - 48) - 1
+                if index == -1
+                    index = 9
+                if index < @choiceViews.length
+                    @choiceViews[index]._toggleChoice(event)
 
     loadSplit: (split) =>
         @split = split
@@ -326,7 +334,7 @@ class btb.SplitScanView extends Backbone.View
                 user = new btb.User scan.author
             else
                 user = null
-            @userToggle = new btb.InPlaceUserChooser(user)
+            @userToggle = new btb.InPlaceUserChooser({user, showState: true})
             @userToggle.bind "chosen", (user) =>
                 @chooseUser(user)
                 @setDirty(true)

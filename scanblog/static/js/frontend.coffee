@@ -18,7 +18,6 @@ $(".blog-nav-bar a.toggle").on "click", ->
     openit = false
   else
     openit = true
-  console.log openit
   # close everything.
   $(".blog-nav-bar .toggle.open").removeClass("open")
   $(".blog-nav-bar .target.open").removeClass("open").show().slideToggle()

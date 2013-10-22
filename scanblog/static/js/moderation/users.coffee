@@ -229,11 +229,13 @@ class btb.UserSearch extends btb.PaginatedView
 #
 class btb.InPlaceUserChooser extends Backbone.View
     template: _.template $("#inPlaceUserChooser").html()
+    stateTemplate: _.template $("#userState").html()
     events:
         "click .user-name": "unchoose"
 
-    initialize: (user) ->
-        @user = user
+    initialize: (options) ->
+        @user = options?.user
+        @showState = options?.showState or false
         @userChooser = new btb.UserSearch(filter: {in_org: 1})
         @userChooser.bind "chosen", (model) =>
             @choose model
@@ -248,12 +250,15 @@ class btb.InPlaceUserChooser extends Backbone.View
         $(@el).addClass "in-place-user-chooser"
         $(".user-chooser-holder", @el).html @userChooser.render().el
         if @user?
-            @choose @user
+            @choose(@user)
+        unless @showState
+          @$(".user-state").remove()
         this
 
     choose: (user) =>
         @user = user
         $(".user-name", @el).show().html _.escapeHTML user.get "display_name"
+        @$(".user-state").show().html(@stateTemplate({user: user.toJSON()}))
         $(".user-name", @el).attr("data-user-id", user.id)
         $(".user-chooser-holder", @el).hide()
 
@@ -265,6 +270,7 @@ class btb.InPlaceUserChooser extends Backbone.View
     unchoose: =>
         if @user?
             @userChooser.openUserSearch(null, @user.get "display_name")
+        @$(".user-state").hide().html("")
         $(".user-chooser-holder", @el).show()
         $(".user-name", @el).hide()
 

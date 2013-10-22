@@ -107,7 +107,10 @@ class btb.EditDocumentView extends Backbone.View
         @pageViews.push pv
         $(".page-list", @el).append(pv.render().el)
 
-    userChooser = new btb.InPlaceUserChooser new btb.User(@doc.get "author")
+    userChooser = new btb.InPlaceUserChooser({
+      user: new btb.User(@doc.get("author"))
+      showState: true
+    })
     userChooser.bind "chosen", (model) =>
       @doc.set author: model.toJSON()
     $(".choose-user-holder", @el).append userChooser.render().el

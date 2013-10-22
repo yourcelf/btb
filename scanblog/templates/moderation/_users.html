@@ -80,7 +80,7 @@
     <div class='noresult'>No results.</div>
 </script>
 <script type="text/template" id="inPlaceUserChooser">
-    <span class='user-name'></span>
+  <span class='user-name'></span> <span class='user-state'></span>
     <div class='user-chooser-holder'></div>
 </script>
 <script type='text/template' id="userManage">
@@ -128,7 +128,7 @@
 <script type='text/template' id='compactUser'>
     <div class='compact-user <%= user.is_active ? "active" : "inactive" %> <%= user.consent_form_received ? "enrolled" : "not-enrolled" %>'>
         <input type='hidden' value='<%= user.id_raw %>' class='user-id-raw' />
-        <div class='state'></div>
+        <div class='user-state'></div>
         <div class='name-and-details'>
             <div class='display-name'>
                 <%| user.display_name %>

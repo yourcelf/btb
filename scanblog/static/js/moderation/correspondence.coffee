@@ -341,7 +341,6 @@ class btb.CorrespondenceTable extends btb.LetterTable
     setFilter: (event, params) =>
         event?.preventDefault()
         @collection.filter = _.extend(@collection.filter or {}, params)
-        console.log @collection.filter.incoming, @collection.filter.outgoing
         @fetchItems()
         # Update display
         @renderFilter()
