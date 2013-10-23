@@ -21,3 +21,5 @@ reportlab
 selenium
 pytz
 django-localflavor
+django-debug-toolbar
+-e git+https://github.com/jmoiron/johnny-cache.git
