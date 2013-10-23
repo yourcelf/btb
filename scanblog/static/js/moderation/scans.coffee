@@ -123,6 +123,8 @@ class btb.SplitScanView extends Backbone.View
         "license": ["#ff0"]
         "ignore": ["#000"]
 
+    # NOTE: These definitions are duplicated with event.keyCode below.  Here,
+    # they're used only to pick which letter to underline in the view. 
     typeAccelerators:
         "post": "o"
         "profile": "f"
@@ -185,7 +187,6 @@ class btb.SplitScanView extends Backbone.View
                     @choiceViews[index]._toggleChoice(event)
 
     loadSplit: (split) =>
-        console.log(split)
         @split = split
         @choices = []
         @typeCount = {}
@@ -196,7 +197,12 @@ class btb.SplitScanView extends Backbone.View
                 @addChoice(new btb.Document type: type)
         
         # Add "ignored" choices if we have them.
-        @ignoreChoice = new btb.Document pages: [], choiceTitle: "<u>i</u>gnore"
+        @ignoreChoice = new btb.Document({
+            pages: [],
+            choiceTitle: "ignore".replace(
+              new RegExp("(#{@typeAccelerators.ignore})"), "<u>$1</u>"
+            )
+        })
         if @split.get("scan").processing_complete
             @ignoreChoice.set(pages: @getUnassignedIds())
 
