@@ -311,27 +311,26 @@ class Document(models.Model):
                 parent = self.in_reply_to.document
             except Document.DoesNotExist:
                 pass
-        if parent:
+        if parent and self.is_public():
             # Only create a comment object if we are public.
-            if self.is_public():
-                try:
-                    comment = self.comment
-                except Comment.DoesNotExist:
-                    comment = Comment()
-                comment.user = self.author
-                comment.removed = False
-                comment.document = parent
-                comment.comment_doc = self
-                comment.save()
-            else:
-                # If we've gone non-public, mark the comment removed rather
-                # than deleting.  That way, we don't re-fire subscriptions if
-                # the doc is only temporarily un-published.
-                try:
-                    self.comment.removed = True
-                    self.comment.save()
-                except Comment.DoesNotExist:
-                    pass
+            try:
+                comment = self.comment
+            except Comment.DoesNotExist:
+                comment = Comment()
+            comment.user = self.author
+            comment.removed = False
+            comment.document = parent
+            comment.comment_doc = self
+            comment.save()
+        else:
+            # If we've gone non-public, mark the comment removed rather
+            # than deleting.  That way, we don't re-fire subscriptions if
+            # the doc is only temporarily un-published.
+            try:
+                self.comment.removed = True
+                self.comment.save()
+            except Comment.DoesNotExist:
+                pass
 
     def is_public(self):
         """
@@ -407,10 +406,15 @@ class Document(models.Model):
 
     def get_absolute_url(self):
         if self.type == "post":
+            # Be careful to avoid accidental recursion here, if a document ever
+            # gets listed as in-reply-to itself.
+            url = None
             try:
-                return self.comment.get_absolute_url()
+                if self.comment.document != self and self.comment.removed == False:
+                    return self.comment.get_absolute_url()
             except Comment.DoesNotExist:
-                return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
+                pass
+            return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
         elif self.type == "profile":
             return reverse("profiles.profile_show", args=[self.author.pk])
         else:

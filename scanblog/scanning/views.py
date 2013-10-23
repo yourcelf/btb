@@ -310,21 +310,15 @@ class Documents(JSONView):
                     raise MissingHighlight
             doc.highlight_transform = json.dumps(kw['highlight_transform'])
 
-            # Remove stale comment instance if this is a reply.  (New comment
-            # is created in document 'save' function, when the document status
-            # is "published" -- but we have to delete here, because "save"
-            # won't know what its previous in_reply_to code was.)
-            try:
-                if (doc.in_reply_to and 
-                        kw['in_reply_to'] != doc.in_reply_to.code and 
-                        doc.comment):
-                    doc.comment.delete()
-            except (Comment.DoesNotExist):
-                pass
             if not kw['in_reply_to']:
                 doc.in_reply_to = None
             else:
-                doc.in_reply_to = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
+                reply_code = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
+                # Avoid recursion.
+                if reply_code.pk != doc.reply_code.pk:
+                    doc.in_reply_to = reply_code
+                else:
+                    doc.in_reply_to = None
 
             # Set affiliation, if any
             try:

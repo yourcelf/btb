@@ -144,10 +144,12 @@
 <script type="text/template" id="editDocumentInReplyTo">
     <div>
         <% if (error) { %><div class='error'><b><%= error %></b></div><% } %>
+        <% if (document) { %>
         <b>Original</b>: <a href='<%= document.url %>'><%= document.title %></a>
         by <a href='<%= document.author.edit_url %>'><%= document.author.display_name %></a> 
         (<%= btb.formatDate(document.date_written) %>), 
         <%= document.comment_count %> comments.
+        <% } %>
     </div>
 </script>
 <script type="text/template" id="editDocumentInReplyToCampaign">

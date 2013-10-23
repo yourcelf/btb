@@ -110,7 +110,6 @@ class btb.EditDocumentView extends Backbone.View
         pv.bind "redacting", (redacting) =>
           for view in @pageViews
             if view != pv
-              console.log view, redacting
               view.setRedacting(redacting, false)
 
         pv.bind "white_redacting", (whiteRedacting) =>
@@ -157,7 +156,9 @@ class btb.EditDocumentView extends Backbone.View
       onElementRemove: changeTags
     })
     $(".doc-in-reply-to", @el).change =>
-      @doc.set in_reply_to: $(".doc-in-reply-to", @el).val()
+      val = $(".doc-in-reply-to", @el).val()
+      if @doc.get("reply_code") != val
+        @doc.set in_reply_to: val
     $(".document-notes-manager", @el).html(
       new btb.NoteManager({
         filter: {document_id: @doc.id}
@@ -362,6 +363,11 @@ class btb.EditDocumentView extends Backbone.View
     if val == ""
       input.removeClass("error")
       input.removeClass("loading")
+      return
+    else if val == @doc.get("reply_code")
+      input.addClass("error")
+      error = "Can't make a document a reply to itself."
+      details.html(@inReplyToTemplate({ error: error, document: null }))
       return
 
     input.addClass("loading")

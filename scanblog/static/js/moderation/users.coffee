@@ -575,7 +575,6 @@ class btb.UserDetail extends Backbone.View
             new btb.UserStatusTable(user: @user).render().el
         )
         @$(".user-state").html @stateTemplate {user: userFields}
-        console.log @$(".user-state")
 
         userId = @user.get "id"
         licenses = new btb.LicenseDocumentTabularList(userId)

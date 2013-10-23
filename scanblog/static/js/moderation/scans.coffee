@@ -246,9 +246,7 @@ class btb.SplitScanView extends Backbone.View
         @typeCount[type] = (@typeCount[type] or 0) + 1
         title = type
         if @typeCount[type] > 1
-            console.log @choices, @typeCount
             for i in [@choices.length-1..0]
-                console.log i, @choices[i]
                 choice = @choices[i]
                 if choice.get("type") == type
                     pos = i + 1
