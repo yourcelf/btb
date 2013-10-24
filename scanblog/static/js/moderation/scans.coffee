@@ -163,7 +163,8 @@ class btb.SplitScanView extends Backbone.View
         # Don't capture events if we're in an input.
         if $("input:focus, textarea:focus").length > 0
             return
-        return if event.shiftKey or event.ctrlKey or event.metaKey
+        return if event.ctrlKey or event.metaKey
+        return if event.shiftKey and event.keyCode != 61 # let "+" through
         switch event.keyCode
             when 32,78,39  then @nextPage(event) # spacebar, n, right
             when 8,80,37 then @prevPage(event) # backspace, p, left
