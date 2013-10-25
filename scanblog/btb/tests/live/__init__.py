@@ -8,9 +8,11 @@ from .mod_upload_tests import TestModUploads
 from .mod_scan_tests import TestModScans
 from .mod_users_tests import TestModUsers
 from .mod_incoming_tests import TestModIncoming
+from .mod_notes_tests import TestModNotes
 
 __all__ = [
     'TestAccounts', 'TestComments', 'TestFlags', 'TestFrontend',
     'TestTranscriptions', 'TestPostFromWeb', 
     'TestModUploads', 'TestModScans', 'TestModUsers', 'TestModIncoming',
+    'TestModNotes',
 ]
