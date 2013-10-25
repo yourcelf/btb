@@ -77,6 +77,7 @@ class btb.EditDocumentView extends Backbone.View
 
   stickifyMetadata: =>
     btb.stickyPlace(@$(".metadata"))
+    @$(".edit-document").css("min-height", @$(".metadata").height() + 100 + "px")
 
   toggleStow: =>
     @$(".metadata").toggleClass("stowed")
