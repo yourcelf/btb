@@ -104,8 +104,8 @@
         Blogger:
         <% if (user.consent_form_received) { %>
             <% if (user.lost_contact) { %>
-                <span class='ui-icon ui-icon-alert' title='Lost contact'></span>
-                Lost contact
+                <span class='ui-icon ui-icon-alert' title='Hold Mail'></span>
+                Mail held
             <% } else if (user.managed) { %>
                 <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
                 Managed
@@ -161,7 +161,7 @@
             <th>Blogger</th>
             <th>Managed</th>
             <th>License signed</th>
-            <th>Lost contact</th>
+            <th>Hold Mail</th>
         </tr>
         <tr>
             <td class='is-active'></td>
