@@ -9,7 +9,7 @@ from btb.tests import BtbLoginTestCase
 from scanning.models import Scan, Document
 from profiles.models import Organization
 from scanning.management.commands.publish_queued import publish_ready, \
-        sort_ready, build_schedule, evaluate_order
+        next_by_pressure, calculate_pressure, calculate_interval
 
 class TestScanJson(BtbLoginTestCase):
     def json_response_contains(self, url, list_of_scans):
@@ -211,33 +211,17 @@ class TestPublishQueued(BtbLoginTestCase):
         publish_ready(now)
         self.assertEquals(Document.objects.ready().count(), 0)
 
-    def test_build_schedule(self):
-        with self.settings(PUBLISHING_HOURS=[10, 14]):
-            now = datetime(2014, 1, 1, 12, 0, 0)
-            self.assertEquals(build_schedule(10, timedelta(hours=1), now), [
-                datetime(2014, 1, 1, 12, 0, 0),
-                datetime(2014, 1, 1, 13, 0, 0),
-                datetime(2014, 1, 1, 14, 0, 0),
-                datetime(2014, 1, 2, 10, 0, 0),
-                datetime(2014, 1, 2, 11, 0, 0),
-                datetime(2014, 1, 2, 12, 0, 0),
-                datetime(2014, 1, 2, 13, 0, 0),
-                datetime(2014, 1, 2, 14, 0, 0),
-                datetime(2014, 1, 3, 10, 0, 0),
-                datetime(2014, 1, 3, 11, 0, 0),
-            ])
-
-    def test_evaluate_order(self):
-        now = datetime(2014, 1, 1, 12, 0, 0)
+    def _build_test_docs(self, now):
         def _build_doc(username, i, age):
             return Document.objects.create(
                     author=User.objects.get(username=username),
                     editor=User.objects.get(username='moderator'),
                     title="%s%s" % (username, i),
                     status="ready",
+                    type="post",
                     created=now - timedelta(days=age))
         M = settings.MAX_READY_TO_PUBLISH_DAYS
-        a0 = _build_doc("A", 1, M + 1) # Expired
+        a0 = _build_doc("A", 0, M + 1) # Expired
         # The rest aren't expired yet -- listed here from oldest to most recent per author
         a1 = _build_doc("A", 1, M - 2.0)
         a2 = _build_doc("A", 2, M - 2.1)
@@ -249,47 +233,86 @@ class TestPublishQueued(BtbLoginTestCase):
         b3 = _build_doc("B", 3, M - 2.2)
         c1 = _build_doc("C", 1, M - 2.0)
         d1 = _build_doc("D", 1, M - 2.0)
+        return [a0, a1, a2, a3, a4, a5, b1, b2, b3, c1, d1]
 
-        def _assert_greater_score(list1, list2, recent=None):
-            recent = recent or []
-            schedule = build_schedule(len(list1), timedelta(60*30), now)
-            self.assertGreater(evaluate_order(list1, recent, schedule),
-                            evaluate_order(list2, recent, schedule))
+    def test_next_by_pressure(self):
+        now = datetime(2014, 1, 1, 12, 0, 0)
+        user_ids = [User.objects.get(username=username).id for username in 'ABCD']
+        pressure_sequence = [
+        #    A  B  C  D, => next
+            [6, 3, 1, 1,    'A0'],
+            [5, 6, 2, 2,    'B1'],
+            [10, 2, 3, 3,   'A1'],
+            [4, 4, 4, 4,    'B2'],
+            [8, 1, 5, 5,    'A2'],
+            [3, 2, 6, 6,    'C1'],
+            [6, 3, 0, 7,    'D1'],
+            [9, 4, 0, 0,    'A3'],
+            [2, 5, 0, 0,    'B3'],
+            [4, 0, 0, 0,    'A4'],
+            [1, 0, 0, 0,    'A5'],
+        ]
+        ready = self._build_test_docs(now)
+        recent = []
+        for seq in pressure_sequence:
+            self.assertEquals(
+                    dict(zip(user_ids, seq[0:-1])),
+                    calculate_pressure(ready, recent)
+            )
+            doc = next_by_pressure(ready, recent)
+            self.assertEquals(doc.title, seq[-1])
+            recent.append(doc)
+            ready.remove(doc)
+        self.assertEquals(len(recent), 11)
 
-        def _auto_sort(list1, recent=None):
-            return sort_ready(list1, recent or [],
-                    build_schedule(len(list1), timedelta(60*30), now))
+    def test_calculate_interval(self):
+        with self.settings(PUBLISHING_HOURS=[10,14], MAX_READY_TO_PUBLISH_DAYS=7):
+            now = datetime(2014, 1, 1, 12, 0, 0)
+            ready = self._build_test_docs(now)
+            # a0 is past-due, interval should be 0.
+            self.assertEquals(calculate_interval(ready, now), timedelta(0))
+            ready.pop(0)
+            # There are 2 days left for the oldest test doc.
+            self.assertEquals(calculate_interval(ready, now),
+                    # 2 days left * 4 hours per day, 10 documents
+                    timedelta(seconds=2. * 4 * 60* 60 / 10)
+            )
 
-        # Reversing order
-        _assert_greater_score([a2, a3], [a3, a2])
-        # Missed nesting opportunity
-        _assert_greater_score([a1, b1, a2], [a1, a2, b1])
-        # No expired documents wins expired documents.
-        _assert_greater_score([a1, b1], [a0, b1])
-        # Spacing a1<->a2 more wins spacing a1<->a2 less, other things equal.
-        _assert_greater_score(
-                [a1, b1, c1, a2, b2, d1, a3],
-                [a1, b1, a2, c1, b2, d1, a3]
-        )
-        # Nicely nested wins over reversed 'b's
-        _assert_greater_score(
-                [a1, b1, a2, b2, a3, b3, a4],
-                [a1, b1, a2, b3, a3, b2, a4]
-        )
-        # Recognize previous recent posts
-        _assert_greater_score([b1, a1], [a1, b1], [a0])
-        _assert_greater_score([c1, b2, a2], [b2, c1, a2], [b1, a1])
+    def test_publish_ready(self):
+        with self.settings(MAX_READY_TO_PUBLISH_DAYS=7, PUBLISHING_HOURS=[10,14]):
+            now = datetime(2014, 1, 1, 12, 0, 0)
+            a0, a1, a2, a3, a4, a5, b1, b2, b3, c1, d1 = self._build_test_docs(now)
+            def _refresh(doc):
+                return Document.objects.get(pk=doc.pk)
 
-        pool = [a1, a2, a3, a4, a5, b1, b2, b3, c1, d1]
-        done = []
-        while pool:
-            sorting = _auto_sort(pool, done)
-            print [d.title for d in sorting], [d.title for d in done]
-            done.append(sorting[0])
-            pool.remove(sorting[0])
+            # Publish every 5 minutes for a week.
+            total_seconds = 7 * 24 * 60 * 60 
+            order = []
+            times = []
+            cur = datetime(now.year, now.month, now.day,
+                now.hour, now.minute, now.second, now.microsecond, now.tzinfo)
+            for t in range(0, total_seconds, 5*60):
+                cur = cur + timedelta(seconds=t)
+                result = publish_ready(cur)
+                if result is not None:
+                    order.append(result.title)
+                    times.append(cur)
+            self.assertEquals(order, 'A0 B1 A1 B2 A2 C1 D1 A3 B3 A4 A5'.split())
+            # "just-so" results from a suspected good run.  Since the interval
+            # is calculated based on the time from the oldest ready document,
+            # the results are only as linear as the times on the starting docs.
+            self.assertEquals(times, [
+                datetime(2014, 1, 1, 12, 0),
+                datetime(2014, 1, 1, 12, 50),
+                datetime(2014, 1, 1, 13, 45),
+                datetime(2014, 1, 2, 11, 0),
+                datetime(2014, 1, 2, 13, 0),
+                datetime(2014, 1, 3, 10, 45),
+                datetime(2014, 1, 3, 13, 35),
+                datetime(2014, 1, 4, 11, 45),
+                datetime(2014, 1, 5, 10, 0),
+                datetime(2014, 1, 5, 14, 0),
+                datetime(2014, 1, 6, 11, 15),
+            ])
 
-#        # Test full auto-sort
-#        self.assertEquals(
-#                _auto_sort([a1, a2, a3, a4, a5, b1, b2, b3, c1, d1]),
-#                [a1, b1, a2, c1, a3, b2, d1, a4, b3, a5],
-#        )
+            self.assertEquals(Document.objects.ready().count(), 0)
