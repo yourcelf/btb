@@ -43,8 +43,24 @@ class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
     pass
 
 class BtbLoginTestCase(BtbTestCase):
+    def add_user(self, struct):
+        user = User.objects.create(username=struct['username'],
+                is_superuser = struct.get('is_superuser', False))
+        user.set_password(user.username)
+        user.save()
+        user.profile.managed = struct['managed']
+        user.profile.consent_form_received = struct['managed']
+        user.profile.save()
+        if struct.get('moderates', None):
+            struct['moderates'].moderators.add(user)
+        if struct.get('member', None):
+            struct['member'].members.add(user)
+        for group in struct['groups']:
+            user.groups.add(Group.objects.get(name=group))
+
     def setUp(self):
         org = Organization.objects.create(name='org')
+        self.org = org
         test_users = [{
             'username': 'admin',
             'is_superuser': True,
@@ -67,19 +83,7 @@ class BtbLoginTestCase(BtbTestCase):
             'groups': ['authors', 'readers'],
         }]
         for struct in test_users:
-            user = User.objects.create(username=struct['username'],
-                    is_superuser = struct.get('is_superuser', False))
-            user.set_password(user.username)
-            user.save()
-            user.profile.managed = struct['managed']
-            user.profile.consent_form_received = struct['managed']
-            user.profile.save()
-            if struct.get('moderates', None):
-                org.moderators.add(user)
-            if struct.get('member', None):
-                org.members.add(user)
-            for group in struct['groups']:
-                user.groups.add(Group.objects.get(name=group))
+            self.add_user(struct)
 
     def assertRedirectsToLogin(self, *args, **kwargs):
         kwargs['follow'] = True
