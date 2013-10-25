@@ -1,11 +1,15 @@
 import json
+from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from btb.tests import BtbLoginTestCase
 from scanning.models import Scan, Document
 from profiles.models import Organization
+from scanning.management.commands.publish_queued import publish_ready, \
+        sort_ready, build_schedule, evaluate_order
 
 class TestScanJson(BtbLoginTestCase):
     def json_response_contains(self, url, list_of_scans):
@@ -142,3 +146,150 @@ class TestInReplyTo(BtbLoginTestCase):
         self.doc1.save()
         self.assertEquals(self.doc1.get_absolute_url(),
             reverse("blogs.post_show", args=[self.doc1.pk, self.doc1.get_slug()]))
+
+class TestPublishQueued(BtbLoginTestCase):
+    def setUp(self):
+        super(TestPublishQueued, self).setUp()
+        # Add more test users to test ready-queue sorting with
+        for name in ('A', 'B', 'C', 'D', 'E'):
+            self.add_user({
+                'username': name,
+                'managed': True,
+                'member': self.org,
+                'groups': ['authors', 'readers'],
+            })
+
+    def test_doesnt_publish_outside_publishing_hours(self):
+        for hour in range(0, 24):
+            now = datetime(2014, 1, 1, hour, 0, 0)
+            doc = Document.objects.create(
+                author=User.objects.get(username='author'),
+                editor=User.objects.get(username='moderator'),
+                title="Expired 1",
+                type="post",
+                status="ready",
+                created=now - timedelta(days=settings.MAX_READY_TO_PUBLISH_DAYS, seconds=1),
+            )
+            publish_ready(now)
+            # Refresh doc from db.
+            doc = Document.objects.get(pk=doc.pk)
+            if (now.hour < settings.PUBLISHING_HOURS[0] or
+                    now.hour > settings.PUBLISHING_HOURS[1]):
+                self.assertEquals(doc.status, "ready")
+                self.assertEquals(Document.objects.ready().count(), 1)
+            else:
+                self.assertEquals(doc.status, "published")
+                self.assertEquals(Document.objects.ready().count(), 0)
+            doc.delete()
+
+    def test_publishes_past_deadline(self):
+        # Choose a "now" within publishing hours
+        now = datetime(2014, 1, 1, 12, 0, 0)
+        assert now.hour > settings.PUBLISHING_HOURS[0]
+        assert now.hour < settings.PUBLISHING_HOURS[1]
+
+        doc1 = Document.objects.create(
+            author=User.objects.get(username='author'),
+            editor=User.objects.get(username='moderator'),
+            title="Expired 1",
+            type="post",
+            status="ready",
+            created = now - timedelta(days=settings.MAX_READY_TO_PUBLISH_DAYS, seconds=1),
+        )
+        doc2 = Document.objects.create(
+            author=User.objects.get(username='author'),
+            editor=User.objects.get(username='moderator'),
+            title="Expired 2",
+            type="post",
+            status="ready",
+            created = now - timedelta(days=settings.MAX_READY_TO_PUBLISH_DAYS),
+        )
+
+        self.assertEquals(set(Document.objects.ready()), set([doc1, doc2]))
+        publish_ready(now)
+        self.assertEquals(set(Document.objects.ready()), set([doc2]))
+        publish_ready(now)
+        self.assertEquals(Document.objects.ready().count(), 0)
+
+    def test_build_schedule(self):
+        with self.settings(PUBLISHING_HOURS=[10, 14]):
+            now = datetime(2014, 1, 1, 12, 0, 0)
+            self.assertEquals(build_schedule(10, timedelta(hours=1), now), [
+                datetime(2014, 1, 1, 12, 0, 0),
+                datetime(2014, 1, 1, 13, 0, 0),
+                datetime(2014, 1, 1, 14, 0, 0),
+                datetime(2014, 1, 2, 10, 0, 0),
+                datetime(2014, 1, 2, 11, 0, 0),
+                datetime(2014, 1, 2, 12, 0, 0),
+                datetime(2014, 1, 2, 13, 0, 0),
+                datetime(2014, 1, 2, 14, 0, 0),
+                datetime(2014, 1, 3, 10, 0, 0),
+                datetime(2014, 1, 3, 11, 0, 0),
+            ])
+
+    def test_evaluate_order(self):
+        now = datetime(2014, 1, 1, 12, 0, 0)
+        def _build_doc(username, i, age):
+            return Document.objects.create(
+                    author=User.objects.get(username=username),
+                    editor=User.objects.get(username='moderator'),
+                    title="%s%s" % (username, i),
+                    status="ready",
+                    created=now - timedelta(days=age))
+        M = settings.MAX_READY_TO_PUBLISH_DAYS
+        a0 = _build_doc("A", 1, M + 1) # Expired
+        # The rest aren't expired yet -- listed here from oldest to most recent per author
+        a1 = _build_doc("A", 1, M - 2.0)
+        a2 = _build_doc("A", 2, M - 2.1)
+        a3 = _build_doc("A", 3, M - 2.2)
+        a4 = _build_doc("A", 4, M - 2.3)
+        a5 = _build_doc("A", 5, M - 2.4)
+        b1 = _build_doc("B", 1, M - 2.0)
+        b2 = _build_doc("B", 2, M - 2.1)
+        b3 = _build_doc("B", 3, M - 2.2)
+        c1 = _build_doc("C", 1, M - 2.0)
+        d1 = _build_doc("D", 1, M - 2.0)
+
+        def _assert_greater_score(list1, list2, recent=None):
+            recent = recent or []
+            schedule = build_schedule(len(list1), timedelta(60*30), now)
+            self.assertGreater(evaluate_order(list1, recent, schedule),
+                            evaluate_order(list2, recent, schedule))
+
+        def _auto_sort(list1, recent=None):
+            return sort_ready(list1, recent or [],
+                    build_schedule(len(list1), timedelta(60*30), now))
+
+        # Reversing order
+        _assert_greater_score([a2, a3], [a3, a2])
+        # Missed nesting opportunity
+        _assert_greater_score([a1, b1, a2], [a1, a2, b1])
+        # No expired documents wins expired documents.
+        _assert_greater_score([a1, b1], [a0, b1])
+        # Spacing a1<->a2 more wins spacing a1<->a2 less, other things equal.
+        _assert_greater_score(
+                [a1, b1, c1, a2, b2, d1, a3],
+                [a1, b1, a2, c1, b2, d1, a3]
+        )
+        # Nicely nested wins over reversed 'b's
+        _assert_greater_score(
+                [a1, b1, a2, b2, a3, b3, a4],
+                [a1, b1, a2, b3, a3, b2, a4]
+        )
+        # Recognize previous recent posts
+        _assert_greater_score([b1, a1], [a1, b1], [a0])
+        _assert_greater_score([c1, b2, a2], [b2, c1, a2], [b1, a1])
+
+        pool = [a1, a2, a3, a4, a5, b1, b2, b3, c1, d1]
+        done = []
+        while pool:
+            sorting = _auto_sort(pool, done)
+            print [d.title for d in sorting], [d.title for d in done]
+            done.append(sorting[0])
+            pool.remove(sorting[0])
+
+#        # Test full auto-sort
+#        self.assertEquals(
+#                _auto_sort([a1, a2, a3, a4, a5, b1, b2, b3, c1, d1]),
+#                [a1, b1, a2, c1, a3, b2, d1, a4, b3, a5],
+#        )
