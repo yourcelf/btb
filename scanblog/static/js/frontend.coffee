@@ -61,7 +61,14 @@ get_favorites = (event) ->
       url: url
       type: 'GET'
       success: (data) ->
-        popover.find(".content").html(data)
+        content = popover.find(".content")
+        content.html(data)
+        # Doing it this way because of bugs with chrome refreshing auto.
+        if content.height() > 200
+          content.css({
+            "maxHeight": "200px",
+            "overflow": "auto"
+          })
       error: ->
         alert("Server error")
     }

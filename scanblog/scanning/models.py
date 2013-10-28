@@ -423,6 +423,9 @@ class Document(models.Model):
     def mark_favorite_url(self):
         return "%s?document_id=%s" % (reverse("comments.mark_favorite"), self.pk)
 
+    def mark_favorite_after_login_url(self):
+        return "%s?document_id=%s" % (reverse("comments.mark_favorite_after_login"), self.pk)
+
     def unmark_favorite_url(self):
         return "%s?document_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
 

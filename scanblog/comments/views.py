@@ -245,44 +245,61 @@ def mark_favorite(request):
     """
     AJAX method to mark a post as a favorite.
     """
-    document = None
-    comment = None
-    if 'document_id' in request.POST:
-        try:
-            document = Document.objects.safe_for_user(request.user).get(
-                    pk=request.POST.get('document_id'))
-        except Document.DoesNotExist:
-            raise Http404
-    elif 'comment_id' in request.POST:
-        try:
-            comment = Comment.objects.public().get(
-                    pk=request.POST.get('comment_id'))
-        except Comment.DoesNotExist:
-            raise Http404
-    else:
+    comment, document = _get_favorite_thing(request, request.POST)
+    if not (comment or document):
         return HttpResponseBadRequest("Missing parameters")
     fav, created = Favorite.objects.get_or_create(
-        user=request.user,
-        document=document,
-        comment=comment)
+        user=request.user, document=document, comment=comment)
     return _favorite_count_response(request, comment or document, True)
+
+def mark_favorite_after_login(request):
+    if request.user.is_authenticated():
+        fav_details = request.session.pop('favorite_after_login', None)
+        if not fav_details:
+            return redirect("/")
+        else:
+            comment, document = _get_favorite_thing(request, fav_details)
+            fav, created = Favorite.objects.get_or_create(
+                user=request.user, document=document, comment=comment)
+            messages.info(request, "Favorite added.")
+            return redirect(fav.get_absolute_url())
+    else:
+        if 'comment_id' in request.GET:
+            dct = {'comment_id': request.GET['comment_id']}
+        elif 'document_id' in request.GET:
+            dct = {'document_id': request.GET['document_id']}
+        else:
+            raise Http404
+        messages.info(request, "Please login in order to mark favorites.")
+        request.session['favorite_after_login'] = dct
+        return redirect_to_login(next=request.path)
 
 @login_required
 def unmark_favorite(request):
-    if 'comment_id' in request.POST:
-        thing = get_object_or_404(Comment, pk=request.POST.get(
-            'comment_id'))
-    elif 'document_id' in request.POST:
-        thing = get_object_or_404(Document, pk=request.POST.get(
-            'document_id'))
-    else:
-        raise Http404
+    comment, document = _get_favorite_thing(request, request.POST)
+    thing = comment or document
     try:
         fav = thing.favorite_set.get(user=request.user)
         fav.delete()
     except Favorite.DoesNotExist:
         pass
     return _favorite_count_response(request, thing, False)
+
+def _get_favorite_thing(request, dct):
+    comment = None
+    document = None
+    if 'comment_id' in dct:
+        try:
+            comment = Comment.objects.public().get(pk=dct['comment_id'])
+        except Comment.DoesNotExist:
+            pass
+    elif 'document_id' in dct:
+        try:
+            document = Document.objects.safe_for_user(request.user).get(pk=dct['document_id'])
+        except Document.DoesNotExist:
+            pass
+    return comment, document
+
 
 def _favorite_count_response(request, thing, has_favorited):
     return render(request, "comments/_favorites.html", {

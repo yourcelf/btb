@@ -72,6 +72,9 @@ class Comment(models.Model):
     def mark_favorite_url(self):
         return "%s?comment_id=%s" % (reverse("comments.mark_favorite"), self.pk)
 
+    def mark_favorite_after_login_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.mark_favorite_after_login"), self.pk)
+
     def unmark_favorite_url(self):
         return "%s?comment_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
 
@@ -177,7 +180,10 @@ class Favorite(models.Model):
         orgs = ["document__author__organization"]
 
     def get_absolute_url(self):
-        return self.document.get_absolute_url()
+        if self.document_id:
+            return self.document.get_absolute_url()
+        if self.comment_id:
+            return self.comment.get_absolute_url()
 
     def to_dict(self):
         return {

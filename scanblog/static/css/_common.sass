@@ -794,7 +794,7 @@ textarea.sugar, input.sugar
   +box-shadow
   top: 30px
   left: 0px
-  min-width: 150px
+  width: 150px
   padding: 1em
   background: url("../img/white_grain.png") repeat
 
@@ -813,9 +813,12 @@ textarea.sugar, input.sugar
     position: absolute
     top: -17px
     left: 20px
-  .content
-    max-height: 200px
-    overflow: auto
+  div.content
+    white-space: normal
+    padding: 0px
+    width: auto
+    ul
+      margin-bottom: 0
 
 .tagform
   .arrow
