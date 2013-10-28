@@ -4,7 +4,7 @@
   {% if has_favorited %}
     <a class='toggle favorite-button active' href='{{ thing.unmark_favorite_url }}' title='{% trans "Favorited" %}'>&nbsp;</a>
   {% else %}
-    <a class='{% if user.is_authentiated %}toggle {% endif %}favorite-button'
+    <a class='{% if user.is_authenticated %}toggle {% endif %}favorite-button'
        href='{% if user.is_authenticated %}{{ thing.mark_favorite_url }}{% else %}{{ thing.mark_favorite_after_login_url }}{% endif %}'
        title='{% trans "Mark as favorite" %}'>{% if num_favorites == 0 %}<span style='padding-left: 10px;'>{% trans "Favorite" %}</span>{% else %}&nbsp;{% endif %}</a>
   {% endif %} 

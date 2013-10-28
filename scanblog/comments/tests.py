@@ -282,7 +282,7 @@ class TestFavorites(BtbLoginTestCase):
         self.loginAs("reader")
         res = self.client.post(reverse("comments.mark_favorite"),
                 {'document_id': doc.pk})
-        self.assertEquals(res.status_code, 404)
+        self.assertEquals(res.status_code, 400)
 
     def test_require_post(self):
         doc = Document.objects.create(status="published",

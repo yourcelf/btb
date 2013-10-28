@@ -2,7 +2,7 @@ import time
 from .base import BtbLiveServerTestCase
 
 from django.contrib.auth.models import User
-from scanblog.comments.models import Comment
+from scanblog.comments.models import Comment, Favorite
 
 class TestComments(BtbLiveServerTestCase):
     def test_comment_while_not_signed_in(self):
@@ -74,3 +74,43 @@ class TestComments(BtbLiveServerTestCase):
         for comment in self.csss(".commentbody"):
             if "My Unique 82753 comment" in comment.text:
                 self.assertFail("Comment shouldn't've been found.")
+
+    def test_add_favorite(self):
+        s = self.selenium
+        self.sign_in("testuser", "testuser")
+        s.get(self.url(self.doc.get_absolute_url()))
+
+        self.css(".favorite-button").click()
+
+        self.assertEquals(Favorite.objects.count(), 1)
+        fav = Favorite.objects.all()[0]
+        self.assertTrue(fav.document == self.doc)
+        self.assertEquals(len(self.csss(".favorite-button.active")), 1)
+        self.assertEquals(len(self.csss(".get-favorites")), 1)
+
+        self.css(".get-favorites").click()
+        time.sleep(0.5)
+        self.assertEquals(len(self.csss(".favorites-popover .content li")), 1)
+        self.css(".favorites-popover .content li a").click()
+        self.assertTrue("testuser's profile" in s.title)
+        self.assertEquals(len(self.csss("li.favorite")), 1)
+        self.css("li.favorite .favorites-control .favorite-button").click()
+        self.assertEquals(Favorite.objects.count(), 0)
+
+        s.get(self.url("/people/show"))
+        self.assertEquals(len(self.csss("li.favorite")), 0)
+
+    def test_add_favorite_before_login(self):
+        s = self.selenium
+        s.get(self.url("/accounts/logout/"))
+        s.get(self.url(self.doc.get_absolute_url()))
+        self.css(".favorite-button").click()
+
+        self.wait(lambda b: "Login" in s.title)
+        self.css("#id_username").send_keys("testuser")
+        self.css("#id_password").send_keys("testuser")
+        self.click_button("Login")
+
+        self.assertTrue(self.doc.get_title() in s.title)
+        self.assertEquals(len(self.csss(".favorite-button.active")), 1)
+        self.assertTrue("Favorite" in self.css("li.message").text)
