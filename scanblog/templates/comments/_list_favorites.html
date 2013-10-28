@@ -1,0 +1,7 @@
+{% load i18n %}
+{% trans "Favorited by:" %}
+<ul class='bullets'>
+{% for favorite in favorites %}
+<li><a href='{{ favorite.user.profile.get_absolute_url }}'>{{ favorite.user.profile }}</a></li>
+{% endfor %}
+</ul>

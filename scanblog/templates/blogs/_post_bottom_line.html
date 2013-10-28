@@ -1,3 +1,4 @@
+{% load favorites %}
 {% load i18n %}
     <div class='post-link-line'>
         <a href='{{post.get_absolute_url}}' class='read-more'>{% trans "Read more &raquo;" %}</a>
@@ -14,6 +15,8 @@
         {% endif %}{% endif %}
         {% endspaceless %}</a>
         {% endwith %}
+        |
+        {% favorites post %}
         |
         <span class='author'>
             {% if post.author.profile.blog_name %}

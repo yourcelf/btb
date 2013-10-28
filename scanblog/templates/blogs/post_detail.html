@@ -4,6 +4,7 @@
 {% load i18n %}
 {% load thumbnail %}
 {% load public_url %}
+{% load favorites %}
 
 {% block title %}{% firstof post.title "Untitled" %} &mdash; {{post.author.profile}}{% endblock %}
 
@@ -92,6 +93,7 @@
 {% if org.public %}{{ org.footer|safe }}{% endif %}
 
 {% include "blogs/_sharing_buttons.html" %}
+{% favorites post %}
 
 {# comments #}
 <div class='comments'>

@@ -1,5 +1,6 @@
 {% extends "profiles/base.html" %}
 {% load url from future %}
+{% load humanize %}
 
 {% load i18n %}
 {% load public_url %}
@@ -9,75 +10,135 @@
 {% with tx=document.transcription tx_rev=tx.current %}
 
 <div class='profile-title-line'>
-    <h2 class='profile-title'>{{profile}}'s profile</h2> 
+  {% if profile.blogger %}
+    <h1 class='profile-title'>{{profile}}'s profile</h1> 
     {% include "blogs/_sharing_buttons.html" %}
-    <div>{% if org.public %}{{ org.footer|safe }}{% endif %}</div>
-    <div class='controls'>
-        {% if can_edit %}
-            <a class='edit-profile-button' href='{% url "profiles.profile_edit" profile.pk %}'>Edit settings</a>
-        {% endif %}
-        {% if document  %}
-                {% with tx=post.transcription %}
-                    {% if tx %}
-                        {% if tx.complete %}
-                            <a class='transcribe-top-button' href='#transcription' title='Click to read the transcription'>&#9997; Transcribed</a>
-                        {% else %}
-                            <a class='transcribe-top-button' href='#transcription'>&#9997; Partially transcribed</a>
-                        {% endif %}
-                    {% else %}
-                        {% if transcription_open and perms.scanning.add_transcription %}
-                            <a class='transcribe-top-button' href='{% url "scanning.transcribe_document" document.pk %}'>&#9997; Add transcription</a>
-                        {% endif %}
-                    {% endif %}
-                 {% endwith %}
-        {% endif %}
-    </div>
+  {% else %}
+    <h1 class='profile-title'>{{profile}}</h1> 
+  {% endif %}
+
+  <div>{% if org.public %}{{ org.footer|safe }}{% endif %}</div>
+  <div class='controls'>
+      {% if can_edit %}
+        <a class='edit-profile-button' href='{% url "profiles.profile_edit" profile.pk %}'>Edit settings</a>
+      {% endif %}
+      {% if document  %}
+        {% with tx=post.transcription %}
+          {% if tx %}
+            {% if tx.complete %}
+              <a class='transcribe-top-button' href='#transcription' title='Click to read the transcription'>&#9997; Transcribed</a>
+            {% else %}
+              <a class='transcribe-top-button' href='#transcription'>&#9997; Partially transcribed</a>
+            {% endif %}
+          {% else %}
+            {% if transcription_open and perms.scanning.add_transcription %}
+              <a class='transcribe-top-button' href='{% url "scanning.transcribe_document" document.pk %}'>&#9997; Add transcription</a>
+            {% endif %}
+          {% endif %}
+       {% endwith %}
+    {% endif %}
+  </div>
 </div>
 <div class='profile-detail'>
-    {% if document %}
-        {% for page in document.documentpage_set.all %}
-            <div class='profile-page'>
-                <img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned profile' %}" />
-            </div>
-        {% endfor %}
-        <a name='transcription'></a>
-        {% if tx %}
-            <h2>{% trans "Transcription" %}
-            {% if transcription_open and not document.transcription.locked and perms.scanning.change_transcription %}
-                <small> 
-                    &mdash; 
-                    <a href='{% url "scanning.transcribe_document" document.id %}'>{% trans "edit" %}</a>, 
-                    <a href='{% url "scanning.revision_list" document.id %}'>{% trans "revisions" %}</a>
-                </small>
-            {% endif %}
-            </h2>
-            <div class='transcription'>
-                <p>{{ tx.current.body|linebreaks }}</p>
-            </div>
+  {% if document %}
+    {% for page in document.documentpage_set.all %}
+      <div class='profile-page'>
+        <img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned profile' %}" />
+      </div>
+    {% endfor %}
+    <a name='transcription'></a>
+    {% if tx %}
+      <h2>{% trans "Transcription" %}
+        {% if transcription_open and not document.transcription.locked and perms.scanning.change_transcription %}
+          <small> 
+             &mdash; 
+             <a href='{% url "scanning.transcribe_document" document.id %}'>{% trans "edit" %}</a>, 
+             <a href='{% url "scanning.revision_list" document.id %}'>{% trans "revisions" %}</a>
+          </small>
         {% endif %}
+      </h2>
+      <div class='transcription'><p>{{ tx.current.body|linebreaks }}</p></div>
     {% endif %}
-    {% if profile.has_blog_posts %}
-        <p>
-            <a class='read-more' href='{{profile.get_blog_url}}'>Read more from {{ profile }}'s blog{% if profile.blog_name %}: {{ profile.blog_name }}{% endif %} &raquo;</a>
-        </p>
-    {% else %}{% if not profile.managed %}
-        <h3>Comments</h3>
-        <ul class='bullets'>
-        {% for comment in profile.user.comment_set.public %}
-            <li>{{ comment.comment|truncatewords:20 }}<a href='{{ comment.get_absolute_url }}'>... {{ comment.created }}</a></li>
-        {% empty %}
-            <li>No comments.</li>
+  {% endif %}
+  {% if profile.has_blog_posts %}
+    <p>
+      <a class='read-more' href='{{profile.get_blog_url}}'>Read more from {{ profile }}'s blog{% if profile.blog_name %}: {{ profile.blog_name }}{% endif %} &raquo;</a>
+    </p>
+  {% endif %}
+  {% if not profile.managed %}
+      
+    {# Summary of activity #}
+    {% if comments or transcription_revisions or favorites %}
+      Activity: 
+      {% if comments %}
+        <a href='#comments'>{{ comments|length }} comments</a>{% if transcription_revisions or favorites %},{% endif %}
+      {% endif %}
+      {% if transcription_revisions %}
+        <a href='#transcriptions'>{{ transcription_revisions|length }} transcriptions</a>{% if favorites %},{% endif %}
+      {% endif %}
+      {% if favorites %}
+        <a href='#favorites'>{{ favorites|length }} favorites</a>
+      {% endif %}
+    {% else %}
+      No activity yet.
+    {% endif %}
+
+    {# Comments #}
+    {% if comments %}
+      <h2 id='comments'>Comments</h2>
+      <ul>
+      {% for comment in comments %}
+        <li style='margin-bottom: 1em;'>
+          <blockquote style='font-style: normal;'>
+            {{ comment.comment|truncatewords:50 }}
+          </blockquote>
+          on <a href='{{ comment.get_absolute_url }}'>{{ comment.document.get_title }}</a> by <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a> <span class='date'>{{ comment.created|naturalday }}</span>
+        </li>
+      {% empty %}
+          <li>No comments.</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+
+    {# Transcriptions #}
+    {% if transcription_revisions %}
+      <h2 id='transcriptions'>Transcriptions</h2>
+      <ul class='bullets'>
+      {% for tr in transcription_revisions %}
+          <li>{{ tr.transcription.document.get_title }} &ndash; <a href='{{ tr.transcription.document.get_absolute_url }}'>{{ tr.modified|naturalday }}</a></li>
+      {% empty %}
+          <li>No transcriptions.</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+
+    {# Favorites #}
+    {% if favorites %}
+      <h2 id='favorites'>Favorites</h2>
+      <ul>
+        {% for favorite in favorites %}
+        <li class='favorite'>
+        {% if favorite.comment %}
+          {% with comment=favorite.comment %}
+          <div class='comment'>
+            <div class='excerpt'>&#147;<span class='quote'>{{ comment.comment|truncatewords:"20" }}</span>&#148;</div>
+            <div class='date'>{{ comment.created|timesince }} ago</div>
+            <span class='author'>By {{ comment.user.profile }}</span> on <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
+          </div>
+          {% endwith %}
+        {% elif favorite.document %}
+          {% with favorite.document as post %}
+            {% include "blogs/_post_title_line.html" %}
+            {% include "blogs/_post_highlight.html" %}
+            {% include "blogs/_post_bottom_line.html" %}
+          {% endwith %}
+        {% endif %}
+        </li>
         {% endfor %}
-        </ul>
-        <h3>Transcriptions</h3>
-        <ul class='bullets'>
-        {% for tr in profile.user.transcriptionrevision_set.all %}
-            <li>{{ tr.transcription.document.get_title }} &ndash; <a href='{{ tr.transcription.document.get_absolute_url }}'>{{ tr.modified }}</a></li>
-        {% empty %}
-            <li>No transcriptions.</li>
-        {% endfor %}
-        </ul>
-    {% endif %}{% endif %}
+      </ul>
+    {% endif %}
+
+  {% endif %}
 </div>
 
 

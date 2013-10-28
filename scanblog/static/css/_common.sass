@@ -193,6 +193,18 @@
   @if $sprite == pinterest-hover
     background: url(../img/pinterest-hover.png) 0px 0px no-repeat #f3f3f3
     background-position: 8px + $xoff 0px + $yoff
+  @if $sprite == favorite
+    background: url(../img/favorite.png) 0px 0px no-repeat #f3f3f3
+    background-position: 7px + $xoff 2px + $yoff
+    padding: 7px 10px 5px 20px
+    margin-right: 0
+    min-height: 1em
+  @if $sprite == favorite-active
+    background: url(../img/favorite-active.png) 0px 0px no-repeat #f3eedd
+    background-position: 7px + $xoff 2px + $yoff
+    padding: 7px 10px 5px 20px
+    margin-right: 0
+    min-height: 1em
 
 @mixin anchor-button($normalfg: #000, $normalbg: #f5f2eb, $hoverfg: #FFF, $hoverbg: #090, $activefg: #FFF, $activebg: #0A0)
   +button($normalfg, $normalbg, $hoverfg, $hoverbg, $activefg, $activebg)
@@ -441,8 +453,18 @@ input.loading
     h4
       font-weight: bold
       font-style: normal
-    
 
+.favorites-control a.loading
+  font-size: 0
+  background: url(../img/spinner.gif) 0px 0px no-repeat
+  width: 16px
+  height: 16px
+  display: inline-block
+
+li.favorite
+  padding: 1em 2em
+  +box-shadow(0px 0px 8px #ddd)
+  margin-bottom: 1em
 
 .link-like
   +link-like
@@ -763,6 +785,38 @@ table.related-posts
 textarea.sugar, input.sugar
   display: none
 
+.popover
+  display: none
+  position: absolute
+  z-index: 10
+  background-color: white
+  border: px solid #999
+  +box-shadow
+  top: 30px
+  left: 0px
+  min-width: 150px
+  padding: 1em
+  background: url("../img/white_grain.png") repeat
+
+  &, li
+    line-height: 1.2em
+
+  .close
+    float: right
+    cursor: pointer
+  .arrow
+    border-color: transparent transparent rgba(#FFF, 0.8) transparent
+    border-style: solid
+    border-width: 10px
+    height: 0
+    width: 0
+    position: absolute
+    top: -17px
+    left: 20px
+  .content
+    max-height: 200px
+    overflow: auto
+
 .tagform
   .arrow
     border-color: transparent transparent rgba(#FFF, 0.8) transparent
@@ -875,6 +929,11 @@ a.facebook-button
   +flat-button-sprite(facebook)
   &:hover
     +flat-button-sprite(facebook-hover)
+a.favorite-button
+  +flat-button
+  +flat-button-sprite(favorite)
+  &.active
+    +flat-button-sprite(favorite-active)
 
 .post-tag-list
   position: relative

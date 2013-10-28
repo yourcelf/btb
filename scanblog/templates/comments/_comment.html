@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load favorites %}
         <div class='comment{% if comment.removed %} removed{% endif %}'>
             <a name='c{{ comment.id }}'></a>
             <div class='commentbyline'>
@@ -8,11 +9,7 @@
                           {% if comment.removed %}
                             <em>[removed]</em>
                           {% else %}
-                            {% if comment.user.has_public_profile %}
-                                <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
-                            {% else %}
-                                {{ comment.user.profile }}
-                            {% endif %}
+                            <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
                           {% endif %}
                         </td>
                         <td>
@@ -43,6 +40,7 @@
                               |
                               <a href='{% url "comments.moderator_remove" comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
                             {% endif %}
+                            {% favorites comment %}
                         </td>
                     </tr>
                 </table>

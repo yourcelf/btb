@@ -139,7 +139,9 @@ def show_profile(request, user_id):
         profile = Profile.objects.enrolled().filter(pk=user_id)[0]
     except IndexError:
         try:
-            profile = Profile.objects.commenters().filter(pk=user_id)[0]
+            profile = Profile.objects.active_and_inactive_commenters().filter(
+                    pk=user_id
+            )[0]
         except IndexError:
             raise Http404
     can_edit = can_edit_profile(request.user, profile.pk)
@@ -155,6 +157,12 @@ def show_profile(request, user_id):
         org = None
     return render(request, "profiles/profile_detail.html", {
             'document': document,
+            'favorites': profile.user.favorite_set.select_related(
+                'document', 'comment'),
+            'transcription_revisions': profile.user.transcriptionrevision_set.select_related(
+                'transcription', 'transcription__document').all(),
+            'comments': profile.user.comment_set.public().select_related(
+                'document', 'document__author', 'document__author__profile'),
             'profile': profile,
             'org': org,
             'can_edit': can_edit,

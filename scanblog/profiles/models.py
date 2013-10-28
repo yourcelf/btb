@@ -37,6 +37,9 @@ class ProfileManager(OrgManager):
     def inactive_bloggers(self):
         return self.filter(user__is_active=False, blogger=True)
 
+    def active_and_inactive_commenters(self):
+        return self.filter(blogger=False)
+
     def commenters(self):
         """ They are not in prison. """
         return self.active().filter(blogger=False)

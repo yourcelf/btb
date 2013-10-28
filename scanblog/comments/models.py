@@ -2,6 +2,7 @@ import datetime
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from btb.utils import OrgManager, OrgQuerySet
 
@@ -67,6 +68,15 @@ class Comment(models.Model):
         if self.document:
             return "%s#c%s" % (self.document.get_absolute_url(), self.pk)
         return ""
+
+    def mark_favorite_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.mark_favorite"), self.pk)
+
+    def unmark_favorite_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
+
+    def list_favorites_url(self):
+        return "%s?comment_id=%s" % (reverse("comments.list_favorites"), self.pk)
 
     def to_dict(self):
         cd = self.comment_doc
@@ -152,10 +162,16 @@ class CommentRemovalNotificationLog(models.Model):
     comment = models.OneToOneField(Comment)
     date = models.DateTimeField(default=datetime.datetime.now)
 
+class FavoriteManager(OrgManager):
+    pass
+
 class Favorite(models.Model):
     user = models.ForeignKey(User)
-    document = models.ForeignKey('scanning.Document')
+    comment = models.ForeignKey(Comment, blank=True, null=True)
+    document = models.ForeignKey('scanning.Document', blank=True, null=True)
     created = models.DateTimeField(default=datetime.datetime.now)
+
+    objects = FavoriteManager()
 
     class QuerySet(OrgQuerySet):
         orgs = ["document__author__organization"]
@@ -167,6 +183,7 @@ class Favorite(models.Model):
         return {
                 'id': self.pk,
                 'user_id': self.user_id,
+                'comment_id': self.comment_id,
                 'document_id': self.document_id,
                 'url': self.get_absolute_url(),
         }
@@ -175,4 +192,4 @@ class Favorite(models.Model):
         ordering = ['-created']
 
     def __unicode__(self):
-        return "%s: %s" % (self.user.profile, self.document_id)
+        return "%s: %s" % (self.user.profile, self.comment_id or self.document_id)

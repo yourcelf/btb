@@ -11,16 +11,17 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db.models.deletion import Collector
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 from comments.models import Comment, CommentRemoval, RemovalReason, \
-        CommentRemovalNotificationLog
+        CommentRemovalNotificationLog, Favorite
 from correspondence.models import Letter
 from comments.forms import CommentForm, CommentRemovalForm
 from scanning.forms import FlagForm
+from scanning.models import Document
 from annotations.models import Note, handle_flag_spam
 from annotations.tasks import send_flag_notification_email
 
@@ -237,4 +238,69 @@ def unremove_comment(request, comment_id):
     return render(request, "comments/unremove_comment.html", {
         'comment': comment,
         'removal': comment.commentremoval,
+    })
+
+@login_required
+def mark_favorite(request):
+    """
+    AJAX method to mark a post as a favorite.
+    """
+    document = None
+    comment = None
+    if 'document_id' in request.POST:
+        try:
+            document = Document.objects.safe_for_user(request.user).get(
+                    pk=request.POST.get('document_id'))
+        except Document.DoesNotExist:
+            raise Http404
+    elif 'comment_id' in request.POST:
+        try:
+            comment = Comment.objects.public().get(
+                    pk=request.POST.get('comment_id'))
+        except Comment.DoesNotExist:
+            raise Http404
+    else:
+        return HttpResponseBadRequest("Missing parameters")
+    fav, created = Favorite.objects.get_or_create(
+        user=request.user,
+        document=document,
+        comment=comment)
+    return _favorite_count_response(request, comment or document, True)
+
+@login_required
+def unmark_favorite(request):
+    if 'comment_id' in request.POST:
+        thing = get_object_or_404(Comment, pk=request.POST.get(
+            'comment_id'))
+    elif 'document_id' in request.POST:
+        thing = get_object_or_404(Document, pk=request.POST.get(
+            'document_id'))
+    else:
+        raise Http404
+    try:
+        fav = thing.favorite_set.get(user=request.user)
+        fav.delete()
+    except Favorite.DoesNotExist:
+        pass
+    return _favorite_count_response(request, thing, False)
+
+def _favorite_count_response(request, thing, has_favorited):
+    return render(request, "comments/_favorites.html", {
+        'thing': thing,
+        'num_favorites': thing.favorite_set.count(),
+        'has_favorited': has_favorited,
+        'user': request.user,
+    })
+
+def list_favorites(request):
+    if 'comment_id' in request.GET:
+        thing = get_object_or_404(Comment, pk=request.GET.get('comment_id'))
+    elif 'document_id' in request.GET:
+        thing = get_object_or_404(Document, pk=request.GET.get('document_id'))
+    else:
+        raise Http404
+    favorites = thing.favorite_set.select_related('user', 'user__profile').all()
+    return render(request,"comments/_list_favorites.html", {
+        'thing': thing,
+        'favorites': list(favorites)
     })

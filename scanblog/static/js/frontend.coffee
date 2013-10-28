@@ -25,3 +25,57 @@ $(".blog-nav-bar a.toggle").on "click", ->
     $($(this).attr("data-target"), ".blog-nav-bar").hide().slideToggle().addClass("open")
     $(this).addClass("open")
   return false
+
+toggle_favorite = (event) ->
+  event.preventDefault()
+  $(event.currentTarget).addClass("loading")
+  url = $(event.currentTarget).attr("href")
+  params = url.split("?")[1]
+  data = {}
+  for arg in params.split("&")
+    kv = arg.split("=")
+    data[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1])
+  $.ajax {
+    url: url
+    type: 'POST'
+    data: data
+    success: (data) ->
+      replacement = $(data)
+      $(event.currentTarget).closest(".favorites-control").replaceWith(replacement)
+      add_favorite_triggers(replacement.parent())
+    error: ->
+      alert("Server error")
+  }
+
+get_favorites = (event) ->
+  event.preventDefault()
+  el = $(event.currentTarget)
+  popover = el.closest(".count").find(".favorites-popover")
+  if popover.is(":visible")
+    popover.hide()
+  else
+    popover.show()
+    popover.find(".close").on("click", -> popover.hide())
+    url = el.attr("href")
+    $.ajax {
+      url: url
+      type: 'GET'
+      success: (data) ->
+        popover.find(".content").html(data)
+      error: ->
+        alert("Server error")
+    }
+
+add_favorite_triggers = (parent) ->
+  $(".favorites-control a.toggle", parent).on "click", toggle_favorite
+  $(".favorites-control a.get-favorites", parent).on "click", get_favorites
+add_favorite_triggers(document)
+
+# Clear popovers on click outside
+$(document).mouseup (event) ->
+  triggers = $(".popover-trigger")
+  if triggers.is(event.target)
+    return
+  popovers = $(".popover")
+  if popovers.has(event.target).length == 0
+    popovers.hide()
