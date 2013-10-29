@@ -15,6 +15,25 @@ class btb.OrganizationList extends btb.FilteredPaginatedCollection
     model: btb.Organization
     url: "/people/organizations.json"
 
+class btb.CommenterStats extends Backbone.Model
+    url: =>
+        "/people/commenter_stats.json?user_id=#{@get('user_id')}"
+    parse: (response, options) =>
+        attrs = {}
+        for key, val of response
+            switch key
+                when 'activity'
+                    attrs[key] = {
+                        comments: (btb.strToDate(d) for d in val.comments)
+                        favorites: (btb.strToDate(d) for d in val.favorites)
+                        transcriptions: (btb.strToDate(d) for d in val.transcriptions)
+                    }
+                when 'last_login','joined' then attrs[key] = btb.strToDate(val)
+                else
+                    attrs[key] = val
+        return attrs
+
+
 #
 # A widget displaying a form for adding a user.  Used by btb.UserSearch as
 # well.
@@ -88,9 +107,7 @@ class btb.UserSearch extends btb.PaginatedView
     template: _.template $("#userSearch").html()
     emptyRowTemplate: _.template $("#userSearchResultEmpty").html()
     delay: 100
-    defaultFilter:
-        per_page: 6
-        blogger: true
+    defaultFilter: {per_page: 6, blogger: true}
     events:
         'keyup input.user-chooser-trigger': 'openUserSearch'
         'keyup input.user-search': 'keyUp'
@@ -104,6 +121,9 @@ class btb.UserSearch extends btb.PaginatedView
         filter = if options then options.filter else {}
         @userList = new btb.UserList()
         @userList.filter = _.extend {}, @defaultFilter, filter
+
+    updateFilter: (properties) =>
+        _.extend(@userList.filter, properties)
 
     render: =>
         $(@el).html this.template
@@ -540,6 +560,66 @@ class btb.UserStatusTable extends Backbone.View
         ]
         this
     
+class btb.CommenterStatsView extends Backbone.View
+    template: _.template $("#commenterStats").html()
+    hist_bins: 12
+
+    initialize: (options) ->
+        if options.user_id
+            @fetch(options.user_id)
+
+    render: =>
+        unless @stats.get("activity")
+            @$el.html("<img src='/static/img/spinner.gif />")
+            return this
+
+        max_time = 0
+        min_time = new Date().getTime()
+        for key, list of @stats.get("activity")
+            for date in list
+                time = date.getTime()
+                if time > max_time
+                    max_time = time
+                if time < min_time
+                    min_time = time
+        if max_time == 0 or max_time == min_time
+            histogram = null
+        else
+            diff = (max_time + 1) - min_time
+            interval = diff / @hist_bins
+            histogram = []
+            for i in [0...@hist_bins]
+                cur = min_time + interval * i
+                next = min_time + interval * (i + 1)
+                histogram.push({
+                    label: btb.formatDate(new Date(cur))
+                })
+                for key, list of @stats.get("activity")
+                    histogram[i][key] = {count: 0, percentage: 0}
+                    for date in list
+                        if cur <= date.getTime() < next
+                            histogram[i][key].count += 1
+
+            max_bin = 0
+            for obj in histogram
+                count = obj.comments.count + obj.favorites.count + obj.transcriptions.count
+                max_bin = Math.max(count, max_bin)
+
+            for obj in histogram
+                for key in ["comments", "favorites", "transcriptions"]
+                    obj[key].percentage = obj[key].count * 100 / max_bin
+
+        context = @stats.toJSON()
+        context.histogram = histogram
+        @$el.html(@template(context))
+        this
+
+    fetch: (user_id) =>
+        @stats = new btb.CommenterStats(user_id: user_id)
+        @stats.fetch {
+            success: (data) =>
+                @render()
+        }
 
 #
 # Ye grande olde User Detail Page view
@@ -548,22 +628,44 @@ class btb.UserDetail extends Backbone.View
     template: _.template $("#userManage").html()
     detailTemplate: _.template $("#userDetail").html()
     stateTemplate: _.template $("#userState").html()
+    commenterTemplate: _.template $("#commenterDetail").html()
+    events: {
+      'click [name=usertype]': 'changeUserType'
+    }
+    filter: {in_org: true, blogger: true}
 
     initialize: (options) ->
-        @fetchUser(options.userId) if options.userId
+        if options.userId
+            @fetchUser(options.userId)
 
     render: =>
-      
-        $(@el).html @template()
-        userChooser = new btb.UserSearch(filter: {in_org: 1})
-        userChooser.bind "chosen", (user) => @chooseUser(user)
-        $(".user-chooser-holder", @el).html userChooser.render().el
+        $(@el).html @template(filter: @filter)
+        @userChooser = new btb.UserSearch(filter: @filter)
+        @userChooser.bind "chosen", (user) => @chooseUser(user)
+        $(".user-chooser-holder", @el).html @userChooser.render().el
         if not @user?
             return this
 
+        if @user.get("blogger")
+            @renderBlogger()
+        else
+            @renderCommenter()
+
+    renderCommenter: =>
         userFields = @user.toJSON()
-        $(".user-detail", @el).html @detailTemplate
-            user: userFields
+        @$(".user-detail").html @commenterTemplate({user: userFields})
+        @$(".user-state").html @stateTemplate({user: userFields})
+        @$(".commenter-stats").html new btb.CommenterStatsView({
+            user_id: userFields.id
+        }).render().el
+        $(".notelist", @el).html new btb.NoteManager({
+            filter: {user_id: userFields.id}
+            defaults: {user_id: userFields.id}
+        }).el
+
+    renderBlogger: =>
+        userFields = @user.toJSON()
+        @$(".user-detail").html @detailTemplate({user: userFields})
         btb.EditInPlace.factory [
             [@user, "display_name", $(".display-name", @el)]
             [@user, "mailing_address", $(".mailing-address", @el), "textarea"]
@@ -605,9 +707,22 @@ class btb.UserDetail extends Backbone.View
         $(".missingscanlist", @el).html new btb.MissingScanTabularList(userId).el
         this
 
+    setCommenter: =>
+        @filter = {blogger: false, in_org: false}
+        @userChooser?.updateFilter(@filter)
+
+    setBlogger: =>
+        @filter = {blogger: true, in_org: true}
+        @userChooser?.updateFilter(@filter)
+
+    changeUserType: (event) =>
+        val = @$("[name=usertype]:checked").val()
+        if val == "blogger" then @setBlogger() else @setCommenter()
+
     chooseUser: (user) =>
         btb.app.navigate "#/users/#{user.get "id"}"
         @user = user
+        if @user.get("blogger") then @setBlogger() else @setCommenter()
         @render()
 
     fetchUser: (userId) =>
@@ -616,6 +731,7 @@ class btb.UserDetail extends Backbone.View
             success: (userList, response) =>
                 user = userList.at 0
                 @user = userList.at 0
+                if @user.get("blogger") then @setBlogger() else @setCommenter()
                 @render()
         }
 

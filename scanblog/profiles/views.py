@@ -1,5 +1,6 @@
 import json
 import datetime
+from collections import defaultdict
 
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
@@ -18,9 +19,10 @@ from django.db.models import Count
 from btb.utils import args_method_decorator, JSONView, can_edit_user, can_edit_profile
 from profiles.models import Profile, Organization, Affiliation
 from profiles.forms import get_profile_form, UserFormNoEmail, ProfileUploadForm
-from scanning.models import Scan, Document
+from scanning.models import Scan, Document, TranscriptionRevision
 from scanning.tasks import process_scan_to_profile, move_scan_file
 from annotations.models import Note
+from comments.models import Comment, Favorite
 
 def list_profiles(request):
     return render(request, "profiles/profiles_list.html", {
@@ -265,7 +267,9 @@ def edit_profile(request, user_id=None):
 class UsersJSON(JSONView):
     @args_method_decorator(permission_required, "auth.change_user")
     def get(self, request, obj_id=None):
-        if 'in_org' in request.GET:
+        tf = lambda key: request.GET.get(key) in ("true", "1")
+
+        if tf('in_org'):
             profiles = Profile.objects.org_filter(request.user).select_related('user')
         else:
             profiles = Profile.objects.select_related('user')
@@ -304,7 +308,6 @@ class UsersJSON(JSONView):
                         profiles = filt | profiles.filter(pk__exact=pk)
                     except ValueError:
                         profiles = filt
-        tf = lambda key: request.GET.get(key) == "true"
         if request.GET.get("is_active", "null") != "null":
             profiles = profiles.filter(user__is_active=tf('is_active'))
         if request.GET.get("blogger", "null") != "null":
@@ -394,7 +397,6 @@ class UsersJSON(JSONView):
         pass
 
 class OrganizationsJSON(JSONView):
-
     @args_method_decorator(permission_required, "auth.change_user")
     def get(self, request):
         orgs = Organization.objects.org_filter(request.user)
@@ -412,4 +414,64 @@ class AffiliationsJSON(JSONView):
             )
         return self.paginated_response(request, affiliations)
 
+class CommenterStatsJSON(JSONView):
+    def get(self, request):
+        try:
+            profile = Profile.objects.commenters().select_related('user').get(
+                    user_id=request.GET.get('user_id'))
+        except Profile.DoesNotExist:
+            raise Http404
+
+        comments = list(profile.user.comment_set.values_list(
+            'created', 'document__author__pk', 'document__author__profile__display_name'
+        ))
+        txs = list(profile.user.transcriptionrevision_set.values_list(
+            'modified',
+            'transcription__document__author__pk',
+            'transcription__document__author__profile__display_name',
+        ))
+        favorites = list(profile.user.favorite_set.values_list(
+            'created',
+            'document__author__pk',
+            'document__author__profile__display_name',
+            'comment__document__author__pk',
+            'comment__document__author__profile__display_name',
+        ))
+
+        percentages = {
+            'comments': len(comments) * 100. / Comment.objects.public().count(),
+            'favorites': len(favorites) * 100. / Favorite.objects.count(),
+            'transcriptions': len(txs) * 100. / TranscriptionRevision.objects.count(),
+        }
+        users = {}
+        relationships = defaultdict(lambda: {
+            "comments": 0, "transcriptions": 0, "favorites": 0, "total": 0
+        })
+        for created, author_pk, author_name in comments:
+            relationships[author_pk]['comments'] += 1
+            relationships[author_pk]['total'] += 1
+            users[author_pk] = author_name
+        for modified, author_pk, author_name in txs:
+            relationships[author_pk]['transcriptions'] += 1
+            relationships[author_pk]['total'] += 1
+            users[author_pk] = author_name
+        for created, author_pk_1, author_name_1, author_pk_2, author_name_2 in favorites:
+            author_pk = author_pk_1 or author_pk_2
+            author_name = author_name_1 or author_name_2
+            relationships[author_pk]['favorites'] += 1
+            relationships[author_pk]['total'] += 1
+            users[author_pk] = author_name
+
+        return self.json_response({
+            "joined": profile.user.date_joined.isoformat(),
+            "last_login": profile.user.last_login.isoformat(),
+            "activity": {
+                'comments': [c[0] for c in comments],
+                'favorites': [f[0] for f in favorites],
+                'transcriptions': [t[0] for t in txs],
+            },
+            "percentages": percentages,
+            "relationships": sorted(relationships.items(), key=lambda d: d[1]['total'], reverse=True),
+            "users": users,
+        })
 

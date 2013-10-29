@@ -18,7 +18,7 @@
     <a href='#/users'>Manage users</a>
     <a href='#/mail'>Outgoing mail</a>
     |
-    <a href='tasks'>Tasks</a>
+    <!--<a href='#/groups'>Groups</a>-->
     <a href='tagparty'>Tag party</a>
 {% endblock %}
 {% block body %}
@@ -39,6 +39,7 @@
 {% include "moderation/_scans.html" %}
 {% include "moderation/_documents.html" %}
 {% include "moderation/_users.html" %}
+{% include "moderation/_groups.html" %}
 {% include "moderation/_correspondence.html" %}
 {% include "moderation/_notes.html" %}
 

@@ -89,8 +89,7 @@ class TestComments(BtbLiveServerTestCase):
         self.assertEquals(len(self.csss(".get-favorites")), 1)
 
         self.css(".get-favorites").click()
-        time.sleep(0.5)
-        self.assertEquals(len(self.csss(".favorites-popover .content li")), 1)
+        self.wait(lambda b: len(self.csss(".favorites-popover .content li")) == 1)
         self.css(".favorites-popover .content li a").click()
         self.assertTrue("testuser's profile" in s.title)
         self.assertEquals(len(self.csss("li.favorite")), 1)

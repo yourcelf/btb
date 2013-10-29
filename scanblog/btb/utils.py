@@ -148,7 +148,7 @@ class JSONView(View):
 
     def json_response(self, struct, response=None, content_type="application/json"):
         response = response or HttpResponse()
-        response.content = json.dumps(struct, indent=4)
+        response.content = json.dumps(struct, indent=4, default=dthandler)
         response['Content-type'] = content_type
         return response
 

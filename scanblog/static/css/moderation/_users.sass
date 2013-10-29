@@ -98,3 +98,39 @@
     opacity: 0.5
     .display-name
       text-decoration: line-through
+
+.histogram-holder
+  width: 100%
+  display: table
+  .legend
+    display: table-row
+    .label
+      display: table-cell
+      text-align: center
+  .histogram
+    display: table-row
+    .bar
+      position: relative
+      display: table-cell
+      border: 1px solid #eee
+      height: 150px
+    .stacker-holder
+      position: relative
+      width: 100%
+      height: 100%
+    .stacker
+      position: absolute
+      left: 0
+      width: 100%
+  .swatch
+    width: 32px
+    height: 32px
+    display: inline-block
+
+.commenter-stats
+  .comments
+    background-color: #efe
+  .favorites
+    background-color: #def
+  .transcriptions
+    background-color: #fee
