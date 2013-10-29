@@ -91,8 +91,9 @@ def delete(request, user_id):
     # POST
     delete_comments = request.POST.get('delete_comments', False)
     if delete_comments:
-        from comments.models import Comment
+        from comments.models import Comment, Favorite
         Comment.objects.filter(user=request.user).delete()
+        Favorite.objects.filter(user=request.user).delete()
 
     u = to_delete
     u.username = "withdrawn-%i" % u.pk
@@ -101,9 +102,8 @@ def delete(request, user_id):
     u.is_superuser = False
     u.first_name = ""
     u.last_name = ""
-    u.email_address = ""
     u.password = ""
-    u.groups = []
+    u.groups.clear()
     u.save()
 
     p = u.profile
@@ -111,7 +111,6 @@ def delete(request, user_id):
     p.blog_name = ""
     p.mailing_address = ""
     p.special_mail_handling = ""
-    p.story = ""
     p.show_adult_content = False
     p.save()
     for scan in Scan.objects.filter(author=u):
@@ -318,7 +317,7 @@ class UsersJSON(JSONView):
             profiles = profiles.filter(lost_contact=tf("lost_contact"))
         if request.GET.get("consent_form_received", "null") != "null":
             profiles = profiles.filter(consent_form_received=tf('consent_form_received'))
-        if request.GET.get("in_org", "null") != "null":
+        if request.GET.get("in_org", "null") != "null" and tf("in_org"):
             profiles = profiles.org_filter(request.user)
 
         profiles = profiles.annotate(Count('user__scans_authored', distinct=True),)
@@ -439,9 +438,9 @@ class CommenterStatsJSON(JSONView):
         ))
 
         percentages = {
-            'comments': len(comments) * 100. / Comment.objects.public().count(),
-            'favorites': len(favorites) * 100. / Favorite.objects.count(),
-            'transcriptions': len(txs) * 100. / TranscriptionRevision.objects.count(),
+            'comments': len(comments) * 100. / (Comment.objects.public().count() or 1),
+            'favorites': len(favorites) * 100. / (Favorite.objects.count() or 1),
+            'transcriptions': len(txs) * 100. / (TranscriptionRevision.objects.count() or 1),
         }
         users = {}
         relationships = defaultdict(lambda: {

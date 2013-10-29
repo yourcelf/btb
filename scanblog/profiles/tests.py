@@ -11,6 +11,8 @@ from profiles.models import Profile, Organization
 
 from scanning.models import Document, Scan
 from annotations.models import Note
+from btb.tests import BtbLoginTestCase
+from comments.models import Comment, Favorite
 
 class TestUrls(TestCase):
     fixtures = ["initial_data.json"]
@@ -458,3 +460,66 @@ class TestOrgPermissions(TestCase):
         self._json_results(mod0.username, "mod",
             "/people/users.json?per_page=6&blogger=true&in_org=1&q=-foo",
             set([member0.pk]))
+
+class TestDeleteAccount(BtbLoginTestCase):
+    def setUp(self):
+        super(TestDeleteAccount, self).setUp()
+        self.doc = Document.objects.create(
+                author=User.objects.get(username="author"),
+                editor=User.objects.get(username="moderator"),
+                type="post",
+                status="published"
+        )
+        self.comment = Comment.objects.create(
+                document=self.doc,
+                user=User.objects.get(username='reader'),
+                comment="Hey now",
+        )
+        self.favorite = Favorite.objects.create(
+                document=self.doc,
+                user=User.objects.get(username='reader')
+        )
+
+    def test_delete_leaving_comments(self):
+        u = User.objects.get(username="reader")
+
+        url = reverse("profiles.delete", args=[u.pk])
+        self.assertRedirectsToLogin(url)
+
+        self.loginAs("reader")
+        res = self.client.get(url)
+        self.assertEquals(res.status_code, 200)
+
+        self.client.post(url)
+        self._assertUserDeleted(u)
+
+        self.assertEquals(Comment.objects.count(), 1)
+        self.assertEquals(Comment.objects.all()[0].user.profile.display_name,
+                "(withdrawn)")
+        self.assertEquals(Favorite.objects.count(), 1)
+        self.assertEquals(Favorite.objects.all()[0].user.profile.display_name,
+                "(withdrawn)")
+
+
+    def _assertUserDeleted(self, u):
+        u = User.objects.get(pk=u.pk)
+        self.assertEquals(u.username, "withdrawn-%i" % u.pk)
+        self.assertFalse(u.is_active)
+        self.assertFalse(u.is_staff)
+        self.assertFalse(u.is_superuser)
+        for prop in ("first_name", "last_name", "password"):
+            self.assertEquals(getattr(u, prop), "")
+        self.assertEquals(set(u.groups.all()), set([Group.objects.get(name='readers')]))
+        for prop in ("blog_name", "mailing_address", "special_mail_handling"):
+            self.assertEquals(getattr(u.profile, prop), "")
+        self.assertFalse(u.profile.show_adult_content)
+
+    def test_delete_removing_comments(self):
+        u = User.objects.get(username='reader')
+        url = reverse("profiles.delete", args=[u.pk])
+        self.loginAs("reader")
+        self.client.post(url, {'delete_comments': 1})
+        self._assertUserDeleted(u)
+
+        self.assertEquals(Comment.objects.count(), 0)
+        self.assertEquals(Favorite.objects.count(), 0)
