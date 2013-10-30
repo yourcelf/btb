@@ -523,3 +523,180 @@ class TestDeleteAccount(BtbLoginTestCase):
 
         self.assertEquals(Comment.objects.count(), 0)
         self.assertEquals(Favorite.objects.count(), 0)
+
+class TestOrganizationsJSON(BtbLoginTestCase):
+    def _denied(self):
+        for method in ("get", "put", "post", "delete"):
+            res = getattr(self.client, method)("/people/organizations.json")
+            self.assertEquals(res.status_code, 403)
+            res = getattr(self.client, method)("/people/affiliations.json")
+            self.assertEquals(res.status_code, 403)
+
+    def test_perms(self):
+        self._denied()
+        self.loginAs("reader")
+        self._denied()
+        self.loginAs("moderator")
+        self._denied()
+
+    def test_get_list(self):
+        self.loginAs("admin")
+        res = self.client.get("/people/organizations.json")
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        dct = Organization.objects.get().to_dict()
+        self.assertEquals(json_res, {
+            'results': [dct],
+            'pagination': {'count': 1, 'per_page': 12, 'page': 1, 'pages': 1}}
+        )
+
+        res = self.client.get("/people/organizations.json?id=1")
+        json_res = json.loads(res.content)
+        self.assertEquals(json_res, dct)
+
+    def test_put_org(self):
+        new_author = User.objects.create(username="newauthor")
+        new_author.profile.managed = True
+        new_author.profile.blogger = True
+        new_author.profile.save()
+            
+        org = Organization.objects.get()
+
+        self.loginAs("admin")
+        org_dict = org.to_dict()
+        org_dict['members'].append({'id': new_author.pk})
+        res = self.client.put("/people/organizations.json", json.dumps(org_dict))
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        self.assertTrue(new_author.profile.to_dict() in json_res['members'])
+        self.assertTrue(new_author in org.members.all())
+
+        # Refresh..
+        org_dict = Organization.objects.get(pk=org.pk).to_dict()
+        removal = None
+        for member in org_dict['members']:
+            if member['id'] == new_author.pk:
+                removal = member
+                break
+        self.assertNotEquals(removal, None)
+        org_dict['members'].remove(removal)
+        res = self.client.put("/people/organizations.json", json.dumps(org_dict))
+        self.assertEquals(res.status_code, 200)
+        self.assertEquals(json.loads(res.content), org_dict)
+        self.assertFalse(new_author in org.members.all())
+
+    def test_post_org(self):
+        self.loginAs("admin")
+        new_author = User.objects.create(username="newauthor")
+        new_author.profile.managed = True
+        new_author.profile.blogger = True
+        new_author.profile.save()
+
+        res = self.client.post("/people/organizations.json", json.dumps({
+            "name": "Second org",
+            "slug": "second-org",
+            "moderators": [{'id': User.objects.get(username='moderator').pk}],
+            "members": [{'id': new_author.pk}],
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 200)
+
+        self.assertEquals(Organization.objects.count(), 2)
+        org = Organization.objects.get(slug="second-org")
+        self.assertEquals(
+            set(org.moderators.all()),
+            set(User.objects.filter(username='moderator'))
+        )
+        self.assertEquals(set(org.members.all()), set([new_author]))
+        self.assertEquals(org.name, "Second org")
+        self.assertEquals(org.slug, "second-org")
+        self.assertFalse(org.public)
+
+        # missing arguments
+        res = self.client.post("/people/organizations.json", json.dumps({}),
+            content_type="application/json")
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Missing attrs: members, moderators, name, slug"
+        })
+
+        # duplicate slug
+        res = self.client.post("/people/organizations.json", json.dumps({
+            "name": "Third org",
+            "slug": "second-org",
+            "moderators": [{'id': User.objects.get(username='moderator').pk}],
+            "members": [{'id': new_author.pk}],
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Slug not unique.",
+        })
+
+        # multiple memberships: clobber previous membership.
+        res = self.client.post("/people/organizations.json", json.dumps({
+            "name": "Third org",
+            "slug": "third-org",
+            "moderators": [{'id': User.objects.get(username='reader').pk}],
+            "members": [{'id': new_author.pk}],
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 200)
+        self.assertEquals(new_author.organization_set.get(),
+                Organization.objects.get(slug='third-org'))
+
+        # Make sure moderators group is added....
+        self.assertEquals(set(User.objects.get(username='reader').groups.all()),
+            set([Group.objects.get(name='readers'), Group.objects.get(name='moderators')]))
+        # ... and removed.
+        org = Organization.objects.get(slug='third-org')
+        org_dict = org.to_dict()
+        remove = None
+        for mod in org_dict['moderators']:
+            if mod['username'] == 'reader':
+                remove = mod
+                break
+        self.assertNotEquals(remove, None)
+        org_dict['moderators'].remove(remove)
+        res = self.client.put("/people/organizations.json", json.dumps(org_dict))
+        self.assertEquals(res.status_code, 200)
+        self.assertEquals(
+                set(User.objects.get(username='reader').groups.all()),
+                set([Group.objects.get(name='readers')])
+        )
+
+        #
+        # Deletion
+        #
+
+        # Delete org
+        res = self.client.delete("/people/organizations.json", json.dumps({
+            'id': Organization.objects.get(slug='third-org').id
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Missing parameters: destination_organization",
+        })
+
+        # Can't delete default organization
+        res = self.client.delete("/people/organizations.json", json.dumps({
+            'id': 1
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Can't delete default organization.",
+        })
+
+        # Successful delete.
+        res = self.client.delete("/people/organizations.json", json.dumps({
+            'id': Organization.objects.get(slug='third-org').pk,
+            'destination_organization': Organization.objects.get(slug='second-org').pk,
+        }), content_type='application/json')
+        self.assertEquals(res.status_code, 200)
+        org = Organization.objects.get(slug='second-org')
+        self.assertEquals(json.loads(res.content), org.to_dict())
+
+        self.assertEquals(set(Organization.objects.all()), set([
+            Organization.objects.get(pk=1), Organization.objects.get(slug='second-org')
+        ]))
+        self.assertEquals(
+            set(new_author.organization_set.all()),
+            set([Organization.objects.get(slug='second-org')])
+        )

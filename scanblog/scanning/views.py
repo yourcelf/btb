@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
 from django.contrib.auth.views import logout
 
-from btb.utils import args_method_decorator, JSONView
+from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
 from scanning import utils, tasks
 from scanning.models import * 
@@ -30,7 +30,7 @@ def get_boolean(val):
     return bool(val == "true" or val == "1")
 
 class Scans(JSONView):
-    @args_method_decorator(permission_required, "scanning.change_scan")
+    @permission_required_or_deny("scanning.change_scan")
     def get(self, request, obj_id=None):
         if obj_id:
             scans = Scan.objects.filter(pk=obj_id)
@@ -81,7 +81,7 @@ class ScanSplits(JSONView):
         kw = json.loads(request.body)
         return kw
 
-    @args_method_decorator(permission_required, "scanning.change_scan")
+    @permission_required_or_deny("scanning.change_scan")
     def get(self, request, obj_id=None):
         try:
             scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
@@ -122,11 +122,8 @@ class ScanSplits(JSONView):
             })
         return self.json_response(split)
 
-    # XXX: This decorator tower could be made less ugly.
-    @args_method_decorator(permission_required, "scanning.change_scan")
-    @args_method_decorator(permission_required, "scanning.add_document")
-    @args_method_decorator(permission_required, "scanning.change_document")
-    @args_method_decorator(permission_required, "scanning.delete_document")
+    @permission_required_or_deny("scanning.change_scan", "scanning.add_document",
+            "scanning.change_document", "scanning.delete_document")
     @args_method_decorator(transaction.commit_on_success)
     def post(self, request, obj_id=None):
         """
@@ -265,7 +262,7 @@ class Documents(JSONView):
         kw = json.loads(request.body)
         return kw
 
-    @args_method_decorator(permission_required, "scanning.change_document")
+    @permission_required_or_deny("scanning.change_document")
     def get(self, request, obj_id=None):
         docs = Document.objects.org_filter(request.user)
         g = request.GET.get
@@ -285,7 +282,7 @@ class Documents(JSONView):
         #TODO: EditLock's for documents.
         return self.paginated_response(request, docs)
 
-    @args_method_decorator(permission_required, "scanning.change_document")
+    @permission_required_or_deny("scanning.change_document")
     @args_method_decorator(transaction.commit_manually)
     def put(self, request, obj_id=None):
         try:
@@ -392,7 +389,7 @@ class Documents(JSONView):
 #
 
 class PendingScans(JSONView):
-    @args_method_decorator(permission_required, "scanning.change_pendingscan")
+    @permission_required_or_deny("scanning.change_pendingscan")
     def get(self, request, obj_id=None):
         if obj_id:
             pendingscans = PendingScan.objects.filter(pk=obj_id)
@@ -409,7 +406,7 @@ class PendingScans(JSONView):
         pendingscans = pendingscans.org_filter(request.user)
         return self.paginated_response(request, pendingscans)
     
-    @args_method_decorator(permission_required, "scanning.add_pendingscan")
+    @permission_required_or_deny("scanning.add_pendingscan")
     def post(self, request, obj_id=None):
         params = json.loads(request.body)
         try:
@@ -432,7 +429,7 @@ class PendingScans(JSONView):
         )
         return self.json_response(pendingscan.to_dict())
 
-    @args_method_decorator(permission_required, "scanning.change_pendingscan")
+    @permission_required_or_deny("scanning.change_pendingscan")
     def put(self, request, obj_id=None):
         try:
             ps = PendingScan.objects.org_filter(
@@ -450,7 +447,7 @@ class PendingScans(JSONView):
             ps.save()
         return self.json_response(ps.to_dict())
 
-    @args_method_decorator(permission_required, "scanning.delete_scan")
+    @permission_required_or_deny("scanning.delete_scan")
     def delete(self, request, obj_id=None):
         try:
             ps = PendingScan.objects.org_filter(

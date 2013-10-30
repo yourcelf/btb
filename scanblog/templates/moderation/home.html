@@ -18,8 +18,10 @@
     <a href='#/users'>Manage users</a>
     <a href='#/mail'>Outgoing mail</a>
     |
-    <!--<a href='#/groups'>Groups</a>-->
+    <a href='#/groups'>Groups</a>
     <a href='tagparty'>Tag party</a>
+    |
+    <a href='stats'>Stats</a>
 {% endblock %}
 {% block body %}
     <div id='app'></div>
@@ -57,6 +59,7 @@
 {# BtB app scripts #}
 <script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/common.coffee'></script>
 <script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/users.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/groups.coffee'></script>
 <script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/pendingscans.coffee'></script>
 <script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/correspondence.coffee'></script>
 <script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/scans.coffee'></script>

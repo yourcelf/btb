@@ -58,7 +58,7 @@
 
                 ["manage_correspondence", "correspondence", "letter"],
 
-                ["add_profile", "profiles", "profile"],
+                ["add_profile",    "profiles", "profile"],
                 ["change_profile", "profiles", "profile"],
 
                 ["change_user", "auth", "user"],

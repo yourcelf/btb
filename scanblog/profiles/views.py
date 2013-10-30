@@ -2,12 +2,12 @@ import json
 import datetime
 from collections import defaultdict
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.models import ContentType
@@ -15,8 +15,10 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models import Count
+from django.db import transaction
 
-from btb.utils import args_method_decorator, JSONView, can_edit_user, can_edit_profile
+from btb.utils import JSONView, can_edit_user, can_edit_profile, \
+        permission_required_or_deny, args_method_decorator
 from profiles.models import Profile, Organization, Affiliation
 from profiles.forms import get_profile_form, UserFormNoEmail, ProfileUploadForm
 from scanning.models import Scan, Document, TranscriptionRevision
@@ -79,8 +81,9 @@ def delete(request, user_id):
     except ValueError:
         raise Http404
 
-    #FIXME: org permission here
-    if request.user.id != user_id and not request.user.has_perm("auth.delete_user"):
+    if request.user.id != user_id and not (
+            request.user.has_perm("auth.delete_user") and \
+            can_edit_user(request.user, user_id)):
         raise PermissionDenied
 
 
@@ -193,7 +196,6 @@ def remove_scan(request, user_id):
 
 @login_required
 def edit_profile(request, user_id=None):
-    #FIXME: org permission here
     edit_profile = can_edit_profile(request.user, user_id)
     edit_user = can_edit_user(request.user, user_id)
     if not edit_profile and not edit_user:
@@ -264,7 +266,7 @@ def edit_profile(request, user_id=None):
 # User JSON CRUD for backbone.
 #
 class UsersJSON(JSONView):
-    @args_method_decorator(permission_required, "auth.change_user")
+    @permission_required_or_deny("auth.change_user")
     def get(self, request, obj_id=None):
         tf = lambda key: request.GET.get(key) in ("true", "1")
 
@@ -324,7 +326,7 @@ class UsersJSON(JSONView):
         profiles = profiles.order_by(*sorting)
         return self.paginated_response(request, profiles)
 
-    @args_method_decorator(permission_required, "auth.add_user")
+    @permission_required_or_deny("auth.add_user")
     def post(self, request, obj_id=None):
         missing = set()
         params = json.loads(request.body)
@@ -368,7 +370,7 @@ class UsersJSON(JSONView):
 
         return self.json_response(user.profile.to_dict())
 
-    @args_method_decorator(permission_required, "auth.change_user")
+    @permission_required_or_deny("auth.change_user")
     def put(self, request, obj_id):
         params = json.loads(request.body)
         user = Profile.objects.org_filter(request.user).get(pk=params['id']).user
@@ -391,29 +393,165 @@ class UsersJSON(JSONView):
             user.profile.save()
         return self.json_response(user.profile.to_dict())
 
-    @args_method_decorator(permission_required, "auth.delete_user")
+    @permission_required_or_deny("auth.delete_user")
     def delete(self, request, obj_id):
         pass
 
 class OrganizationsJSON(JSONView):
-    @args_method_decorator(permission_required, "auth.change_user")
+    @permission_required_or_deny("profiles.change_organization")
     def get(self, request):
         orgs = Organization.objects.org_filter(request.user)
-        return self.json_response({
-            'results': [o.to_dict() for o in orgs]
-        })
+        if "id" in request.GET:
+            return self.get_by_id(request, orgs)
+        return self.paginated_response(request, orgs)
+
+    @permission_required_or_deny("profiles.add_organization")
+    @args_method_decorator(transaction.commit_on_success)
+    def post(self, request):
+        dest_attrs = json.loads(request.body)
+        org = Organization()
+        return self._update_attrs(request, org, dest_attrs)
+
+    @permission_required_or_deny("profiles.change_organization")
+    @args_method_decorator(transaction.commit_on_success)
+    def put(self, request):
+        dest_attrs = json.loads(request.body)
+        try:
+            org = Organization.objects.org_filter(request.user).get(
+                    pk=dest_attrs.get('id'))
+        except Organization.DoesNotExist:
+            raise Http404
+        return self._update_attrs(request, org, dest_attrs)
+
+    @permission_required_or_deny("profiles.delete_organization")
+    @args_method_decorator(transaction.commit_on_success)
+    def delete(self, request):
+        attrs = json.loads(request.body)
+        if attrs['id'] == 1:
+            return HttpResponseBadRequest(json.dumps({
+                "error": "Can't delete default organization."
+            }))
+        if not 'destination_organization' in attrs:
+            return HttpResponseBadRequest(json.dumps({
+                "error": "Missing parameters: destination_organization"
+            }))
+        try:
+            org = Organization.objects.org_filter(request.user).get(
+                    pk=attrs['id'])
+            dest_org = Organization.objects.org_filter(request.user).get(
+                    pk=attrs['destination_organization'])
+        except Organization.DoesNotExist:
+            raise Http404
+        for member in org.members.all():
+            member.organization_set.clear()
+            dest_org.members.add(member)
+        org.delete()
+        return self.json_response(dest_org.to_dict())
+
+    def _update_attrs(self, request, org, dest_attrs):
+        required = set(["name", "slug", "members", "moderators"])
+        missing = sorted(list(required - set(dest_attrs.keys())))
+        if missing:
+            return HttpResponseBadRequest(json.dumps({
+                "error": "Missing attrs: {0}".format(", ".join(missing))
+            }))
+
+        for key in ["about", "footer", "personal_contact", "public", "name"]:
+            setattr(org, key, dest_attrs.get(key, ''))
+        if org.slug != dest_attrs['slug']:
+            taken = True
+            try:
+                Organization.objects.get(slug=dest_attrs['slug'])
+            except Organization.DoesNotExist:
+                taken = False
+            if taken:
+                return HttpResponseBadRequest(json.dumps({
+                    "error": "Slug not unique."
+                }))
+            else:
+                org.slug = dest_attrs['slug']
+        if dest_attrs.get('outgoing_mail_handled_by'):
+            if org.outgoing_mail_handled_by_id != dest_attrs['outgoing_mail_handled_by']['id']:
+                try:
+                    mail_org = Organization.objects.org_filter(request.user).get(
+                            pk=dest_attrs['outgoing_mail_handled_by']['id']
+                    )
+                except Organization.DoesNotExist:
+                    raise PermissionDenied
+                org.outgoing_mail_handled_by = mail_org
+        else:
+            org.outgoing_mail_handled_by = None
+        try:
+            org.save()
+        except Exception:
+            transaction.rollback()
+            raise
+        self._update_related_set(org, "members", dest_attrs,
+                Profile.objects.org_filter(request.user), clobber="organization_set")
+        extra, missing = self._update_related_set(org, "moderators", dest_attrs,
+                Profile.objects.commenters())
+        moderator_group = Group.objects.get(name='moderators')
+        for pk in extra:
+            orgs = Organization.objects.filter(moderators__pk=pk).count()
+            if orgs == 0:
+                User.objects.get(pk=pk).groups.remove(moderator_group)
+        for pk in missing:
+            User.objects.get(pk=pk).groups.add(moderator_group)
+        return self.json_response(org.to_dict())
+
+    def _update_related_set(self, org, key, dest_attrs, qs, clobber=None):
+        """
+        org: the organization
+        key: the related manager's name.
+        dest_attrs: the desired new attributes for the org as a dict, with the
+            org manager as a key.
+        qs: the queryset from which to find related objects to add.
+        """
+        current_pks = set(getattr(org, key).values_list('id', flat=True))
+        desired_pks = set([m['id'] for m in dest_attrs[key]])
+        extra = current_pks - desired_pks
+        missing = desired_pks - current_pks
+        for pk in extra:
+            try:
+                profile = qs.get(pk=pk)
+            except ObjectDoesNotExist:
+                raise PermissionDenied
+            getattr(org, key).remove(profile.user)
+        for pk in missing:
+            try:
+                profile = qs.get(pk=pk)
+            except ObjectDoesNotExist:
+                raise PermissionDenied
+            if clobber:
+                getattr(profile.user, clobber).clear()
+            getattr(org, key).add(profile.user)
+        return extra, missing
+
 
 class AffiliationsJSON(JSONView):
-    @args_method_decorator(permission_required, "auth.change_user")
+    @permission_required_or_deny("profiles.change_affiliation")
     def get(self, request):
-        affiliations = Affiliation.objects.org_filter(
-                request.user
-            ).filter(
-                slug__iexact=request.GET.get("slug", "")
-            )
+        affiliations = Affiliation.objects.org_filter(request.user)
+        if "id" in request.GET:
+            return self.get_by_id(request, affiliations)
+        if "slug" in request.GET:
+            affiliations = affiliations.filter(slug__iexact=request.GET.get("slug"))
         return self.paginated_response(request, affiliations)
 
+    @permission_required_or_deny("profiles.change_affiliation")
+    def put(self, request):
+        pass
+
+    @permission_required_or_deny("profiles.add_affiliation")
+    def post(self, request):
+        pass
+
+    @permission_required_or_deny("profiles.delete_affiliation")
+    def delete(self, request):
+        pass
+
 class CommenterStatsJSON(JSONView):
+    @permission_required_or_deny("auth.change_user")
     def get(self, request):
         try:
             profile = Profile.objects.commenters().select_related('user').get(
@@ -473,4 +611,3 @@ class CommenterStatsJSON(JSONView):
             "relationships": sorted(relationships.items(), key=lambda d: d[1]['total'], reverse=True),
             "users": users,
         })
-

@@ -34,7 +34,7 @@ def home(request):
     return render(request, "moderation/home.html", {
         'document_states': Document.STATES,
         'organizations_json': json.dumps(
-            [o.to_dict() for o in orgs]
+            [o.light_dict() for o in orgs]
         )
     })
 

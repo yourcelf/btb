@@ -10,11 +10,6 @@ class btb.LetterList extends btb.FilteredPaginatedCollection
     model: btb.Letter
     baseUrl: "/correspondence/letters.json"
 
-class btb.Organization extends Backbone.Model
-class btb.OrganizationList extends btb.FilteredPaginatedCollection
-    model: btb.Organization
-    url: "/people/organizations.json"
-
 class btb.CommenterStats extends Backbone.Model
     url: =>
         "/people/commenter_stats.json?user_id=#{@get('user_id')}"

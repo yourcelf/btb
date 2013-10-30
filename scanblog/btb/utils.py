@@ -1,13 +1,14 @@
 import json
 import os
 import logging
+from functools import wraps
 
 from django.conf import settings
 from django.core import paginator
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db.models import Q, Manager
 from django.db.models.query import QuerySet, EmptyQuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.functional import update_wrapper
 from django.views.generic import View
 from sorl.thumbnail.base import ThumbnailBackend, serialize, EXTENSIONS, tokey
@@ -106,6 +107,20 @@ def date_to_string(date):
     else:
         return date.isoformat()
 
+class permission_required_or_deny(object):
+    def __init__(self, *perms):
+        self.perms = perms
+
+    def __call__(self, method):
+        perms = self.perms
+        @wraps(method)
+        def wrapped(self, request, *args, **kwargs):
+            for perm in perms:
+                if not request.user.has_perm(perm):
+                    raise PermissionDenied()
+            return method(self, request, *args, **kwargs)
+        return wrapped
+
 def args_method_decorator(decorator, *dargs, **dkwargs):
     """
     Converts a function decorator into a method decorator, with arguments.
@@ -176,6 +191,13 @@ class JSONView(View):
         if extra:
             struct.update(extra)
         return self.json_response(struct)
+
+    def get_by_id(self, request, queryset, queryarg="id"):
+        try:
+            obj = queryset.get(pk=request.GET.get(queryarg))
+        except ObjectDoesNotExist:
+            raise Http404
+        return self.json_response(obj.to_dict())
 
 class SameDirThumbnailBackend(ThumbnailBackend):
     def _get_thumbnail_filename(self, source, geometry_string, options):

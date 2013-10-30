@@ -207,7 +207,7 @@ class Profile(models.Model):
             'mailing_address': self.mailing_address,
             'special_mail_handling': self.special_mail_handling,
             'consent_form_received': self.consent_form_received,
-            'organizations': [o.to_dict() for o in self.user.organization_set.all()],
+            'organizations': [o.light_dict() for o in self.user.organization_set.all()],
             'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
             'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
             'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
@@ -273,7 +273,7 @@ class OrganizationManager(OrgManager):
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
-    personal_contact = models.CharField(max_length=255)
+    personal_contact = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(
         help_text="Check to make this organization appear in the 'Groups' tab"
     )
@@ -304,8 +304,26 @@ class Organization(models.Model):
         orgs = [""]
 
     def to_dict(self):
+        dct = self.light_dict()
+        dct['moderators'] = [u.profile.to_dict() for u in self.moderators.select_related('profile').all()]
+        dct['members'] = [u.profile.to_dict() for u in self.members.select_related('profile').all()]
+        dct['about'] = self.about
+        dct['footer'] = self.footer
+        dct['personal_contact'] = self.personal_contact
+        if self.custom_intro_packet:
+            dct['custom_intro_packet_url'] = self.custom_intro_packet.url
+        else:
+            dct['cutsom_intro_packet_url'] = None
+        if self.outgoing_mail_handled_by:
+            dct['outgoing_mail_handled_by'] = self.outgoing_mail_handled_by.light_dict()
+        else:
+            dct['outgoing_mail_handled_by'] = None
+        return dct
+
+    def light_dict(self):
         return {
             'id': self.pk,
+            'slug': self.slug,
             'name': self.name,
             'public': self.public,
             'mailing_address': self.mailing_address,

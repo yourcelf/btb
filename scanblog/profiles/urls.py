@@ -10,6 +10,7 @@ urlpatterns = patterns('profiles.views',
     url(r'^organizations.json$', OrganizationsJSON.as_view()),
     url(r'^affiliations.json$', AffiliationsJSON.as_view()),
     url(r'^commenter_stats.json$', CommenterStatsJSON.as_view()),
+
     url(r'^show$', 'show_own_profile', name='profiles.own_profile_show'),
     url(r'^edit$', 'edit_own_profile', name='profiles.own_profile_edit'),
     url(r'^edit/{0}$'.format(user_id), 'edit_profile', name='profiles.profile_edit'),

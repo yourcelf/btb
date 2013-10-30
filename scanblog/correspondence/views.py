@@ -22,7 +22,7 @@ from correspondence.models import Letter, Mailing
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
 from scanning.models import Scan, Document
-from btb.utils import args_method_decorator, JSONView
+from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
 class Letters(JSONView):
     """
@@ -82,7 +82,7 @@ class Letters(JSONView):
                     kw[datefield] = datetime.datetime.strptime(kw[datefield], "%Y-%m-%d %H:%M:%S")
         return kw
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, letter_id=None):
         if letter_id:
             letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
@@ -140,7 +140,7 @@ class Letters(JSONView):
         return self.paginated_response(request, letters, 
                 extra=by_type)
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def post(self, request, letter_id=None):
         kw = self.clean_params(request)
         comments = kw.pop('comments', [])
@@ -154,7 +154,7 @@ class Letters(JSONView):
                 letter.comments.add(Comment.objects.get(pk=comment['id']))
             return self.json_response(letter.to_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def put(self, request, letter_id=None):
         kw = self.clean_params(request)
         letter = utils.mail_filter_or_404(request.user, Letter, pk=kw['id'])
@@ -169,7 +169,7 @@ class Letters(JSONView):
             letter.comments = [Comment.objects.mail_filter(request.user).get(pk=c['id']) for c in comments]
             return self.json_response(letter.to_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def delete(self, request, letter_id=None):
         letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
         letter.delete()
@@ -194,7 +194,7 @@ class CorrespondenceList(JSONView):
     This one combines scans and correspondence into a single response.  This is
     to facilitate a threaded view of the conversation with a particular user.
     """
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, user_id=None):
         scans = Scan.objects.mail_filter(request.user).order_by('-created')
         letters = Letter.objects.mail_filter(request.user)
@@ -270,7 +270,7 @@ class Mailings(JSONView):
                     kw['date_finished'] = kw['date_finished'].replace("T", " ")
         return kw
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, mailing_id=None):
         mailing_id = mailing_id or request.GET.get('mailing_id', None)
         if mailing_id is None:
@@ -278,7 +278,7 @@ class Mailings(JSONView):
         mailing = utils.mail_filter_or_404(request.user, Mailing, pk=mailing_id)
         return self.json_response(mailing.to_dict())
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get_list(self, request):
         mailings = Mailing.objects.mail_filter(request.user).extra(
                 select={
@@ -295,7 +295,7 @@ class Mailings(JSONView):
             mailings = mailings.filter(editor__id=request.GET.get("editor"))
         return self.paginated_response(request, mailings, dict_method="light_dict")
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def post(self, request, mailing_id=None):
         """
@@ -382,7 +382,7 @@ class Mailings(JSONView):
         mailing.letters.add(*to_send)
         return self.json_response(mailing.light_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def put(self, request, mailing_id=None):
         params = self.clean_params(request)
@@ -392,7 +392,7 @@ class Mailings(JSONView):
             mailing.save()
         return self.json_response(mailing.light_dict())
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def delete(self, request, mailing_id=None):
         mailing = get_object_or_404(Mailing, pk=mailing_id)
@@ -434,7 +434,7 @@ def needed_letters(user, consent_form_cutoff=None):
     }
 
 class NeededLetters(JSONView):
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request):
         """
         Return a JSON struct representing counts of the as-yet-ungenerated
