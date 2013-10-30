@@ -132,8 +132,8 @@ class btb.PaginatedView extends Backbone.View
         this
 
     newPageFromEvent: (event) -> parseInt $.trim $(event.currentTarget).text()
-    setPageLoading: => $(".pagination-loading", @el).show()
-    setPageDoneLoading: => $(".pagination-loading", @el).hide()
+    setPageLoading: => @$(".pagination-loading").show()
+    setPageDoneLoading: => @$(".pagination-loading").hide()
 
 class btb.TabularList extends btb.PaginatedView
     tagName: 'table'

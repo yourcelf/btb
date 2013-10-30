@@ -16,7 +16,7 @@ class btb.NoteView extends Backbone.View
         'click .delete-note': 'deleteNote'
         'click .edit-note': 'editNote'
         'click .mark-resolved': 'markResolved'
-    initialize: (note) -> @note = note
+    initialize: ({note}) -> @note = note
     render: =>
         $(@el).html @template note: if @note? then @note.toJSON() else {}
         this
@@ -62,7 +62,7 @@ class btb.NoteViewTable extends btb.PaginatedView
     render: =>
         $(@el).html("")
         for model in @collection.models
-            view = new btb.NoteView(model)
+            view = new btb.NoteView({note: model})
             
             # Bubble up editNote event
             view.bind "editNote", (note) =>

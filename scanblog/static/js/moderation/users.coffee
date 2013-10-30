@@ -326,7 +326,7 @@ class btb.UserCompact extends Backbone.View
 class btb.DocumentTabularList extends btb.TabularList
     thumbnailTemplate: _.template $("#userDetailDocumentThumbnails").html()
     initialize: (options) ->
-        options.collection = new btb.DocumentList
+        options.collection = new btb.DocumentList()
         options.collection.filter = options.filter
         super options
         @collection.fetch
@@ -352,7 +352,7 @@ class btb.DocumentTabularList extends btb.TabularList
     statusColumn: =>
         heading: "Status"
         render: (obj) =>
-            el = new btb.UserDetailDocumentStatusControl(obj)
+            el = new btb.UserDetailDocumentStatusControl({doc: obj})
             el.bind "letterAdded", => @trigger "letterAdded"
             el.render().el
     commentCountColumn: ->
@@ -367,7 +367,7 @@ class btb.DocumentTabularList extends btb.TabularList
             div = $("<div/>")
             a = $("<a href=#/process/document/#{obj.id}/>")
             div.append(a)
-            collection = new btb.NoteList
+            collection = new btb.NoteList()
             collection.filter = {document_id: obj.id, unresolved: 1}
             collection.fetch
                 success: ->
@@ -387,8 +387,8 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
         "change .status": "updateStatus"
         "change .adult": "updateAdult"
         "click .queue-printout": "queuePrintout"
-    initialize: (doc) ->
-        @doc = doc
+    initialize: (options) ->
+        @doc = options.doc
     render: =>
         $(@el).html(@template({
             adult: @doc.get("adult")
@@ -411,7 +411,7 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
         })
     queuePrintout: =>
         @showLoading()
-        letter = new btb.Letter
+        letter = new btb.Letter()
         letter.save {
             type: "printout"
             recipient_id: @doc.get("author").id
@@ -437,8 +437,8 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
 # A table of posts by a particular user.
 #
 class btb.PostTabularList extends btb.DocumentTabularList
-    initialize: (userId, docType="post") ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                     @dateColumn("date_written")
                     @thumbnailColumn(1)
@@ -447,69 +447,76 @@ class btb.PostTabularList extends btb.DocumentTabularList
                     @noteCountColumn()
                     @statusColumn()
                 ]
-            filter: {type: docType, author_id: userId, per_page: 5}
-
+            filter: {
+              type: options.docType or "post",
+              author_id: options.userId,
+              per_page: 5
+            }
+        })
 
 #
 # A table of profiles by a particular user.
 #
 class btb.ProfileDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(3)
                 @statusColumn()
             ]
-            filter: {type: "profile", author_id: userId}
+            filter: {type: "profile", author_id: options.userId}
+        })
 
 class btb.RequestDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(3)
                 @noteCountColumn()
                 @needsAttentionColumn()
             ]
-            filter: {type: "request", author_id: userId}
+            filter: {type: "request", author_id: options.userId}
+        })
 
 class btb.LicenseDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(1)
             ]
-            filter: {type: "license", author_id: userId}
+            filter: {type: "license", author_id: options.userId}
+        })
 
 #
 # A table of photos by a particular user.
 #
 class btb.PhotoTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                     @dateColumn("date_written"), @thumbnailColumn(1)
                     @statusColumn()
                 ]
-            filter: {type: "photo", author_id: userId}
+            filter: {type: "photo", author_id: options.userId}
+        })
 
 #
 # A table of missing scans by a particular user.
 #
 class btb.MissingScanTabularList extends btb.TabularList
-    initialize: (userId) ->
-        options = {}
+    initialize: (options={}) ->
         options.collection = new btb.PendingScanList
-        options.collection.filter = { author_id: userId, missing: true }
+        options.collection.filter = { author_id: options.userId, missing: true }
         options.columns = [
             @dateColumn("created", "Entered"), @dateColumn("completed", "Completed"), {
                 heading: "Missing"
                 render: (model) -> new btb.MissingCheckbox(ps: model).render().el
             }
         ]
-        super options
+        super(options)
         @collection.fetch
             success: => @render()
 
@@ -674,11 +681,11 @@ class btb.UserDetail extends Backbone.View
         @$(".user-state").html @stateTemplate {user: userFields}
 
         userId = @user.get "id"
-        licenses = new btb.LicenseDocumentTabularList(userId)
-        posts = new btb.PostTabularList(userId)
-        requests = new btb.RequestDocumentTabularList(userId)
-        profiles = new btb.ProfileDocumentTabularList(userId)
-        photos = new btb.PhotoTabularList(userId)
+        licenses = new btb.LicenseDocumentTabularList({userId})
+        posts = new btb.PostTabularList({userId})
+        requests = new btb.RequestDocumentTabularList({userId})
+        profiles = new btb.ProfileDocumentTabularList({userId})
+        photos = new btb.PhotoTabularList({userId})
 
         $(".licenselist", @el).html licenses.el
         $(".postlist", @el).html posts.el
@@ -699,7 +706,7 @@ class btb.UserDetail extends Backbone.View
         for list in [licenses, posts, requests, profiles, photos]
             list.bind "letterAdded", => correspondence.table.fetchItems()
 
-        $(".missingscanlist", @el).html new btb.MissingScanTabularList(userId).el
+        $(".missingscanlist", @el).html new btb.MissingScanTabularList(userId: userId).el
         this
 
     setCommenter: =>
@@ -721,7 +728,7 @@ class btb.UserDetail extends Backbone.View
         @render()
 
     fetchUser: (userId) =>
-        ul = new btb.UserList
+        ul = new btb.UserList()
         ul.fetchById userId, {
             success: (userList, response) =>
                 user = userList.at 0

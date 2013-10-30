@@ -66,10 +66,11 @@ class btb.LetterAddingMenu extends Backbone.View
     addLetter: (event) =>
         @showLoading()
         type = $(event.currentTarget).val()
-        letter = new btb.Letter
+        letter = new btb.Letter({
             recipient: @recipient.toJSON()
             org_id: $(".org_id", @el).val()
             type: type
+        })
         if type == "letter"
             # For custom letters, trigger the need for an external editor.
             $(".org-chooser", @el).hide()
@@ -148,10 +149,11 @@ class btb.CommentsMailingTable extends Backbone.View
     template: _.template $("#commentRow").html()
     initialize: (options) ->
         if options.modelParams
-            @collection = new btb.CommentList _.map options.modelParams, (c) ->
+            @collection = new btb.CommentList(_.map(options.modelParams, (c) ->
                 new btb.Comment(c)
+            ))
         else
-            @collection = new btb.CommentList
+            @collection = new btb.CommentList()
     render: =>
         $(@el).html @heading()
         for comment in @collection.models
@@ -169,8 +171,8 @@ class btb.LetterRow extends Backbone.View
         'click .mark-letter-unsent': 'markLetterUnsent'
         'click .special-handling': 'specialHandling'
 
-    initialize: (letter) ->
-        @letter = letter
+    initialize: (options) ->
+        @letter = options.letter
 
     editLetter: (event) => @trigger "editLetter", @letter
     
@@ -235,15 +237,16 @@ class btb.LetterRow extends Backbone.View
             commaddress: @letter.get("org")?.mailing_address.replace(/\n/g, ", ")
         if @letter.get("type") == "comments" or @letter.get("type") == "comment_removal"
             # Add a comments table...
-            commentsTable = new btb.CommentsMailingTable
-                modelParams: @letter.get "comments"
+            commentsTable = new btb.CommentsMailingTable({
+                modelParams: @letter.get("comments")
+            })
             $(".comments-table", @el).html commentsTable.render().el
         this
 
 class btb.CorrespondenceScanRow extends Backbone.View
     template: _.template $("#correspondenceScanRow").html()
-    initialize: (scan) ->
-        @scan = scan
+    initialize: (options) ->
+        @scan = options.scan
 
     render: =>
         $(@el).html @template scan: @scan.toJSON()
@@ -260,13 +263,13 @@ class btb.LetterTable extends btb.PaginatedView
         'change select.per-page': 'setPerPage'
 
     initialize: (options={filter: {}}) ->
-        @collection = new btb.LetterList
+        @collection = new btb.LetterList()
         @collection.filter = options.filter
 
     render: =>
         $(@el).html @template()
         for letter in @collection.models
-            row = new btb.LetterRow letter
+            row = new btb.LetterRow({letter})
             row.bind "editLetter", (letter) =>
                 @trigger "editLetter", letter
             row.bind "letterDeleted", (letter) =>
@@ -324,7 +327,7 @@ class btb.CorrespondenceTable extends btb.LetterTable
 
 
     initialize: (options={filter: {}}) ->
-        @collection = new btb.CorrespondenceList
+        @collection = new btb.CorrespondenceList()
         @collection.filter = options.filter or {}
         # Default to both if neither is chosen.
         if not @collection.filter.incoming and not @collection.filter.outgoing
@@ -350,7 +353,7 @@ class btb.CorrespondenceTable extends btb.LetterTable
         @addPaginationRow()
         @collection.each (obj) =>
             if obj.get("letter")?
-                row = new btb.LetterRow(new btb.Letter obj.get "letter")
+                row = new btb.LetterRow({letter: new btb.Letter(obj.get("letter"))})
                 
                 # Bind events that change number of rows.
                 for event in ["letterAdded", "letterDeleted"]
@@ -361,7 +364,7 @@ class btb.CorrespondenceTable extends btb.LetterTable
                     @trigger "editLetter", letter
 
             else if obj.get("scan")?
-                row = new btb.CorrespondenceScanRow(new btb.Scan obj.get "scan")
+                row = new btb.CorrespondenceScanRow({scan: new btb.Scan(obj.get("scan"))})
 
             $(@el).append row.render().el
         @addPaginationRow()
@@ -543,7 +546,7 @@ class btb.MailingFilter extends btb.PaginatedView
         $(@el).html @template()
         @items = {}
         for mailing in @collection.models
-            item = new btb.MailingFilterItem mailing
+            item = new btb.MailingFilterItem({mailing})
             item.bind "itemSelected", @chooseItem
             item.bind "itemDeleted", (item) =>
                 @fetchItems()
@@ -620,8 +623,8 @@ class btb.MailingFilterItem extends Backbone.View
         'click .mark-unsent': 'markUnsent'
         'click .clear-cache': 'clearCache'
 
-    initialize: (mailing) ->
-        @mailing = mailing
+    initialize: (options) ->
+        @mailing = options.mailing
     render: =>
         $(@el).html @template mailing: @mailing.toJSON()
         if @mailing.get("date_finished")
@@ -669,7 +672,7 @@ class btb.MailingFilterItem extends Backbone.View
 
 class btb.OutgoingMailView extends Backbone.View
     template: _.template $("#outgoingMail").html()
-    initialize: (path) ->
+    initialize: (options) ->
         @letters = new btb.LetterTable
         @letterFilter = new btb.LetterFilter
         @mailingFilter = new btb.MailingFilter
@@ -694,13 +697,13 @@ class btb.OutgoingMailView extends Backbone.View
             @mailingFilter.fetchItems()
 
         navigateCallback = =>
-            switch path
+            switch options.path
                 when "all" then @mailingFilter.chooseAll()
                 when "sent" then @mailingFilter.chooseAllSent()
                 when "unsent" then @mailingFilter.chooseAllUnsent()
                 else
-                    if not isNaN path
-                        @mailingFilter.chooseItem parseInt path
+                    if not isNaN(options.path)
+                        @mailingFilter.chooseItem(parseInt(options.path))
                     else
                         @mailingFilter.chooseEnqueued()
             @mailingFilter.unbind "mailingsLoaded", navigateCallback

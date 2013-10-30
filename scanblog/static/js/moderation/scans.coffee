@@ -144,8 +144,8 @@ class btb.SplitScanView extends Backbone.View
         'click .page-size-chooser span': 'setPageSize'
         'keyup .choose-code input': 'chooseCode'
 
-    initialize: (scanId) ->
-        @split = new btb.ScanSplit {scan: id: parseInt(scanId)}
+    initialize: (options) ->
+        @split = new btb.ScanSplit {scan: id: parseInt(options.scanId)}
         @split.fetch
             success: @initSplit
         $(window).keyup @keyUp

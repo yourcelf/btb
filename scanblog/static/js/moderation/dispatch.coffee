@@ -14,6 +14,10 @@ class btb.ScanModerationRouter extends Backbone.Router
         "mail":                     "mail"
         "mail/:path":               "mail"
 
+        "groups":                   "groups"
+        "groups/:type/:id":         "groups"
+
+
     _show: (view) =>
         @view?.remove()
         @view = view
@@ -30,12 +34,13 @@ class btb.ScanModerationRouter extends Backbone.Router
     dashboard:                => @_show(new btb.Dashboard())
     pending:                  => @_show(new btb.PendingScans())
     users:           (userId) => @_show(new btb.UserDetail({userId}))
-    mail:              (path) => @_show(new btb.OutgoingMailView(path))
+    mail:              (path) => @_show(new btb.OutgoingMailView({path}))
     processScanList:          => @_show(new btb.ProcessingManager())
-    processScan:     (scanId) => @_show(new btb.SplitScanView(scanId))
+    processScan:     (scanId) => @_show(new btb.SplitScanView({scanId}))
     processDocument: (idlist) => @_show(new btb.EditDocumentManager({
         documents: idlist.split(".")
     }))
+    groups:        (type, id) => @_show(new btb.GroupManager({type, id}))
 
 btb.app = new btb.ScanModerationRouter()
 Backbone.history.start()
