@@ -563,15 +563,67 @@ class AffiliationsJSON(JSONView):
 
     @permission_required_or_deny("profiles.change_affiliation")
     def put(self, request):
-        pass
+        attrs = json.loads(request.body)
+        try:
+            aff = Affiliation.objects.org_filter(request.user).get(pk=attrs['id'])
+        except Affiliation.DoesNotExist:
+            raise Http404
+        return self.update_attrs(request, aff, attrs)
 
     @permission_required_or_deny("profiles.add_affiliation")
     def post(self, request):
-        pass
+        attrs = json.loads(request.body)
+        aff = Affiliation()
+        return self.update_attrs(request, aff, attrs)
 
     @permission_required_or_deny("profiles.delete_affiliation")
     def delete(self, request):
-        pass
+        attrs = json.loads(request.body)
+        try:
+            aff = Affiliation.objects.org_filter(request.user).get(pk=attrs.get('id'))
+        except Affiliation.DoesNotExist:
+            raise Http404
+        aff.delete()
+        return self.json_response({"status": "success"})
+
+    @args_method_decorator(transaction.commit_on_success)
+    def update_attrs(self, request, aff, attrs):
+        res = self._update_attrs(request, aff, attrs)
+        if res.status_code != 200:
+            transaction.rollback()
+        return res
+
+    def error(self, msg):
+        return HttpResponseBadRequest(json.dumps({"error": msg}))
+
+    def _update_attrs(self, request, aff, attrs):
+        missing = []
+        for key in ['title', 'slug', 'list_body', 'detail_body',
+                    'public', 'order', 'organizations']:
+            if key not in attrs:
+                missing.append(key)
+        if missing:
+            return self.error("Missing parameters: {0}".format(", ".join(missing)))
+
+        for key in ['title', 'list_body', 'detail_body', 'public', 'order']:
+            setattr(aff, key, attrs[key])
+        if Affiliation.objects.filter(slug=attrs['slug']).exclude(pk=aff.pk).exists():
+            return self.error("Slug not unique.")
+        aff.slug = attrs['slug']
+        orgs = []
+        for org_dict in attrs['organizations']:
+            try:
+                org = Organization.objects.org_filter(request.user).get(pk=org_dict.get('id'))
+            except Organization.DoesNotExist:
+                return self.error(
+                    "Organization {0} not found or not allowed.".format(org_dict.get('id'))
+                )
+            orgs.append(org)
+        if not orgs:
+            return self.error("No organization specified.")
+        aff.save()
+        aff.organizations = orgs
+        return self.json_response(aff.to_dict())
 
 class CommenterStatsJSON(JSONView):
     @permission_required_or_deny("auth.change_user")

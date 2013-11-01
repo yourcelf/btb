@@ -180,13 +180,13 @@ class JSONView(View):
             dict_method="to_dict", extra=None):
         p, page = self.build_paginator(request, objects)
         struct = {
-            'pagination': {
-                'count': p.count,
-                'page': page.number,
-                'pages': p.num_pages,
-                'per_page': p.per_page,
+            u'pagination': {
+                u'count': p.count,
+                u'page': page.number,
+                u'pages': p.num_pages,
+                u'per_page': p.per_page,
             },
-            'results': [getattr(obj, dict_method)() for obj in page.object_list]
+            u'results': [getattr(obj, dict_method)() for obj in page.object_list]
         }
         if extra:
             struct.update(extra)

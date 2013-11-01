@@ -171,7 +171,6 @@ class ReplyCode(models.Model):
             "campaign__organizations",
         ]
 
-
     def save(self, *args, **kwargs):
         if not self.code:
             while True:

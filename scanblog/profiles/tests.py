@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from profiles.models import Profile, Organization
+from profiles.models import Profile, Organization, Affiliation
 
 from scanning.models import Document, Scan
 from annotations.models import Note
@@ -529,17 +529,17 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         for method in ("get", "put", "post", "delete"):
             res = getattr(self.client, method)("/people/organizations.json")
             self.assertEquals(res.status_code, 403)
-            res = getattr(self.client, method)("/people/affiliations.json")
-            self.assertEquals(res.status_code, 403)
 
     def test_perms(self):
         self._denied()
         self.loginAs("reader")
         self._denied()
+        # Must be logged in with "profiles.<x>_organization" perms, which
+        # regular moderators don't have.
         self.loginAs("moderator")
         self._denied()
 
-    def test_get_list(self):
+    def test_get(self):
         self.loginAs("admin")
         res = self.client.get("/people/organizations.json")
         self.assertEquals(res.status_code, 200)
@@ -715,3 +715,151 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
             set(new_author.organization_set.all()),
             set([Organization.objects.get(slug='second-org')])
         )
+
+class TestAffiliationsJSON(BtbLoginTestCase):
+    required_keys = ['title', 'slug', 'list_body', 'detail_body',
+                     'public', 'order', 'organizations']
+
+    def _denied(self):
+        for method in ("get", "put", "post", "delete"):
+            res = getattr(self.client, method)("/people/affiliations.json")
+            self.assertEquals(res.status_code, 403)
+
+    def setUp(self):
+        super(TestAffiliationsJSON, self).setUp()
+        self.aff = Affiliation.objects.create(
+                title="My Affiliation",
+                slug="my-affiliation",
+                list_body="HTML for the top of the group page",
+                detail_body="HTML to append to individual posts",
+                public=True,
+                order=1,
+        )
+        self.aff.organizations.add(self.org)
+
+    def test_perms(self):
+        self._denied()
+        self.loginAs("reader")
+        self._denied()
+        # Must be logged in with "profiles.<x>_affiliation" perms, which
+        # regular moderators don't have.
+        self.loginAs("moderator")
+        self._denied()
+
+    def test_get(self):
+        self.loginAs("admin")
+
+        res = self.client.get("/people/affiliations.json")
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        self.assertEquals(json_res, {
+            'results': [self.aff.to_dict()],
+            'pagination': {'count': 1, 'per_page': 12, 'page': 1, 'pages': 1},
+        })
+
+        res = self.client.get("/people/affiliations.json?id={0}".format(self.aff.pk))
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        self.assertEquals(json_res, self.aff.to_dict())
+
+        res = self.client.get("/people/affiliations.json?slug={0}".format(self.aff.slug))
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        self.assertEquals(json_res, {
+            'results': [self.aff.to_dict()],
+            'pagination': {'count': 1, 'per_page': 12, 'page': 1, 'pages': 1},
+        })
+
+        res = self.client.get("/people/affiliations.json?slug=noexist")
+        self.assertEquals(res.status_code, 200)
+        json_res = json.loads(res.content)
+        self.assertEquals(json_res, {
+            'results': [],
+            'pagination': {'count': 0, 'per_page': 12, 'page': 1, 'pages': 1},
+        })
+
+        res = self.client.get("/people/affiliations.json?id=12345")
+        self.assertEquals(res.status_code, 404)
+
+    def test_put(self):
+        self.loginAs("admin")
+        url = "/people/affiliations.json"
+
+        aff_dict = self.aff.to_dict()
+        aff_dict['title'] = "My new title"
+        aff_dict['slug'] = "Slugerific"
+        aff_dict['public'] = False
+        aff_dict['order'] = 2
+
+        for key in self.required_keys:
+            val = aff_dict.pop(key)
+            res = self.client.put(url, json.dumps(aff_dict), content_type="application/json")
+            self.assertEquals(res.status_code, 400)
+            self.assertEquals(json.loads(res.content), {
+                "error": "Missing parameters: {0}".format(key)
+            })
+            aff_dict[key] = val
+
+
+        res = self.client.put(url, json.dumps(aff_dict), content_type="application/json")
+        self.assertEquals(res.status_code, 200)
+        self.assertEquals(json.loads(res.content), aff_dict)
+        self.assertEquals(Affiliation.objects.get().title, aff_dict['title'])
+
+    def test_post(self):
+        self.loginAs("admin")
+        url = "/people/affiliations.json"
+
+        attrs = {
+            "title": "Second Aff",
+            "slug": "second-aff",
+            "public": True,
+            "order": 2,
+            "list_body": "A fine collection of second-aff posts",
+            "detail_body": "A fine second-aff post",
+            "organizations": [Organization.objects.get().light_dict()],
+        }
+        for key in self.required_keys:
+            val = attrs.pop(key)
+            res = self.client.post(url, json.dumps(attrs), content_type="application/json")
+            self.assertEquals(res.status_code, 400)
+            self.assertEquals(json.loads(res.content), {
+                "error": "Missing parameters: {0}".format(key)
+            })
+            attrs[key] = val
+
+        # Empty organizations error
+        orig_orgs = attrs['organizations']
+        attrs['organizations'] = []
+        res = self.client.post(url, json.dumps(attrs), content_type="application/json")
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {"error": "No organization specified."})
+        # invalid org error
+        attrs['organizations'] = [{'id': 12345}]
+        res = self.client.post(url, json.dumps(attrs), content_type="application/json")
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Organization 12345 not found or not allowed."
+        })
+        attrs['organizations'] = orig_orgs
+
+        # Duplicate slug error
+        orig_slug = attrs['slug']
+        attrs['slug'] = self.aff.slug
+        res = self.client.post(url, json.dumps(attrs), content_type="application/json")
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Slug not unique."
+        })
+        attrs['slug'] = orig_slug
+
+        res = self.client.post(url, json.dumps(attrs), content_type="application/json")
+        self.assertEquals(res.status_code, 200)
+
+    def test_delete(self):
+        self.loginAs("admin")
+        res = self.client.delete("/people/affiliations.json", json.dumps({
+            "id": self.aff.id
+        }), content_type="application/json")
+        self.assertEquals(res.status_code, 200)
+        self.assertFalse(Affiliation.objects.all().exists())

@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     # Moderator
     url(r'^annotations/', include('annotations.urls')),
+    url(r'^campaigns/', include('campaigns.urls')),
     url(r'^correspondence/', include('correspondence.urls')),
     url(r'^moderation/', include('moderation.urls')),
     url(r'^scanning/', include('scanning.urls')),

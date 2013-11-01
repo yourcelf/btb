@@ -194,29 +194,29 @@ class Profile(models.Model):
     def to_dict(self):
         scans_authored = getattr(self, "user__scans_authored", None)
         return {
-            'id': self.pk,
-            'username': self.user.username,
-            'email': self.user.email,
-            'is_active': self.user.is_active,
-            'date_joined': self.user.date_joined.isoformat(),
-            'blogger': self.blogger,
-            'managed': self.managed,
-            'lost_contact': self.lost_contact,
-            'blog_name': self.blog_name,
-            'display_name': self.display_name,
-            'mailing_address': self.mailing_address,
-            'special_mail_handling': self.special_mail_handling,
-            'consent_form_received': self.consent_form_received,
-            'organizations': [o.light_dict() for o in self.user.organization_set.all()],
-            'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
-            'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
-            'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
-            'blog_url': self.get_blog_url(),
-            'profile_url': self.get_absolute_url(),
-            'edit_url': self.get_edit_url(),
-            'scans_authored': scans_authored,
-            'has_public_profile': self.has_public_profile(),
-            'is_public': self.is_public(),
+            u'id': self.pk,
+            u'username': self.user.username,
+            u'email': self.user.email,
+            u'is_active': self.user.is_active,
+            u'date_joined': self.user.date_joined.isoformat(),
+            u'blogger': self.blogger,
+            u'managed': self.managed,
+            u'lost_contact': self.lost_contact,
+            u'blog_name': self.blog_name,
+            u'display_name': self.display_name,
+            u'mailing_address': self.mailing_address,
+            u'special_mail_handling': self.special_mail_handling,
+            u'consent_form_received': self.consent_form_received,
+            u'organizations': [o.light_dict() for o in self.user.organization_set.all()],
+            u'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
+            u'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
+            u'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
+            u'blog_url': self.get_blog_url(),
+            u'profile_url': self.get_absolute_url(),
+            u'edit_url': self.get_edit_url(),
+            u'scans_authored': scans_authored,
+            u'has_public_profile': self.has_public_profile(),
+            u'is_public': self.is_public(),
         }
             
     def save(self, *args, **kwargs):
@@ -322,11 +322,11 @@ class Organization(models.Model):
 
     def light_dict(self):
         return {
-            'id': self.pk,
-            'slug': self.slug,
-            'name': self.name,
-            'public': self.public,
-            'mailing_address': self.mailing_address,
+            u'id': self.pk,
+            u'slug': self.slug,
+            u'name': self.name,
+            u'public': self.public,
+            u'mailing_address': self.mailing_address,
         }
 
     def members_count(self):
@@ -346,6 +346,11 @@ class AffiliationManager(OrgManager):
     def private(self): return self.all().private()
 
 class Affiliation(models.Model):
+    """
+    Affiliations are like a "super tag" for posts, which:
+     1. can append additional HTML to the top of list and detail views
+     2. is limited to use by particular org's.
+    """
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True,
             help_text="Use this to identify this affiliation when editing documents.")
@@ -383,10 +388,15 @@ class Affiliation(models.Model):
 
     def to_dict(self):
         return {
-            'id': self.pk,
-            'title': self.title,
-            'slug': self.slug,
-            'logo_url': self.logo.url if self.logo else None
+            u'id': self.pk,
+            u'title': self.title,
+            u'slug': self.slug,
+            u'logo_url': self.logo.url if self.logo else None,
+            u'list_body': self.list_body,
+            u'detail_body': self.detail_body,
+            u'organizations': [o.light_dict() for o in self.organizations.all()],
+            u'public': self.public,
+            u'order': self.order,
         }
 
     def total_num_responses(self):
