@@ -235,22 +235,19 @@ class ScanSplits(JSONView):
 
             # Apportion pages.
             pages = []
-            old_pages = set(document.documentpage_set.all())
+            old_transformations = {}
+            for page in document.documentpage_set.all():
+                old_transformations[page.scan_page_id] = page.transformations
+                page.full_delete()
             for order,scanpage_id in enumerate(doc["pages"]):
-                try:
-                    documentpage = DocumentPage.objects.get(document=document,
-                            scan_page=scanpage_id)
-                except DocumentPage.DoesNotExist:
-                    documentpage = DocumentPage.objects.create(
-                        document=document,
-                        scan_page=ScanPage.objects.get(pk=scanpage_id), 
-                        order=order,
-                    )
-                pages.append(documentpage)
+                documentpage = DocumentPage.objects.create(
+                    document=document,
+                    scan_page=ScanPage.objects.get(pk=scanpage_id), 
+                    order=order,
+                    transformations=old_transformations.get(scanpage_id, "{}"),
+                )
             document.documentpage_set = pages
             docs.append(document)
-            for obsolete in (old_pages - set(pages)):
-                obsolete.full_delete()
         scan.document_set = docs
         return self.get(request, obj_id=scan.pk)
 
