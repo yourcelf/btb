@@ -10,6 +10,7 @@ from .base import BtbLiveServerTestCase, NoSuchElementException
 from scanning.models import Scan, PendingScan, Document
 from django.contrib.auth.models import User
 
+
 class TestModScans(BtbLiveServerTestCase):
     def test_process_scan_with_pending(self):
         # NOTE: This one is a might lengthy; but it's easier than mocking.
@@ -20,6 +21,8 @@ class TestModScans(BtbLiveServerTestCase):
         b = self.selenium
 
         self.sign_in("testmod", "testmod")
+
+        # Add a pending scan.
         b.get(self.url("/moderation/#/pending"))
         self.css(".user-chooser-trigger").send_keys("T")
         time.sleep(0.5)
@@ -31,42 +34,19 @@ class TestModScans(BtbLiveServerTestCase):
         pk = int(self.css(".user-id-raw").get_attribute("value"))
         scan_code = self.css(".reply-code").text
 
-        b.get(self.url("/scanning/add"))
-        self.css("#id_file").send_keys(os.path.join(
-            settings.MEDIA_ROOT, "test", "src", "ex-post-prof-license.pdf"
-        ))
-        self.css(".upload-submit").submit()
-        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")))
-        while b.current_url.startswith(self.url("/moderation/wait")):
-            try:
-                el = self.css(".error")
-                assert False, el.text
-            except NoSuchElementException:
-                time.sleep(1)
-        self.wait(lambda b: b.current_url.startswith(self.url("/moderation/#/process/scan")))
-        self.wait(lambda b: len(self.csss(".page-image")) == 7)
+        # Upload a scan for it.
+        self._upload_test_post("ex-post-prof-license.pdf", 7)
 
+        # Apply the scan code.
         self.css(".choose-code input").send_keys(scan_code)
         self.css(".choose-code input").send_keys(Keys.ENTER)
         self.css("h1").click() # arbitrary element to click to simulate 'blur'
         self.wait(lambda b: self.css(".user-name").text == "Test Author")
 
-        page_types = ["ignore", "post", "post", "profile", "profile", "license", "license"]
-        for i, ptype in enumerate(page_types):
-            self.css(".pagestatus.page-%s" % i).click()
-            choices = {}
-            for el in self.csss(".page-type-choice"):
-                if el.text.strip() == ptype:
-                    el.click()
-                    break
-            else:
-                self.assertFail("Can't find type '%s'" % hsh['type'])
-
-        self.css(".save").click()
-        try:
-            self.wait(lambda b: "disabled" not in self.css(".switch-to-edit-documents").get_attribute("class"))
-        except StaleElementReferenceException:
-            pass
+        self._classify_pages(
+                ["ignore", "post", "post", "profile", "profile", "license", "license"]
+        )
+        self._save_split()
 
         #
         # Edit the documents
@@ -117,3 +97,59 @@ class TestModScans(BtbLiveServerTestCase):
         time.sleep(0.5)
         self.assertTrue("Test Author" in b.title)
 
+    def _upload_test_post(self, filename, num_pages):
+        b = self.selenium
+        b.get(self.url("/scanning/add"))
+        self.css("#id_file").send_keys(os.path.join(
+            settings.MEDIA_ROOT, "test", "src", filename
+        ))
+        self.css(".upload-submit").submit()
+        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")))
+        while b.current_url.startswith(self.url("/moderation/wait")):
+            try:
+                el = self.css(".error")
+                assert False, el.text
+            except NoSuchElementException:
+                time.sleep(1)
+        self.wait(lambda b: b.current_url.startswith(self.url("/moderation/#/process/scan")))
+        self.wait(lambda b: len(self.csss(".page-image")) == num_pages)
+
+    def _classify_pages(self, page_types):
+        for i, ptype in enumerate(page_types):
+            self.css(".pagestatus.page-%s" % i).click()
+            choices = {}
+            for el in self.csss(".page-type-choice"):
+                if el.text.strip() == ptype:
+                    el.click()
+                    break
+            else:
+                self.assertFail("Can't find type '%s'" % hsh['type'])
+
+    def _save_split(self):
+        self.css(".save").click()
+        try:
+            self.wait(lambda b: "disabled" not in self.css(".switch-to-edit-documents").get_attribute("class"))
+        except StaleElementReferenceException:
+            pass
+
+    def test_reclassify_page(self):
+        """
+        Test a bug where swapping the first page of two different docs caused
+        integrity error.
+        """
+        b = self.selenium
+
+        self.sign_in("testmod", "testmod")
+        self._upload_test_post("ex-prof-posts.pdf", 6)
+        self.css(".user-chooser-trigger").send_keys("T")
+        time.sleep(0.5)
+        self.css("input.user-search").send_keys("est Author")
+        self.wait(lambda b: self.css(".user-chooser .display-name").text == "Test Author")
+        self.css(".user-chooser .display-name").click()
+
+        self._classify_pages(["ignore", "post", "profile", "ignore", "ignore", "ignore"])
+        self._save_split()
+        self._classify_pages(["ignore", "ignore", "ignore", "ignore", "ignore", "ignore"])
+        self._classify_pages(["ignore", "profile", "post", "ignore", "ignore", "ignore"])
+        self._save_split()
+        self.wait(lambda b: len(self.csss(".post-save-message.success")) > 0)
