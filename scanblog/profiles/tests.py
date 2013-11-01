@@ -11,7 +11,7 @@ from profiles.models import Profile, Organization
 
 from scanning.models import Document, Scan
 from annotations.models import Note
-from btb.tests import BtbLoginTestCase
+from btb.tests import BtbLoginTestCase, BtbLoginTransactionTestCase
 from comments.models import Comment, Favorite
 
 class TestUrls(TestCase):
@@ -524,7 +524,7 @@ class TestDeleteAccount(BtbLoginTestCase):
         self.assertEquals(Comment.objects.count(), 0)
         self.assertEquals(Favorite.objects.count(), 0)
 
-class TestOrganizationsJSON(BtbLoginTestCase):
+class TestOrganizationsJSON(BtbLoginTransactionTestCase):
     def _denied(self):
         for method in ("get", "put", "post", "delete"):
             res = getattr(self.client, method)("/people/organizations.json")
@@ -544,15 +544,15 @@ class TestOrganizationsJSON(BtbLoginTestCase):
         res = self.client.get("/people/organizations.json")
         self.assertEquals(res.status_code, 200)
         json_res = json.loads(res.content)
-        dct = Organization.objects.get().to_dict()
+        org = Organization.objects.get()
         self.assertEquals(json_res, {
-            'results': [dct],
+            'results': [org.light_dict()],
             'pagination': {'count': 1, 'per_page': 12, 'page': 1, 'pages': 1}}
         )
 
         res = self.client.get("/people/organizations.json?id=1")
         json_res = json.loads(res.content)
-        self.assertEquals(json_res, dct)
+        self.assertEquals(json_res, org.to_dict())
 
     def test_put_org(self):
         new_author = User.objects.create(username="newauthor")
@@ -560,7 +560,8 @@ class TestOrganizationsJSON(BtbLoginTestCase):
         new_author.profile.blogger = True
         new_author.profile.save()
             
-        org = Organization.objects.get()
+        org = Organization.objects.create(name='Second Org', slug='second-org')
+        org.moderators.add(User.objects.get(username='moderator'))
 
         self.loginAs("admin")
         org_dict = org.to_dict()
@@ -580,8 +581,22 @@ class TestOrganizationsJSON(BtbLoginTestCase):
                 break
         self.assertNotEquals(removal, None)
         org_dict['members'].remove(removal)
+        org_dict['name'] = "Second Org 2"
+        # Try 1: This should fail, because we removed members but didn't
+        # specify a repalcement org for the managed members.
+        res = self.client.put("/people/organizations.json", json.dumps(org_dict))
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "Must specify replacement org if removing users"
+        })
+        # Ensure we haven't changed yet.
+        self.assertEquals(Organization.objects.get(slug='second-org').name, "Second Org")
+
+        # Try 2: This should work.
+        org_dict['replacement_org'] = 1
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 200)
+        org_dict.pop('replacement_org')
         self.assertEquals(json.loads(res.content), org_dict)
         self.assertFalse(new_author in org.members.all())
 

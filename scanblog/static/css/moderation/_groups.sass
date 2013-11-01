@@ -1,0 +1,23 @@
+.group-manager
+  display: table
+  width: 100%
+  .group-manager-row
+    display: table-row
+  .left-sidebar
+    display: table-cell
+    li.item
+      cursor: pointer
+      text-align: right
+      padding-right: 1em
+      &.active
+        background-color: #fed
+  .detail
+    border: 6px solid #fed
+    border-radius: 5px
+    display: table-cell
+    padding: 1em
+    width: 100%
+  .adder
+    text-align: center
+    a.adder
+      +flat-button

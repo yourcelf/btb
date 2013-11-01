@@ -403,17 +403,13 @@ class OrganizationsJSON(JSONView):
         orgs = Organization.objects.org_filter(request.user)
         if "id" in request.GET:
             return self.get_by_id(request, orgs)
-        return self.paginated_response(request, orgs)
+        return self.paginated_response(request, orgs, dict_method='light_dict')
 
     @permission_required_or_deny("profiles.add_organization")
-    @args_method_decorator(transaction.commit_on_success)
     def post(self, request):
-        dest_attrs = json.loads(request.body)
-        org = Organization()
-        return self._update_attrs(request, org, dest_attrs)
+        return self.update_attrs(request, Organization(), json.loads(request.body))
 
     @permission_required_or_deny("profiles.change_organization")
-    @args_method_decorator(transaction.commit_on_success)
     def put(self, request):
         dest_attrs = json.loads(request.body)
         try:
@@ -421,10 +417,9 @@ class OrganizationsJSON(JSONView):
                     pk=dest_attrs.get('id'))
         except Organization.DoesNotExist:
             raise Http404
-        return self._update_attrs(request, org, dest_attrs)
+        return self.update_attrs(request, org, dest_attrs)
 
     @permission_required_or_deny("profiles.delete_organization")
-    @args_method_decorator(transaction.commit_on_success)
     def delete(self, request):
         attrs = json.loads(request.body)
         if attrs['id'] == 1:
@@ -447,6 +442,13 @@ class OrganizationsJSON(JSONView):
             dest_org.members.add(member)
         org.delete()
         return self.json_response(dest_org.to_dict())
+
+    @args_method_decorator(transaction.commit_on_success)
+    def update_attrs(self, request, org, dest_attrs):
+        res = self._update_attrs(request, org, dest_attrs)
+        if res.status_code != 200:
+            transaction.rollback()
+        return res
 
     def _update_attrs(self, request, org, dest_attrs):
         required = set(["name", "slug", "members", "moderators"])
@@ -481,15 +483,36 @@ class OrganizationsJSON(JSONView):
                 org.outgoing_mail_handled_by = mail_org
         else:
             org.outgoing_mail_handled_by = None
-        try:
-            org.save()
-        except Exception:
-            transaction.rollback()
-            raise
-        self._update_related_set(org, "members", dest_attrs,
-                Profile.objects.org_filter(request.user), clobber="organization_set")
-        extra, missing = self._update_related_set(org, "moderators", dest_attrs,
+        # We'll want to roll this back if there are errors below.
+        org.save()
+
+        # Update members
+        extra, missing = self._update_related_set(org,
+                "members",
+                "organization_set",
+                dest_attrs,
+                Profile.objects.org_filter(request.user).filter(managed=True),
+                clobber=True)
+        if extra:
+            # We make heavy reliance on commit_on_success and the wrapper which
+            # rolls back 400's to ensure we don't leave users without an
+            # Organization.
+            try:
+                replacement = Organization.objects.org_filter(request.user).get(
+                        pk=dest_attrs.get('replacement_org'))
+            except Organization.DoesNotExist:
+                return HttpResponseBadRequest(json.dumps({
+                    "error": "Must specify replacement org if removing users"
+                }))
+            replacement.members.add(*[User.objects.get(pk=pk) for pk in extra])
+
+        # Update moderators
+        extra, missing = self._update_related_set(org,
+                "moderators",
+                "organizations_moderated",
+                dest_attrs,
                 Profile.objects.commenters())
+
         moderator_group = Group.objects.get(name='moderators')
         for pk in extra:
             orgs = Organization.objects.filter(moderators__pk=pk).count()
@@ -499,7 +522,7 @@ class OrganizationsJSON(JSONView):
             User.objects.get(pk=pk).groups.add(moderator_group)
         return self.json_response(org.to_dict())
 
-    def _update_related_set(self, org, key, dest_attrs, qs, clobber=None):
+    def _update_related_set(self, org, org_key, user_key, dest_attrs, qs, clobber=False):
         """
         org: the organization
         key: the related manager's name.
@@ -507,8 +530,8 @@ class OrganizationsJSON(JSONView):
             org manager as a key.
         qs: the queryset from which to find related objects to add.
         """
-        current_pks = set(getattr(org, key).values_list('id', flat=True))
-        desired_pks = set([m['id'] for m in dest_attrs[key]])
+        current_pks = set(getattr(org, org_key).values_list('id', flat=True))
+        desired_pks = set([m['id'] for m in dest_attrs[org_key]])
         extra = current_pks - desired_pks
         missing = desired_pks - current_pks
         for pk in extra:
@@ -516,15 +539,15 @@ class OrganizationsJSON(JSONView):
                 profile = qs.get(pk=pk)
             except ObjectDoesNotExist:
                 raise PermissionDenied
-            getattr(org, key).remove(profile.user)
+            getattr(profile.user, user_key).remove(org)
         for pk in missing:
             try:
                 profile = qs.get(pk=pk)
             except ObjectDoesNotExist:
                 raise PermissionDenied
             if clobber:
-                getattr(profile.user, clobber).clear()
-            getattr(org, key).add(profile.user)
+                getattr(profile.user, user_key).clear()
+            getattr(profile.user, user_key).add(org)
         return extra, missing
 
 

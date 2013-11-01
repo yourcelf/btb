@@ -42,7 +42,7 @@ class BtbMailTestCase(BtbTestCase):
 class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
     pass
 
-class BtbLoginTestCase(BtbTestCase):
+class BtbLoginMixin(object):
     def add_user(self, struct):
         user = User.objects.create(username=struct['username'],
                 is_superuser = struct.get('is_superuser', False))
@@ -98,3 +98,8 @@ class BtbLoginTestCase(BtbTestCase):
         self.assertEquals(res.redirect_chain, [])
         self.assertEquals(res.status_code, 200)
 
+class BtbLoginTestCase(BtbLoginMixin, BtbTestCase):
+    pass
+
+class BtbLoginTransactionTestCase(BtbLoginMixin, BtbTransactionTestCase):
+    pass
