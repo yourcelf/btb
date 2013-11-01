@@ -126,7 +126,6 @@ class btb.SplitScanView extends Backbone.View
     # NOTE: These definitions are duplicated with event.keyCode below.  Here,
     # they're used only to pick which letter to underline in the view. 
     typeAccelerators:
-        "post": "o"
         "profile": "f"
         "request": "r"
         "license": "l"
@@ -172,8 +171,7 @@ class btb.SplitScanView extends Backbone.View
             #when 220 then @addPhotoChoice(event) # back slash
             #when 13        then @save(event) # enter
             when 73, 192 then @ignoreView._toggleChoice(event) # i, backtick
-            when 79 # o -> first pOst
-                _.find(@choiceViews, (c) -> c.choice.get("type") == "post")?._toggleChoice(event)
+            when 79 then @addPostChoice(event) # o -> add pOst
             when 70 # f -> first proFile
                 _.find(@choiceViews, (c) -> c.choice.get("type") == "profile")?._toggleChoice(event)
             when 76 # l -> license
@@ -255,7 +253,10 @@ class btb.SplitScanView extends Backbone.View
                     break
             title = "#{title} #{@typeCount[type]} (<u>#{pos + 1}</u>)"
         else
-            title = title.replace(new RegExp("(#{@typeAccelerators[type]})"), "<u>$1</u>")
+            if type == "post"
+              title = title + " (<u>1</u>)"
+            else
+              title = title.replace(new RegExp("(#{@typeAccelerators[type]})"), "<u>$1</u>")
             @choices.push doc
         doc.set choiceTitle: title
 
@@ -411,7 +412,7 @@ class btb.SplitScanView extends Backbone.View
             })
         $(".page-image img").load =>
             @setPageScale parseFloat $.cookie("scanpagesize") or 1
-        unless @$(".choose-code input").val()
+        unless @$(".choose-code input").val() or @split.get("scan").author
             @$(".choose-code input").focus()
         this
 
