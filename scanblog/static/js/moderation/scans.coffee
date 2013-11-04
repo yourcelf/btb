@@ -147,7 +147,7 @@ class btb.SplitScanView extends Backbone.View
         @split = new btb.ScanSplit {scan: id: parseInt(options.scanId)}
         @split.fetch
             success: @initSplit
-        $(window).keyup @keyUp
+        $(window).keydown @keyDown
         @imgScale = 1
         this
 
@@ -158,12 +158,22 @@ class btb.SplitScanView extends Backbone.View
         @checkFinished()
         @selectPage(0)
 
-    keyUp: (event) =>
+    keyDown: (event) =>
         # Don't capture events if we're in an input.
         if $("input:focus, textarea:focus").length > 0
             return
-        return if event.ctrlKey or event.metaKey
-        return if event.shiftKey and event.keyCode != 61 # let "+" through
+        # Let meta-e and meta-s through; exclude other meta-modifier events.
+        if event.metaKey or event.ctrlKey or event.altKey
+          switch event.keyCode
+            when 83 # ctrl-s
+              event.preventDefault()
+              @save()
+            when 69 # ctrl-e
+              event.preventDefault()
+              @switchToDocumentView()
+          return
+        # Let shift-= ("+") through, exclude oher shift modifiers.
+        return if event.shiftKey and event.keyCode != 61
         switch event.keyCode
             when 32,78,39  then @nextPage(event) # spacebar, n, right
             when 8,80,37 then @prevPage(event) # backspace, p, left
