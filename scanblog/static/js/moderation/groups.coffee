@@ -225,8 +225,19 @@ class btb.OrganizationDetailView extends Backbone.View
   checkName: (event) =>
     @$("#name_control").toggleClass("error", not @$("#name_control").val())
 
+  checkModerators: (event) =>
+    if @moderator_list.collection.length + @moderator_list.additions.length == 0
+      @$(".members-column").prepend(
+        "<div class='error'>Must specify at least one moderator.</div>"
+      )
+    else
+      @$(".members-column .error").remove()
+
   save: (event) =>
     event.preventDefault()
+    @checkSlug()
+    @checkName()
+    @checkModerators()
     if @$(".error").length > 0
       @$(".error").parent()[0].scrollIntoView()
       return
@@ -328,6 +339,8 @@ class btb.OrganizationDetailView extends Backbone.View
       })
       @$(".moderator-list").html(@moderator_list.el)
       @moderator_list.render()
+      @moderator_list.additions.on "add remove", @checkModerators
+      @moderator_list.collection.on "add remove", @checkModerators
 
       @member_list?.remove()
       @member_list = new OrganizationUserList({

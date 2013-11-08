@@ -574,6 +574,18 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
 
         # Refresh..
         org_dict = Organization.objects.get(pk=org.pk).to_dict()
+
+        # This should fail, because we specify no moderators (at least one is required).
+        orig_moderators = org_dict.pop('moderators')
+        org_dict['moderators'] = []
+        res = self.client.put("/people/organizations.json", json.dumps(org_dict))
+        self.assertEquals(res.status_code, 400)
+        self.assertEquals(json.loads(res.content), {
+            "error": "At least one moderator required."
+        })
+        org_dict['moderators'] = orig_moderators
+
+        # Try removing some members.
         removal = None
         for member in org_dict['members']:
             if member['id'] == new_author.pk:
@@ -582,7 +594,7 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         self.assertNotEquals(removal, None)
         org_dict['members'].remove(removal)
         org_dict['name'] = "Second Org 2"
-        # Try 1: This should fail, because we removed members but didn't
+        # This should fail, because we removed members but didn't
         # specify a repalcement org for the managed members.
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 400)
@@ -592,7 +604,7 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         # Ensure we haven't changed yet.
         self.assertEquals(Organization.objects.get(slug='second-org').name, "Second Org")
 
-        # Try 2: This should work.
+        # This should work.
         org_dict['replacement_org'] = 1
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 200)
@@ -670,6 +682,8 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
                 break
         self.assertNotEquals(remove, None)
         org_dict['moderators'].remove(remove)
+        # Add a moderator back to ensure we have at least one.
+        org_dict['moderators'].append({'id': User.objects.get(username='moderator').pk})
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 200)
         self.assertEquals(

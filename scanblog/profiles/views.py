@@ -512,7 +512,11 @@ class OrganizationsJSON(JSONView):
                 "organizations_moderated",
                 dest_attrs,
                 Profile.objects.commenters())
-
+        if org.moderators.count() == 0:
+            return HttpResponseBadRequest(json.dumps({
+                "error": "At least one moderator required."
+            }))
+        # Update membership in the "moderators" group.
         moderator_group = Group.objects.get(name='moderators')
         for pk in extra:
             orgs = Organization.objects.filter(moderators__pk=pk).count()
