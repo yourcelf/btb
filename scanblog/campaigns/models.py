@@ -66,7 +66,7 @@ class Campaign(models.Model):
         return self.reply_code.document_replies.all()
 
     def num_responses(self):
-        return self.responses.count()
+        return self.responses().count()
 
     def __unicode__(self):
         return self.slug

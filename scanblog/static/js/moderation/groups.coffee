@@ -42,10 +42,32 @@ class btb.Affiliation extends IdModel
 class btb.AffiliationList extends btb.FilteredPaginatedCollection
   model: btb.Affiliation
   baseUrl: btb.Affiliation.prototype.baseUrl
+  defaults: => return {
+    id: undefined
+    title: ''
+    slug: ''
+    logo_url: null
+    list_body: ''
+    detail_body: ''
+    organizations: []
+    public: false
+    order: 10
+  }
 
 class btb.Campaign extends IdModel
   type: "campaign"
   baseUrl: "/campaigns/campaigns.json"
+  defaults: => return {
+    id: undefined
+    title: ''
+    slug: ''
+    body: ''
+    organizations: []
+    reply_code: ''
+    public: false
+    created: new Date()
+    ended: null
+  }
 
 class btb.CampaignList extends btb.FilteredPaginatedCollection
   model: btb.Campaign
@@ -84,8 +106,8 @@ class btb.GroupManager extends Backbone.View
     @camp_list_view = new btb.CampaignListView({collection: @camp_list})
 
     @org_adder_view = new btb.GroupAdderView({collection: @org_list})
-    @aff_adder_view = new btb.AffiliationAdderView({collection: @aff_list})
-    @camp_adder_view = new btb.CampaignAdderView({collection: @camp_list})
+    @aff_adder_view = new btb.GroupAdderView({collection: @aff_list})
+    @camp_adder_view = new btb.GroupAdderView({collection: @camp_list})
 
     @org_detail = new btb.OrganizationDetailView()
     @aff_detail = new btb.AffiliationDetailView()
@@ -101,7 +123,7 @@ class btb.GroupManager extends Backbone.View
       @type = "organization"
       @id = 1
 
-    for list in [@org_list, @aff_list, @camp_list]
+    for list in [@org_list] #, @aff_list, @camp_list]
       if list.model.prototype.type == @type
         list.fetch({
           success: (list) =>
@@ -418,18 +440,36 @@ class OrganizationUserList extends Backbone.View
     @trigger "changeset", {removals: @removals, additions: @additions}
 
 class btb.AffiliationListView extends btb.GroupListView
-  context: => {items: [], title: "Affiliations"}
+  context: =>
+    return {
+      title: "Affiliations"
+      items: ({cid: o.cid, title: o.get("title") or "[New affiliation]"} for o in @collection.models)
+    }
 
-class btb.AffiliationAdderView extends btb.GroupAdderView
 class btb.AffiliationDetailView extends Backbone.View
   template: _.template $("#affiliationDetailTemplate").html()
+  set_model: (model) =>
+    @model = null
+    if model.type == "affiliation"
+      @model = model
+    @render()
+
   render: =>
     @$el.html(@template())
 
 class btb.CampaignListView extends btb.GroupListView
-  context: => {items: [], title: "Campaigns"}
-class btb.CampaignAdderView extends btb.GroupAdderView
+  context: =>
+    return {
+      title: "Campaigns"
+      items: ({cid: o.cid, title: o.get("title") or "[New campaign]"} for o in @collection.models)
+    }
 class btb.CampaignDetailView extends Backbone.View
   template: _.template $("#campaignDetailTemplate").html()
+  set_model: (model) =>
+    @model = null
+    if model.type == "campaign"
+      @model = model
+    @render()
+
   render: =>
-    @$el.html(@template())
+    @$el.html(@template(@model.toJSON()))
