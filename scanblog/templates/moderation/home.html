@@ -18,7 +18,9 @@
     <a href='#/users'>Manage users</a>
     <a href='#/mail'>Outgoing mail</a>
     |
-    <a href='#/groups'>Groups</a>
+    {% if perms.profiles.change_organization %}
+      <a href='#/groups'>Groups</a>
+    {% endif %}
     <a href='tagparty'>Tag party</a>
     |
     <a href='stats'>Stats</a>
