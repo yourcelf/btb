@@ -1,0 +1,59 @@
+.group-manager
+  display: table
+  width: 100%
+  .group-manager-row
+    display: table-row
+  .left-sidebar
+    display: table-cell
+    li.item
+      cursor: pointer
+      text-align: right
+      padding-right: 1em
+      &.active
+        background-color: #fed
+  .detail
+    border: 6px solid #fed
+    border-radius: 5px
+    display: table-cell
+    padding: 1em
+    width: 100%
+  .adder
+    text-align: center
+    a.adder
+      +flat-button
+
+.organization-detail
+  .save
+    +flat-button(huge)
+    +flat-button-sprite(save, huge)
+  .delete
+    +flat-button(large)
+    +flat-button-sprite(delete, large)
+  .html-preview
+    +flat-button
+  .table
+    display: table
+    width: 100%
+  .table-row
+    display: table-row
+  .members-column, .details-column
+    display: table-cell
+    width: 50%
+
+  .details-column
+    p
+      padding-right: 1em
+   
+  table.org-user-list
+    width: 100%
+    td
+      border-top: 1px solid #eee
+      border-bottom: 1px solid #eee
+    tr.removed td.name
+      background-color: #fee
+      font-style: italic
+      text-decoration: line-through
+    tr.added td.name
+      background-color: #efe
+    .restore, .remove
+      cursor: pointer

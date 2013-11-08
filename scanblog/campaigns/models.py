@@ -39,6 +39,19 @@ class Campaign(models.Model):
     class Meta:
         ordering = ['-created']
 
+    def to_dict(self):
+        return {
+            u"id": self.pk,
+            u"title": self.title,
+            u"slug": self.slug,
+            u"body": self.body,
+            u"organizations": [o.light_dict() for o in self.organizations.all()],
+            u"reply_code": unicode(self.reply_code.code),
+            u"public": self.public,
+            u"created": self.created,
+            u"ended": self.ended,
+        }
+
     def get_absolute_url(self):
         return reverse("blogs.show_campaign", args=[self.slug])
 
@@ -53,7 +66,7 @@ class Campaign(models.Model):
         return self.reply_code.document_replies.all()
 
     def num_responses(self):
-        return self.responses.count()
+        return self.responses().count()
 
     def __unicode__(self):
         return self.slug
