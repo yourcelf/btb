@@ -29,17 +29,180 @@
   <h2><%= title %></h2>
   <ul>
     <% for (var i = 0; i < items.length; i++) { %>
-      <li class='item' data-id='<%= items[i].id %>'><%= items[i].title %></li>
+      <li class='item' data-cid='<%= items[i].cid %>'><%= items[i].title %></li>
     <% } %>
   </ul>
 </script>
 
 <script type='text/template' id='organizationDetailTemplate'>
-  <h2><%= name %></h2>
-
-  <h3>Members</h3>
-
-
+  <div class='organization-detail'>
+    <h2><%= name || "New organization" %></h2>
+    <div class='table'>
+      <div class='table-row'>
+        <div class='details-column'>
+          <h3>Organization details</h3>
+          <div class='org-details'>
+            <p>
+              <label>Public: <input type='checkbox' id='public_control' <%= public ? "checked='checked'" : "" %> /></label><br />
+              <span class='help-block'>If checked, this organization and its members will be listed publicly.  If unchecked, members will appear in the general site list.</span>
+            </p>
+            <p>
+              <label for='name_control'>Organization name:</label>
+              <br />
+              <input type='text' id='name_control' value='<%= name %>' />
+            </p>
+            <p>
+              <label for='slug_control'>Short name:</label>
+              <span class='help-block'>Name used for URLs. Only letters, numbers, and &ldquo;-&rdquo; allowed.</span>
+              <br />
+              <input type='text' id='slug_control' value='<%= slug %>' />
+            </p>
+            <p>
+              <label for='personal_contact_control'>Personal contact:</label>
+              <span class='help-block'>
+                Name to be used when signing auto-generated correspondence.  If blank, &ldquo;[Organization Name] staff&rdquo; will be used instead.
+              </span>
+              <br />
+              <input type='text' id='personal_contact_control' value='<%= personal_contact %>' />
+            </p>
+            <p>
+              <label for='about_control'>
+                About:
+              </label>
+              <span class='help-block'>
+                HTML that will appear at the top of the organization's detail
+                page. Unused unless the organization is public.
+              </span>
+              <br />
+              <textarea id='about_control' rows='10' cols='30'><%= about %></textarea>
+              <br />
+              <a class='html-preview' data-source='about_control'>Preview HTML</a>
+            </p>
+            <p>
+              <label for='footer_control'>
+                Footer:
+              </label>
+              <span class='help-block'>
+                HTML that will appear at the bottom of posts belonging to this
+                organization. Unused unless the organization is public.
+              </span>
+              <br />
+              <textarea id='footer_control' rows='10' cols='30'><%= footer %></textarea>
+              <br />
+              <a class='html-preview' data-source='footer_control'>Preview HTML</a>
+            </p>
+            <p>
+              <label for='mailing_address_control'>
+                Mailing address:
+              </label>
+              <span class='help-block'>
+                Return address for mail originating from this organization.
+              </span>
+              <textarea id='mailing_address_control' rows='4' cols='30' style='height: 70px;'><%= mailing_address %></textarea>
+            </p>
+            <p>
+              <label for='outgoing_mail_control'>
+                Outgoing mail handler:
+              </label>
+              <span class='help-block'>
+                If this organization does not handle their own outgoing mail,
+                choose the organization that handles it here.  Leave blank if
+                they handle their own.
+              </span>
+              <select class='org' id='outgoing_mail_control'>
+                <option value=''>--------</option>
+                <% _.each(btb.ORGANIZATIONS, function(org) { %>
+                    <% if (org.id != id) { %>
+                      <option value='<%= org.id %>'
+                        <%= outgoing_mail_handled_by.id == org.id ? "selected" : "" %>>
+                          <%= org.name %>
+                      </option>
+                    <% } %>
+                <% }); %>
+              </select>
+            </p>
+            <p>
+              <label for='custom_intro_packet'>Custom intro packet</label><br />
+              TODO: Can set in <a href='/admin/profiles/organization/<%= id %>'>admin</a>.
+              <!--
+              <% if (custom_intro_packet_url) { %>
+                <a href='<%= custom_intro_packet_url %>'><%= custom_intro_packet_url %></a>
+                <input type='button' id='remove_custom_intro_packet' value='Remove' />
+              <% } else { %>
+                <input type='file' id='custom_intro_packet_control' />
+              <% } %>
+              -->
+            </p>
+          </div>
+        </div>
+        <div class='members-column'>
+          <h3>Moderators</h3>
+          <div class='moderator-list'></div>
+          <hr>
+          <h3>Members</h3>
+          <div class='member-list'></div>
+          <div class='replacement-org-control' style='display: none;'>
+            <p>Move removed members to:
+            <select class='org' id='replacement_org_control'>
+                <% _.each(btb.ORGANIZATIONS, function(org, i) { %>
+                    <% if (org.id != id) { %>
+                      <option value='<%= org.id %>' <%= i == 0 ? "selected" : "" %>><%= org.name %></option>
+                    <% } %>
+                <% }); %>
+            </select>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style='text-align: center'>
+      <a class='save'>Save</a>
+      <span class='status'></span>
+      <% if (id) { %>
+        <a style='float: right;' class='delete'>Delete Organization</a>
+      <% } %>
+    </div>
+    <% if (id) { %>
+      <div class='delete-confirmation' style='display: none;'>
+        Are you sure you want to delete <%= name %>?  This can't be undone.
+        Please choose an organization into which to put members of this
+        organization.
+        <select class='org' id='delete_org_replacement'>
+          <% _.each(btb.ORGANIZATIONS, function(org, i) { %>
+            <% if (org.id != id) { %>
+              <option value='<%= org.id %>' <%= i == 0 ? "selected" : "" %>><%= org.name %></option>
+            <% } %>
+          <% }); %>
+        </select>
+      </div>
+    <% } %>
+  </div>
+</script>
+<script type='text/template' id='organizationUserListTemplate'>
+  <table class='org-user-list'>
+    <% var cols = [collection, removals, additions]; %>
+    <% _.each(cols, function(col) { %>
+      <% col.each(function(model) { %>
+        <tr class="<%= col.cssclass %>">
+          <td class='name'>
+            <a href='<%= model.get("profile_url") %>' title='Show profile'>
+              <%= model.get("display_name") %>
+              </a> <a href='<%= model.get("edit_url") %>' title='Edit details'><span class='ui-icon ui-icon-person'></span></a>
+          </td>
+          <td>
+          <% if (col.cssclass == "removed") { %>
+            <span class='restore ui-icon ui-icon-arrowreturnthick-1-w'
+                  data-user-id="<%= model.id %>" title='Undo'></span>
+          <% } else { %>
+            <span class='remove ui-icon ui-icon-circle-minus'
+                  data-user-id="<%= model.id %>" title='Remove'></span>
+          <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    <% }); %>
+  </table>
+  <span style='float: left; margin-top: 10px;'>Add:</span><div class='user-search-holder'></div>
 </script>
 <script type='text/template' id='affiliationDetailTemplate'>Aff detail</script>
 <script type='text/template' id='campaignDetailTemplate'>Camp detail</script>

@@ -309,15 +309,16 @@ class Organization(models.Model):
         dct['members'] = [u.profile.to_dict() for u in self.members.select_related('profile').all()]
         dct['about'] = self.about
         dct['footer'] = self.footer
+        dct['mailing_address'] = self.mailing_address
         dct['personal_contact'] = self.personal_contact
         if self.custom_intro_packet:
             dct['custom_intro_packet_url'] = self.custom_intro_packet.url
         else:
-            dct['cutsom_intro_packet_url'] = None
+            dct['custom_intro_packet_url'] = None
         if self.outgoing_mail_handled_by:
             dct['outgoing_mail_handled_by'] = self.outgoing_mail_handled_by.light_dict()
         else:
-            dct['outgoing_mail_handled_by'] = None
+            dct['outgoing_mail_handled_by'] = {}
         return dct
 
     def light_dict(self):
