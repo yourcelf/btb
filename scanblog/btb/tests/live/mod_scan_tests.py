@@ -117,13 +117,14 @@ class TestModScans(BtbLiveServerTestCase):
     def _classify_pages(self, page_types):
         for i, ptype in enumerate(page_types):
             self.css(".pagestatus.page-%s" % i).click()
+            time.sleep(0.1)
             choices = {}
             for el in self.csss(".page-type-choice"):
-                if el.text.strip() == ptype:
+                if ptype in el.text.strip():
                     el.click()
                     break
             else:
-                self.assertFail("Can't find type '%s'" % hsh['type'])
+                self.fail("Can't find type '%s'" % hsh['type'])
 
     def _save_split(self):
         self.css(".save").click()
@@ -146,9 +147,9 @@ class TestModScans(BtbLiveServerTestCase):
         self.css("input.user-search").send_keys("est Author")
         self.wait(lambda b: self.css(".user-chooser .display-name").text == "Test Author")
         self.css(".user-chooser .display-name").click()
-
         self._classify_pages(["ignore", "post", "profile", "ignore", "ignore", "ignore"])
         self._save_split()
+        self.wait(lambda b: len(self.csss(".post-save-message.success")) > 0)
         self._classify_pages(["ignore", "ignore", "ignore", "ignore", "ignore", "ignore"])
         self._classify_pages(["ignore", "profile", "post", "ignore", "ignore", "ignore"])
         self._save_split()
