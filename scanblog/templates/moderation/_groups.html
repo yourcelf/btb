@@ -184,29 +184,31 @@
   </div>
 </script>
 <script type='text/template' id='organizationUserListTemplate'>
-  <table class='org-user-list'>
-    <% var cols = [collection, removals, additions]; %>
-    <% _.each(cols, function(col) { %>
-      <% col.each(function(model) { %>
-        <tr class="<%= col.cssclass %>">
-          <td class='name'>
-            <a href='<%= model.get("profile_url") %>' title='Show profile'>
-              <%= model.get("display_name") %>
-              </a> <a href='<%= model.get("edit_url") %>' title='Edit details'><span class='ui-icon ui-icon-person'></span></a>
-          </td>
-          <td>
-          <% if (col.cssclass == "removed") { %>
-            <span class='restore ui-icon ui-icon-arrowreturnthick-1-w'
-                  data-user-id="<%= model.id %>" title='Undo'></span>
-          <% } else { %>
-            <span class='remove ui-icon ui-icon-circle-minus'
-                  data-user-id="<%= model.id %>" title='Remove'></span>
-          <% } %>
-          </td>
-        </tr>
-      <% }); %>
-    <% }); %>
-  </table>
+  <% var cols = [collection, removals, additions]; %>
+  <% _.each(cols, function(col) { %>
+    <div class='user-list-section'>
+      <table class='org-user-list'>
+        <% col.each(function(model) { %>
+          <tr class="<%= col.cssclass %>">
+            <td class='name'>
+              <a href='<%= model.get("profile_url") %>' title='Show profile'>
+                <%= model.get("display_name") %>
+                </a> <a href='<%= model.get("edit_url") %>' title='Edit details'><span class='ui-icon ui-icon-person'></span></a>
+            </td>
+            <td>
+            <% if (col.cssclass == "removed") { %>
+              <span class='restore ui-icon ui-icon-arrowreturnthick-1-w'
+                    data-user-id="<%= model.id %>" title='Undo'></span>
+            <% } else { %>
+              <span class='remove ui-icon ui-icon-circle-minus'
+                    data-user-id="<%= model.id %>" title='Remove'></span>
+            <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </table>
+    </div>
+  <% }); %>
   <span style='float: left; margin-top: 10px;'>Add:</span><div class='user-search-holder'></div>
 </script>
 <script type='text/template' id='affiliationDetailTemplate'>Aff detail</script>
