@@ -94,6 +94,7 @@ class TestComments(BtbLiveServerTestCase):
         self.assertTrue("testuser's profile" in s.title)
         self.assertEquals(len(self.csss("li.favorite")), 1)
         self.css("li.favorite .favorites-control .favorite-button").click()
+        time.sleep(0.5)
         self.assertEquals(Favorite.objects.count(), 0)
 
         s.get(self.url("/people/show"))

@@ -569,7 +569,7 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 200)
         json_res = json.loads(res.content)
-        self.assertTrue(new_author.profile.to_dict() in json_res['members'])
+        self.assertTrue(new_author.profile.light_dict() in json_res['members'])
         self.assertTrue(new_author in org.members.all())
 
         # Refresh..
@@ -729,6 +729,23 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
             set(new_author.organization_set.all()),
             set([Organization.objects.get(slug='second-org')])
         )
+
+    def test_org_to_dict_performance(self):
+        org = Organization.objects.create(
+                name="Big org",
+                slug="big_org",
+        )
+        org.moderators.add(User.objects.get(username="admin"))
+        org.moderators.add(User.objects.get(username='moderator'))
+        for i in range(10):
+            self.add_user({
+                "username": "member-%s" % i,
+                "managed": True,
+                "groups": ["readers"],
+                "member": org,
+            })
+        self.assertNumQueries(2, org.to_dict)
+
 
 class TestAffiliationsJSON(BtbLoginTestCase):
     required_keys = ['title', 'slug', 'list_body', 'detail_body',

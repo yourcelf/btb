@@ -191,33 +191,40 @@ class Profile(models.Model):
     class QuerySet(OrgQuerySet):
         orgs = ["user__organization"]
 
+    def light_dict(self):
+        return {
+            'id': self.pk,
+            'username': self.user.username,
+            'email': self.user.email,
+            'is_active': self.user.is_active,
+            'date_joined': self.user.date_joined.isoformat(),
+            'blogger': self.blogger,
+            'managed': self.managed,
+            'lost_contact': self.lost_contact,
+            'blog_name': self.blog_name,
+            'display_name': self.display_name,
+            'mailing_address': self.mailing_address,
+            'special_mail_handling': self.special_mail_handling,
+            'consent_form_received': self.consent_form_received,
+            'blog_url': self.get_blog_url(),
+            'profile_url': self.get_absolute_url(),
+            'edit_url': self.get_edit_url(),
+            'is_public': self.is_public(),
+        }
+
+
     def to_dict(self):
         scans_authored = getattr(self, "user__scans_authored", None)
-        return {
-            u'id': self.pk,
-            u'username': self.user.username,
-            u'email': self.user.email,
-            u'is_active': self.user.is_active,
-            u'date_joined': self.user.date_joined.isoformat(),
-            u'blogger': self.blogger,
-            u'managed': self.managed,
-            u'lost_contact': self.lost_contact,
-            u'blog_name': self.blog_name,
-            u'display_name': self.display_name,
-            u'mailing_address': self.mailing_address,
-            u'special_mail_handling': self.special_mail_handling,
-            u'consent_form_received': self.consent_form_received,
+        dct = self.light_dict()
+        dct.update({
             u'organizations': [o.light_dict() for o in self.user.organization_set.all()],
             u'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
             u'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
             u'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
-            u'blog_url': self.get_blog_url(),
-            u'profile_url': self.get_absolute_url(),
-            u'edit_url': self.get_edit_url(),
             u'scans_authored': scans_authored,
             u'has_public_profile': self.has_public_profile(),
-            u'is_public': self.is_public(),
-        }
+        })
+        return dct
             
     def save(self, *args, **kwargs):
         if not self.display_name:
@@ -305,8 +312,8 @@ class Organization(models.Model):
 
     def to_dict(self):
         dct = self.light_dict()
-        dct['moderators'] = [u.profile.to_dict() for u in self.moderators.select_related('profile').all()]
-        dct['members'] = [u.profile.to_dict() for u in self.members.select_related('profile').all()]
+        dct['moderators'] = [u.profile.light_dict() for u in self.moderators.select_related('profile').all()]
+        dct['members'] = [u.profile.light_dict() for u in self.members.select_related('profile').all()]
         dct['about'] = self.about
         dct['footer'] = self.footer
         dct['mailing_address'] = self.mailing_address
