@@ -110,7 +110,7 @@ LOGGING = {
         },
         'skip_unreadable_posts': {
             '()': 'django.utils.log.CallbackFilter',
-            'callback': 'btb.logging.skip_unreadable_post'
+            'callback': 'btb.log_filter.skip_unreadable_post'
         }
     }
 }
