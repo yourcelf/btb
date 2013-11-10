@@ -94,6 +94,7 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
+            'filters': ['require_debug_false', 'skip_unreadable_posts'],
         }
     },
     'loggers': {
@@ -102,6 +103,15 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': 'btb.logging.skip_unreadable_post'
+        }
     }
 }
 
