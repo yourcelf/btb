@@ -2,7 +2,7 @@ import json
 import datetime
 from collections import defaultdict
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponseBadRequest
@@ -680,6 +680,7 @@ class CommenterStatsJSON(JSONView):
 
         return self.json_response({
             "joined": profile.user.date_joined.isoformat(),
+            "can_tag": profile.user.has_perm("scanning.tag_post"),
             "last_login": profile.user.last_login.isoformat(),
             "activity": {
                 'comments': [c[0] for c in comments],
@@ -690,3 +691,19 @@ class CommenterStatsJSON(JSONView):
             "relationships": sorted(relationships.items(), key=lambda d: d[1]['total'], reverse=True),
             "users": users,
         })
+
+    @permission_required_or_deny("auth.change_user")
+    def post(self, request):
+        attrs = json.loads(request.body)
+        try:
+            profile = Profile.objects.commenters().select_related('user').get(user_id=attrs['user_id'])
+        except (KeyError, Profile.DoesNotExist):
+            raise Http404
+        if attrs.get('can_tag', None) is not None:
+            perm = Permission.objects.get_by_natural_key("tag_post", "scanning",  "document")
+            if attrs['can_tag'] in ('true', '1', 1):
+                profile.user.user_permissions.add(perm)
+            else:
+                profile.user.user_permissions.remove(perm)
+            return self.json_response({"status": "ok"})
+        return HttpResponseBadRequest("No recognized attributes")

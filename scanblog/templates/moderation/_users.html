@@ -217,6 +217,13 @@
                 (<%= parseInt(diff / (60 * 60 * 24 * 1000)) %> days ago)
             
             </td>
+            <th>Tagger</th>
+            <td>
+                <label for='id_can_tag'>
+                    May add tags to posts:
+                    <input type='checkbox' name='can_tag' id='id_can_tag' <%= can_tag ? "checked" : "" %>/>
+                </label>
+            </td>
         </tr>
     </table>
     <p></p>

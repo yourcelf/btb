@@ -3,7 +3,7 @@ import json
 import datetime
 
 from django.test import TestCase
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
@@ -894,3 +894,65 @@ class TestAffiliationsJSON(BtbLoginTestCase):
         }), content_type="application/json")
         self.assertEquals(res.status_code, 200)
         self.assertFalse(Affiliation.objects.all().exists())
+
+class TestCommenterStatsJSON(BtbLoginTestCase):
+    def test_get_stats(self):
+        user = User.objects.get(username='reader')
+        def get():
+            return self.client.get("/people/commenter_stats.json?user_id={0}".format(user.id))
+                
+
+        # Not a moderator -- can't read.
+        res = get()
+        self.assertEquals(res.status_code, 403)
+
+        self.loginAs("moderator")
+        res = get()
+
+        attrs = json.loads(res.content)
+        self.assertEquals(attrs['can_tag'], False)
+        user.user_permissions.add(
+            Permission.objects.get_by_natural_key("tag_post", "scanning", "document")
+        )
+        self.assertTrue(user.has_perm("scanning.tag_post"))
+        res = get()
+        attrs = json.loads(res.content)
+        self.assertEquals(attrs['can_tag'], True)
+
+    def test_change_tagging_status(self):
+        def can_tag(can):
+            self.loginAs("reader")
+            url = "/moderation/tagparty/"
+            if can:
+                res = self.client.get(url)
+                self.assertEquals(res.status_code, 200)
+            else:
+                self.assertRedirectsToLogin(url)
+
+        def set_tagger(val):
+            data = {"can_tag": val, "user_id": User.objects.get(username='reader').id}
+            url = "/people/commenter_stats.json"
+            res = self.client.post(url, json.dumps(data), content_type="application/json")
+            return res
+
+        # Reader can't tagparty...
+        can_tag(False)
+
+        # Not a moderator -- can't change tagger status.
+        res = set_tagger("1")
+        self.assertEquals(res.status_code, 403)
+
+        # Become moderator, then we can.
+        self.loginAs("moderator")
+        res = set_tagger("1")
+        self.assertEquals(res.status_code, 200)
+
+        # Now we can!
+        can_tag(True)
+
+        # Not anymore...
+        self.loginAs("moderator")
+        res = set_tagger("0")
+        self.assertEquals(res.status_code, 200)
+
+        can_tag(False)

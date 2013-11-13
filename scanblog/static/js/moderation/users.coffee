@@ -565,6 +565,8 @@ class btb.UserStatusTable extends Backbone.View
 class btb.CommenterStatsView extends Backbone.View
     template: _.template $("#commenterStats").html()
     hist_bins: 12
+    events:
+        'click [name=can_tag]': 'setCanTag'
 
     initialize: (options) ->
         if options.user_id
@@ -622,6 +624,23 @@ class btb.CommenterStatsView extends Backbone.View
             success: (data) =>
                 @render()
         }
+
+    setCanTag: (event) =>
+        el = @$("[name=can_tag]")
+        if el.is(":checked") != @stats.get("can_tag")
+            loading = $("<img src='/static/img/loading.gif />")
+            el.after(loading)
+            @stats.set("can_tag", not @stats.get("can_tag"))
+            @stats.save({}, {
+                success: =>
+                    loading.remove()
+                    el.parent().effect "highlight"
+                error: =>
+                    alert("Server error -- not updated")
+                    loading.remove()
+            })
+
+
 
 #
 # Ye grande olde User Detail Page view
