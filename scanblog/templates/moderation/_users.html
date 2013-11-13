@@ -188,6 +188,11 @@
         <div class='left-column'>
             <h1 style='display: inline-block;'><%= user.display_name %></h1>
             <span class='user-state'></span>
+            <% if (user.email) { %>
+                <a href='mailto:<%= user.email %>'><%= user.email %></a>
+            <% } else { %>
+                No email on file.
+            <% } %>
         </div>
         <div class='right-column'>
             <h2>Notes</h2>
