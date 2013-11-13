@@ -39,7 +39,7 @@
         <div class='letter-error'></div>
         <form method='post' action='{% url "correspondence.preview_letter" %}'>{% csrf_token %}
             Return address: <span class='org-chooser'></span><br />
-
+            Add stock response: <span class='stock-response-chooser'></span><br />
             <textarea class='letter-body' name='body'><%= letter.body || "" %></textarea><br />
             <input type='hidden' name='recipient_id' value='<%= letter.recipient.id %>' />
             <span class='link-like cancel'>Cancel</span>
@@ -49,6 +49,15 @@
             <input type='checkbox' <% if (!letter.send_anonymously) { %> checked='checked'<% } %> name='signed' class='not-anonymous' /> Sign letter with your name
         </form>
     </div>
+</script>
+<script type='text/template' id='stockResponseChooser'>
+  <select name='stock-response'>
+    <option value=''>----</option>
+    <% stock_responses.each(function(stock_response) { %>
+      <option value='<%= stock_response.id %>'><%= stock_response.get("name") %></option>
+    <% }); %>
+  </select>
+  <a href='/admin/correspondence/stockresponse/'>Edit list</a>
 </script>
 <script type='text/template' id='correspondenceControlsScan'>
     <%= scan.author.display_name %><br />

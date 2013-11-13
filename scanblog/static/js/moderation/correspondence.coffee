@@ -38,6 +38,10 @@ class btb.NeededLetters extends Backbone.Model
             return base + "?" + $.param consent_form_cutoff: @get "consent_form_cutoff"
         return base
 
+class btb.StockResponse extends Backbone.Model
+class btb.StockResponseList extends btb.FilteredPaginatedCollection
+  url: "/correspondence/stock_responses.json"
+
 
 #
 # Views
@@ -112,14 +116,20 @@ class btb.LetterEditor extends Backbone.View
     hideLoading: => $(".loading", @el).hide()
 
     render: =>
-        $(@el).html @template
-            letter: @letter.toJSON()
+        @$el.html @template({letter: @letter.toJSON()})
         @renderOrgs()
+
+        @stock_response_chooser = new btb.StockResponseChooser()
+        @$(".stock-response-chooser").html(@stock_response_chooser.el)
+        @stock_response_chooser.render()
+        @stock_response_chooser.on "addStockResponse", (body) =>
+            current = @$(".letter-body").val()
+            current += "\n" if current
+            @$(".letter-body").val(current + body)
         this
 
     renderOrgs: =>
-        $(".org-chooser", @el).html @orgTemplate
-            letter: @letter.toJSON()
+        $(".org-chooser", @el).html(@orgTemplate({letter: @letter.toJSON()}))
 
     enqueue: =>
         @showLoading()
@@ -142,6 +152,27 @@ class btb.LetterEditor extends Backbone.View
 
         }
         
+class btb.StockResponseChooser extends Backbone.View
+    template: _.template $("#stockResponseChooser").html()
+    tagName: 'span'
+    events:
+        'change [name=stock-response]': 'addStockResponse'
+    initialize: =>
+        @stock_responses = new btb.StockResponseList()
+        @stock_responses.fetch({
+            success: @render
+            error: => alert("Server Error")
+        })
+
+    render: =>
+        @$el.html(@template({stock_responses: @stock_responses}))
+
+    addStockResponse: (event) =>
+        val = @$("[name=stock-response]").val()
+        return unless val
+        res = @stock_responses.get(parseInt(val))
+        return unless res
+        @trigger "addStockResponse", res.get("body")
     
 # A table showing comments attached to a letter.
 class btb.CommentsMailingTable extends Backbone.View

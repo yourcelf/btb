@@ -10,6 +10,22 @@ from btb.utils import date_to_string, OrgQuerySet, OrgManager
 
 from correspondence.generate import generate_file, generate_colation
 
+class StockResponse(models.Model):
+    name = models.CharField(max_length=255)
+    body = models.TextField()
+
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name, 'body': self.body}
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-modified']
+        get_latest_by = 'modified'
+
 class LetterManager(OrgManager):
     def unsent(self):
         return self.filter(sent__isnull=True, recipient__profile__lost_contact=False)

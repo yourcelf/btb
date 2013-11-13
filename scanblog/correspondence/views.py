@@ -18,11 +18,18 @@ from django.db.models import Q, Count
 from django.db import transaction
 
 from comments.models import Comment, CommentRemoval
-from correspondence.models import Letter, Mailing
+from correspondence.models import Letter, Mailing, StockResponse
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
 from scanning.models import Scan, Document
 from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
+
+class StockResponses(JSONView):
+    @permission_required_or_deny("correspondence.manage_correspondence")
+    def get(self, request):
+        return self.json_response({
+            'results': [s.to_dict() for s in StockResponse.objects.all()]
+        })
 
 class Letters(JSONView):
     """

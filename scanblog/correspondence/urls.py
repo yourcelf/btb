@@ -1,6 +1,7 @@
 from django.conf.urls import *
 
-from correspondence.views import CorrespondenceList, Letters, Mailings, NeededLetters
+from correspondence.views import CorrespondenceList, Letters, Mailings, \
+    NeededLetters, StockResponses
 
 letter_id = "(?P<letter_id>\d+)"
 mailing_id = "(?P<mailing_id>\d+)"
@@ -13,6 +14,7 @@ urlpatterns = patterns('correspondence.views',
     url(r'^letters.json(/{0})?'.format(letter_id), Letters.as_view()),
     url(r'^mailings.json(/{0})?'.format(mailing_id), Mailings.as_view()),
     url(r'^needed_letters.json', NeededLetters.as_view()),
+    url(r'^stock_responses.json', StockResponses.as_view()),
     url(r'^mass_mailing_spreadsheet/(?P<who>.*)', 'mass_mailing_spreadsheet',
         name='correspondence.mass_mailing_spreadsheet'),
     url(r'^envelope/{0}?(/(?P<reverse>return))?$'.format(user_id), 'print_envelope', 
