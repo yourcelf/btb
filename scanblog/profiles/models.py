@@ -104,7 +104,7 @@ class ProfileManager(OrgManager):
         No invitation letter has been created for them.
         """
         return self.bloggers().filter(
-                    consent_form_received=False
+                    consent_form_received=False, managed=True
                 ).exclude(
                     user__received_letters__type="consent_form"
                 )
@@ -125,7 +125,7 @@ class ProfileManager(OrgManager):
         haven't received a consent form.
         """
         return self.bloggers().filter(
-                    consent_form_received=False,
+                    consent_form_received=False, managed=True,
                 ).exclude(
                     user__received_letters__type="waitlist",
                 ).exclude(
@@ -138,7 +138,7 @@ class ProfileManager(OrgManager):
         created.
         """
         return self.bloggers().filter(
-                    consent_form_received=False
+                    consent_form_received=False, managed=True
                 ).filter(
                     user__received_letters__type="waitlist"
                 ).exclude(

@@ -57,12 +57,17 @@ class Letter(models.Model):
 
     type = models.CharField(max_length=255, choices=[(a, a) for a in TYPES])
     auto_generated = models.BooleanField(default=False)
+
+    # Optional relations
     document = models.ForeignKey(Document, null=True, blank=True)
     comments = models.ManyToManyField(Comment, null=True, blank=True)
+    mass_mailing = models.ForeignKey('MassMailing', null=True, blank=True)
+    custom_pdf = models.FileField(upload_to="letters/custom_pdfs", blank=True)
+
     created = models.DateTimeField(default=datetime.datetime.now)
     sent = models.DateTimeField(null=True)
 
-    # File path relative to PRIVATE_MEDIA_ROOT
+    # Generated file path relative to PRIVATE_MEDIA_ROOT
     file = models.FileField(upload_to="tmp", blank=True)
 
     # Deprecated
@@ -223,3 +228,56 @@ class Mailing(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+class MassMailing(models.Model):
+    name = models.CharField(max_length=255)
+    letter_template = models.ForeignKey(Letter, blank=True, null=True)
+    created = models.DateTimeField(default=datetime.datetime.now)
+    modified = models.DateTimeField()
+    recipients = models.ManyToManyField(User)
+
+    objects = OrgManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ['letter_template__org']
+
+    def recipients_needed(self):
+        return self.recipients.exclude(received_letters__mass_mailing=self)
+
+    def recipients_sent_or_enqueued(self):
+        return self.recipients.filter(received_letters__mass_mailing=self)
+
+    def recipients_sent(self):
+        return self.recipients.filter(received_letters__mass_mailing=self,
+                received_letters__sent__isnull=False)
+
+    def recipients_enqueued(self):
+        return self.recipients.filter(received_letters__mass_mailing=self,
+                received_letters__sent__isnull=True)
+
+    def light_dict(self):
+        return {
+            'id': self.pk,
+            'name': self.name,
+            'letter_template': self.letter_template.to_dict(),
+            'created': date_to_string(self.created),
+            'modified': date_to_string(self.modified),
+        }
+
+    def to_dict(self):
+        dct = self.light_dict()
+        dct.update({
+            'recipients_sent': [(u.profile.light_dict() for u in self.recipients_sent().select_related('profile')],
+            'recipients_enqueued': 
+
+        })
+
+
+    class QuerySet(OrgQuerySet):
+        orgs = ['org']
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-modified']

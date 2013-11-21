@@ -18,4 +18,4 @@ completely public and listed under your full name; we ask you not to send us
 anything illegal, incriminatory, or which might negatively affect your chances
 for parole.
 {% endblock %}
-{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}
+{% block signature %}{% if letter.org.personal_contact %}{{ letter.org.personal_contact|tex_escape }}{% else %}{{ letter.org.name|tex_escape }} staff{% endif %}{% endblock %}

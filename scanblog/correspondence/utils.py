@@ -321,7 +321,6 @@ class MailingLabelSheet(TextImage):
         for row in range(10):
             for col in range(3):
                 ((x1, y1), (x2, y2)) = self.get_dims(row, col)
-                print col, row, ((x1, y1, x2, y2))
                 draw = ImageDraw.Draw(self.im)
                 draw.line([(x1, y1), (x1, y2)], fill=(0,0,0), width=1)
                 draw.line([(x1, y1), (x2, y1)], fill=(0,0,0), width=1)

@@ -59,7 +59,9 @@ class BtbLoginMixin(object):
             user.groups.add(Group.objects.get(name=group))
 
     def setUp(self):
-        org = Organization.objects.create(name='org')
+        org = Organization.objects.create(name='org',
+            mailing_address="123 Cherry Tree Lane\nWashington, D.C.  12345",
+        )
         self.org = org
         test_users = [{
             'username': 'admin',

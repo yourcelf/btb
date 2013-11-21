@@ -788,5 +788,21 @@ def mailing_label_sheet(request):
     os.remove(combined)
     return response
 
+class CustomMassMailings(JSONView):
+    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    def get(self, request, pk=None):
+        if pk:
+            try:
+                mm = MassMailing.objects.org_filter(request.user).get(pk=pk)
+            except MassMailing.DoesNotExist:
+                raise Http404
+            return self.json_response(mm.to_dict())
+        return self.paginated_response(request, MassMailing.objects.org_filter(request.user),
+                dict_method='light_dict')
 
-
+    def post(self):
+        pass
+    def put(self):
+        pass
+    def delete(self):
+        pass

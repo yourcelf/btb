@@ -29,4 +29,4 @@ blog:
 \url{ {{ letter.recipient.profile.get_bare_blog_url|absolute_url|tex_escape }} }
 \end{quote}
 {% endblock %}
-{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}
+{% block signature %}{% if letter.org.personal_contact %}{{ letter.org.personal_contact|tex_escape }}{% else %}{{ letter.org.name|tex_escape }} staff{% endif %}{% endblock %}

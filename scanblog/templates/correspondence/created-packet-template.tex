@@ -50,4 +50,4 @@ Please remember that these exchanges, like all information published
 using our service, will be completely public and listed under your
 full name.
 {% endblock %}
-{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}
+{% block signature %}{% if letter.org.personal_contact %}{{ letter.org.personal_contact|tex_escape }}{% else %}{{ letter.org.name|tex_escape }} staff{% endif %}{% endblock %}

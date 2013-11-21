@@ -30,7 +30,8 @@ def generate_file(letter):
     if not letter.type:
         return None
     # Edge case: can't re-generate letters for people who have been made
-    # inactive since the letter was created.
+    # inactive since the letter was created -- because their pages are no
+    # longer there for us to print.
     if letter.type in ("first_post", "comments", "printout") and \
             (not letter.recipient.is_active or 
              not letter.recipient.profile.consent_form_received):
@@ -45,7 +46,13 @@ def generate_file(letter):
     if letter.type == "comments" and not letter.comments.public().exists():
         return None
 
-    tmp_file = methods[letter.type](letter)
+    if letter.custom_pdf:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
+            tmp_file = fh.name
+        shutil.copy(letter.custom_pdf.path, tmp_file)
+    else:
+        tmp_file = methods[letter.type](letter)
+
     if not tmp_file:
         return None
 
