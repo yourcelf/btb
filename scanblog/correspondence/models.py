@@ -110,7 +110,7 @@ class Letter(models.Model):
         return {
             'id': self.pk,
             'org_id': self.org_id,
-            'org': self.org.to_dict() if self.org else None,
+            'org': self.org.light_dict() if self.org else None,
             'sender': self.sender.profile.to_dict(),
             'recipient': self.recipient.profile.to_dict() if self.recipient else None,
             'recipient_address': self.recipient_address,
