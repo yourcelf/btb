@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -67,6 +68,36 @@ class NotificationBlacklist(models.Model):
     def __unicode__(self):
         return self.email
 
+class UserNotificationLog(models.Model):
+    """
+    Log of each notification sent to a user, used for throttling of
+    notifications.
+    """
+    recipient = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return "%s -> %s" % (self.recipient, self.date)
+
+    class Meta:
+        ordering = ['-date']
+
+def send_notices(recipients, *args):
+    """
+    Send notices, but throttled by the UserNotificationLog.
+    """
+    cutoff = datetime.datetime.now() - datetime.timedelta(seconds=30*60)
+    new_recipients = []
+    for recipient in recipients:
+        if UserNotificationLog.objects.filter(
+                date__gte=cutoff, recipient=recipient).exists():
+            continue
+        else:
+            UserNotificationLog.objects.create(recipient=recipient)
+            new_recipients.append(recipient)
+    notification.send(new_recipients, *args)
+
+
 #
 # Signals
 #
@@ -110,9 +141,7 @@ if not settings.DISABLE_NOTIFICATIONS:
             if created:
                 recipients.append(sub.subscriber)
         if recipients:
-            notification.send(recipients, "new_post", {
-                'document': document,
-            })
+            send_notices(recipients, "new_post", {'document': document})
 
     @receiver(post_save, sender=Comment)
     def send_comment_notifications(sender, instance=None, **kwargs):
@@ -145,7 +174,5 @@ if not settings.DISABLE_NOTIFICATIONS:
             if created:
                 recipients.append(sub.subscriber)
         if recipients:
-            notification.send(recipients, "new_reply", {
-                'comment': comment,
-            })
+            send_notices(recipients, "new_reply", {'comment': comment})
 

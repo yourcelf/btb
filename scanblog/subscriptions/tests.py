@@ -1,4 +1,5 @@
 import re
+import datetime
 
 from django.contrib.auth.models import User, Group
 from django.core import mail
@@ -9,7 +10,8 @@ from django.test.utils import override_settings
 
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
-from subscriptions.models import Subscription, NotificationBlacklist, CommentNotificationLog
+from subscriptions.models import (Subscription, NotificationBlacklist, CommentNotificationLog,
+    UserNotificationLog, DocumentNotificationLog)
 from scanning.models import Document, Transcription, TranscriptionRevision
 from comments.models import Comment
 from annotations.models import Tag, ReplyCode
@@ -345,3 +347,59 @@ class TestSubscriptions(BtbMailTestCase):
                     ))
 
             self.assertEquals(len(mail.outbox), 0)
+
+    def test_no_flooding_of_users_documents(self):
+        """
+        Ensure that notifications are not sent too quickly to users, even if
+        they are scheduled to receive them.
+        """
+        self.clear_outbox()
+        Subscription.objects.create(author=self.author, subscriber=self.commenter)
+        doc1 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+        doc2 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+        doc3 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+
+        # They only get one email, but we log 3 notifications, so they won't
+        # get those flood-y ones in the future either.
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+        self.clear_outbox()
+        self.assertEquals(DocumentNotificationLog.objects.filter(
+            recipient=self.commenter).count(), 3)
+
+        # Change the date of the UserNotificationLog, and we should get a new notice.
+        log = self.commenter.usernotificationlog_set.all()[0]
+        log.date = log.date - datetime.timedelta(seconds=31*60)
+        log.save()
+
+        Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+        self.clear_outbox()
+        self.assertEquals(self.commenter.usernotificationlog_set.count(), 2)
+
+        # Comments won't produce logs in this interval either.
+        # Add a comment by 'user', which should auto-subscribe them to comments on this doc.
+        Comment.objects.create(user=self.commenter, document=doc1, comment="Woo")
+        # Add a comment from someone else, which would create a notice if they
+        # weren't flood-blocked.
+        Comment.objects.create(user=self.commenter2, document=doc1, comment="Waa")
+        self.assertEquals(len(mail.outbox), 0)
+
+        # Non flood-blocked users should still get comment notices though.
+        Comment.objects.create(user=self.commenter, document=doc1, comment="Wor")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter2.email])
+        self.clear_outbox()
+
+        # If the latest log is old enough, and comments will again fire notices.
+        log = self.commenter.usernotificationlog_set.all()[0]
+        log.date = log.date - datetime.timedelta(seconds=31*60)
+        log.save()
+
+        Comment.objects.create(user=self.editor, document=doc1, comment="Wam")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
