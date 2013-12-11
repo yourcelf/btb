@@ -10,6 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from notification.models import Notice, NoticeType, NoticeSetting, NOTICE_MEDIA, get_notification_setting
 from subscriptions.models import Subscription
+from subscriptions.forms import MailingListInterestForm
 from scanning.models import Document
 from annotations.models import Tag
 from profiles.models import Organization, Affiliation
@@ -211,3 +212,14 @@ def ajax_delete_all_notices(request):
         raise Http404
     Notice.objects.filter(recipient=request.user).delete()
     return HttpResponse("success")
+
+def mailing_list_interest(request):
+    if request.GET.get("thanks"):
+        return render(request, "subscriptions/mailing_list_thanks.html")
+    form = MailingListInterestForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect(request.path + "?thanks=1")
+    return render(request, "subscriptions/mailing_list_interest.html", {
+        'form': form
+    })

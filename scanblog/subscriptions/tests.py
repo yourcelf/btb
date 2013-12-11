@@ -1,6 +1,7 @@
 import re
 import datetime
 
+from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -11,7 +12,7 @@ from django.test.utils import override_settings
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
 from subscriptions.models import (Subscription, NotificationBlacklist, CommentNotificationLog,
-    UserNotificationLog, DocumentNotificationLog)
+    UserNotificationLog, DocumentNotificationLog, MailingListInterest)
 from scanning.models import Document, Transcription, TranscriptionRevision
 from comments.models import Comment
 from annotations.models import Tag, ReplyCode
@@ -403,3 +404,27 @@ class TestSubscriptions(BtbMailTestCase):
         Comment.objects.create(user=self.editor, document=doc1, comment="Wam")
         self.assertEquals(len(mail.outbox), 1)
         self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+
+class TestMailingListInterest(TestCase):
+    url = reverse("subscriptions.mailing_list_interest")
+
+    def test_gets_mailing_list_interest_view(self):
+        res = self.client.get(self.url)
+        self.assertEquals(res.status_code, 200)
+        self.assertTrue("Are you interested in volunteering?" in res.content)
+
+    def test_posts_mailing_list_interest(self):
+        res = self.client.post(self.url, {
+            'email': 'test@example.com',
+            'details': '',
+        }, follow=True)
+        self.assertEquals(res.status_code, 200)
+        self.assertTrue("Thanks for your interest" in res.content)
+        self.assertEquals(MailingListInterest.objects.count(), 1)
+        m = MailingListInterest.objects.get()
+        self.assertEquals(m.email, 'test@example.com')
+        self.assertEquals(m.details, '')
+        self.assertEquals(m.allies, False)
+        self.assertEquals(m.announcements, False)
+        self.assertEquals(m.volunteering, False)
+
