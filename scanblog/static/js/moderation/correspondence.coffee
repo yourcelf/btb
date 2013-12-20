@@ -298,7 +298,7 @@ class btb.LetterTable extends btb.PaginatedView
         @collection = new btb.LetterList()
         @collection.filter = options.filter
 
-    render: =>
+    render: ->
         $(@el).html @template()
         for letter in @collection.models
             row = new btb.LetterRow({letter})
@@ -310,6 +310,7 @@ class btb.LetterTable extends btb.PaginatedView
         @addPaginationRow(true, true)
         $(@el).addClass("letter-table")
         this
+
     showLoading: => $(".fetch-loading", @el).show()
     hideLoading: => $(".fetch-loading", @el).hide()
 
