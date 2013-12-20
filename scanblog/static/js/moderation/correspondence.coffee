@@ -263,9 +263,10 @@ class btb.LetterRow extends Backbone.View
         $(".loading", @el).hide()
 
     render: =>
-        $(@el).html @template
+        $(@el).html @template({
             letter: @letter.toJSON()
             commaddress: @letter.get("org")?.mailing_address.replace(/\n/g, ", ")
+        })
         if @letter.get("type") == "comments" or @letter.get("type") == "comment_removal"
             # Add a comments table...
             commentsTable = new btb.CommentsMailingTable({
@@ -299,9 +300,8 @@ class btb.LetterTable extends btb.PaginatedView
 
     render: =>
         $(@el).html @template()
-        for corr in @collection.models
-            # Corr looks like {letter: letter, scan: scan}
-            row = new btb.LetterRow(corr)
+        for letter in @collection.models
+            row = new btb.LetterRow({letter})
             row.bind "editLetter", (letter) =>
                 @trigger "editLetter", letter
             row.bind "letterDeleted", (letter) =>
