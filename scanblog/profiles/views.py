@@ -458,7 +458,8 @@ class OrganizationsJSON(JSONView):
                 "error": "Missing attrs: {0}".format(", ".join(missing))
             }))
 
-        for key in ["about", "footer", "personal_contact", "public", "name"]:
+        for key in ["about", "footer", "personal_contact", "public",
+                    "name", "mailing_address"]:
             setattr(org, key, dest_attrs.get(key, ''))
         if org.slug != dest_attrs['slug']:
             taken = True
