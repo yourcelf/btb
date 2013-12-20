@@ -299,8 +299,9 @@ class btb.LetterTable extends btb.PaginatedView
 
     render: =>
         $(@el).html @template()
-        for letter in @collection.models
-            row = new btb.LetterRow({letter})
+        for corr in @collection.models
+            # Corr looks like {letter: letter, scan: scan}
+            row = new btb.LetterRow(corr)
             row.bind "editLetter", (letter) =>
                 @trigger "editLetter", letter
             row.bind "letterDeleted", (letter) =>
