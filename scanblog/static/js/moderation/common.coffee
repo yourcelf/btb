@@ -17,7 +17,10 @@ btb.strToDate = (dateOrStr) ->
 
 btb.formatDate = (dateOrStr) ->
     d = btb.strToDate(dateOrStr)
-    d.getFullYear() + "-" + (1 + d.getMonth()) + "-" + d.getDate()
+    if d
+      return d.getFullYear() + "-" + (1 + d.getMonth()) + "-" + d.getDate()
+    return "undefined"
+
 
 btb.formatDateWithZeros = (dateOrStr) ->
     d = btb.strToDate(dateOrStr)
