@@ -19,7 +19,7 @@ class TestAccess(TestCase):
 
 class TestSiteBanner(TestCase):
     def test_no_banner(self):
-        r = self.client.get("/")
+        r = self.client.get("/blogs/")
         self.assertEquals(SiteBanner.objects.current().count(), 0)
         self.assertEquals(r.status_code, 200)
         self.assertFalse("<div class='site-banner'>" in r.content)
@@ -29,10 +29,16 @@ class TestSiteBanner(TestCase):
         self.assertTrue(banner.is_current())
         self.assertEquals(list(SiteBanner.objects.current()), [banner])
 
-        r = self.client.get("/")
+        r = self.client.get("/blogs/")
         self.assertEquals(r.status_code, 200)
         self.assertTrue("<div class='site-banner'" in r.content)
         self.assertTrue("<b>TEST</b> banner" in r.content)
+
+        # No banner on front page.
+        r = self.client.get("/")
+        self.assertEquals(r.status_code, 200)
+        self.assertFalse("<div class='site-banner'" in r.content)
+        self.assertFalse("<b>TEST</b> banner" in r.content)
 
     def test_banner_currency(self):
         current_no_end_date = SiteBanner.objects.create(html="current no end")
