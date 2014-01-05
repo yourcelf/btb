@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load url from future %}
 {% load compress %}
+{% load site_banner_tags %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -109,6 +110,7 @@
                 {% endif %}
                 {% block body %}{% endblock %}
                 {% block after_body %}{% endblock %}
+                {% block site_banner %}{% site_banner %}{% endblock %}
             </div>
             <div style='clear: both;'></div>
             <div id='rootfooter'></div>

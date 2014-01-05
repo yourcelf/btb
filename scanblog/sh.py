@@ -13,6 +13,7 @@ from django.core.cache import cache
 from django.contrib.auth.models import *
 from django.db.models import *
 
+from about.models import *
 from annotations.models import *
 from comments.models import *
 from profiles.models import *

@@ -86,3 +86,32 @@ $(document).mouseup (event) ->
   popovers = $(".popover")
   if popovers.has(event.target).length == 0
     popovers.hide()
+
+# Site banner modal
+$("div.site-banner:first").each ->
+  el = $(this)
+  id = el.attr("data-id")
+  cookie_name = "btb_site_banner_#{id}"
+  if $.cookie(cookie_name)
+    return
+
+  el.show()
+
+  dismiss = (evt) ->
+    evt.preventDefault()
+    el.fadeOut()
+    $.cookie(cookie_name, 'true', {path: '/', expires: 365})
+
+  $(".underlay", el).bind("click", dismiss)
+  $(".close", el).bind("click", dismiss)
+
+# for debug
+window.reset_banners = ->
+  el = $("div.site-banner:first")
+  if el.length == 0
+    alert("No banner found!")
+  else
+    name = "btb_site_banner_#{el.attr("data-id")}"
+    $.removeCookie(name)
+    alert("cookie #{name} removed")
+

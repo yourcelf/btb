@@ -1,3 +1,4 @@
+import time
 from .base import BtbLiveServerTestCase
 
 class TestFrontend(BtbLiveServerTestCase):
@@ -54,4 +55,25 @@ class TestFrontend(BtbLiveServerTestCase):
             # Selenium webdriver does not expose status codes; do this instead.
             self.assertFalse("404" in self.selenium.title)
 
+    def test_site_banners(self):
+        from about.models import SiteBanner
+        # Create a banner.
+        SiteBanner.objects.create(html="<a href='#' data-fun='yeah'>Gorgeous</a>")
+        # Various pages shows it.
+        for page in ("/", "/blogs/", "/people/"):
+            self.selenium.get(self.url(page))
+            el = self.selenium.find_element_by_link_text("Gorgeous")
+            self.assertEquals(el.get_attribute("data-fun"), "yeah")
 
+        # Dismiss it.
+        self.selenium.find_element_by_link_text("Close").click()
+        time.sleep(0.5)
+        els = self.selenium.find_elements_by_link_text("Gorgeous")
+        self.assertEquals(len(els), 0)
+
+        # It's not there on subsequent loads.
+        self.selenium.get(self.url("/"))
+        els = self.selenium.find_elements_by_link_text("Gorgeous")
+        self.assertEquals(len(els), 0)
+
+        SiteBanner.objects.all().delete()
