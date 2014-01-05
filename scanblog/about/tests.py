@@ -31,7 +31,7 @@ class TestSiteBanner(TestCase):
 
         r = self.client.get("/")
         self.assertEquals(r.status_code, 200)
-        self.assertTrue("<div class='site-banner'>" in r.content)
+        self.assertTrue("<div class='site-banner'" in r.content)
         self.assertTrue("<b>TEST</b> banner" in r.content)
 
     def test_banner_currency(self):
