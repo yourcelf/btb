@@ -551,9 +551,12 @@ def edit_post(request, post_id=None):
     form = PostForm(request.POST or None, instance=post)
     if form.is_valid() and not post.scan_id:
         post = form.save()
-        tag_names = [t.lower().strip() for t in request.POST.getlist('tags')]
-        tag_objs = [Tag.objects.get_or_create(name=name)[0] for name in tag_names if name]
-        post.tags = set(tag_objs)
+
+        # Removing self-tagging for now -- it's getting abused.
+        #tag_names = [t.lower().strip() for t in request.POST.getlist('tags')]
+        #tag_objs = [Tag.objects.get_or_create(name=name)[0] for name in tag_names if name]
+        #post.tags = set(tag_objs)
+
         if post.status == "published":
             messages.info(request, "Post saved and published.")
             return redirect("blogs.post_show", post_id=post.pk, slug=post.get_slug())
