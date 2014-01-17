@@ -15,13 +15,26 @@ class PendingScanAdmin(admin.ModelAdmin):
     search_fields = ('code',)
 admin.site.register(PendingScan, PendingScanAdmin)
 
+class AuthorFilter(admin.SimpleListFilter):
+    title = 'Author'
+    parameter_name = 'author__profile__display_name'
+
+    def lookups(self, request, model_admin):
+        qs = model_admin.queryset(request)
+        return sorted(qs.order_by().values_list(
+                    'author_id', 'author__profile__display_name'
+                ).distinct(), key=lambda a: a[1])
+
+    def queryset(self, request, queryset):
+        return queryset.filter(author__profile__blogger=True)
+
+
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'status', 'created']
     search_fields = ['title', 'author__profile__display_name',
                      'body', 'transcription__revisions__body']
     date_hierarchy = 'created'
-    list_filter = ['type', 'status', 'author__profile__managed',
-                   'author__profile__display_name']
+    list_filter = ['type', 'status', 'author__profile__managed', AuthorFilter]
 admin.site.register(Document, DocumentAdmin)
 
 admin.site.register(DocumentPage)
