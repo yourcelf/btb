@@ -17,7 +17,7 @@ admin.site.register(PendingScan, PendingScanAdmin)
 
 class AuthorFilter(admin.SimpleListFilter):
     title = 'Author'
-    parameter_name = 'author__profile__display_name'
+    parameter_name = 'author_id'
 
     def lookups(self, request, model_admin):
         qs = model_admin.queryset(request)
@@ -26,7 +26,8 @@ class AuthorFilter(admin.SimpleListFilter):
                 ).distinct(), key=lambda a: a[1])
 
     def queryset(self, request, queryset):
-        return queryset.filter(author__profile__blogger=True)
+        return queryset.filter(author__profile__blogger=True,
+                author_id=self.value())
 
 
 class DocumentAdmin(admin.ModelAdmin):
