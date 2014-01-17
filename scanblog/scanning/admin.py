@@ -15,7 +15,13 @@ class PendingScanAdmin(admin.ModelAdmin):
     search_fields = ('code',)
 admin.site.register(PendingScan, PendingScanAdmin)
 
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'status', 'created']
+    search_fields = ['title', 'author__profile__display_name',
+                     'body', 'transcription__revisions__body']
+    date_hierarchy = 'created'
+    list_filter = ['type', 'status', 'author', 'author__profile__managed']
+admin.site.register(Document, DocumentAdmin)
 
-admin.site.register(Transcription)
-admin.site.register(Document)
 admin.site.register(DocumentPage)
+admin.site.register(Transcription)
