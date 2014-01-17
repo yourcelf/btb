@@ -20,7 +20,8 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ['title', 'author__profile__display_name',
                      'body', 'transcription__revisions__body']
     date_hierarchy = 'created'
-    list_filter = ['type', 'status', 'author', 'author__profile__managed']
+    list_filter = ['type', 'status', 'author__profile__managed',
+                   'author__profile__display_name']
 admin.site.register(Document, DocumentAdmin)
 
 admin.site.register(DocumentPage)
