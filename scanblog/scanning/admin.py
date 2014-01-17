@@ -21,13 +21,14 @@ class AuthorFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         qs = model_admin.queryset(request)
-        return sorted(qs.order_by().values_list(
+        return sorted(qs.filter(author__profile__blogger=True).order_by().values_list(
                     'author_id', 'author__profile__display_name'
                 ).distinct(), key=lambda a: a[1])
 
     def queryset(self, request, queryset):
-        return queryset.filter(author__profile__blogger=True,
-                author_id=self.value())
+        if self.value():
+            return queryset.filter(author_id=self.value())
+        return queryset
 
 
 class DocumentAdmin(admin.ModelAdmin):
