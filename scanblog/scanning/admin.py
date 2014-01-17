@@ -30,9 +30,8 @@ class AuthorFilter(admin.SimpleListFilter):
             return queryset.filter(author_id=self.value())
         return queryset
 
-
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author', 'status', 'created']
+    list_display = ['get_title', 'author', 'status', 'created']
     search_fields = ['title', 'author__profile__display_name',
                      'body', 'transcription__revisions__body']
     date_hierarchy = 'created'
