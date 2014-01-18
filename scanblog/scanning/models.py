@@ -274,7 +274,7 @@ class Document(models.Model):
                               db_index=True, default="unknown")
     adult = models.BooleanField()
 
-    tags = models.ManyToManyField('annotations.Tag')
+    tags = models.ManyToManyField('annotations.Tag', blank=True, null=True)
     reply_code = models.OneToOneField('annotations.ReplyCode')
 
     editor = models.ForeignKey(User, related_name='documents_edited',
