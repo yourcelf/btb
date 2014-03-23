@@ -7,7 +7,8 @@ class TestPostFromWeb(BtbLiveServerTestCase):
         self.selenium.find_element_by_link_text("✍ Compose").click()
         self.css("#id_title").send_keys("My Title %s" % status)
         self.css("#id_body").send_keys("This is the body of my %s post" % status)
-        self.css(".tagit-input").send_keys("tag1, tag2, tag3")
+        # Tagging feature removed...
+        #self.css(".tagit-input").send_keys("tag1, tag2, tag3")
         self.css("#id_status").send_keys(status)
         self.css("input[type=submit]").click()
 

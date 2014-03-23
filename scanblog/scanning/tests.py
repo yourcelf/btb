@@ -23,7 +23,7 @@ class TestScanJson(BtbLoginTestCase):
                 set([s.pk for s in list_of_scans])
         )
 
-    def test_scan_json(self):
+    def test_scan_json_lists(self):
         org = Organization.objects.get(name='org')
         uploader = User.objects.get(username='moderator')
         kwargs = {

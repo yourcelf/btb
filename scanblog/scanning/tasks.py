@@ -405,9 +405,23 @@ def _create_highlight(doc):
         os.remove(doc.highlight.path)
     if doc.highlight_transform:
         logger.debug("Transform: `{0}`".format(doc.highlight_transform))
-        tx = json.loads(doc.highlight_transform)
+        try:
+            tx = json.loads(doc.highlight_transform)
+        except ValueError:
+            logger.error("Invalid JSON for Document {} highlight_transform: {}".format(
+                doc.pk, doc.highlight_transform))
+            tx = None
+            return
         if tx:
-            documentpage = doc.documentpage_set.get(pk=tx['document_page_id'])
+            try:
+                documentpage = doc.documentpage_set.get(pk=tx['document_page_id'])
+            except DocumentPage.DoesNotExist:
+                logger.error("Bad highlight transform for Document {}: " \
+                             "DocumentPage {} does not exist. {}".format(
+                                 doc.pk,
+                                 tx['document_page_id'],
+                                 doc.highlight_transform))
+                return
             img = Image.open(documentpage.image)
             img = img.crop([int(a) for a in tx['crop']])
             highlight_fname = "{0}-highlight.jpg".format(doc_basename)

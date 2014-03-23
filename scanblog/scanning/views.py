@@ -235,17 +235,48 @@ class ScanSplits(JSONView):
 
             # Apportion pages.
             pages = []
-            old_transformations = {}
+            # We need to transfer old page transforms to new document pages,
+            # indexed by the scanpage_id, which persists.
+            old_page_transformations = {}
+            # ... and do the same for highlight_transform -- we need to change
+            # the documentpage_id to the new documentpage_id.
+            if document.highlight_transform:
+                old_highlight_transform = json.loads(document.highlight_transform)
+            else:
+                old_highlight_transform = ""
+            highlight_scan_page_id = None
+
+            # Loop through current pages to get info to transfer to new pages,
+            # and delete the old pages.
             for page in document.documentpage_set.all():
-                old_transformations[page.scan_page_id] = page.transformations
+                old_page_transformations[page.scan_page_id] = page.transformations
+
+                # Capture the old highlight transform's scan page ID.
+                if old_highlight_transform and \
+                        page.pk == old_highlight_transform["document_page_id"]:
+                    highlight_scan_page_id = page.scan_page_id
+
                 page.full_delete()
+
+            # Clear the highlight transform so that it remains 'valid' even if
+            # something goes wrong in identifying it with an old scan_page_id.
+            document.highlight_transform = ""
+            # Recreate the new pages, reusing the old transforms.
             for order,scanpage_id in enumerate(doc["pages"]):
                 documentpage = DocumentPage.objects.create(
                     document=document,
                     scan_page=ScanPage.objects.get(pk=scanpage_id), 
                     order=order,
-                    transformations=old_transformations.get(scanpage_id, "{}"),
+                    transformations=old_page_transformations.get(scanpage_id, "{}"),
                 )
+                # Reuse the old highlight transform, if it matches.
+                if scanpage_id == highlight_scan_page_id:
+                    old_highlight_transform["document_page_id"] = documentpage.pk
+                    document.highlight_transform = json.dumps(old_highlight_transform)
+            # Persist any changes to highlight_transform.
+            document.save()
+            if document.status in ("published", "ready"):
+                tasks.update_document_images.apply([document.pk]).get()
             document.documentpage_set = pages
             docs.append(document)
         scan.document_set = docs

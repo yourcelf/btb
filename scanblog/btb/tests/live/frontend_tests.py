@@ -59,8 +59,12 @@ class TestFrontend(BtbLiveServerTestCase):
         from about.models import SiteBanner
         # Create a banner.
         SiteBanner.objects.create(html="<a href='#' data-fun='yeah'>Gorgeous</a>")
-        # Various pages shows it.
-        for page in ("/", "/blogs/", "/people/"):
+
+        # Various pages shows it, but not the front page.
+        for page in ("/",):
+            self.selenium.get(self.url(page))
+            self.assertFalse("Gorgeouse" in self.selenium.page_source)
+        for page in ("/blogs/", "/people/"):
             self.selenium.get(self.url(page))
             el = self.selenium.find_element_by_link_text("Gorgeous")
             self.assertEquals(el.get_attribute("data-fun"), "yeah")
@@ -72,7 +76,7 @@ class TestFrontend(BtbLiveServerTestCase):
         self.assertEquals(len(els), 0)
 
         # It's not there on subsequent loads.
-        self.selenium.get(self.url("/"))
+        self.selenium.get(self.url("/blogs/"))
         els = self.selenium.find_elements_by_link_text("Gorgeous")
         self.assertEquals(len(els), 0)
 

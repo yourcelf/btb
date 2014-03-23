@@ -1,4 +1,5 @@
 import os
+import time
 
 from django.test import LiveServerTestCase
 from django.conf import settings
@@ -115,6 +116,10 @@ class BtbLiveServerTestCase(LiveServerTestCase):
     def csss(self, selector, scope=None):
         scope = scope or self.selenium
         return scope.find_elements_by_css_selector(selector)
+
+    def await_selector(self, selector):
+        while len(self.csss(selector)) == 0:
+            time.sleep(0.1)
 
     def hard_click(self, el):
         chain = ActionChains(self.selenium)
