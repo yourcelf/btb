@@ -3382,7 +3382,7 @@ msgid ""
 "\t\t"
 msgstr ""
 "\n"
-"Pour les organisation assistants plusieurs auteurs, %(site.name) peut mettre "
+"Pour les organisation assistants plusieurs auteurs, %(site.name)s peut mettre "
 "en place une page spécifique à cette organisation permettant ainsi de mettre "
 "en valeur ces auteurs ainsi que l'organisation en elle même."
 
