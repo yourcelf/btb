@@ -8,7 +8,7 @@
 <div class='terms'>
 <h2>
   {% blocktrans %}
-  Between the Bars Privacy Policy
+  {{ site.name }} Privacy Policy
   {% endblocktrans %}
 </h2>
 
@@ -22,8 +22,8 @@
       {% blocktrans %}
 <p>
 The following discloses the information gathering and dissemination
-practices for the Between the Bars (“BtB”) website available at
-<a href='{{ url_home }}'>http://betweenthebars.org</a> (the “Site”).
+practices for the {{ site.name }} (“BtB”) website available at
+<a href='{{ url_home }}'>{{ url_home }}</a> (the “Site”).
 Your use of the Site constitutes your agreement to this privacy policy
 and consent to the terms herein.
 </p>
@@ -108,7 +108,7 @@ privacy policy signifies your acceptance of the revised privacy policy.
 <h3>Contacting BtB</h3>
 <p>
 If you have any questions regarding this privacy policy, you can contact us by
-emailing <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>.
+emailing <a href='mailto:{{ site.email }}'>{{ site.email }}</a>.
 </p>
 
 <p>

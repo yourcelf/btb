@@ -43,8 +43,7 @@
     }
 </style>
 <noscript>
-    {# FIXME replace "Between the Bars" by a variable #}
-    {% trans "This page requires javascript. To browse Between the Bars without javascript, try" %} <a href='{% url blogs.home %}'>{% trans "blogs" %}</a>.
+    {% trans "This page requires javascript. To browse {{ site.name }} without javascript, try" %} <a href='{% url "blogs.home" %}'>{% trans "blogs" %}</a>.
 </noscript>
 <h1>{% trans "Every page" %}</h1>
 <div id='pagepicker'></div>

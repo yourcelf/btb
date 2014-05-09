@@ -23,7 +23,7 @@ are agreeing to abide by the
 <form action='' method='post'>{% csrf_token %}
     <table class='form'>
         {{ form }}
-        <tr><td></td><td><input type='submit' value='{% trans "Register" %}' /></td></tr>
+        <tr><td></td><td><input type='submit' value="{% trans 'Register' %}" /></td></tr>
     </table>
 </form>
 {% endblock %}

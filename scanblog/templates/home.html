@@ -15,7 +15,7 @@
     <h2>{% trans "Human stories from prison" %}</h2>
     <div style='clear: both;'></div>
     <div class='about'>
-        {{ site.name }} 
+        {{ site.name }}
 	{% trans "is a weblog platform for people in prison, through which the 1% of Americans who are in prison can tell their stories. Leave a comment &ndash; we'll pass it on." %}
     </div>
 </div>
@@ -30,7 +30,8 @@
     </div>
     <div class='blurb'>
         <blockquote>{% trans "Amazing stuff." %}</blockquote>
-        <a href='http://chrisuggen.blogspot.com/2010/11/between-bars.html'>Christopher Uggen</a>, criminologist
+        <a href='http://chrisuggen.blogspot.com/2010/11/between-bars.html'>Christopher Uggen</a>,
+        {% trans "criminologist" %}
     </div>
 </div>
 <div class='featured'>
@@ -42,16 +43,14 @@
                 <div class='slide'>
                     {% with page=doc.documentpage_set.all.0 %}
                         {% thumbnail page.image.path "400" as im %}
-                            <a href='{{ doc.get_absolute_url }}'><img src='{{ im.url|public_url }}' width='{{ im.x }}' height='{{ im.y }}' alt='scanned page' /></a>
-                        {% empty %}
-                            OH NO
+                          <a href='{{ doc.get_absolute_url }}'><img src='{{ im.url|public_url }}' width='{{ im.x }}' height='{{ im.y }}' alt='{% trans "scanned page" %}' /></a>
                         {% endthumbnail %}
                     {% endwith %}
                     <div class='caption'>
                         {% if doc.title %}
                             {{ doc.title }},
                         {% endif %}
-                        by <a href='{{ doc.author.profile.get_blog_url }}'>{{ doc.author.profile }}</a>
+                        {% trans "by" context "indicate authorship" %} <a href='{{ doc.author.profile.get_blog_url }}'>{{ doc.author.profile }}</a>
                     </div>
                 </div>
             {% endfor %}
@@ -62,9 +61,10 @@
     <h2>{% trans "Recent comments" %}</h2>
     {% for comment in comments %}
     <div class='comment'>
-        <div class='date'>{{ comment.created|timesince }} {% trans "ago" %}</div>
+        <div class='date'>{{ comment.created|timesince }} {% trans "ago" context "time since" %}</div>
         <div class='excerpt'>&#147;<span class='quote'>{{ comment.comment|truncatewords:"20" }}</span>&#148;</div>
-        <span class='author'>{% trans "By" %} {{ comment.user.profile }}</span> {% trans "on" %} <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
+        <span class='author'>{% trans "By" context "indicate authorship"%} {{ comment.user.profile }}</span>
+          {% trans "on" context "commented on" %} <span class='doc-title'><a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a></span>
     </div>
     {% endfor %}
 
@@ -73,7 +73,8 @@
 <div style='clear: both; margin-bottom: 2em;'></div>
 <div class='title-closing'>
     <h2>{% trans "Join the conversation!" %}</h2>
-    <p>{% trans "Head on over to the <a href='/blogs/'>blogs</a>." %}</p>
+    {% url "blogs.home" as blogs_url %}
+    <p>{% blocktrans %}Head on over to the <a href='{{ blogs_url }}'>blogs</a>.{% endblocktrans %}</p>
 </div>
 {% endblock %}
 {% block scripts %}

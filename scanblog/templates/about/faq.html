@@ -33,9 +33,12 @@
 	It's a link, not just for him to the outside world, but for his
 	inmate friends as well; a lifeline to the outside world."<br />
 	<span style='font-style: normal; color: #000'>
-	&ndash; Derick Attwood, father of imprisoned Shaun Attwood, speaking
-	about his son's blog,
-	<a href='http://jonsjailjournal.blogspot.com'>Jon's Jail Journal</a>.</p>
+    &ndash;
+    {% blocktrans %}
+      Derick Attwood, father of imprisoned Shaun Attwood, speaking
+      about his son's blog,
+      <a href='http://jonsjailjournal.blogspot.com'>Jon's Jail Journal</a>.</p>
+    {% endblocktrans %}
 	</span>
 	</blockquote>
 	<blockquote><p>
@@ -44,38 +47,50 @@
 	     We have a fascinating backdoor open with blogs... it really is
 	     diverse and complicated.<br />
 	     <span style='font-style: normal; color: #000'>
-	     &ndash; Ethan Zuckerman, speaking about "bridge blogs" that
-	     service communities without access to other forms broadcast
-	     media.
-	     (<a href='http://jonsjailjournal.blogspot.com/2005/08/28-july-05-bridge-blogs-give-voice-to.html'>source</a>)
+         &ndash;
+         {% blocktrans %}
+           Ethan Zuckerman, speaking about "bridge blogs" that
+           service communities without access to other forms broadcast
+           media.
+           (<a href='http://jonsjailjournal.blogspot.com/2005/08/28-july-05-bridge-blogs-give-voice-to.html'>source</a>)
+         {% endblocktrans %}
 	     </span>
 	</p></blockquote>
 	<p>
+  {% blocktrans %}
 	Blogging can not only let people in prison tell their stories and
 	report on their conditions, but it can also provide an instrumental
 	role in maintaining "weak-tie" social networks (acquaintances and
 	friends of friends), which are important for helping people
 	<a href='http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.128.7760&rep=rep1&type=pdf'>to find jobs and communities in which to live</a>.  This can reduce recidivism.
+  {% endblocktrans %}
 	</p>
     </dd>
-    <dt>How often do prisoners receive comments that I leave?</dt>
+    <dt>{% trans "How often do prisoners receive comments that I leave?" %}</dt>
     <dd><p>
+    {% blocktrans %}
     We currently print and mail new comments about once per week.
+    {% endblocktrans %}
     </p></dd>
-    <dt>What does it cost?</dt>
+    <dt>{% trans "What does it cost?" %}</dt>
     <dd><p>
+    {% blocktrans %}
     Aside from the postage to send us letters, the service is free.
     Maintenance expenses are handled through donations and grants, and time to
     scan letters is donated by volunteers.  It is very important to us that
     this service always be free.
+    {% endblocktrans %}
     </p></dd>
-    <dt>How long will this last?</dt>
+    <dt>{% trans "How long will this last?" %}</dt>
     <dd><p>
+    {% blocktrans %}
     We will keep the service running as long as we are able to secure the
     funding and volunteer energy necessary for it to continue.
+    {% endblocktrans %}
     </p></dd>
-    <dt>Isn't this dangerous?</dt>
+    <dt>{% trans "Isn't this dangerous?" %}</dt>
     <dd><p>
+    {% blocktrans %}
     We don't believe so.  People in prison already have the ability to send letters,
     which are read and censored by prison officials on the way in and out.
     Prisoners blogging is not new &ndash; it is something
@@ -96,19 +111,22 @@
     <a rel='nofollow' href='http://www.writeaprisoner.com/'>services</a>
     which
     <a rel='nofollow' href='http://www.conpals.com'>abound</a>.
+    {% endblocktrans %}
     </p>
     </dd>
-    <dt>I'd like to republish a prisoner's writing.  Can I do that?</dt>
+    <dt>{% trans "I'd like to republish a prisoner's writing.  Can I do that?" %}</dt>
     <dd><p>
+    {% blocktrans %}
     Prisoners maintain the copyrights to all of their writing.  If you'd like
     to republish it, you should ask them for permission.  You can do so by
     leaving a comment or, if they have provided an address, contacting them
     directly.
+    {% endblocktrans %}
     </p></dd>
-    <dt>I want to run Between the Bars in another country.  Can you help?</dt>
+    <dt>{% blocktrans with site_name=site.name %}"I want to run {{ site_name }} in another country.  Can you help?{% endblocktrans %}</dt>
     <dd><p>
-    We'd love to talk to you.  Please <a href='mailto:info@betweenthebars.org'>contact us</a>.
+    {% blocktrans with site_email=site.email %}We'd love to talk to you.  Please <a href='{{ site_email }}'>contact us</a>.{% endblocktrans %}
     </p></dd>
 </dl>
-<p>Have a question that isn't answered here?  Feel free to <a href='mailto:info@betweenthebars.org'>ask us</a>.</p>
+<p>{% blocktrans with site_email=site.email %}Have a question that isn't answered here?  Feel free to <a href='{{ site_email }}'>ask us</a>.{% endblocktrans %}</p>
 {% endblock %}

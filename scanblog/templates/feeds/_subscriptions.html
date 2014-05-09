@@ -66,13 +66,15 @@
         {% if campaign %}
         <tr>
             <th>
-                Posts for &#147;{{ campaign.title }}&#148; campaign:
+	        {% blocktrans with campaign_title=campaign.title %}
+                Posts for &#147;{{ campaign_title }}&#148; campaign:
+		{% endblocktrans %}
             </th>
             <td>
-                <a href='{% url "blogs.campaign_feed" campaign.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+                <a href='{% url "blogs.campaign_feed" campaign.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
-                <a href='{% url "subscriptions.campaign" campaign.slug %}'>email me</a>
+                <a href='{% url "subscriptions.campaign" campaign.slug %}'>{% trans "email me" %}</a>
             </td>
         </tr>
         {% endif %}

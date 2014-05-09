@@ -1,7 +1,13 @@
 {% load i18n %}
 <h1>{% trans "500 Internal Server Error" %}</h1>
-<p>{% trans "Sorry, it's not you -- it's us.  A server admin has been notified and will
-look into fixing this as soon as possible." %}
+<p>
+{% blocktrans %}
+Sorry, it's not you -- it's us.  A server admin has been notified and will
+look into fixing this as soon as possible.
+{% endblocktrans %}
 </p>
-<p>{% trans "You can return to the front page here: <a href='http://betweenthebars.org'>http://betweenthebars.org</a>." %}
+<p>
+{% blocktrans %}
+You can return to the front page here: <a href='//{{ site.domain }}'>{{ site.domain }}</a>.
+{% endblocktrans %}
 </p>
