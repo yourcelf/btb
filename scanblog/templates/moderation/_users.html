@@ -1,3 +1,4 @@
+{% load url from future %}
 <!-- User management -->
 
 <script type='text/template' id="userAdd">
@@ -79,20 +80,31 @@
     <div class='noresult'>No results.</div>
 </script>
 <script type="text/template" id="inPlaceUserChooser">
-    <span class='user-name'></span>
+  <span class='user-name'></span> <span class='user-state'></span>
     <div class='user-chooser-holder'></div>
 </script>
 <script type='text/template' id="userManage">
-    <table>
-        <tr>
-            <th><label>Select user:</label> </th>
-            <td>
-                <div class='user-chooser-holder'></div>
-            </td>
-        </tr>
-    </table>
-    <div class='user-detail'>
-    </div>
+  <table>
+    <tr>
+      <td colspan='2'>
+        <label>
+          <input type='radio' name='usertype' value='blogger'
+            <%= filter.blogger ? "checked" : "" %>></input>
+            Bloggers
+        </label>
+        <label>
+          <input type='radio' name='usertype' value='commenter'
+            <%= filter.blogger ? "" : "checked" %>></input>
+            Commenters
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <th><label>Select user:</label> </th>
+      <td><div class='user-chooser-holder'></div></td>
+    </tr>
+  </table>
+  <div class='user-detail'></div>
 </script>
 <script type='text/template' id='userState'>
     <%/* state */%>
@@ -102,7 +114,10 @@
     <% if (user.blogger) { %>
         Blogger:
         <% if (user.consent_form_received) { %>
-            <% if (user.managed) { %>
+            <% if (user.lost_contact) { %>
+                <span class='ui-icon ui-icon-alert' title='Hold Mail'></span>
+                Mail held
+            <% } else if (user.managed) { %>
                 <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
                 Managed
             <% } else { %>
@@ -116,6 +131,7 @@
         <% } else if (user.waitlistable) { %>
             waitlistable
         <% } %>
+      (<a href='<%= user.blog_url %>'>blog</a>)
     <% } else { %>
         Commenter
     <% } %>
@@ -123,11 +139,15 @@
 <script type='text/template' id='compactUser'>
     <div class='compact-user <%= user.is_active ? "active" : "inactive" %> <%= user.consent_form_received ? "enrolled" : "not-enrolled" %>'>
         <input type='hidden' value='<%= user.id_raw %>' class='user-id-raw' />
-        <div class='state'></div>
+        <div class='user-state'></div>
         <div class='name-and-details'>
             <div class='display-name'>
                 <%| user.display_name %>
                 <a href='#/users/<%= user.id %>' title='Edit user'><span class='ui-icon ui-icon-person'></span></a>
+                <% if (user.mailing_address) { %>
+                    <a href='{% url "correspondence.print_envelope" %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
+                <% } %>
+
             </div>
             <% if (user.blog_name) { %><div class='blog-name'><%= user.blog_name %></div><% } %>
             <div class='date-joined'>Joined: <%= btb.formatDate(user.date_joined) %></div>
@@ -152,19 +172,134 @@
             <th>Blogger</th>
             <th>Managed</th>
             <th>License signed</th>
+            <th>Hold Mail</th>
         </tr>
         <tr>
             <td class='is-active'></td>
             <td class='blogger'></td>
             <td class='managed'></td>
             <td class='consent-form-received'></td>
+            <td class='lost-contact'></td>
         </tr>
     </table>
+</script>
+<script type='text/template' id='commenterDetail'>
+    <div class='user-detail'>
+        <div class='left-column'>
+            <h1 style='display: inline-block;'><%= user.display_name %></h1>
+            <span class='user-state'></span>
+            <% if (user.email) { %>
+                <a href='mailto:<%= user.email %>'><%= user.email %></a>
+            <% } else { %>
+                No email on file.
+            <% } %>
+        </div>
+        <div class='right-column'>
+            <h2>Notes</h2>
+            <div class='notelist'></div>
+        </div>
+        <div style='clear: both;'></div>
+        <div class='commenter-stats'></div>
+    </div>
+</script>
+<script type='text/template' id='commenterStats'>
+    <table>
+        <tr>
+            <td style='font-size: 20px;'><a href='/people/show/<%= user_id %>'>Profile</a>
+            <td style='font-size: 20px;'><a href='/admin/auth/user/<%= user_id %>'>Admin</a>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th>Joined</th>
+            <td>
+                <%= btb.formatDate(joined) %>
+                <% var diff = new Date().getTime() - joined.getTime(); %>
+                (<%= parseInt(diff / (60 * 60 * 24 * 1000)) %> days ago)
+            </td>
+            <th>Last login</th><td><%= btb.formatDate(last_login) %>
+                <% var diff = new Date().getTime() - last_login.getTime(); %>
+                (<%= parseInt(diff / (60 * 60 * 24 * 1000)) %> days ago)
+            
+            </td>
+            <th>Tagger</th>
+            <td>
+                <label for='id_can_tag'>
+                    May add tags to posts:
+                    <input type='checkbox' name='can_tag' id='id_can_tag' <%= can_tag ? "checked" : "" %>/>
+                </label>
+            </td>
+        </tr>
+    </table>
+    <p></p>
+    <p></p>
+    <% if (!histogram) { %>
+      <p>No activity.</p>
+    <% } else { %>
+        <h3>Activity over time</h3>
+        <table>
+            <tr>
+                <th class='comments'>Comments</th><td><%= activity.comments.length %></td>
+                <th class='favorites'>Favorites</th><td><%= activity.favorites.length %></td>
+                <th class='transcriptions'>Transcriptions</th><td><%= activity.transcriptions.length %></td>
+            </tr>
+        </table>
+        <div class='histogram-holder'>
+            <div class='histogram'>
+                <% for (var i=0; i < histogram.length; i++) { %>
+                    <% var accum = 0; %>
+                    <div class='bar'>
+                        <div class='stacker-holder'>
+                            <div class='stacker comments'
+                                title='<%= histogram[i].comments.count %> comments'
+                                style='height: <%= histogram[i].comments.percentage %>%; bottom: <%= accum %>%'></div>
+                            <% accum += histogram[i].comments.percentage; %>
+                            <div class='stacker favorites'
+                                title='<%= histogram[i].favorites.count %> favorites'
+                                style='height: <%= histogram[i].favorites.percentage %>%; bottom: <%= accum %>%'></div>
+                            <% accum += histogram[i].favorites.percentage; %>
+                            <div class='stacker transcriptions'
+                                title='<%= histogram[i].transcriptions.count %> transcriptions'
+                                style='height: <%= histogram[i].transcriptions.percentage %>%; bottom: <%= accum %>%'></div>
+                            <% accum += histogram[i].transcriptions.percentage; %>
+                          </div>
+                    </div>
+                <% } %>
+            </div>
+            <div class='legend'>
+                <% for (var i=0; i < histogram.length; i++) { %>
+                    <div class='label'><%= histogram[i].label %></div>
+                <% } %>
+            </div>
+        </div>
+        <p></p>
+        <p></p>
+        <h3>Relationships</h3>
+        <p>This commenter has interacted with the following bloggers:</p>
+        <ul class='bullets'>
+            <% for (var i=0; i < relationships.length; i++) { %>
+                <li>
+                    <a href='/moderation/#/users/<%= relationships[i][0] %>'>
+                        <%= users[relationships[i][0]] %>
+                    </a>:
+                    <% var fields = ["comments", "favorites", "transcriptions"]; %>
+                    <% for (var j=0; j < fields.length; j++) { %>
+                        <% var count = relationships[i][1][fields[j]]; %> 
+                        <% if (count > 0) { %>
+                            <span class='<%= fields[j] %>'><%= count %> <%= fields[j] %></span>,
+                        <% } %>
+                    <% } %>
+                </li>
+            <% } %>
+        </ul>
+    <% } %>
 </script>
 <script type='text/template' id="userDetail">
     <div class='user-detail'>
         <div class='left-column'>
-            <h1><%= user.display_name %> <span class='state'></span></h1>
+            <h1 style='display: inline-block;'><%= user.display_name %></h1>
+            <span class='user-state'></span>
+            <div style='clear: left; vertical-align: bottom;'></div>
             <table class='user-info'>
                 <tr>
                     <th>Name</th><td class='display-name'></td>
@@ -173,7 +308,7 @@
                     <th>
                         Address
                         <% if (user.mailing_address) { %>
-                            <a href='{% url correspondence.print_envelope %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
+                            <a href='{% url "correspondence.print_envelope" %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
                         <% } %>
                     </th>
                     <td class='mailing-address'></td>
@@ -192,7 +327,9 @@
                 </tr>
                 <tr>
                     <th>Joined</th>
-                    <td><%= btb.formatDate(user.date_joined) %></td>
+                    <td>
+                        <%= btb.formatDate(user.date_joined) %>
+                    </td>
                 </tr>
                 <tr>
                     <th>Organization</th>
@@ -238,7 +375,8 @@
         </select><br />
         Adult: <input type='checkbox' class='adult' <%| adult ? "checked: 'checked'" : "" %> />
     </form>
-    <span class='queue-printout'>Queue printout</span>
+    <span class='queue-printout'>Queue printout</span><br />
+    Reply ID: <span class='mono'><%= reply_id %></span>
 </script>
 <script type='text/template' id="missingCheckbox">
     <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />

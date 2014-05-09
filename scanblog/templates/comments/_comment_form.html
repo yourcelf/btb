@@ -1,13 +1,14 @@
+{% load url from future %}
 {% load i18n %}
 <div class='commentform'>
     <a name='commentform'></a>
     <h3>
-	{% if post.author.profile.managed %}
+        {% if post.author.profile.managed and not post.author.profile.lost_contact %}
 	    {% blocktrans %}
 	    We will print and mail your reply by <span class='comment-maildate'></span>.
 	    {% endblocktrans %}
 	{% endif %}
-	<a href='{% url about.community_guidelines %}'>{% trans "Guidelines" %}</a></h3>
+	<a href='{% url "about.community_guidelines" %}'>{% trans "Guidelines" %}</a></h3>
     <div style='float: left; clear: both;'>
 	<form method='post' action='#commentform'>{% csrf_token %}
 	    {% if comment_form.comment.errors %}

@@ -59,6 +59,12 @@
 		    {% if sub.organization_id %}
 			{% trans "Posts from" %} <em><a href='{{ sub.organization.get_absolute_url }}'>{{ sub.organization.name }}</a></em> {% trans "authors" %}
 		    {% endif %}
+                    {% if sub.campaign_id %}
+                        {% trans "Posts from the" %} <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign
+                    {% endif %}
+                    {% if sub.affiliation_id %}
+                        {% trans "Posts from" %} <em><a href='{{ sub.affiliation.get_absolute_url }}'>{{ sub.affiliation.title }}</a></em>
+                    {% endif %}
 		</td>
 	    </tr>
 	{% endfor %}

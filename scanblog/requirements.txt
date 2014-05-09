@@ -1,25 +1,25 @@
-django>=1.4
+django<1.6
 psycopg2
--e hg+http://bitbucket.org/ubernostrum/django-registration#egg=django-registration
-# Require celery 2.2 because of backwards incompatibility introduced in 2.3 --
-# upgrade when resolved.
+django-registration
 Celery
 django-celery
 pyPdf
-PIL
+pillow<2.0.0
 amqplib
 fabric
 django-bcrypt
--e git+https://github.com/ahupp/python-magic#egg=magic
-lettuce
+python-magic
 django_compressor
 sorl-thumbnail
 python-memcached
--e git+https://github.com/yourcelf/django-notification#egg=django-notification
+-e git+https://github.com/yourcelf/django-notification.git@2b61f91a331eb22b8103f7a9bade00f8b117b279#egg=django_notification
 django-pagination
-django-urlcrypt
+-e git+https://github.com/yourcelf/django-urlcrypt.git#egg=django_urlcrypt
 South
 pyyaml
-django-debug-toolbar
 reportlab
-selenium<=2.20 # Due to this bug: https://code.google.com/p/selenium/issues/detail?id=3736
+selenium
+pytz
+django-localflavor
+django-debug-toolbar
+-e git+https://github.com/jmoiron/johnny-cache.git#egg=johnny_cache

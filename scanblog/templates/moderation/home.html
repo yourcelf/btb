@@ -4,7 +4,7 @@
 
 {% block css %}
 {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/moderation.css" />
+        <link rel="stylesheet" type="text/x-sass" href="{{STATIC_URL}}css/moderation.sass" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/jquery-ui-theme/jquery-ui.css" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/Jcrop/css/jquery.Jcrop.css" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/vendor/smarttextbox/SmartTextBox.css" />
@@ -18,17 +18,22 @@
     <a href='#/users'>Manage users</a>
     <a href='#/mail'>Outgoing mail</a>
     |
-    <a href='tasks'>Tasks</a>
+    {% if perms.profiles.change_organization %}
+      <a href='#/groups'>Groups</a>
+    {% endif %}
     <a href='tagparty'>Tag party</a>
+    |
+    <a href='stats'>Stats</a>
 {% endblock %}
 {% block body %}
-    <div id='app'>
-    </div>
+    <div id='app'></div>
 {% endblock %}
 {% block scripts %}
 <script type='text/javascript'>
     if (typeof window.btb == "undefined") { window.btb = {}; }
     btb.ORGANIZATIONS = {{ organizations_json|safe }};
+    var page = document.getElementById('page');
+    page.className = "wide";
 </script>
 
 {# BtB app templates #}
@@ -38,6 +43,7 @@
 {% include "moderation/_scans.html" %}
 {% include "moderation/_documents.html" %}
 {% include "moderation/_users.html" %}
+{% include "moderation/_groups.html" %}
 {% include "moderation/_correspondence.html" %}
 {% include "moderation/_notes.html" %}
 
@@ -53,15 +59,16 @@
 <script type='text/javascript' src='{{STATIC_URL}}js/underscore-autoescape.js'></script>
 
 {# BtB app scripts #}
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/common.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/users.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/pendingscans.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/correspondence.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/scans.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/documents.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/dashboard.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/notes.js'></script>
-<script type='text/javascript' src='{{STATIC_URL}}js/moderation/dispatch.js'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/common.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/users.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/groups.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/pendingscans.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/correspondence.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/scans.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/documents.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/dashboard.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/notes.coffee'></script>
+<script type='text/coffeescript' charset='utf-8' src='{{STATIC_URL}}js/moderation/dispatch.coffee'></script>
 {% endcompress %}
 
 {% endblock %}

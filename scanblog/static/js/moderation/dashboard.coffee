@@ -29,6 +29,10 @@ class btb.Dashboard extends Backbone.View
         $(".doc-chooser span", @el).removeClass("chosen")
         $(event.currentTarget).addClass("chosen")
         @docsView.list.filter.status = $(event.currentTarget).attr("data-status")
+        if @docsView.list.filter.status == "unknown"
+          @docsView.list.filter.author__profile__managed = 1
+        else
+          @docsView.list.filter.author__profile__managed = 0
         @docsView.fetch()
 
     changeScans: (event) =>

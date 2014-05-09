@@ -1,0 +1,28 @@
+{% extends "moderation/base.html" %}
+{% load compress %}
+{% block title %}{{ question }}{% endblock %}
+{% block css %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}css/moderation.sass" type="text/x-sass">
+  {% endcompress %}
+  <style type='text/css'>
+    table.stats td, table.stats th { padding-left: 0.3em; padding-right: 0.3em; }
+  </style>
+{% endblock %}
+{% block body %}
+  <h1>{{ question }}</h1>
+  <table class='stats'>
+    <tr>
+      {% for head in header_row %}
+        <th>{{ head }}</th>
+      {% endfor %}
+    </tr>
+    {% for row in rows %}
+      <tr>
+        {% for cell in row %}
+        <td>{{ cell|safe }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

@@ -15,7 +15,7 @@ def home(request):
         type="post", 
         tags__name="featured"
     )[:7] # 7 fits just right on the front page.
-    comments = Comment.objects.public().filter(
+    comments = Comment.objects.excluding_boilerplate().filter(
             comment_doc__isnull=True
         ).order_by('-created')[0:5]
     return render(request, "home.html", {

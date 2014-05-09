@@ -5,7 +5,7 @@
 
 {% block heading %}{# Override with title, etc. #}{% endblock %}
 
-{% if page.number != 1 and page.paginator.num_pages > 1 %}Pages: {% include "_pagination.html" %}{% endif %}
+{% if page.number != 1 and page.paginator.num_pages > 1 %}{% include "_pagination.html" %}{% endif %}
 
 {% for post in page.object_list %}
     {% if not post.adult or user.profile.show_adult_content %}

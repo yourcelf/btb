@@ -1,17 +1,18 @@
 {% extends "correspondence/base_letter_list.html" %}
+{% load url from future %}
 {% load i18n %}
 {% block title %}{% trans "Manage correspondence" %}{% endblock %}
 
 {% block header %}
 <h2>{% trans "Pending correspondence" %}</h2>
 <p>
-    <form method='post'  action="{% url correspondence.generate_process_letters %}">{% csrf_token %}
+    <form method='post'  action="{% url "correspondence.generate_process_letters" %}">{% csrf_token %}
 	<input type='submit' value='{% trans "Update pending correspondence" %}' /><br />
     </form>
     {% trans "Refreshes all 'automatic' pending correspondence." %}
 </p>
 <p>
-    <form method='post' action='{% url correspondence.add_unconsented_to_waitlist %}'>{% csrf_token %}
+    <form method='post' action='{% url "correspondence.add_unconsented_to_waitlist" %}'>{% csrf_token %}
 	<input type='submit' value='{% trans "Waitlist consent requests" %}' /><br />
     </form>
     {% blocktrans %}
@@ -19,7 +20,7 @@
     {% endblocktrans %}
 </p>
 
-<form method='get' action='{% url correspondence.collate_mailing %}'>
+<form method='get' action='{% url "correspondence.collate_mailing" %}'>
     <table>
 	<tr>
 	    <th colspan='2'>{% trans "Collated mailings:" %}</th>

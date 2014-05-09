@@ -1,5 +1,6 @@
 {% extends "moderation/base.html" %}
 {% load i18n %}
+{% load url from future %}
 {% block title %}{% trans "Manage tasks" %}{% endblock %}
 {% block body %}
 <script type='text/javascript'>
@@ -48,7 +49,7 @@
     </tr>
     {% for task in page.object_list %}
     <tr class='task' style='psoition: relative;'>
-        <td><a href='{% url moderation.wait_for_processing task.task_id %}' title='{% trans "waiting page for task" %}'>{% trans "link" %}</a></td>
+        <td><a href='{% url "moderation.wait_for_processing" task.task_id %}' title='{% trans "waiting page for task" %}'>{% trans "link" %}</a></td>
         <td>{{ task.date_done }}</td>
         <td>
             <span class='{{ task.status }}'>{{ task.status }}</span>

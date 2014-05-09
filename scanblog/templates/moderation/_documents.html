@@ -1,3 +1,4 @@
+{% load url from future %}
 <script type="text/template" id="editDocumentsManager">
     <div class='edit-documents'>
         <h1>Editing <%= numdocs %> document<%= numdocs == 1 ? "" : "s" %></h1>
@@ -7,122 +8,155 @@
 <script type="text/template" id="editDocument">
 <div class='edit-document <%= doc.type %>' data-document-id='<%= doc.id %>'>
     <% if (num > 1) { %>
-        <h2>Document <%= order + 1%> of <%= num %> (<%= doc.pages.length %> pages)</h2>
+        <h2>Document <%= order + 1%> of <%= num %> (<%= doc.pages.length %> pages) &ndash; <%= doc.type %></h2>
     <% } %>
-    <form action='{% url scanning.delete_doc %}<%= doc.id %>' method='post' onsubmit='return confirm("Really delete this document?  There is no undo.");' class='delete-doc'>{% csrf_token %}
+    <form action='{% url "scanning.delete_doc" %}<%= doc.id %>' method='post' onsubmit='return confirm("Really delete this document?  There is no undo.");' class='delete-doc'>{% csrf_token %}
         <input type='submit' class='delete-doc' value='Delete document'>
     </form>
     <div style='clear: both;'></div>
-    <div class='notes'>
-        <div class='user-notes-table'></div>
-        <div class='document-notes-manager'></div>
-        <% if (doc.type == "request") { %>
-            <h2>Correspondence for <%= doc.author.display_name %></h2>
-            <div class='correspondence-list'>
-                <img src='{{ STATIC_URL }}img/spinner.gif' />
+    <div class='document-controls'>
+        <div class='pages'>
+            <div class='page-size'>
+                <span class='small' title='small size'>A</span
+                ><span class='medium' title='medium size'>A</span
+                ><span class='full' title='full size'>A</span>
             </div>
-        <% } else if (doc.type == "license") { %>
-            <h2>Status (<a href='#/users/<%= doc.author.id %>' title='Edit author'>details<span class='ui-icon ui-icon-person'></span></a>)</h2>
-            <div class='user-status-table'></div>
-        <% } %>
-    </div>
-    <table class='form'>
-        <tr>
-            <th>Type:</th> 
-            <td>
-                <%= doc.type %> 
-                <% if (doc.scan_id) { %>
-                    (<a href='#/process/scan/<%= doc.scan_id %>'>scan</a>)
-                <% } else { %>
-                    <span class='error'>(error - no parent scan.)</span>
-                <% } %>
-            </td>
-        </tr><tr>
-            <th>Author:</th>
-            <td><a href='#/users/<%= doc.author.id %>' title='Edit author'><span class='ui-icon ui-icon-person'></span></a><div style='float: left;' class='choose-user-holder'></div></td>
-        </tr>
-
-        <% if (doc.type == "post") { %>
-        <tr>
-
-            <th>Title:</th>
-            <td><input type='text' class='doc-title' value='<%= doc.title %>' placeholder='Untitled' /></td>
-        </tr>
-        <% } %>
-            
-        <tr>
-            <th>Date added:</th>
-            <td><input type='text' class='doc-date' value='<%= doc.date_written ? btb.formatDate(doc.date_written) : "" %>' placeholder='YYYY-MM-DD' /></td>
-        </tr>
-        <% if (doc.type == "post" || doc.type == "profile") { %>
-            <tr>
-                <th>Contains adult content:</th>
-                <td><input type='checkbox' class='doc-adult' <%| doc.adult ? "checked='checked'" : "" %> /><small>(if checked, post is hidden for most users)</small></td>
-            </tr>
-        <% } %>
-        <tr>
-            <th>Tags:</th>
-            <td>
-                <input class='doc-tags' type='text' placeholder='Separate tags with commas' value='<%= doc.tags %>' />
-                <small>Separate with commas</small>
-            </td>
-        </tr>
-        <% if (doc.type == "post") { %>
-            <tr>
-                <th>Reply ID:</th>
-                <td>
-                    This document is a reply to:
-                    <input class='doc-in-reply-to' type='text' placeholder='None' value='<%= doc.in_reply_to %>' />
-                    <div class='doc-in-reply-to-details'></div>
-                    <!--
-                    <div>
-                        Replies to <em>this</em> document use this code: <tt><%= doc.reply_code %></tt>
+            <div style='clear: both;'></div>
+            <div class='page-list'></div>
+            <span class='save-doc'>Save</span><div class='post-save-message'></div>
+        </div>
+        <div class='metadata'>
+            <div class='stow'>&harr;</div>
+            <div class='notes'>
+                <div class='user-notes-table'></div>
+                <div class='document-notes-manager'></div>
+                <% if (doc.type == "request") { %>
+                    <h2>Correspondence for <%= doc.author.display_name %></h2>
+                    <div class='correspondence-list'>
+                        <img src='{{ STATIC_URL }}img/spinner.gif' />
                     </div>
-                    -->
-                </td>
-            </tr>
-        <% } %>
-        <% if (doc.type == "post" || doc.type == "profile") { %>
-            <tr>
-                <th>Status:</th>
-                <td class='<%= { published: "success", unknown: "warn", ready: "warn", unpublishable: "" }[doc.status] %>'>
-                    <%| doc.is_public ? "&check;" : "" %>
-                    <select class='doc-status'>
-                        {% for state in document_states %}
-                            <option value='{{ state.0 }}'>{{ state.1 }}</option>
-                        {% endfor %}
-                    </select>
-                    <a href='/posts/<%= doc.id %>/'>View on site</a>
-                    <% if (doc.status == "published" && !doc.is_public) { %>
-                        <br />
-                        <div class='warn'>Document is not public because the author is not enrolled or not active.</div>
-                    <% } %>
-                </td>
-            </tr>
-        <% } %>
-    </table>
-    <div style='clear: both;'></div>
-    <span class='save-doc'>Save</span><div class='post-save-message'></div>
-    <div style='clear: both;'></div>
-    <div style='clear: both;'></div>
-    <div style='float: right;' class='page-size'>
-        <span class='small' title='small size'>A</span
-        ><span class='medium' title='medium size'>A</span
-        ><span class='full' title='full size'>A</span>
+                <% } else if (doc.type == "license") { %>
+                    <h2>Status (<a href='#/users/<%= doc.author.id %>' title='Edit author'>details<span class='ui-icon ui-icon-person'></span></a>)</h2>
+                    <div class='user-status-table'></div>
+                <% } %>
+            </div>
+            <table class='form'>
+                <tr>
+                    <th>Type:</th> 
+                    <td>
+                        <%= doc.type %> 
+                        <% if (doc.scan_id) { %>
+                            (<a href='#/process/scan/<%= doc.scan_id %>'>scan</a>)
+                        <% } else { %>
+                            <span class='error'>(error - no parent scan.)</span>
+                        <% } %>
+                    </td>
+                </tr><tr>
+                    <th>Author:</th>
+                    <td><a href='#/users/<%= doc.author.id %>' title='Edit author'><span class='ui-icon ui-icon-person'></span></a><div style='float: left;' class='choose-user-holder'></div></td>
+                </tr>
+          
+                <% if (doc.type == "post") { %>
+                  <tr>
+          
+                      <th>Title:</th>
+                      <td><input type='text' class='doc-title' value='<%= doc.title %>' placeholder='Untitled' /></td>
+                  </tr>
+                  <tr>
+                      <th>Affiliation:</th>
+                      <td>Document belongs to group:
+                          <input type='text' class='doc-affiliation' value='<%= doc.affiliation ? doc.affiliation.slug : "" %>' placeholder='None' />
+                          <div class='doc-affiliation-details'>
+                            <%= doc.affiliation ? doc.affiliation.title : "" %>
+                          </div>
+                      </td>
+                  </tr>
+                <% } %>
+                    
+                <tr>
+                    <th>Date:</th>
+                    <td><input type='text' class='doc-date' value='<%= doc.date_written ? btb.formatDateWithZeros(doc.date_written) : "" %>' placeholder='YYYY-MM-DD' /></td>
+                </tr>
+                <% if (doc.type == "post" || doc.type == "profile") { %>
+                    <tr>
+                        <th>Adult:</th>
+                        <td><input type='checkbox' class='doc-adult' <%| doc.adult ? "checked='checked'" : "" %> /><small>Contains adult conent. (if checked, post is hidden for most users)</small></td>
+                    </tr>
+                <% } %>
+                <tr>
+                    <th>Tags:</th>
+                    <td>
+                        <input class='doc-tags' type='text' placeholder='Separate tags with commas' value='<%= doc.tags %>' />
+                        <small>Separate with commas</small>
+                    </td>
+                </tr>
+                <% if (doc.type == "post") { %>
+                    <tr>
+                        <th>Reply ID:</th>
+                        <td>
+                            This document is a reply to:
+                            <input class='doc-in-reply-to' type='text' placeholder='None' value='<%= doc.in_reply_to %>' />
+                            <div class='doc-in-reply-to-details'></div>
+                            <!--
+                            <div>
+                                Replies to <em>this</em> document use this code: <tt><%= doc.reply_code %></tt>
+                            </div>
+                            -->
+                        </td>
+                    </tr>
+                <% } %>
+                <% if (doc.type == "post" || doc.type == "profile") { %>
+                    <tr>
+                        <th>Status:</th>
+                        <td class='<%= { published: "success", unknown: "warn", ready: "warn", unpublishable: "" }[doc.status] %>'>
+                            <%| doc.is_public ? "&check;" : "" %>
+                            <select class='doc-status'>
+                                {% for state in document_states %}
+                                    <option value='{{ state.0 }}'>{{ state.1 }}</option>
+                                {% endfor %}
+                            </select><br />
+                            <% if (doc.status == "published") { %>
+                                <a href='/posts/<%= doc.id %>/'>View on site</a>
+                            <% } %>
+                            <% if (doc.status == "published" && !doc.is_public) { %>
+                                <br />
+                                <div class='warn'>Document is not public because the author is not enrolled or not active.</div>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% } %>
+            </table>
+            <div style='clear: both;'></div>
+            <div style='text-align: center;'>
+                <span class='save-doc'>Save</span><div class='post-save-message'></div>
+            </div>
+            <div class='queue-return-holder'>
+                Queue for return:<br /> <a href='#' class='queue-returned-mail'>return by request</a> |
+                <a href='#' class='queue-refused-mail'><i>refuse</i> by policy</a>
+                <span class='org-chooser'></span>
+                <a href='#/users/<%= doc.author.id %>' title='Edit author'><span class='ui-icon ui-icon-person'></span></a>
+            </div>
+        </div>
+        <div style='clear: both;'></div>
     </div>
-    <div style='clear: both;'></div>
-    <div class='page-list'></div>
-    <span class='save-doc'>Save</span><div class='post-save-message'></div>
-    <div style='clear: both;'></div>
 </div>
 </script>
 <script type="text/template" id="editDocumentInReplyTo">
     <div>
         <% if (error) { %><div class='error'><b><%= error %></b></div><% } %>
+        <% if (document) { %>
         <b>Original</b>: <a href='<%= document.url %>'><%= document.title %></a>
         by <a href='<%= document.author.edit_url %>'><%= document.author.display_name %></a> 
         (<%= btb.formatDate(document.date_written) %>), 
         <%= document.comment_count %> comments.
+        <% } %>
+    </div>
+</script>
+<script type="text/template" id="editDocumentInReplyToCampaign">
+    <div>
+        <% if (error) { %><div class='error'><b><%= error %></b></div><% } %>
+        <b>Campaign</b>: <a href='<%= campaign.url %>'><%= campaign.title %></a>
+        (<%= btb.formatDate(campaign.created) %> &ndash; <%= campaign.public ? "public" : "not public yet" %>)
     </div>
 </script>
 <script type="text/template" id="editDocumentPage">
@@ -135,6 +169,8 @@
         ><span class='rotateR' title='rotate 1 degree clockwise'>&nbsp;</span
         ><span class='move-page-up' title='move this page up'>&nbsp;</span
         ><span class='move-page-down' title='move this page down'>&nbsp;</span
+        ><span class='white-redact' title='redact image'>R</span
+        ><span class='redact' title='redact image'>R</span
         ><span class='crop' title='crop image'>&nbsp;</span
         ><span class='highlight' title='select highlight'>&nbsp;</span
         >

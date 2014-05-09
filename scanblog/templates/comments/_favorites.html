@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load url from future %}
+<span class='favorites-control'>
+  {% if has_favorited %}
+    <a class='toggle favorite-button active' href='{{ thing.unmark_favorite_url }}' title='{% trans "Favorited" %}'>&nbsp;</a>
+  {% else %}
+    <a class='{% if user.is_authenticated %}toggle {% endif %}favorite-button'
+       href='{% if user.is_authenticated %}{{ thing.mark_favorite_url }}{% else %}{{ thing.mark_favorite_after_login_url }}{% endif %}'
+       title='{% trans "Mark as favorite" %}'>{% if num_favorites == 0 %}<span style='padding-left: 10px;'>{% trans "Favorite" %}</span>{% else %}&nbsp;{% endif %}</a>
+  {% endif %} 
+  {% if num_favorites > 0 %}
+    <span class='count' style='position: relative;'
+      title='{% blocktrans count counter=num_favorites %}1 user has marked this as a favorite{% plural %}{{ counter }} users have marked this as a favorite{% endblocktrans %}'>
+      {% with list_fav_url=thing.list_favorites_url %}
+      {% blocktrans count counter=num_favorites %}
+        <a class='get-favorites popover-trigger' href='{{ list_fav_url }}'>{{ counter }} Favorite</a>
+      {% plural %}
+        <a class='get-favorites popover-trigger' href='{{ list_fav_url }}'>{{ counter }} Favorites</a>
+      {% endblocktrans %}
+      {% endwith %}
+      <div class='favorites-popover popover'>
+        <div class='arrow'></div>
+        <span class='close' title='{% trans "Close" %}'>&#10006;</span>
+        <div class='content'>
+          <img src='{{ STATIC_URL }}/img/spinner.gif' alt='Loading' />
+        </div>
+      </div>
+    </span>
+  {% endif %}
+</span>

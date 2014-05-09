@@ -2,9 +2,11 @@ import os
 import json
 import shutil
 import codecs
+import zipfile
 import datetime
 import tempfile
 import subprocess
+from cStringIO import StringIO
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import permission_required
@@ -15,12 +17,19 @@ from django.conf import settings
 from django.db.models import Q, Count
 from django.db import transaction
 
-from comments.models import Comment
-from correspondence.models import Letter, Mailing
+from comments.models import Comment, CommentRemoval
+from correspondence.models import Letter, Mailing, StockResponse
 from correspondence import utils, tasks
 from profiles.models import Profile, Organization
-from scanning.models import Scan
-from btb.utils import args_method_decorator, JSONView
+from scanning.models import Scan, Document
+from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
+
+class StockResponses(JSONView):
+    @permission_required_or_deny("correspondence.manage_correspondence")
+    def get(self, request):
+        return self.json_response({
+            'results': [s.to_dict() for s in StockResponse.objects.all()]
+        })
 
 class Letters(JSONView):
     """
@@ -36,7 +45,7 @@ class Letters(JSONView):
         """
         Parameters for put and post.
         """
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         # TODO: Remove this at the client side.
         for key in ('order_date', 'org', 'document', 'recipient_address', 'sender'):
             kw.pop(key, None)
@@ -80,13 +89,15 @@ class Letters(JSONView):
                     kw[datefield] = datetime.datetime.strptime(kw[datefield], "%Y-%m-%d %H:%M:%S")
         return kw
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, letter_id=None):
         if letter_id:
             letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
             return self.json_response(letter.to_dict())
 
-        letters = Letter.objects.mail_filter(request.user).extra(
+        letters = Letter.objects.mail_filter(request.user).filter(
+                recipient__profile__lost_contact=False
+             ).extra(
                 select={
                     'date_order': 
                         'COALESCE("{0}"."sent", "{0}"."created")'.format(
@@ -95,7 +106,7 @@ class Letters(JSONView):
 
                 },
                 order_by=('-date_order',)
-        ).distinct()
+            ).distinct()
         if "sent" in request.GET:
             letters = letters.filter(sent__isnull=False)
         if "unsent" in request.GET:
@@ -136,7 +147,7 @@ class Letters(JSONView):
         return self.paginated_response(request, letters, 
                 extra=by_type)
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def post(self, request, letter_id=None):
         kw = self.clean_params(request)
         comments = kw.pop('comments', [])
@@ -150,7 +161,7 @@ class Letters(JSONView):
                 letter.comments.add(Comment.objects.get(pk=comment['id']))
             return self.json_response(letter.to_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def put(self, request, letter_id=None):
         kw = self.clean_params(request)
         letter = utils.mail_filter_or_404(request.user, Letter, pk=kw['id'])
@@ -165,7 +176,7 @@ class Letters(JSONView):
             letter.comments = [Comment.objects.mail_filter(request.user).get(pk=c['id']) for c in comments]
             return self.json_response(letter.to_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def delete(self, request, letter_id=None):
         letter = utils.mail_filter_or_404(request.user, Letter, pk=letter_id)
         letter.delete()
@@ -187,72 +198,69 @@ def date_to_str(date_or_str):
 
 class CorrespondenceList(JSONView):
     """
-    This slightly ugly one combines scans and correspondence into a single
-    response.  This is to facilitate a threaded view of the conversation with a
-    particular user.
+    This one combines scans and correspondence into a single response.  This is
+    to facilitate a threaded view of the conversation with a particular user.
     """
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, user_id=None):
         scans = Scan.objects.mail_filter(request.user).order_by('-created')
         letters = Letter.objects.mail_filter(request.user)
 
         user_id = user_id or request.GET.get('user_id', None)
-        if user_id:
-            scans = scans.filter(author__id=user_id)
-            letters = letters.filter(recipient__id=user_id)
-        scans_count = scans.count()
-        letters_count = letters.count()
+        try:
+            incoming = bool(int(request.GET.get("incoming")))
+        except ValueError:
+            incoming = True
+        try:
+            outgoing = bool(int(request.GET.get("outgoing")))
+        except ValueError:
+            outgoing = True
 
-        # Paginate over scans only, not letters.  Get a ragged number of
-        # entries depending ono the number of letters out.  Grab one more than
-        # the number of scans per page to catch letters falling in the boundary
-        # between pages of scans.  We have to paginate manually because of this --
-        # the built-in paginator won't grab one more than the page length.
+        if not incoming and not outgoing:
+            incoming = outgoing = True
+
+        if user_id:
+            if incoming:
+                scans = scans.filter(author__id=user_id)
+            else:
+                scans = []
+            if outgoing:
+                letters = letters.filter(recipient__id=user_id)
+            else:
+                letters = []
+
+        # Just grab all at once.  Number of letters/scans doesn't get so high
+        # as to make it worth lazy fetching.
+        all_correspondence = list(scans) + list(letters)
+        all_correspondence.sort(
+                key=lambda a: a.sent if hasattr(a, "sent") and a.sent else a.created,
+                reverse=True)
+
         per_page = int(request.GET.get('per_page', 12))
         page_num = int(request.GET.get('page', 1))
-        total_pages = int(scans_count / per_page) + 1
-        if per_page * (page_num - 1) > scans_count or page_num < 1:
+        total_pages = int(len(all_correspondence) / per_page) + 1
+
+        if per_page * (page_num - 1) > len(all_correspondence) or page_num < 1:
             page_num = 1
-        # One extra to catch boundary letters...
-        scans = list(scans[per_page * (page_num - 1) : (per_page * page_num) + 1])
 
-        order_date = '''COALESCE("{0}"."sent", "{0}"."created")'''.format(
-                Letter._meta.db_table
-        )
-        extra_kwargs = {
-            'select': {'order_date': order_date},
-            'order_by': ['-order_date'],
-            'where': [],
-            'params': [],
-        }
-        if page_num > 1:
-            extra_kwargs['where'].append(order_date + " <= %s")
-            extra_kwargs['params'].append(scans[0].created)
-        if page_num < total_pages:
-            end_scan = scans.pop(-1)
-            extra_kwargs['where'].append(order_date + " >= %s")
-            extra_kwargs['params'].append(end_scan.created)
-        letters = list(letters.extra(**extra_kwargs))
-
-        correspondence = []
-        for obj in scans:
+        sliced = all_correspondence[(page_num-1)*per_page : page_num*per_page]
+        results = []
+        for obj in sliced:
             as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.created)
-            correspondence.append({'scan': as_dict})
-        for obj in letters:
-            as_dict = obj.to_dict()
-            as_dict['order_date'] = date_to_str(obj.order_date)
-            correspondence.append({'letter': as_dict})
-        correspondence.sort(key=lambda o: o.values()[0]['order_date'], reverse=True)
-
+            if isinstance(obj, Scan):
+                as_dict['order_date'] = obj.created.isoformat()
+                results.append({'scan': as_dict})
+            else:
+                as_dict['order_date'] = (obj.sent or obj.created).isoformat()
+                results.append({'letter': as_dict})
         return self.json_response({
             'pagination': {
-                'count': scans_count + letters_count,
+                'count': len(all_correspondence),
                 'page': page_num,
                 'pages': total_pages,
                 'per_page': per_page,
             },
-            'results': correspondence
+            'results': results
         })
 
 class Mailings(JSONView):
@@ -260,7 +268,7 @@ class Mailings(JSONView):
     JSON CRUD for Mailing models
     """
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         if 'date_finished' in kw:
             if 'date_finished' in kw:
                 if kw['date_finished'] == True:
@@ -269,7 +277,7 @@ class Mailings(JSONView):
                     kw['date_finished'] = kw['date_finished'].replace("T", " ")
         return kw
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request, mailing_id=None):
         mailing_id = mailing_id or request.GET.get('mailing_id', None)
         if mailing_id is None:
@@ -277,7 +285,7 @@ class Mailings(JSONView):
         mailing = utils.mail_filter_or_404(request.user, Mailing, pk=mailing_id)
         return self.json_response(mailing.to_dict())
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get_list(self, request):
         mailings = Mailing.objects.mail_filter(request.user).extra(
                 select={
@@ -294,7 +302,7 @@ class Mailings(JSONView):
             mailings = mailings.filter(editor__id=request.GET.get("editor"))
         return self.paginated_response(request, mailings, dict_method="light_dict")
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def post(self, request, mailing_id=None):
         """
@@ -311,6 +319,7 @@ class Mailings(JSONView):
         kw = {'auto_generated': True, 'sender': request.user}
         if "enqueued" in types:
             to_send += list(Letter.objects.unsent().mail_filter(request.user).filter(
+                    recipient__profile__lost_contact=False,
                     mailing__isnull=True,
                     auto_generated=False
             ))
@@ -318,27 +327,34 @@ class Mailings(JSONView):
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="waitlist", is_postcard=True, 
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.waitlistable().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.waitlistable().mail_filter(request.user).filter(
+                    lost_contact=False
+                ).distinct())
         if "consent_form" in types:
             cutoff = params.get("consent_cutoff", "") or datetime.datetime.now()
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="consent_form",
                     org=p.user.organization_set.get(), **kw 
                 ) for p in Profile.objects.invitable().mail_filter(request.user).filter(
-                    user__date_joined__lte=cutoff
+                    user__date_joined__lte=cutoff,
+                    lost_contact=False
                 ).distinct())
         if "signup_complete" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="signup_complete",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_signup_complete_letter().mail_filter(
+                    request.user
+                ).filter(lost_contact=False).distinct())
         if "first_post" in types:
             to_send += list(Letter.objects.create(
                     recipient=p.user, type="first_post",
                     org=p.user.organization_set.get(), **kw 
-                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).distinct())
+                ) for p in Profile.objects.needs_first_post_letter().mail_filter(request.user).filter(lost_contact=False).distinct())
         if "comments" in types:
-            comments = list(Comment.objects.unmailed().mail_filter(request.user).order_by(
+            comments = list(Comment.objects.unmailed().mail_filter(request.user).filter(
+                document__author__profile__lost_contact=False
+            ).order_by(
                 'document__author', 'document'
             ))
             doc = None
@@ -353,10 +369,27 @@ class Mailings(JSONView):
                     )
                     to_send.append(letter)
                 letter.comments.add(c)
+        if "comment_removal" in types:
+            removals = list(CommentRemoval.objects.needing_letters().mail_filter(request.user).filter(
+                comment__document__author__profile__lost_contact=False
+            ).order_by(
+                'comment__document__author', 'comment__document'
+            ))
+            for removal in removals:
+                letter = Letter.objects.create(
+                    type="comment_removal",
+                    recipient=removal.comment.document.author,
+                    org=removal.comment.document.author.organization_set.get(),
+                    body=removal.post_author_message,
+                    send_anonymously=True,
+                    **kw)
+                letter.comments.add(removal.comment)
+                to_send.append(letter)
+
         mailing.letters.add(*to_send)
         return self.json_response(mailing.light_dict())
 
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def put(self, request, mailing_id=None):
         params = self.clean_params(request)
@@ -366,56 +399,61 @@ class Mailings(JSONView):
             mailing.save()
         return self.json_response(mailing.light_dict())
     
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     @args_method_decorator(transaction.commit_on_success)
     def delete(self, request, mailing_id=None):
         mailing = get_object_or_404(Mailing, pk=mailing_id)
         mailing.delete()
         return self.json_response("success")
 
+def needed_letters(user, consent_form_cutoff=None):
+    if consent_form_cutoff:
+        consent_forms = Profile.objects.invitable().filter(
+                user__date_joined__lte=consent_form_cutoff,
+                lost_contact=False
+            ).mail_filter(
+                user
+            ).distinct()
+    else:
+        consent_forms = Profile.objects.invitable().mail_filter(
+                user
+            ).distinct()
+    return {
+        "consent_form": consent_forms,
+        "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
+                user).filter(lost_contact=False).distinct(),
+        "first_post": Profile.objects.needs_first_post_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "comments": Profile.objects.needs_comments_letter().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "waitlist": Profile.objects.waitlistable().mail_filter(
+                user
+            ).filter(lost_contact=False).distinct(),
+        "enqueued": Letter.objects.mail_filter(user).filter(
+                sent__isnull=True,
+                recipient__profile__lost_contact=False,
+            ).exclude(mailing__isnull=False),
+        "comment_removal": CommentRemoval.objects.needing_letters().filter(
+                comment__document__author__profile__lost_contact=False
+            ).distinct(),
+    }
+
 class NeededLetters(JSONView):
-    @args_method_decorator(permission_required, "correspondence.manage_correspondence")
+    @permission_required_or_deny("correspondence.manage_correspondence")
     def get(self, request):
         """
         Return a JSON struct representing counts of the as-yet-ungenerated
         automatic letters.  Excludes any letters that have been created, and are
         part of a mailing.
         """
-        if 'consent_form_cutoff' in request.GET:
-            consent_forms = Profile.objects.invitable().filter(
-                    user__date_joined__lte=request.GET.get('consent_form_cutoff')
-                ).mail_filter(
-                    request.user
-                ).distinct().count()
-        else:
-            consent_forms = Profile.objects.invitable().mail_filter(
-                    request.user
-                ).distinct().count()
-
-        # TODO: date-based aggregate of when people signed up (better UI than
-        # the calendar).  Or better yet, a "choose how many to sign up" instead
-        # of "choose from when to sign up".
-
-        return self.json_response({
-            "consent_form": consent_forms,
-            "signup_complete": Profile.objects.needs_signup_complete_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "first_post": Profile.objects.needs_first_post_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "comments": Profile.objects.needs_comments_letter().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "waitlist": Profile.objects.waitlistable().mail_filter(
-                    request.user
-                ).distinct().count(),
-            "enqueued": Letter.objects.mail_filter(
-                    request.user
-                ).filter(
-                    sent__isnull=True
-                ).exclude(mailing__isnull=False).count(),
-        })
+        needed = needed_letters(
+               request.user,
+               request.GET.get('consent_form_cutoff', None)
+           )
+        counts = dict((k, v.count()) for k,v in needed.items())
+        return self.json_response(counts)
 
 @permission_required("correspondence.manage_correspondence")
 @transaction.commit_on_success
@@ -505,6 +543,43 @@ def print_envelope(request, user_id=None, reverse=None, address=None):
             slugify(to_address.split('\n')[0])
     return response
 
+@permission_required('correspondence.manage_correspondence')
+def print_envelopes(request):
+    if request.GET.get("ids"):
+        try:
+            ids = [int(i) for i in request.GET.get("ids").split(",")]
+        except Exception:
+            return HttpResponse("Error parsing ids parameter")
+    else:
+        return HttpResponse("Try adding 'ids' parameter")
+    profiles = Profile.objects.select_related('user').in_bulk(ids)
+    missing = []
+    for pk in ids:
+        if pk not in profiles:
+            missing.append(pk)
+    if missing:
+        return HttpResponse("Can't find result for ids: %s" % missing)
+    envelopes = []
+    # NOTE: inefficient -- n+1 queries. Could be improved but not worth it for
+    # the small expected query size.
+    for pk, profile in profiles.iteritems():
+        envelopes.append((utils.build_envelope(
+            to_address=profile.full_address(),
+            from_address=profile.user.organization_set.get().mailing_address
+        ), "%s.jpg" % profile.get_blog_slug()))
+    zipname = "envelopes-%s" % (datetime.datetime.now().strftime("%Y-%m-%d"))
+
+    # Do it all in memory for fun and profit.
+    zip_stringio = StringIO()
+    zip_builder = zipfile.ZipFile(zip_stringio, "w")
+    for jpeg, name in envelopes:
+        zip_builder.writestr("%s/%s" % (zipname, name), jpeg.getvalue())
+    zip_builder.close()
+    response = HttpResponse(mimetype='application/zip')
+    response.write(zip_stringio.getvalue())
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % zipname
+    return response
+
 @permission_required("correspondence.manage_correspondence")
 def preview_letter(request):
     if request.method == "POST":
@@ -520,6 +595,42 @@ def preview_letter(request):
         response = show_letter(request, letter.pk)
         letter.delete()
         return response
+    return HttpResponseBadRequest("POST required")
+
+@permission_required("correspondence.manage_correspondence")
+def comment_removal_letter_preview_frame(request, comment_id):
+    comment = utils.mail_filter_or_404(request.user, Comment, pk=comment_id)
+    recipient = comment.document.author
+    org = comment.document.author.organization_set.get()
+    error = None
+    if request.method == "POST":
+        letter = Letter.objects.create(
+            type="comment_removal",
+            recipient=recipient,
+            org=org,
+            body=request.POST.get("body"),
+            sender=request.user,
+            send_anonymously=True,
+            sent=datetime.datetime.now()
+        )
+        letter.comments.add(comment)
+        response = None
+        try:
+            response = show_letter(request, letter.pk)
+        except utils.LatexCompileError as e:
+            error = e
+        finally:
+            letter.delete()
+        if response:
+            return response
+    return render(request, "correspondence/comment_removal_letter_preview_frame.html", {
+        'comment': comment,
+        'recipient': recipient,
+        'org': org,
+        'error': error,
+    })
+
+        
 
 @permission_required("correspondence.manage_correspondence")
 def show_letter(request, letter_id=None):
@@ -604,6 +715,11 @@ def mass_mailing_spreadsheet(request, who=None):
         qs = Profile.objects.needs_first_post_letter()
     elif who == "needs_comments_letter":
         qs = Profile.objects.needs_comments_letter()
+    elif who == "lost_contact":
+        qs = Profile.objects.filter(lost_contact=True)
+
+    if who != "lost_contact":
+        qs = qs.filter(lost_contact=False)
 
     qs = qs.mail_filter(request.user)
 
@@ -619,3 +735,58 @@ def mass_mailing_spreadsheet(request, who=None):
         who, datetime.datetime.now().strftime("%Y-%m-%d")
     )
     return response
+
+@permission_required("correspondence.manage_correspondence")
+def mailing_label_sheet(request):
+    if request.GET.get("ids"):
+        try:
+            ids = [int(i) for i in request.GET.get("ids").split(",")]
+        except Exception:
+            return HttpResponse("Error parsing ids parameter")
+    else:
+        return HttpResponse("Try adding 'ids' parameter")
+    
+    profiles = Profile.objects.in_bulk(ids)
+    missing = []
+    pages = []
+    for i, id_ in enumerate(ids):
+        if i % 30 == 0:
+            page = []
+            pages.append(page)
+        if id_ in profiles:
+            page.append(profiles[id_])
+        else:
+            missing.append(id_)
+    if missing:
+        return HttpResponse("Can't find result for ids: %s" % missing)
+
+    pdf_files = []
+    for page in pages:
+        labels = utils.MailingLabelSheet()
+        addresses = [p.full_address() for p in page]
+        labels.draw(addresses)
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as fh:
+            jpg_name = fh.name
+        labels.save(jpg_name)
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
+            pdf_name = fh.name
+        proc = subprocess.Popen([
+            settings.CONVERT_CMD,
+            jpg_name,
+            "-density", str(labels.density),
+            pdf_name])
+        proc.communicate()
+        os.remove(jpg_name)
+        pdf_files.append(pdf_name)
+    combined = tasks.combine_pdfs_task.delay(pdf_files).get()
+    for filename in pdf_files:
+        os.remove(filename)
+    response = HttpResponse(mimetype='application/pdf')
+    with open(combined, 'rb') as fh:
+        response.write(fh.read())
+    response['Content-Disposition'] = 'attachment; filename=labels.pdf'
+    os.remove(combined)
+    return response
+
+
+

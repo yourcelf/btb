@@ -16,7 +16,7 @@ class btb.NoteView extends Backbone.View
         'click .delete-note': 'deleteNote'
         'click .edit-note': 'editNote'
         'click .mark-resolved': 'markResolved'
-    initialize: (note) -> @note = note
+    initialize: ({note}) -> @note = note
     render: =>
         $(@el).html @template note: if @note? then @note.toJSON() else {}
         this
@@ -49,18 +49,20 @@ class btb.NoteView extends Backbone.View
 class btb.NoteViewTable extends btb.PaginatedView
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
 
     initialize: (options={filter: {}}) ->
         @collection = new btb.NoteList
         @collection.filter = options.filter
-        @collection.filter.per_page or= 5
+        @collection.filter.per_page or= 6
         @fetchItems()
         $(@el).addClass("note-table")
+        @hideForSinglePage = true
 
     render: =>
         $(@el).html("")
         for model in @collection.models
-            view = new btb.NoteView(model)
+            view = new btb.NoteView({note: model})
             
             # Bubble up editNote event
             view.bind "editNote", (note) =>
@@ -74,7 +76,7 @@ class btb.NoteViewTable extends btb.PaginatedView
 
         pag = $("<div class='pagination'></div>")
         $(@el).append pag
-        @renderPagination @collection, pag
+        @renderPagination(@collection, pag)
         # Remove self-links
         $(".note-obj-link", @el).each (i, link) =>
             if $(link).attr("href") == window.location.pathname + window.location.hash
@@ -82,7 +84,12 @@ class btb.NoteViewTable extends btb.PaginatedView
         this
 
     turnPage: (event) =>
-        @collection.filter.page = @newPageFromEvent event
+        @collection.filter.page = @newPageFromEvent(event)
+        @fetchItems()
+
+    setPerPage: (event) =>
+        event.preventDefault()
+        @collection.filter.per_page = $(event.currentTarget).val()
         @fetchItems()
 
     fetchItems: =>

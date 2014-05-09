@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from scanning.models import Document
 from comments.models import Comment
-from annotations.models import ReplyCode
+from annotations.models import ReplyCode, Note
 from profiles.models import Organization
 from btb.tests import BtbMailTestCase
 
@@ -119,13 +119,120 @@ class FlagTest(BtbMailTestCase):
         self.clear_outbox()
 
         # Comment
-        comment = Comment.objects.create(document=doc, user=self.reader)
+        # Things with links get sent right away.
+        comment = Comment.objects.create(document=doc, user=self.reader,
+                comment="http://spam.com")
         self.assertTrue(c.login(username="reader", password="reader"))
         self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
         self.clear_outbox()
+        # But not things without.
+        comment = Comment.objects.create(document=doc, user=self.reader,
+                comment="no problem")
+        self.assertOutboxIsEmpty()
+        self.clear_outbox()
+        
 
         # Comment flag
         url = reverse("comments.flag_comment", args=[comment.pk])
         res = c.post(url, {'reason': 'oh my!!'})
         self.assertEquals(res.status_code, 302)
         self.assertOutboxContains(["%sContent flagged" % self.admin_subject_prefix])
+        msg = self.get_outbox()[0].message().as_string()
+        reader = User.objects.get(username="reader")
+        self.assertTrue("/admin/auth/user/{0}/".format(reader.pk) in msg)
+        self.assertTrue("/admin/auth/user/{0}/delete".format(reader.pk) in msg)
+
+
+    def test_spam_trip(self):
+        """
+        If the user posts in a manner that looks like spam, ban them.
+        """
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        url1 = reverse("scanning.flag_document", args=[doc.pk])
+
+        comment = Comment.objects.create(
+                user=self.reader, comment="My comment", document=doc
+            )
+        url2 = reverse("comments.flag_comment", args=[comment.pk])
+
+        # Once each for comment flag and scan flag.
+        for url in (url1, url2):
+            Note.objects.all().delete()
+            reader = User.objects.get(username="reader")
+            reader.is_active = True
+            reader.save()
+
+            self.assertTrue(c.login(username="reader", password="reader"))
+            self.clear_outbox()
+
+            res = c.post(url, {
+                'reason': "Tips to save wedding dresses"
+            }, follow=True)
+            self.assertEquals(res.redirect_chain, [(u'http://testserver/', 302)])
+            self.assertOutboxIsEmpty()
+            self.assertTrue("Your account has been suspended" in res.content)
+            reader = User.objects.get(username="reader")
+            self.assertFalse(reader.is_active)
+            self.assertEquals(Note.objects.count(), 1)
+            note = Note.objects.get()
+            self.assertEquals(note.text, "User auto-banned for flag spam")
+            self.assertEquals(note.user, reader)
+            self.assertEquals(note.creator, reader)
+
+            # now that we're inactive, we shouldn't be able to flag...
+            res = c.post(url, {
+                'reason': "Ain't no thang"
+            })
+            self.assertEquals(res.status_code, 302)
+
+    def test_flooding_spam_trap(self):
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        url = reverse('scanning.flag_document', args=[doc.pk])
+        self.assertTrue(c.login(username="reader", password="reader"))
+
+        Note.objects.all().delete()
+        self.clear_outbox()
+
+        threshold = 2
+        for i in range(threshold + 1):
+            res = c.post(url, {
+                'reason': "Flood me %s" % i
+            }, follow=True)
+
+            if i <= threshold:
+                self.assertEquals(Note.objects.count(), i + 1)
+                # Can't test that emails weren't sent yet, as the test runner
+                # ignores the delay argument and executes the email task
+                # immediately, regardless.
+                #self.assertEquals(len(self.get_outbox()), 0)
+            else:
+                reader = User.objects.get(username='reader')
+                self.assertEquals(Note.objects.count(), 0)
+                self.assertFalse(reader.is_active)
+
+    def test_to_dict(self):
+        c = self.client
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        note = Note.objects.create(creator=self.editor, document=doc, text="Oh my")
+        expected = {
+            'id': note.pk,
+            'user_id': None,
+            'scan_id': None,
+            'document_id': doc.id,
+            'document_author': doc.author.profile.to_dict(),
+            'comment_id': None,
+            'resolved': None,
+            'important': False,
+            'text': "Oh my",
+            'object': doc.to_dict(),
+            'object_type': "document",
+            'creator': self.editor.profile.to_dict(),
+            'modified': note.modified.isoformat(),
+            'created': note.created.isoformat(),
+        }
+        got = note.to_dict()
+        self.assertEquals(sorted(expected.keys()), sorted(got.keys()))
+        for key in expected.keys():
+            self.assertEquals(expected[key], got[key])

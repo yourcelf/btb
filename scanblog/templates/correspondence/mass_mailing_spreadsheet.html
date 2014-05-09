@@ -1,11 +1,12 @@
 {% extends "moderation/base.html" %}
+{% load url from future %}
 {% block title %}{% trans "Mass Mailing spreadsheet" %}{% endblock %}
 {% block body %}
 <h1>{% trans "Mass Mailing Spreadsheet" %}</h1>
 <p>
 {% trans "Spreadsheets for users in the following organizations:" %}
 </p>
-{% url correspondence.mass_mailing_spreadsheet as base %}
+{% url "correspondence.mass_mailing_spreadsheet" as base %}
 <h2>
     {% trans "All users in" %}:
     <i>{% for org in orgs %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</i>
@@ -34,6 +35,15 @@
 	{% trans "Waitlisted" %}
       </a>:
       {% trans "We have sent them a waitlist postcard, and we haven't sent an invitation." %}
+    </li>
+    <li>
+      <a href='{{ base }}lost_contact'>
+	{% trans "Lost Contact" %}
+      </a>: 
+      {% blocktrans %}
+      Letters bounce; so these addresses are useless.  "Lost contact"
+      people don't appear in other lists.
+      {% endblocktrans %}
     </li>
 </ul>
 <h2>

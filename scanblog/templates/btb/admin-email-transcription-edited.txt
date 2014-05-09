@@ -1,12 +1,14 @@
 {% load i18n %}
+{% load url from future %}
 {% trans "The transcription for" %} {{ document.type }} {% trans "by" %} {{ document.author.profile }} {% trans "was edited by user" %}: {{ revision.editor.profile }}
+
 
 {% trans "Actions" %}:
 
 {% trans "Diff" %}:
-http://{{ site.domain }}{% url scanning.revision_list document.id %}
+http://{{ site.domain }}{% url "scanning.revision_list" document.id %}
 {% trans "Edit transcription" %}:
-http://{{ site.domain }}{% url scanning.transcribe_document document.id %}
+http://{{ site.domain }}{% url "scanning.transcribe_document" document.id %}
 {% trans "View document" %}:
 http://{{ site.domain }}{{ document.get_absolute_url }}
 

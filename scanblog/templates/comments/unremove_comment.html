@@ -1,0 +1,22 @@
+
+{% extends "site_base.html" %}
+
+{% block title %}Unremove comment{% endblock %}
+
+{% block body %}
+<h1>Unremove Comment</h1>
+
+<p>Restore the following comment, which was removed on {{ removal.date|date }}?</p>
+
+<p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
+          <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by
+          <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a></p>
+  <blockquote>
+    {{ comment.comment|linebreaks }}
+  </blockquote>
+
+<form method='post' action=''>{% csrf_token %}
+  <input class='anchor-button' type='submit' value='Restore comment' />
+</form>
+
+{% endblock %}

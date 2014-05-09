@@ -16,6 +16,7 @@ from sorl.thumbnail.helpers import ThumbnailError
 from annotations.models import ReplyCode
 from comments.models import Comment
 from btb.utils import OrgManager, OrgQuerySet
+from scanning.templatetags.public_url import public_url
 
 TMP_UPLOAD = os.path.join(settings.UPLOAD_TO, "tmp")
 
@@ -23,10 +24,6 @@ def public_path(private_path):
     return os.path.join(
         settings.PUBLIC_MEDIA_ROOT,
         os.path.relpath(private_path, settings.MEDIA_ROOT))
-
-def public_url(private_url):
-    return "%s%s" % (settings.PUBLIC_MEDIA_URL,
-            private_url[len(settings.MEDIA_URL):])
 
 #
 # Models and managers
@@ -107,12 +104,16 @@ class Scan(models.Model):
     under_construction = models.BooleanField()
 
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
         orgs = ["author__organization", "org"]
+
+    def save(self, *args, **kwargs):
+        self.modified = datetime.datetime.now()
+        super(Scan, self).save(*args, **kwargs)
 
     def to_dict(self):
         try:
@@ -255,6 +256,8 @@ class Document(models.Model):
     # Metadata
     type = models.CharField(max_length=25, choices=DOCUMENT_TYPES)
     title = models.CharField(max_length=255, blank=True)
+    affiliation = models.ForeignKey('profiles.Affiliation',
+            blank=True, null=True)
     in_reply_to = models.ForeignKey('annotations.ReplyCode', 
         related_name="document_replies", blank=True, null=True)
     author = models.ForeignKey(User, related_name='documents_authored')
@@ -263,20 +266,21 @@ class Document(models.Model):
     highlight_transform = models.TextField(blank=True)
 
     # Locking
-    under_construction = models.BooleanField(help_text="Deprecated, don't use.  Use status instead.")
+    under_construction = models.BooleanField(
+        help_text="Deprecated, don't use.  Use status instead.")
 
     # State
     status = models.CharField(max_length=20, choices=STATES, 
                               db_index=True, default="unknown")
     adult = models.BooleanField()
 
-    tags = models.ManyToManyField('annotations.Tag')
+    tags = models.ManyToManyField('annotations.Tag', blank=True, null=True)
     reply_code = models.OneToOneField('annotations.ReplyCode')
 
     editor = models.ForeignKey(User, related_name='documents_edited',
             help_text="The last person to edit this document.")
     created = models.DateTimeField(default=datetime.datetime.now)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(default=datetime.datetime.now)
 
     objects = DocumentManager()
 
@@ -288,6 +292,7 @@ class Document(models.Model):
             self.date_written = datetime.datetime.now()
         if not self.reply_code_id:
             self.reply_code = ReplyCode.objects.create()
+        self.modified = datetime.datetime.now()
         super(Document, self).save(*args, **kwargs)
         self.set_publicness()
         self.update_comment()
@@ -300,28 +305,32 @@ class Document(models.Model):
         # Create comment objects only when the doc is public.  That way,
         # subscription signals are fired at the right moment -- the comment is
         # public and viewable.
+        parent = None
         if self.in_reply_to:
+            try:
+                parent = self.in_reply_to.document
+            except Document.DoesNotExist:
+                pass
+        if parent and self.is_public():
             # Only create a comment object if we are public.
-            if self.is_public():
-                try:
-                    self.comment.removed = False
-                    self.comment.save()
-                except Comment.DoesNotExist:
-                    self.comment = Comment.objects.create(
-                        user=self.author,
-                        removed=False,
-                        document=Document.objects.get(reply_code=self.in_reply_to),
-                        comment_doc=self,
-                    )
-            else:
-                # If we've gone non-public, mark the comment removed rather
-                # than deleting.  That way, we don't re-fire subscriptions if
-                # the doc is only temporarily un-published.
-                try:
-                    self.comment.removed = True
-                    self.comment.save()
-                except Comment.DoesNotExist:
-                    pass
+            try:
+                comment = self.comment
+            except Comment.DoesNotExist:
+                comment = Comment()
+            comment.user = self.author
+            comment.removed = False
+            comment.document = parent
+            comment.comment_doc = self
+            comment.save()
+        else:
+            # If we've gone non-public, mark the comment removed rather
+            # than deleting.  That way, we don't re-fire subscriptions if
+            # the doc is only temporarily un-published.
+            try:
+                self.comment.removed = True
+                self.comment.save()
+            except Comment.DoesNotExist:
+                pass
 
     def is_public(self):
         """
@@ -397,11 +406,31 @@ class Document(models.Model):
 
     def get_absolute_url(self):
         if self.type == "post":
+            # Be careful to avoid accidental recursion here, if a document ever
+            # gets listed as in-reply-to itself.
+            url = None
+            try:
+                if self.comment.document != self and self.comment.removed == False:
+                    return self.comment.get_absolute_url()
+            except Comment.DoesNotExist:
+                pass
             return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
         elif self.type == "profile":
             return reverse("profiles.profile_show", args=[self.author.pk])
         else:
             return self.get_edit_url()
+
+    def mark_favorite_url(self):
+        return "%s?document_id=%s" % (reverse("comments.mark_favorite"), self.pk)
+
+    def mark_favorite_after_login_url(self):
+        return "%s?document_id=%s" % (reverse("comments.mark_favorite_after_login"), self.pk)
+
+    def unmark_favorite_url(self):
+        return "%s?document_id=%s" % (reverse("comments.unmark_favorite"), self.pk)
+
+    def list_favorites_url(self):
+        return "%s?document_id=%s" % (reverse("comments.list_favorites"), self.pk)
 
     def get_edit_url(self):
         return "%s#/process/document/%s" % (reverse("moderation.home"), self.pk)
@@ -417,6 +446,7 @@ class Document(models.Model):
             'scan_id': self.scan_id,
             'type': self.type,
             'title': self.title,
+            'affiliation': self.affiliation.to_dict() if self.affiliation else None,
             'body': self.body,
             'adult': self.adult,
             'in_reply_to': self.in_reply_to.code if self.in_reply_to else None,

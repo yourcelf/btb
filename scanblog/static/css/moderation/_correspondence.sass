@@ -1,0 +1,130 @@
+.custom-letter
+  background-color: #eff
+  padding: 0.5em
+  border: 1px solid gray
+  .error
+    color: red
+    white-space: pre
+.letter-table .controls, .mailings .controls
+  color: black
+  position: relative
+  width: 20px
+  height: 20px
+  float: left
+  .trigger
+    border: 1px solid white
+  .trigger, .trigger img, .trigger span
+    position: relative
+  .overlay
+    display: none
+    position: absolute
+    top: 20px
+    background: white
+    border: 1px solid gray
+    width: 130px
+    z-index: 2
+  &:hover
+    .trigger
+      border: 1px solid gray
+      background-color: #eff
+    .overlay
+      display: block
+  li
+    position: relative
+    cursor: pointer
+    &:hover
+      background: #eff
+
+.letter-table
+  font-size: 14px
+  .row
+    margin-bottom: 0.75em
+    background-color: #eee
+    border: 1px solid #eee
+    .body
+      padding: 0.5em
+    .date
+      color: black
+    .control-line
+      background-color: #ddd
+      .unsent
+        color: blue
+  .row.unsent
+    background-color: #eff
+  .row.scan
+    border: 1px solid white
+    background-color: white
+
+  .filter-letters
+    text-align: right
+    a
+      +flat-button
+    a.filter-all
+      +flat-button-position(left)
+    a.filter-incoming
+      +flat-button-position(middle)
+    a.filter-outgoing
+      +flat-button-position(right)
+    a.chosen
+      background-color: #fed
+
+
+.outgoing-mail
+  &, & label
+    font-weight: normal
+    font-size: 14px
+  .build-mailing
+    background-color: #eee
+    padding: 0.5em
+    .consent-form-cutoff
+      width: 80px
+    .filters
+      float: left
+    .build-mailing-button
+      float: left
+      margin-left: 1em
+    +clearfix
+  .mail-search
+    +box-shadow
+    +border-radius()
+    margin: 0.5em 0 0.5em 0
+    padding: 0.5em
+    .filters
+      span.choice
+        display: block
+        float: left
+      input[type=text]
+        width: 100px !important
+        &.loading
+          background-image: url("../img/spinner.gif")
+          background-repeat: no-repeat
+          background-position: right
+    .sidebar
+      float: left
+      width: 20%
+      margin-bottom: 100px
+      .mailing-filters
+        li
+          margin-left: 0.5em
+          &:hover
+            color: green
+          border-bottom: 1px inset #eee
+          cursor: pointer
+          &.selected
+            background-color: #fed
+          &.unsent
+            color: blue
+    .main
+      background-color: #fed
+      padding: 0.5em
+      float: left
+      width: 75%
+      min-height: 200px
+    +clearfix
+  table
+    th
+      background-color: #ddd
+    th,td
+      font-size: 14px
+      border: 1px solid #eee
+      padding: 0.1em 0.5em 0.1em 0.5em

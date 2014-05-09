@@ -2,6 +2,8 @@
 import os.path
 SETTINGS_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+TEST_RUNNER = 'btb.test_runner.BtbTestRunner'
+
 #
 # Locale
 #
@@ -24,6 +26,7 @@ USE_L10N = True
 MEDIA_ROOT = os.path.join(SETTINGS_ROOT, "media")
 MEDIA_URL = '/private_media/'
 UPLOAD_TO = "uploads"
+FILE_UPLOAD_PERMISSIONS = 0664
 
 # Serve PUBLIC_MEDIA_ROOT with webserver, at PUBLIC_MEDIA_URL.  Symlinks for
 # anything public will be added to this directory, so it should be on the same
@@ -43,6 +46,12 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+)
+COMPRESS_PRECOMPILERS = (
+    ('text/javascript', 'cat'), # this shouldn't be necessary, but is
+    ('text/css', 'cat'), # this shouldn't be necessary, but is
+    ('text/coffeescript', 'coffee --compile --stdio'),
+    ('text/x-sass', 'sass --compass -I "%s"' % (os.path.join(SETTINGS_ROOT, "static", "css"))),
 )
 
 #
@@ -97,6 +106,7 @@ INSTALLED_APPS = (
     'profiles',
     'subscriptions',
     'scanning',
+    'campaigns',
 
     # django internal apps
     'django.contrib.auth',
@@ -113,7 +123,6 @@ INSTALLED_APPS = (
     'registration',
     'djcelery',
     'django_bcrypt',
-    'lettuce.django',
     'compressor',
     'sorl.thumbnail',
     'notification',
@@ -128,7 +137,9 @@ LOGGING = {
     "handlers": {
         "mail_admins": {
             "level": "ERROR",
-            "class": "django.utils.log.AdminEmailHandler"
+            'filters': ['require_debug_false'],
+            "class": "django.utils.log.AdminEmailHandler",
+            'filters': ['require_debug_false', 'skip_unreadable_posts'],
         }
     },
     "loggers": {
@@ -137,10 +148,17 @@ LOGGING = {
             "level": "ERROR",
             "propagate": True,
         },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': 'btb.log_filter.skip_unreadable_post'
+        }
     }
 }
-# Testing
-LETTUCE_APPS = ('btb',)
 
 AUTHENTICATION_BACKENDS = (
     'scanblog.accounts.backends.CaseInsensitiveAuthenticationBackend',
@@ -176,13 +194,11 @@ SCAN_PAGES_PER_PAGE = 6
 # Celery async processing
 import djcelery
 djcelery.setup_loader()
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-BROKER_VHOST = "/"
+BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
-TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/ttf-sil-gentium/GenR102.ttf"
+CELERY_RESULT_BACKEND = "amqp"
+
+TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -211,6 +227,6 @@ DISABLE_ADMIN_NOTIFICATIONS = False
 THUMBNAIL_BACKEND = "btb.utils.SameDirThumbnailBackend"
 THUMBNAIL_PREFIX = "cache/"
 
-MAX_READY_TO_PUBLISH_DAYS = 3
+MAX_READY_TO_PUBLISH_DAYS = 6
 PUBLISHING_HOURS = (7, 23)
 SELENIUM_FIREFOX_BIN = "/usr/bin/firefox"

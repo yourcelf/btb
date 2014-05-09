@@ -6,12 +6,29 @@ btb.strToDate = (dateOrStr) ->
     if _.isString dateOrStr
         parts = [parseInt(part, 10) for part in dateOrStr.split(/[^0-9]+/g)][0]
         # Months are rendered as 0-11 in javascript
-        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5])
+        return new Date(
+          parts[0],
+          parts[1] - 1,
+          parts[2],
+          parts[3] or 0,
+          parts[4] or 0,
+          parts[5] or 0)
     return dateOrStr
 
 btb.formatDate = (dateOrStr) ->
     d = btb.strToDate(dateOrStr)
-    d.getFullYear() + "-" + (1 + d.getMonth()) + "-" + d.getDate()
+    if d
+      return d.getFullYear() + "-" + (1 + d.getMonth()) + "-" + d.getDate()
+    return "undefined"
+
+
+btb.formatDateWithZeros = (dateOrStr) ->
+    d = btb.strToDate(dateOrStr)
+    month = (1 + d.getMonth())
+    if month < 10 then month = "0#{month}"
+    day = d.getDate()
+    if day < 10 then day = "0#{day}"
+    d.getFullYear() + "-" + month + "-" + d.getDate()
 
 btb.formatDateTime = (dateOrStr) ->
     d = btb.strToDate()
@@ -108,19 +125,24 @@ class btb.PaginatedView extends Backbone.View
             if i < 10 or Math.abs(p.page - i) < 5 or i > p.pages - 10
                 links.push(i)
 
-        el.html @paginationTemplate
+        el.html(@paginationTemplate({
+            per_page: collection.filter?.per_page or 12
             pagination: p
             pageLinksToShow: links
+            hideForSinglePage: @hideForSinglePage
+        }))
+        @$(".per-page").val(collection.filter?.per_page or 12)
         this
 
     newPageFromEvent: (event) -> parseInt $.trim $(event.currentTarget).text()
-    setPageLoading: => $(".pagination-loading", @el).show()
-    setPageDoneLoading: => $(".pagination-loading", @el).hide()
+    setPageLoading: => @$(".pagination-loading").show()
+    setPageDoneLoading: => @$(".pagination-loading").hide()
 
 class btb.TabularList extends btb.PaginatedView
     tagName: 'table'
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
 
     initialize: (options) ->
         @collection = options.collection
@@ -144,12 +166,20 @@ class btb.TabularList extends btb.PaginatedView
             # Chrome bug setting class using attr with jQuery 1.6... 
             pag.addClass "pagination"
             $(@el).append $("<tr/>").html(pag)
-            @renderPagination @collection, pag
+            @renderPagination(@collection, pag)
         this
 
     turnPage: (event) =>
         @collection.filter.page = @newPageFromEvent event
         $(@el).addClass(".loading")
+        @fetchItems()
+
+    setPerPage: (event) =>
+        event?.preventDefault()
+        @collection.filter.per_page = parseInt(@$("select.per-page").val())
+        @fetchItems()
+
+    fetchItems: =>
         @setPageLoading()
         @collection.fetch
             success: =>
@@ -265,3 +295,19 @@ btb.EditInPlace.factory = (modelsets) ->
         editors.push editor
     editors
 
+btb.stickyPlace = (el) ->
+  scroll = $(window).scrollTop()
+  win_height = $(window).height()
+  parent = el.offsetParent()
+  py1 = parent.position().top
+  py2 = py1 + parent.height()
+  height = el.height()
+
+  top = Math.max(
+    py1,
+    Math.min(py2 - height, scroll)
+  ) - py1
+  el.css({
+    top: top + "px"
+    maxHeight: win_height
+  })

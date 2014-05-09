@@ -38,6 +38,10 @@ class btb.NeededLetters extends Backbone.Model
             return base + "?" + $.param consent_form_cutoff: @get "consent_form_cutoff"
         return base
 
+class btb.StockResponse extends Backbone.Model
+class btb.StockResponseList extends btb.FilteredPaginatedCollection
+  url: "/correspondence/stock_responses.json"
+
 
 #
 # Views
@@ -66,10 +70,11 @@ class btb.LetterAddingMenu extends Backbone.View
     addLetter: (event) =>
         @showLoading()
         type = $(event.currentTarget).val()
-        letter = new btb.Letter
+        letter = new btb.Letter({
             recipient: @recipient.toJSON()
             org_id: $(".org_id", @el).val()
             type: type
+        })
         if type == "letter"
             # For custom letters, trigger the need for an external editor.
             $(".org-chooser", @el).hide()
@@ -111,14 +116,20 @@ class btb.LetterEditor extends Backbone.View
     hideLoading: => $(".loading", @el).hide()
 
     render: =>
-        $(@el).html @template
-            letter: @letter.toJSON()
+        @$el.html @template({letter: @letter.toJSON()})
         @renderOrgs()
+
+        @stock_response_chooser = new btb.StockResponseChooser()
+        @$(".stock-response-chooser").html(@stock_response_chooser.el)
+        @stock_response_chooser.render()
+        @stock_response_chooser.on "addStockResponse", (body) =>
+            current = @$(".letter-body").val()
+            current += "\n" if current
+            @$(".letter-body").val(current + body)
         this
 
     renderOrgs: =>
-        $(".org-chooser", @el).html @orgTemplate
-            letter: @letter.toJSON()
+        $(".org-chooser", @el).html(@orgTemplate({letter: @letter.toJSON()}))
 
     enqueue: =>
         @showLoading()
@@ -141,6 +152,27 @@ class btb.LetterEditor extends Backbone.View
 
         }
         
+class btb.StockResponseChooser extends Backbone.View
+    template: _.template $("#stockResponseChooser").html()
+    tagName: 'span'
+    events:
+        'change [name=stock-response]': 'addStockResponse'
+    initialize: =>
+        @stock_responses = new btb.StockResponseList()
+        @stock_responses.fetch({
+            success: @render
+            error: => alert("Server Error")
+        })
+
+    render: =>
+        @$el.html(@template({stock_responses: @stock_responses}))
+
+    addStockResponse: (event) =>
+        val = @$("[name=stock-response]").val()
+        return unless val
+        res = @stock_responses.get(parseInt(val))
+        return unless res
+        @trigger "addStockResponse", res.get("body")
     
 # A table showing comments attached to a letter.
 class btb.CommentsMailingTable extends Backbone.View
@@ -148,10 +180,11 @@ class btb.CommentsMailingTable extends Backbone.View
     template: _.template $("#commentRow").html()
     initialize: (options) ->
         if options.modelParams
-            @collection = new btb.CommentList _.map options.modelParams, (c) ->
+            @collection = new btb.CommentList(_.map(options.modelParams, (c) ->
                 new btb.Comment(c)
+            ))
         else
-            @collection = new btb.CommentList
+            @collection = new btb.CommentList()
     render: =>
         $(@el).html @heading()
         for comment in @collection.models
@@ -169,8 +202,8 @@ class btb.LetterRow extends Backbone.View
         'click .mark-letter-unsent': 'markLetterUnsent'
         'click .special-handling': 'specialHandling'
 
-    initialize: (letter) ->
-        @letter = letter
+    initialize: (options) ->
+        @letter = options.letter
 
     editLetter: (event) => @trigger "editLetter", @letter
     
@@ -178,6 +211,7 @@ class btb.LetterRow extends Backbone.View
     resendLetter: (event) =>
         @showLoading()
         copy = @letter.clone()
+        copy.set {"document_id": @letter.get("document")?.id}
         copy.save {"id": null, "sent": null, "created": undefined},
             success: (model) =>
                 @hideLoading()
@@ -229,20 +263,22 @@ class btb.LetterRow extends Backbone.View
         $(".loading", @el).hide()
 
     render: =>
-        $(@el).html @template
+        $(@el).html @template({
             letter: @letter.toJSON()
             commaddress: @letter.get("org")?.mailing_address.replace(/\n/g, ", ")
-        if @letter.get("type") == "comments"
+        })
+        if @letter.get("type") == "comments" or @letter.get("type") == "comment_removal"
             # Add a comments table...
-            commentsTable = new btb.CommentsMailingTable
-                modelParams: @letter.get "comments"
+            commentsTable = new btb.CommentsMailingTable({
+                modelParams: @letter.get("comments")
+            })
             $(".comments-table", @el).html commentsTable.render().el
         this
 
 class btb.CorrespondenceScanRow extends Backbone.View
     template: _.template $("#correspondenceScanRow").html()
-    initialize: (scan) ->
-        @scan = scan
+    initialize: (options) ->
+        @scan = options.scan
 
     render: =>
         $(@el).html @template scan: @scan.toJSON()
@@ -256,15 +292,16 @@ class btb.LetterTable extends btb.PaginatedView
     template: _.template $("#letterTableHeading").html()
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
 
     initialize: (options={filter: {}}) ->
-        @collection = new btb.LetterList
+        @collection = new btb.LetterList()
         @collection.filter = options.filter
 
-    render: =>
+    render: ->
         $(@el).html @template()
         for letter in @collection.models
-            row = new btb.LetterRow letter
+            row = new btb.LetterRow({letter})
             row.bind "editLetter", (letter) =>
                 @trigger "editLetter", letter
             row.bind "letterDeleted", (letter) =>
@@ -273,6 +310,7 @@ class btb.LetterTable extends btb.PaginatedView
         @addPaginationRow(true, true)
         $(@el).addClass("letter-table")
         this
+
     showLoading: => $(".fetch-loading", @el).show()
     hideLoading: => $(".fetch-loading", @el).hide()
 
@@ -301,26 +339,54 @@ class btb.LetterTable extends btb.PaginatedView
 
     turnPage: (event) =>
         @collection.filter.page = @newPageFromEvent event
-        @setPageLoading()
-        @collection.fetch
-            success: =>
-                @render()
-            error: => alert "Server error #{@collection.url()}"
+        @fetchItems()
 
+    setPerPage: (event) =>
+        event.preventDefault()
+        @collection.filter.per_page = $(event.currentTarget).val()
+        @fetchItems()
+     
 
 #
 # A tabular, paginated view of LetterRow and CorrespondenceScanRow instances.
 #
 class btb.CorrespondenceTable extends btb.LetterTable
+    events:
+        'click .filter-all': 'setFilterAll'
+        'click .filter-incoming': 'setFilterIncoming'
+        'click .filter-outgoing': 'setFilterOutgoing'
+        'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
+
+
     initialize: (options={filter: {}}) ->
-        @collection = new btb.CorrespondenceList
-        @collection.filter = options.filter
+        @collection = new btb.CorrespondenceList()
+        @collection.filter = options.filter or {}
+        # Default to both if neither is chosen.
+        if not @collection.filter.incoming and not @collection.filter.outgoing
+            @collection.filter.incoming = 1
+            @collection.filter.outgoing = 1
+
+    refresh: =>
+        @fetchItems()
+
+    setFilterAll: (event)      => @setFilter(event, {outgoing: 1, incoming: 1})
+    setFilterIncoming: (event) => @setFilter(event, {outgoing: 0, incoming: 1})
+    setFilterOutgoing: (event) => @setFilter(event, {outgoing: 1, incoming: 0})
+
+    setFilter: (event, params) =>
+        event?.preventDefault()
+        @collection.filter = _.extend(@collection.filter or {}, params)
+        @fetchItems()
+        # Update display
+        @renderFilter()
 
     render: =>
         $(@el).html @template()
+        @addPaginationRow()
         @collection.each (obj) =>
             if obj.get("letter")?
-                row = new btb.LetterRow(new btb.Letter obj.get "letter")
+                row = new btb.LetterRow({letter: new btb.Letter(obj.get("letter"))})
                 
                 # Bind events that change number of rows.
                 for event in ["letterAdded", "letterDeleted"]
@@ -331,12 +397,23 @@ class btb.CorrespondenceTable extends btb.LetterTable
                     @trigger "editLetter", letter
 
             else if obj.get("scan")?
-                row = new btb.CorrespondenceScanRow(new btb.Scan obj.get "scan")
+                row = new btb.CorrespondenceScanRow({scan: new btb.Scan(obj.get("scan"))})
 
             $(@el).append row.render().el
         @addPaginationRow()
         $(@el).addClass("letter-table")
+        @renderFilter()
         this
+
+    renderFilter: =>
+        @$(".filter-letters .chosen").removeClass("chosen")
+        if @collection.filter.incoming and @collection.filter.outgoing
+            @$(".filter-all").addClass("chosen")
+        else if @collection.filter.incoming
+            @$(".filter-incoming").addClass("chosen")
+        else if @collection.filter.outgoing
+            @$(".filter-outgoing").addClass("chosen")
+
 
 # 
 # Holder for a letter adder/editor and correspondence table that work together.
@@ -345,8 +422,7 @@ class btb.CorrespondenceManager extends Backbone.View
     initialize: (options) ->
         @recipient = options.recipient
 
-        @table = new btb.CorrespondenceTable
-            filter: { user_id: @recipient.id, per_page: 5}
+        @table = new btb.CorrespondenceTable({filter: { user_id: @recipient.id, per_page: 12}})
         @table.bind "editLetter", (letter) => @editLetter(letter)
         @table.fetchItems()
 
@@ -357,6 +433,9 @@ class btb.CorrespondenceManager extends Backbone.View
         $(@el).html(@adder.el)
         $(@el).append(@table.el)
         @render()
+
+    refresh: =>
+      @table.refresh()
 
     render: =>
         @adder.render()
@@ -500,7 +579,7 @@ class btb.MailingFilter extends btb.PaginatedView
         $(@el).html @template()
         @items = {}
         for mailing in @collection.models
-            item = new btb.MailingFilterItem mailing
+            item = new btb.MailingFilterItem({mailing})
             item.bind "itemSelected", @chooseItem
             item.bind "itemDeleted", (item) =>
                 @fetchItems()
@@ -577,8 +656,8 @@ class btb.MailingFilterItem extends Backbone.View
         'click .mark-unsent': 'markUnsent'
         'click .clear-cache': 'clearCache'
 
-    initialize: (mailing) ->
-        @mailing = mailing
+    initialize: (options) ->
+        @mailing = options.mailing
     render: =>
         $(@el).html @template mailing: @mailing.toJSON()
         if @mailing.get("date_finished")
@@ -626,7 +705,7 @@ class btb.MailingFilterItem extends Backbone.View
 
 class btb.OutgoingMailView extends Backbone.View
     template: _.template $("#outgoingMail").html()
-    initialize: (path) ->
+    initialize: (options) ->
         @letters = new btb.LetterTable
         @letterFilter = new btb.LetterFilter
         @mailingFilter = new btb.MailingFilter
@@ -651,13 +730,13 @@ class btb.OutgoingMailView extends Backbone.View
             @mailingFilter.fetchItems()
 
         navigateCallback = =>
-            switch path
+            switch options.path
                 when "all" then @mailingFilter.chooseAll()
                 when "sent" then @mailingFilter.chooseAllSent()
                 when "unsent" then @mailingFilter.chooseAllUnsent()
                 else
-                    if not isNaN path
-                        @mailingFilter.chooseItem parseInt path
+                    if not isNaN(options.path)
+                        @mailingFilter.chooseItem(parseInt(options.path))
                     else
                         @mailingFilter.chooseEnqueued()
             @mailingFilter.unbind "mailingsLoaded", navigateCallback

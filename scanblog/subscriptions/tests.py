@@ -1,18 +1,24 @@
 import re
+import datetime
 
+from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.test.utils import override_settings
 
 from btb.tests import BtbMailTestCase
 from profiles.models import Organization
-from subscriptions.models import Subscription, NotificationBlacklist
-from scanning.models import Document
+from subscriptions.models import (Subscription, NotificationBlacklist, CommentNotificationLog,
+    UserNotificationLog, DocumentNotificationLog, MailingListInterest)
+from scanning.models import Document, Transcription, TranscriptionRevision
 from comments.models import Comment
-from annotations.models import Tag
+from annotations.models import Tag, ReplyCode
+from campaigns.models import Campaign
 
+@override_settings(DISABLE_NOTIFICATIONS=False, DISABLE_ADMIN_NOTIFICATIONS=False)
 class TestSubscriptions(BtbMailTestCase):
     fixtures = ["initial_data.json"]
     def setUp(self):
@@ -42,21 +48,13 @@ class TestSubscriptions(BtbMailTestCase):
             )
 
     def test_auto_subscribe_and_comment_notifications(self):
-        """
-        Note: Must have the settings:
-
-            DISABLE_NOTIFICATIONS = False 
-            DISABLE_ADMIN_NOTIFICATIONS = False
-
-        at the time of subscription model module loading for this test to work.
-        """
         doc = Document.objects.create(author=self.author, 
                 editor=self.editor, status="published")
         self.assertEquals(Subscription.objects.count(), 0)
 
         comment = Comment.objects.create(comment="test", 
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
+        self.assertOutboxIsEmpty()
         self.clear_outbox()
 
         self.assertEquals(Subscription.objects.count(), 1)
@@ -65,17 +63,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertEquals(s.subscriber, self.commenter)
 
         # No notification to commenter for their own comments, even when
-        # subscribed, but yes notification for admin.
+        # subscribed.  No notification for admin unless comment is spammy (has
+        # links).
         second_comment = Comment.objects.create(comment="test2",
                 document=doc, user=self.commenter)
-        self.assertOutboxContains(["%sNew comment" % self.admin_subject_prefix])
+        self.assertOutboxIsEmpty()
         self.clear_outbox()
 
         # Notification for subscribed comment.
         third_comment = Comment.objects.create(comment="test3",
                 document=doc, user=self.commenter2)
         self.assertOutboxContains([
-            "%sNew comment" % self.admin_subject_prefix,
             "%sNew reply" % self.user_subject_prefix,
         ])
         self.clear_outbox()
@@ -120,6 +118,17 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
         self.clear_outbox()
 
+    def test_campaign_notifications(self):
+        reply_code = ReplyCode.objects.create(code='test-campaign')
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                public=True, 
+                reply_code=reply_code)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                status="published", in_reply_to=reply_code)
+        self.assertOutboxContains(["%sNew post" % self.user_subject_prefix])
+        self.clear_outbox()
+
     def test_reply_coded_comment_notifications(self):
         """
         Test notifications for document replies to comments.
@@ -138,10 +147,14 @@ class TestSubscriptions(BtbMailTestCase):
         even if you're multiply subscribed to it.
         """
         tag = Tag.objects.create(name="featured")
+        campaign = Campaign.objects.create(slug='test', title='', body='',
+                reply_code=ReplyCode.objects.create(code='test-campaign'))
         Subscription.objects.create(subscriber=self.commenter, author=self.author)
         Subscription.objects.create(subscriber=self.commenter, organization=self.org)
         Subscription.objects.create(subscriber=self.commenter, tag=tag)
-        doc = Document.objects.create(author=self.author, editor=self.editor)
+        Subscription.objects.create(subscriber=self.commenter, campaign=campaign)
+        doc = Document.objects.create(author=self.author, editor=self.editor,
+                in_reply_to=campaign.reply_code)
         doc.tags.add(tag)
         doc.status = "published"
         doc.save()
@@ -223,9 +236,6 @@ class TestSubscriptions(BtbMailTestCase):
         otherCommenter = User.objects.create(username="blah")
         Comment.objects.create(document=doc, user=otherCommenter)
 
-        # (just outbox)
-        self.assertOutboxContains(['%sNew comment' % self.admin_subject_prefix] * 2)
-
     def test_comment_notification_escaping(self):
         doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
         comment = Comment.objects.create(comment="yah", user=self.commenter, document=doc)
@@ -260,4 +270,161 @@ class TestSubscriptions(BtbMailTestCase):
         self.assertTrue("This is my fun body text" in msg.message().get_payload(None, True))
         self.assertEquals(mail.outbox, [])
         
+    def test_multiple_comment_notification(self):
+        CommentNotificationLog.objects.all().delete()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.clear_outbox()
+        comment1 = Comment.objects.create(comment="yah", user=self.commenter, document=doc)
+        comment2 = Comment.objects.create(comment="huh", user=self.commenter2, document=doc)
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
+        self.clear_outbox()
+        comment2.comment = "huh edited"
+        comment2.save()
+        self.assertEquals(len(mail.outbox), 0)
+        self.assertEquals(CommentNotificationLog.objects.count(), 1)
+
+    def test_documentless_comment_saving(self):
+        self.clear_outbox()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        Subscription.objects.create(author=self.author, subscriber=self.commenter)
+        comment = Comment.objects.create(comment="A fine comment",
+                user=self.commenter2,
+                document=doc)
+        comment = Comment.objects.create(comment="An admin mistake", user=self.editor)
+        self.assertEquals(mail.outbox, [])
+
+    def test_moderator_notification_on_content_with_links(self):
+        # Nothing with no link.
+        self.clear_outbox()
+        doc = Document.objects.create(author=self.author, editor=self.editor, status="published")
+        comment = Comment.objects.create(comment="No link",
+                user=self.commenter,
+                document=doc)
+        TranscriptionRevision.objects.create(
+                transcription=Transcription.objects.create(document=doc),
+                editor=self.commenter,
+                body="No link")
+        self.assertEquals(len(mail.outbox), 0)
+
+        # Notification with non-self links
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+            comment = Comment.objects.create(
+                    comment="{0}://advertiser.com".format(protocol),
+                    user=self.commenter,
+                    document=doc)
+            self.assertEquals(len(mail.outbox), 1)
+
+            self.clear_outbox()
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://advertiser.com".format(protocol))
+            self.assertEquals(len(mail.outbox), 1)
+
+        # Nothing with self links.
+        for protocol in ("http", "https"):
+            self.clear_outbox()
+            doc = Document.objects.create(author=self.author, editor=self.editor,
+                    status="published")
+
+            comment = Comment.objects.create(
+                    comment="{0}://{1}/blogs/101/".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ),
+                    user=self.commenter,
+                    document=doc)
+
+            TranscriptionRevision.objects.create(
+                    transcription=Transcription.objects.create(document=doc),
+                    editor=self.commenter,
+                    body="{0}://{1}/blogs/101.com".format(
+                        protocol,
+                        Site.objects.get_current().domain
+                    ))
+
+            self.assertEquals(len(mail.outbox), 0)
+
+    def test_no_flooding_of_users_documents(self):
+        """
+        Ensure that notifications are not sent too quickly to users, even if
+        they are scheduled to receive them.
+        """
+        self.clear_outbox()
+        Subscription.objects.create(author=self.author, subscriber=self.commenter)
+        doc1 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+        doc2 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+        doc3 = Document.objects.create(
+                author=self.author, editor=self.editor, status="published")
+
+        # They only get one email, but we log 3 notifications, so they won't
+        # get those flood-y ones in the future either.
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+        self.clear_outbox()
+        self.assertEquals(DocumentNotificationLog.objects.filter(
+            recipient=self.commenter).count(), 3)
+
+        # Change the date of the UserNotificationLog, and we should get a new notice.
+        log = self.commenter.usernotificationlog_set.all()[0]
+        log.date = log.date - datetime.timedelta(seconds=31*60)
+        log.save()
+
+        Document.objects.create(author=self.author, editor=self.editor, status="published")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+        self.clear_outbox()
+        self.assertEquals(self.commenter.usernotificationlog_set.count(), 2)
+
+        # Comments won't produce logs in this interval either.
+        # Add a comment by 'user', which should auto-subscribe them to comments on this doc.
+        Comment.objects.create(user=self.commenter, document=doc1, comment="Woo")
+        # Add a comment from someone else, which would create a notice if they
+        # weren't flood-blocked.
+        Comment.objects.create(user=self.commenter2, document=doc1, comment="Waa")
+        self.assertEquals(len(mail.outbox), 0)
+
+        # Non flood-blocked users should still get comment notices though.
+        Comment.objects.create(user=self.commenter, document=doc1, comment="Wor")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter2.email])
+        self.clear_outbox()
+
+        # If the latest log is old enough, and comments will again fire notices.
+        log = self.commenter.usernotificationlog_set.all()[0]
+        log.date = log.date - datetime.timedelta(seconds=31*60)
+        log.save()
+
+        Comment.objects.create(user=self.editor, document=doc1, comment="Wam")
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [self.commenter.email])
+
+class TestMailingListInterest(TestCase):
+    url = reverse("subscriptions.mailing_list_interest")
+
+    def test_gets_mailing_list_interest_view(self):
+        res = self.client.get(self.url)
+        self.assertEquals(res.status_code, 200)
+        self.assertTrue("Are you interested in volunteering?" in res.content)
+
+    def test_posts_mailing_list_interest(self):
+        res = self.client.post(self.url, {
+            'email': 'test@example.com',
+            'details': '',
+        }, follow=True)
+        self.assertEquals(res.status_code, 200)
+        self.assertTrue("Thanks for your interest" in res.content)
+        self.assertEquals(MailingListInterest.objects.count(), 1)
+        m = MailingListInterest.objects.get()
+        self.assertEquals(m.email, 'test@example.com')
+        self.assertEquals(m.details, '')
+        self.assertEquals(m.allies, False)
+        self.assertEquals(m.announcements, False)
+        self.assertEquals(m.volunteering, False)
 

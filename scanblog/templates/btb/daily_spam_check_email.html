@@ -1,0 +1,82 @@
+{% load url from future %}
+{% load humanize %}
+{% load scanning_text_diffs %}
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+<style type='text/css'>
+    body, p, div, span, td, th, h1, h2 {
+        font-family: sans-serif;
+    }
+    p,div,span,td,th {
+        font-size: 12px;
+    }
+    .deleted {
+        text-decoration: line-through;
+        color: red;
+    }
+    .inserted {
+        color: green;
+    }
+</style>
+</head>
+<body>
+<h1>BtB Comment/Transcription report</h1>
+{% if comments %}
+    <h2>Comments</h2>
+    <table>
+    {% for comment in comments %}
+    {% with doc=comment.document %}
+        <tr><td bgcolor='#eee'>
+            <b>{{ comment.user.profile }}</b> {{ comment.modified|naturalday }} {{ comment.modified|date:"P" }}
+            on
+            <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a> 
+            by <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
+            (<a href='https://{{ site.domain }}{% url "comments.moderator_remove" comment.pk %}}'>remove</a>,
+             <a href='https://{{ site.domain }}{% url "comments.spam_can_comment" comment.pk %}'>spam</a>)
+        </td></tr>
+        <tr><td bgcolor='#ffe'>
+            {{ comment.comment|linebreaksbr }}
+        </td></tr>
+    {% endwith %}
+    {% endfor %}
+    </table>
+{% endif %}
+{% if transcriptions %}
+    <h2>Transcriptions ({{ transcriptions|length }})</h2>
+    {% for transcription, revs in transcriptions %}
+    {% with doc=transcription.document %}
+    {% with prev=revs.0 cur=revs.1 %}
+    <table>
+        <tr><td bgcolor='#ddd'>
+                <h2>{{ forloop.counter }}</h2>
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
+                by {{ doc.author.profile }}
+                <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>edit transcription</a>,
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
+                <a href='https://{{ site.domain }}{% url "scanning.revision_list" doc.pk %}'>full diff</a>.
+        </td></tr>
+        <tr>
+            <td bgcolor='#eee'>
+                By {{ cur.editor }}, {{ cur.modified|naturalday }} {{ cur.modified|date:"P" }}
+                (<a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/'>edit user</a>, 
+                <a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/delete'>delete user</a>)
+            </td>
+        </tr>
+        <tr>
+            <td style='border: 1px solid #ddd;'>
+                {% if prev %}
+                    {% simple_diff prev.body cur.body %}
+                {% else %}
+                    {{ cur.body|linebreaksbr }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% endwith %}
+    {% endwith %}
+    {% endfor %}
+{% endif %}
+</body>
+</html>

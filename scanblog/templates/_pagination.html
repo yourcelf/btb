@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class='pagination'>
-    {% trans "Page:" %} 
+    {% trans "Pages:" %} 
     {% if page.has_previous %}
     <a href='?page={{ page.previous_page_number }}' title='{% trans "Previous page" %}'>&laquo; {% trans "Previous" %}</a>
     {% endif %}

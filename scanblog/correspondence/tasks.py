@@ -12,3 +12,11 @@ def generate_collation_task(mailing_id, redirect):
 def generate_letter_task(letter_id):
     letter = Letter.objects.get(pk=letter_id)
     return letter.get_file()
+
+@task
+def combine_pdfs_task(pdf_files):
+    from correspondence import utils
+    combined = utils.combine_pdfs(*pdf_files)
+    return combined
+
+

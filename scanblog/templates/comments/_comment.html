@@ -1,70 +1,75 @@
+{% load url from future %}
+{% load favorites %}
 {% load i18n %}
-	<div class='comment'>
-	    <a name='c{{ comment.id }}'></a>
-	    <div class='commentbyline'>
-		<table>
-		    <tr>
-			<td>
-			{% if comment.user.has_public_profile %}
-			    <a href='{{ comment.user.profile.get_absolute_url }}'>
-			      {{ comment.user.profile }}
-			    </a>
-			{% else %}
-			    {{ comment.user.profile }}
-			{% endif %}
-			</td>
-			<td>
-			    <span class='comment-date'>
-			      {% blocktrans %}
-			      Posted {{ comment.created|timesince }} ago.
-			      {% endblocktrans %}
+        <div class='comment{% if comment.removed %} removed{% endif %}'>
+            <a name='c{{ comment.id }}'></a>
+            <div class='commentbyline'>
+                <table>
+                    <tr>
+                        <td>
+                          {% if comment.removed %}
+                            <em>[{% trans "removed" %}]</em>
+                          {% else %}
+                            <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
+                          {% endif %}
+                        </td>
+                        <td>
+                            <span class='comment-date'>
+			      {% trans "Posted {{ comment.created|timesince }} ago." %}
 			    </span>
-			    {% if comment.letter_sent %}
-				<span class='comment-date-mailed'>
-				    &check;
-				    {% blocktrans %}
-				    Mailed {{ comment.letter_sent|timesince }} ago
-				    {% endblocktrans %}
-				</span>
-			    {% endif %}
-			</td>
-			<td>
-			    {% if perms.change_comment or user == comment.user and not comment.letter_sent %}
-				<a href='{% url comments.edit_comment comment.pk %}'
-				    class='comment-edit'
-				    title ='{% trans "Edit comment" %}'>
-				  {% trans "edit" %}
-				</a>
-				<a href='{% url comments.delete_comment comment.pk %}'
-				    class='comment-delete'
-				    title='{% trans "Delete comment" %}'>
-				  {% trans "delete" %}
-				</a>
-			    {% endif %}
-			    {% if user != comment.user %}
-				<a href='{% url comments.flag_comment comment.pk %}'
-				   class='comment-flag'
-				   title='{% trans "Flag comment" %}'>&nbsp;</a>
-			    {% endif %}
-			</td>
-		    </tr>
-		</table>
-	    </div>
-	    <div class='commentbody'>
-		{% if comment.comment_doc_id %}
-		    {% with post=comment.comment_doc %}
-			({% trans "scanned reply" %} &ndash;
-		         <a href='{{ post.get_absolute_url }}'>{% trans "view as blog post" %}</a>
-			 )
-			{% with documentpages=post.documentpage_set.all %}
-			    {% with documentpage_count=documentpages.count %}
-				{% include "blogs/_post_pages.html" %}
-			    {% endwith %}
-			{% endwith %}
-		    {% endwith %}
-		{% else %}
-		    {{comment.comment|linebreaksbr}}
-		{% endif %}
-	    </div>
-	    <br style='clear: both;' />
-	</div>
+                            {% if comment.letter_sent and not comment.removed %}
+                                <span class='comment-date-mailed'>
+                                    &check;
+                                    {% trans "Mailed {{ comment.letter_sent|timesince }} ago" %}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user == comment.user and not comment.letter_sent %}
+                                <a href='{% url "comments.edit_comment" comment.pk %}' 
+                                    class='comment-edit'
+                                    title ='Edit comment'>edit</a
+                                ><a href='{% url "comments.delete_comment" comment.pk %}' 
+                                    class='comment-delete'
+                                    title='Delete comment'>delete</a>
+                            {% endif %}
+                            {% if user != comment.user %}
+                                <a href='{% url "comments.flag_comment" comment.pk %}' 
+                                   class='comment-flag'
+                                   title='Flag comment'>&nbsp;</a>
+                            {% endif %}
+                            {% if perms.comments.change_comment %}
+                              <a href='{% url "comments.spam_can_comment" comment.pk %}'>spam</a>
+                              |
+                              <a href='{% url "comments.moderator_remove" comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
+                            {% endif %}
+                            {% favorites comment %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            {% if comment.removed %}
+              {% with removal=comment.commentremoval %}
+                <div class='commentbody'>
+                  <h4>Comment removed by staff</h4>
+                  {{ removal.web_message|urlize|linebreaks }}
+                </div>
+              {% endwith %}
+            {% else %}
+              <div class='commentbody'>
+                  {% if comment.comment_doc_id %}
+                      {% with post=comment.comment_doc %}
+                          (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
+                          {% with documentpages=post.documentpage_set.all %}
+                              {% with documentpage_count=documentpages.count %}
+                                  {% include "blogs/_post_pages.html" %} 
+                              {% endwith %}
+                          {% endwith %}
+                      {% endwith %}
+                  {% else %}
+                      {{comment.comment|linebreaksbr}}
+                  {% endif %}
+              </div>
+            {% endif %}
+            <br style='clear: both;' />
+        </div>

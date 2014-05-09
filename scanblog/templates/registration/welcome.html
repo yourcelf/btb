@@ -1,12 +1,13 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% load i18n %}
 {% block title %}{% trans "Welcome" %}{% endblock %}
 {% block body %}
 
 <h1>{% trans "Welcome" %}</h1>
 
-{% url blogs.posts_needing_transcription as transcribe_list %}
-{% url about.community_guidelines as community_guidelines %}
+{% url "blogs.posts_needing_transcription" as transcribe_list %}
+{% url "about.community_guidelines" as community_guidelines %}
 {% with user.profile.get_absolute_url as edit_profile %}
 
 <p>

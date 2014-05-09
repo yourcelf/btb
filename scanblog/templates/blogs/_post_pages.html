@@ -1,3 +1,4 @@
+{% load url from future %}
 {% load i18n %}
 {% load public_url %}
 {% load humanize %}
@@ -12,7 +13,7 @@
             );
             $(".scan-page-group:last").after(new_group);
             $.ajax({
-                url: "{% url blogs.more_pages post.pk %}", 
+                url: "{% url "blogs.more_pages" post.pk %}", 
                 type: "GET",
                 data: {
                     'minorder': page_num,

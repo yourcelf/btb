@@ -1,17 +1,18 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 
 {% block tab_correspondence_class %}{{ui_tab_active}}{% endblock %}
 
 {% block subnav %}
 <ul>
     {% if perms.correspondence.manage_correspondence %}
-        <li><a href='{% url correspondence.home %}'>
+        <li><a href='{% url "correspondence.home" %}'>
 	    {% trans "Pending" %}
 	</a></li>
-        <li><a href='{% url correspondence.sent %}'>
+        <li><a href='{% url "correspondence.sent" %}'>
 	    {% trans "Sent" %}
 	</a></li>
-        <li><a href='{% url correspondence.edit_generic_letter %}'>
+        <li><a href='{% url "correspondence.edit_generic_letter" %}'>
 	    {% trans "Write a letter" %}
 	</a></li>
     {% endif %}

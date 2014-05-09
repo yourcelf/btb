@@ -1,0 +1,13 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% load i18n %}
+{% block body %}
+
+{% blocktrans %}
+Thanks for writing us.  Enclosed you will find the materials you recently sent us. They are being returned to you because we cannot publish or hold on to any blog posts or profiles until you've signed a license agreement with us.  We’re sorry for this inconvenience; but we have to stay on our lawyers’ good side.
+
+Unfortunately, the demand to blog has outpaced our capacity to process the mail from our currently registered writers.  In order to meet our obligations to our current writers, we are currently maintaining a wait-list.  Invitations are sent as space is available in the order requests were received.  At this time we do not have an estimate for how long the wait is.  We've added your name and address and will send you the registration materials as soon as we are able to.  Please do not send us any more materials until you have received them.  
+{% endblocktrans %}
+
+{% endblock %}
+{% block signature %}{{ letter.org.name|tex_escape }} staff{% endblock %}

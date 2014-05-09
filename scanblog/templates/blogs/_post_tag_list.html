@@ -1,9 +1,13 @@
+{% load url from future %}
 {% with post.tags.all as tags %}
-{% if tags %}
-    <span class='post-tag-list'> filed under :
+{% with post.in_reply_to.campaign as campaign %}
+{% if tags or campaign.public %}
+    <span class='post-tag-list'>filed under: 
         {% for tag in tags %}
-            <a href='{% url blogs.tagged_posts tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-        {% endfor %}
+        <a href='{% url "blogs.tagged_posts" tag.name %}'>{{ tag.name }}</a>{% if not forloop.last %},{% endif %}{% endfor %}{% if campaign.public %}{% if tags %}, {% endif %}
+            <a href='{{ campaign.get_absolute_url }}'>{{ campaign.title }}</a>
+        {% endif %}
     </span>
 {% endif %}
+{% endwith %}
 {% endwith %}

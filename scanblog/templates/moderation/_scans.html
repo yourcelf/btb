@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load url from future %}
 <!-- Process -->
 
 <script type='text/template' id="processManager">
@@ -12,7 +13,7 @@
 <script type='text/template' id="processItem">
     <li>
         <div class="date"><%= btb.formatDate(obj.created) %>
-        <a class='delete-scan' href='{% url scanning.scan_delete %}<%= obj.id %>' title='{% trans "Delete scan" %}'><span class='ui-icon ui-icon-trash'></span></a>
+        <a class='delete-scan' href='{% url "scanning.scan_delete" %}<%= obj.id %>' title='{% trans "Delete scan" %}'><span class='ui-icon ui-icon-trash'></span></a>
         <a class='scan' href='<%= obj.edit_url %>'>
             <% if (obj.lock) { %>
                 <span class='being-edited'><%= obj.lock.user.display_name %>
@@ -45,16 +46,16 @@
         <h1>{% trans "Split Scan" %}</h1>
         <a href='<%= scan.pdf %>'>{% trans "Original (pdf)" %}</a>
         <div style='float: right;'>
-            <a href='{% url scanning.scan_delete %}<%= scan.id %>'
+            <a href='{% url "scanning.scan_delete" %}<%= scan.id %>'
                 class='delete-scan'
                 >{% trans "Delete scan" %}</a
-            ><a href='{% url scanning.scan_replace %}<%= scan.id %>'
+            ><a href='{% url "scanning.scan_replace" %}<%= scan.id %>'
                 class='replace-scan'
                 >{% trans "Replace scan" %}</a
-            ><a href='{% url scanning.scan_reimport %}<%= scan.id %>'
+            ><!--<a href='{% url "scanning.scan_reimport" %}<%= scan.id %>'
                 class='reparse-scan'
                 >{% trans "Re-parse scan" %}</a
-            ><a href='{% url scanning.scan_merge %}<%= scan.id %>'
+            >--><a href='{% url "scanning.scan_merge" %}<%= scan.id %>'
                 class='merge-scan'
                 >{% trans "Merge scans" %}</a
             >
@@ -109,7 +110,8 @@
             </div>
             <ul class='ignore-choice'></ul>
             <ul class='type-list'></ul><br />
-            <span class='add-post'>{% trans "Post" %}</span><span class='add-photo'>{% trans "Photo" %}</span>
+            <span class='add-post'>{% trans "Post" %}</span>
+	    <!--<span class='add-photo'>{% trans "Photo" %}</span>-->
             <span style='float: right;'>
                 <div class='post-save-message'></div>
                 <span class='save'>{% trans "Save" %}</span><span class='switch-to-edit-documents'>{% trans "Edit documents" %} &raquo;</span>
@@ -120,6 +122,6 @@
 <script type="text/template" id="splitScanPageDocChoice">
     <span class='page-type-choice <%= chosen ? "chosen" : "" %>'>
         <input type='checkbox' <%| chosen ? "checked='checked'" : "" %> /> 
-        <%= title %>
+        <%| title %>
     </span>
 </script>

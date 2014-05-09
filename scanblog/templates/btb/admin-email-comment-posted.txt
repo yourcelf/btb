@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load url from future %}
 {% trans "A comment has been posted on" %} {{ comment.document.get_title }}:
 
 {% trans "View on site" %}:
@@ -10,8 +11,8 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 ----
 
 {% trans "Moderation functions" %}:
-{% trans "Delete" %}: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/delete>
-{% trans "Edit" %}: <http://{{ site.domain }}/admin/comments/comment/{{ comment.id }}/>
+spam: <http://{{ site.domain }}{% url "comments.spam_can_comment" comment.id %}>
+abuse: <http://{{ site.domain }}{% url "comments.moderator_remove" comment.id %}>
 
 {% trans "Admin functions" %}:
 {% trans "Edit user" %}: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>

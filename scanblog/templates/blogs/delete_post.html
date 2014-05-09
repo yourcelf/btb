@@ -1,4 +1,5 @@
 {% extends "blogs/base.html" %}
+{% load url from future %}
 {% block title %}Delete post?{% endblock %}
 {% block body %}
     <p>
@@ -13,6 +14,6 @@
     </form>
     </p>
     <p>
-    <a href='{% url blogs.edit_post post.pk %}'>{% trans "Cancel" %}</a>
+    <a href='{% url "blogs.edit_post" post.pk %}'>{% trans "Cancel" %}</a>
     </p>
 {% endblock %}

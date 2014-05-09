@@ -12,7 +12,7 @@ from reportlab.lib.units import inch
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.template.defaultfilters import slugify
-from django.contrib.localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 from django.contrib.sites.models import Site
 
 from scanning import tasks
@@ -92,7 +92,7 @@ def load_test_data():
     uploader = User.objects.get(username='uploader')
     commenter = User.objects.create(username="commenter")
     with open(data_file) as fh:
-        data = yaml.load(fh)
+        data = yaml.safe_load(fh)
 
     orgs = {}
 

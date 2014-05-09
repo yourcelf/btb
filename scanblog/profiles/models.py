@@ -1,4 +1,6 @@
+import datetime
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -34,6 +36,9 @@ class ProfileManager(OrgManager):
 
     def inactive_bloggers(self):
         return self.filter(user__is_active=False, blogger=True)
+
+    def active_and_inactive_commenters(self):
+        return self.filter(blogger=False)
 
     def commenters(self):
         """ They are not in prison. """
@@ -75,14 +80,20 @@ class ProfileManager(OrgManager):
             ).order_by('display_name')
 
     def bloggers_with_published_content(self):
-        return sorted(list(self.bloggers_with_posts()) +
-                      list(self.bloggers_with_just_profiles()), 
-                key=lambda p: p.display_name)
-
+        return self.bloggers().select_related('user').filter(
+                Q(user__documents_authored__status="published", 
+                  user__documents_authored__type="profile") |
+                Q(user__documents_authored__status="published",
+                  user__documents_authored__type="post")
+              ).distinct().order_by('display_name')
 
     def enrolled(self):
         """ They have returned a consent form. """
         return self.bloggers().filter(consent_form_received=True)
+
+    def enrolled_in_contact(self):
+        """ They have returned a consent form, and we haven't lost contact. """
+        return self.enrolled().filter(lost_contact=False)
 
     #
     # Letter-based statuses
@@ -167,6 +178,7 @@ class Profile(models.Model):
 
     blogger = models.BooleanField()
     managed = models.BooleanField()
+    lost_contact = models.BooleanField()
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
     mailing_address = models.TextField(blank=True, default="")
@@ -179,8 +191,7 @@ class Profile(models.Model):
     class QuerySet(OrgQuerySet):
         orgs = ["user__organization"]
 
-    def to_dict(self):
-        scans_authored = getattr(self, "user__scans_authored", None)
+    def light_dict(self):
         return {
             'id': self.pk,
             'username': self.user.username,
@@ -189,22 +200,31 @@ class Profile(models.Model):
             'date_joined': self.user.date_joined.isoformat(),
             'blogger': self.blogger,
             'managed': self.managed,
+            'lost_contact': self.lost_contact,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,
             'special_mail_handling': self.special_mail_handling,
             'consent_form_received': self.consent_form_received,
-            'organizations': [o.to_dict() for o in self.user.organization_set.all()],
-            'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
-            'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
-            'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
             'blog_url': self.get_blog_url(),
             'profile_url': self.get_absolute_url(),
             'edit_url': self.get_edit_url(),
-            'scans_authored': scans_authored,
-            'has_public_profile': self.has_public_profile(),
             'is_public': self.is_public(),
         }
+
+
+    def to_dict(self):
+        scans_authored = getattr(self, "user__scans_authored", None)
+        dct = self.light_dict()
+        dct.update({
+            u'organizations': [o.light_dict() for o in self.user.organization_set.all()],
+            u'invited': Profile.objects.invited().filter(pk=self.pk).exists(),
+            u'waitlisted': Profile.objects.waitlisted().filter(pk=self.pk).exists(),
+            u'waitlistable': Profile.objects.waitlistable().filter(pk=self.pk).exists(),
+            u'scans_authored': scans_authored,
+            u'has_public_profile': self.has_public_profile(),
+        })
+        return dct
             
     def save(self, *args, **kwargs):
         if not self.display_name:
@@ -260,7 +280,7 @@ class OrganizationManager(OrgManager):
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
-    personal_contact = models.CharField(max_length=255)
+    personal_contact = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(
         help_text="Check to make this organization appear in the 'Groups' tab"
     )
@@ -291,11 +311,30 @@ class Organization(models.Model):
         orgs = [""]
 
     def to_dict(self):
+        dct = self.light_dict()
+        dct['moderators'] = [u.profile.light_dict() for u in self.moderators.select_related('profile').all()]
+        dct['members'] = [u.profile.light_dict() for u in self.members.select_related('profile').all()]
+        dct['about'] = self.about
+        dct['footer'] = self.footer
+        dct['mailing_address'] = self.mailing_address
+        dct['personal_contact'] = self.personal_contact
+        if self.custom_intro_packet:
+            dct['custom_intro_packet_url'] = self.custom_intro_packet.url
+        else:
+            dct['custom_intro_packet_url'] = None
+        if self.outgoing_mail_handled_by:
+            dct['outgoing_mail_handled_by'] = self.outgoing_mail_handled_by.light_dict()
+        else:
+            dct['outgoing_mail_handled_by'] = {}
+        return dct
+
+    def light_dict(self):
         return {
-            'id': self.pk,
-            'name': self.name,
-            'public': self.public,
-            'mailing_address': self.mailing_address,
+            u'id': self.pk,
+            u'slug': self.slug,
+            u'name': self.name,
+            u'public': self.public,
+            u'mailing_address': self.mailing_address,
         }
 
     def members_count(self):
@@ -309,6 +348,77 @@ class Organization(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class AffiliationManager(OrgManager):
+    def public(self): return self.all().public()
+    def private(self): return self.all().private()
+
+class Affiliation(models.Model):
+    """
+    Affiliations are like a "super tag" for posts, which:
+     1. can append additional HTML to the top of list and detail views
+     2. is limited to use by particular org's.
+    """
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True,
+            help_text="Use this to identify this affiliation when editing documents.")
+    logo = models.ImageField(upload_to="public/uploads/affiliations/",
+            blank=True, null=True)
+    list_body = models.TextField(
+            help_text="HTML for the top of the group page.")
+    detail_body = models.TextField(
+            help_text="HTML to append to individual posts for this group.")
+    organizations = models.ManyToManyField(Organization,
+            help_text="Which organizations are allowed to mark posts"
+                      " as belonging to this affiliation?")
+    public = models.BooleanField(
+            help_text="If false, the affiliation won't be listed publicly.")
+
+    order = models.IntegerField(
+            default=0,
+            help_text="Use to set the order for the list of affiliations on"
+                      " the categories view. Lower numbers come first.")
+    created = models.DateTimeField(default=datetime.datetime.now)
+    modified = models.DateTimeField(blank=True)
+
+    objects = AffiliationManager()
+
+    class QuerySet(OrgQuerySet):
+        orgs = ["organizations"]
+
+        def public(self):
+            return self.filter(public=True)
+        def private(self):
+            return self.filter(public=False)
+    
+    class Meta:
+        ordering = ['order', '-created']
+
+    def to_dict(self):
+        return {
+            u'id': self.pk,
+            u'title': self.title,
+            u'slug': self.slug,
+            u'logo_url': self.logo.url if self.logo else None,
+            u'list_body': self.list_body,
+            u'detail_body': self.detail_body,
+            u'organizations': [o.light_dict() for o in self.organizations.all()],
+            u'public': self.public,
+            u'order': self.order,
+        }
+
+    def total_num_responses(self):
+        return self.document_set.count()
+
+    def get_absolute_url(self):
+        return reverse("blogs.show_affiliation", args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        self.modified = datetime.datetime.now()
+        return super(Affiliation, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.slug
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance=None, **kwargs):

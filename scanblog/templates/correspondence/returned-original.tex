@@ -1,0 +1,11 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% load i18n %}
+{% block body %}
+
+{% blocktrans %}
+Thanks for your submission, it has been scanned and published. Please find enclosed the materials that you requested we return. Any printouts or responses to your letter will come in a separate mailing.
+{% endblocktrans %}
+
+{% endblock %}
+{% block signature %}{{ letter.org.name|tex_escape }} staff{% endblock %}

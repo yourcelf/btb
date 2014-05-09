@@ -22,7 +22,8 @@ from scanning.models import Document, DocumentPage
 from comments.models import Comment
 from comments.forms import CommentForm
 from blogs import feeds
-from profiles.models import Profile, Organization
+from profiles.models import Profile, Organization, Affiliation
+from campaigns.models import Campaign
 
 #
 # Displaying posts
@@ -96,26 +97,52 @@ def author_post_list(request, author_id=None, slug=None):
 
     return render(request, "blogs/author_post_list.html", context)
 
+
+
 def get_nav_context():
-    tags = list(Tag.objects.filter(post_count__gte=0).order_by('name'))
-    tags.append({
-        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count()
+    tag_list = []
+    for tag in Tag.objects.filter(post_count__gte=2).order_by('name'):
+        tag_list.append({
+            'post_count': tag.post_count,
+            'name': tag.name,
+            'url': reverse("blogs.tagged_posts", args=[tag.name])
+        })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(type='post').exclude(tags__isnull=False).count(),
+        'name': 'Uncategorized',
+        'url': reverse("blogs.tagged_posts"),
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__complete=True).count(),
+        'name': 'Transcribed',
+        'url': reverse("blogs.home") + "?transcribed=complete",
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__complete=False).count(),
+        'name': 'Partially transcribed',
+        'url': reverse("blogs.home") + "?transcribed=partial",
+    })
+    tag_list.append({
+        'post_count': Document.objects.public().filter(transcription__isnull=True).count(),
+        'name': 'Not transcribed',
+        'url': reverse("blogs.home") + "?transcribed=none",
     })
     # Sort tags into columns.
     columns = []
-    logger = logging.getLogger("django.request")
-    if tags:
-        per_column = max(5, int(math.ceil(len(tags) / 5.)))
-        for i in range(0, len(tags), per_column):
-            columns.append([])
-            for j in range(0, per_column):
-                if i + j < len(tags):
-                    columns[-1].append(tags[i + j])
+    per_column = max(5, int(math.ceil(len(tag_list) / 5.)))
+    for i in range(0, len(tag_list), per_column):
+        columns.append([])
+        for j in range(0, per_column):
+            if i + j < len(tag_list):
+                tag = tag_list[i+j]
+                columns[-1].append(tag_list[i+j])
     nav_context = {
         'tag_columns': columns,
         'recent_titles': Document.objects.safe().filter(type='post')[:5],
         'recent_authors': Profile.objects.bloggers_with_posts().order_by('-latest_post')[:10],
         'recent_comments': Comment.objects.excluding_boilerplate().order_by('-modified')[:5],
+        'campaigns': Campaign.objects.filter(public=True),
+        'affiliations': Affiliation.objects.filter(public=True),
     }
     return nav_context
 
@@ -129,9 +156,19 @@ def posts_by_date(request, template="blogs/all_posts_list.html"):
     posts = Document.objects.safe_for_user(request.user).filter(
             type="post"
     )
+    transcribed = request.GET.get("transcribed")
+    if transcribed == "complete":
+        posts = posts.filter(transcription__complete=True)
+    elif transcribed == "partial":
+        posts = posts.filter(transcription__complete=False)
+    elif transcribed == "none":
+        posts = posts.filter(transcription__isnull=True)
+    else:
+        transcribed = None
     context = _paginate(request, posts)
     pnum = context['page'].number
     context.update(get_nav_context())
+    context['transcribed'] = transcribed
     context['related'] = {
             'items': DocumentPage.objects.filter(
                         order=0,
@@ -147,6 +184,54 @@ def posts_by_date(request, template="blogs/all_posts_list.html"):
                 )[pnum*10:pnum*10+7]
     }
     return render(request, template, context)
+
+def show_campaign(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(
+            in_reply_to=campaign.reply_code
+    )
+    context = _paginate(request, posts)
+    pnum = context['page'].number
+    context.update(get_nav_context())
+    context['campaign'] = campaign
+    context['related'] = {
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__status="published",
+                    document__in_reply_to=campaign.reply_code,
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__adult=False,
+            ).select_related(
+                'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
+    return render(request, "blogs/show_campaign.html", context)
+
+def show_affiliation(request, slug):
+    affiliation = get_object_or_404(Affiliation, slug=slug, public=True)
+    posts = Document.objects.safe_for_user(request.user).filter(affiliation=affiliation)
+    context = _paginate(request, posts)
+    pnum = context['page'].number
+    context.update(get_nav_context())
+    context['affiliation'] = affiliation
+    context['related'] = {
+        'items': DocumentPage.objects.filter(
+                    order=0,
+                    document__status="published",
+                    document__affiliation=affiliation,
+                    document__author__profile__consent_form_received=True,
+                    document__author__is_active=True,
+                    document__adult=False,
+            ).select_related(
+                'document'
+            ).order_by(
+                '-document__date_written'
+            )[pnum*10:pnum*10+7]
+    }
+    return render(request, "blogs/show_affiliation.html", context)
 
 def org_post_list(request, slug):
     """
@@ -186,7 +271,7 @@ def tagged_post_list(request, tag):
     context = _paginate(request, posts)
     pnum = context['page'].number
     if tag:
-        context['tag'] = Tag.objects.get(name=tag.lower())
+        context['tag'] = get_object_or_404(Tag, name=tag.lower())
         context['related'] = {
             'title': u"Other posts tagged with “%s”" % tag,
             'items': DocumentPage.objects.filter(
@@ -368,10 +453,29 @@ def save_tags(request, post_id):
 # Feeds
 #
 
+def _choose_feed(request, context):
+    if request.GET.get('full'):
+        return feeds.full_posts_feed(request, context)
+    return feeds.posts_feed(request, context)
+
 def all_posts_feed(request):
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Recent posts from all authors",
         'posts': Document.objects.safe().filter(type="post")
+    })
+
+def campaign_feed(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    return _choose_feed(request, {
+        'title': campaign.title,
+        'posts': Document.objects.safe().filter(in_reply_to_id=campaign.reply_code_id)
+    })
+
+def affiliation_feed(request, slug):
+    affiliation = get_object_or_404(Affiliation, slug=slug, public=True)
+    return _choose_feed(request, {
+        'title': affiliation.title,
+        'posts': Document.objects.safe().filter(affiliation=affiliation),
     })
 
 def org_post_feed(request, slug, filtered=True):
@@ -382,7 +486,7 @@ def org_post_feed(request, slug, filtered=True):
      ).distinct()
     if filtered:
         docs = docs.filter(adult=False)
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Recent posts from %s" % org.name,
         'posts': docs,
     })
@@ -397,9 +501,9 @@ def post_comments_feed(request, post_id):
     return feeds.post_comments_feed(request, document)
 
 def tagged_post_feed(request, tag):
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "%s posts" % escape(tag.capitalize()),
-        'posts': Document.objects.public().filter(tags__name=tag.lower())
+        'posts': Document.objects.public().filter(tags__name=tag.lower(), type='post')
     })
 def legacy_author_post_feed(request, author_id, slug):
     # We're stripping out author slugs from feed URLs, so feed readers don't
@@ -412,7 +516,7 @@ def author_post_feed(request, author_id):
     except IndexError:
         raise Http404
     posts = author.documents_authored.public().filter(type="post")
-    return feeds.posts_feed(request, {
+    return _choose_feed(request, {
         'title': "Posts by %s" % unicode(author.profile),
         'posts': posts,
     })
@@ -447,9 +551,12 @@ def edit_post(request, post_id=None):
     form = PostForm(request.POST or None, instance=post)
     if form.is_valid() and not post.scan_id:
         post = form.save()
-        tag_names = [t.lower().strip() for t in request.POST.getlist('tags')]
-        tag_objs = [Tag.objects.get_or_create(name=name)[0] for name in tag_names if name]
-        post.tags = set(tag_objs)
+
+        # Removing self-tagging for now -- it's getting abused.
+        #tag_names = [t.lower().strip() for t in request.POST.getlist('tags')]
+        #tag_objs = [Tag.objects.get_or_create(name=name)[0] for name in tag_names if name]
+        #post.tags = set(tag_objs)
+
         if post.status == "published":
             messages.info(request, "Post saved and published.")
             return redirect("blogs.post_show", post_id=post.pk, slug=post.get_slug())

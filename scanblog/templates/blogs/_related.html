@@ -1,3 +1,4 @@
+{% load url from future %}
 {% load thumbnail %}
 {% load public_url %}
 {% if related.items %}
@@ -11,10 +12,10 @@
             {% thumbnail page.image.path "100" as im %}
             <td>
                 <div class='date'>{{ page.document.date_written|date:"Y b j" }}</div>
-                <a href='{% url blogs.post_show page.document.pk page.document.get_slug %}'
-                ><img src='{{ im.url|public_url }}'
-                      width='{{ im.x }}'
-                      height='{{ im.y }}'
+                <a href='{% url "blogs.post_show" page.document.pk page.document.get_slug %}'
+                ><img src='{{ im.url|public_url }}' 
+                      width='{{ im.x }}' 
+                      height='{{ im.y }}' 
                       title='{{ page.document.get_title }}'
                       alt='{{ page.document.get_title }}' /></a>
             </td>

@@ -18,7 +18,6 @@ $(".blog-nav-bar a.toggle").on "click", ->
     openit = false
   else
     openit = true
-  console.log openit
   # close everything.
   $(".blog-nav-bar .toggle.open").removeClass("open")
   $(".blog-nav-bar .target.open").removeClass("open").show().slideToggle()
@@ -26,3 +25,93 @@ $(".blog-nav-bar a.toggle").on "click", ->
     $($(this).attr("data-target"), ".blog-nav-bar").hide().slideToggle().addClass("open")
     $(this).addClass("open")
   return false
+
+toggle_favorite = (event) ->
+  event.preventDefault()
+  $(event.currentTarget).addClass("loading")
+  url = $(event.currentTarget).attr("href")
+  params = url.split("?")[1]
+  data = {}
+  for arg in params.split("&")
+    kv = arg.split("=")
+    data[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1])
+  $.ajax {
+    url: url
+    type: 'POST'
+    data: data
+    success: (data) ->
+      replacement = $(data)
+      $(event.currentTarget).closest(".favorites-control").replaceWith(replacement)
+      add_favorite_triggers(replacement.parent())
+    error: ->
+      alert("Server error")
+  }
+
+get_favorites = (event) ->
+  event.preventDefault()
+  el = $(event.currentTarget)
+  popover = el.closest(".count").find(".favorites-popover")
+  if popover.is(":visible")
+    popover.hide()
+  else
+    popover.show()
+    popover.find(".close").on("click", -> popover.hide())
+    url = el.attr("href")
+    $.ajax {
+      url: url
+      type: 'GET'
+      success: (data) ->
+        content = popover.find(".content")
+        content.html(data)
+        # Doing it this way because of bugs with chrome refreshing auto.
+        if content.height() > 200
+          content.css({
+            "maxHeight": "200px",
+            "overflow": "auto"
+          })
+      error: ->
+        alert("Server error")
+    }
+
+add_favorite_triggers = (parent) ->
+  $(".favorites-control a.toggle", parent).on "click", toggle_favorite
+  $(".favorites-control a.get-favorites", parent).on "click", get_favorites
+add_favorite_triggers(document)
+
+# Clear popovers on click outside
+$(document).mouseup (event) ->
+  triggers = $(".popover-trigger")
+  if triggers.is(event.target)
+    return
+  popovers = $(".popover")
+  if popovers.has(event.target).length == 0
+    popovers.hide()
+
+# Site banner modal
+$("div.site-banner:first").each ->
+  el = $(this)
+  id = el.attr("data-id")
+  cookie_name = "btb_site_banner_#{id}"
+  if $.cookie(cookie_name)
+    return
+
+  el.show()
+
+  dismiss = (evt) ->
+    evt.preventDefault()
+    el.fadeOut()
+    $.cookie(cookie_name, 'true', {path: '/', expires: 365})
+
+  $(".underlay", el).bind("click", dismiss)
+  $(".close", el).bind("click", dismiss)
+
+# for debug
+window.reset_banners = ->
+  el = $("div.site-banner:first")
+  if el.length == 0
+    alert("No banner found!")
+  else
+    name = "btb_site_banner_#{el.attr("data-id")}"
+    $.removeCookie(name)
+    alert("cookie #{name} removed")
+

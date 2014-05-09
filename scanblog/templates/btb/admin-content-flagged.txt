@@ -5,9 +5,9 @@
 http://{{ site.domain }}{{ note.content_object.get_absolute_url }}
 
 {% trans "Edit flagging user" %}:
-http://{{ site.domain }}/admin/auth/user/{{ user.id }}/
+http://{{ site.domain }}/admin/auth/user/{{ note.creator.id }}/
 {% trans "Delete flagging user" %}:
-http://{{ site.domain }}/admin/auth/user/{{ user.id }}/delete/
+http://{{ site.domain }}/admin/auth/user/{{ note.creator.id }}/delete/
 
 {% trans "Note content" %}:
 ----

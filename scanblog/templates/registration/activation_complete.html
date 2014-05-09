@@ -1,11 +1,12 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block body %}
 <h1>%{ trans "Welcome!" %}</h1>
 <p>
 {% trans "Your registration is now complete." %}
-  {% trans "You may now" %} <a href='{% url auth_login %}'>{% trans "login" %}</a>.
+  {% trans "You may now" %} <a href='{% url "auth_login" %}'>{% trans "login" %}</a>.
 </p>
 
 {% endblock %}

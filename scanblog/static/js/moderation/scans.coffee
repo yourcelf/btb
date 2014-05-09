@@ -31,6 +31,7 @@ class btb.ProcessItemListView extends btb.PaginatedView
     itemTemplate: _.template($("#processItem").html())
     events:
         "click span.pagelink": "turnPage"
+        "change select.per-page": "setPerPage"
 
     defaultFilter: {}
 
@@ -74,11 +75,17 @@ class btb.ProcessItemListView extends btb.PaginatedView
         @list.filter.page = page
         @fetch()
 
+    setPerPage: (event) =>
+        event.preventDefault()
+        @list.filter.per_page = parseInt(@$(event.currentTarget).val())
+        @fetch()
+
 class btb.ProcessDocListView extends btb.ProcessItemListView
     defaultFilter:
         page: 1
         per_page: 6
         status: "unknown"
+        author__profile__managed: 1
 
     initialize: ->
         super listClass: btb.DocumentList
@@ -106,16 +113,23 @@ class btb.SplitScanView extends Backbone.View
     template: _.template $("#splitScan").html()
     lockTemplate: _.template $("#splitScanEditLockWarning").html()
 
-    minimumTypes: ["post", "profile", "photo", "request", "license"]
-    addableTypes: ["post", "profile", "photo", "request"]
+    minimumTypes: ["post", "profile", "request", "license"]
 
     typeColors:
         "post": ["#0f0", "#00f", "#0a0", "#00a"]
         "profile": ["#0ff"]
-        "photo": ["#f0f", "#a0a", "#606"]
+        #"photo": ["#f0f", "#a0a", "#606"]
         "request": ["#f00"]
         "license": ["#ff0"]
         "ignore": ["#000"]
+
+    # NOTE: These definitions are duplicated with event.keyCode below.  Here,
+    # they're used only to pick which letter to underline in the view. 
+    typeAccelerators:
+        "profile": "f"
+        "request": "r"
+        "license": "l"
+        "ignore": "i"
 
     events:
         'click .switch-to-edit-documents': 'switchToDocumentView'
@@ -124,16 +138,16 @@ class btb.SplitScanView extends Backbone.View
         'click .prev': 'prevPage'
         'click .pagestatus': 'jumpToPage'
         'click .add-post': 'addPostChoice'
-        'click .add-photo': 'addPhotoChoice'
+        #'click .add-photo': 'addPhotoChoice'
         'click .save': 'save'
         'click .page-size-chooser span': 'setPageSize'
         'keyup .choose-code input': 'chooseCode'
 
-    initialize: (scanId) ->
-        @split = new btb.ScanSplit {scan: id: parseInt(scanId)}
+    initialize: (options) ->
+        @split = new btb.ScanSplit {scan: id: parseInt(options.scanId)}
         @split.fetch
             success: @initSplit
-        $(window).keyup @keyUp
+        $(window).keydown @keyDown
         @imgScale = 1
         this
 
@@ -144,24 +158,42 @@ class btb.SplitScanView extends Backbone.View
         @checkFinished()
         @selectPage(0)
 
-    keyUp: (event) =>
+    keyDown: (event) =>
         # Don't capture events if we're in an input.
         if $("input:focus, textarea:focus").length > 0
             return
+        # Let meta-e and meta-s through; exclude other meta-modifier events.
+        if event.metaKey or event.ctrlKey or event.altKey
+          switch event.keyCode
+            when 83 # ctrl-s
+              event.preventDefault()
+              @save()
+            when 69 # ctrl-e
+              event.preventDefault()
+              @switchToDocumentView()
+          return
+        # Let shift-= ("+") through, exclude oher shift modifiers.
+        return if event.shiftKey and event.keyCode != 61
         switch event.keyCode
             when 32,78,39  then @nextPage(event) # spacebar, n, right
             when 8,80,37 then @prevPage(event) # backspace, p, left
             when 61,187 then @addPostChoice(event) # equals/plus
-            when 220 then @addPhotoChoice(event) # back slash
+            #when 220 then @addPhotoChoice(event) # back slash
             #when 13        then @save(event) # enter
             when 73, 192 then @ignoreView._toggleChoice(event) # i, backtick
-            else
-                if 48 <= event.keyCode <= 57 # 0 to 9
-                    index = (event.keyCode - 48) - 1
-                    if index == -1
-                        index = 9
-                    if index < @choiceViews.length
-                        @choiceViews[index]._toggleChoice(event)
+            when 79 then @addPostChoice(event) # o -> add pOst
+            when 70 # f -> first proFile
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "profile")?._toggleChoice(event)
+            when 76 # l -> license
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "license")?._toggleChoice(event)
+            when 82 # r -> request
+                _.find(@choiceViews, (c) -> c.choice.get("type") == "request")?._toggleChoice(event)
+            when 48,49,50,51,52,53,54,55,56,57 # 0 to 9
+                index = (event.keyCode - 48) - 1
+                if index == -1
+                    index = 9
+                if index < @choiceViews.length
+                    @choiceViews[index]._toggleChoice(event)
 
     loadSplit: (split) =>
         @split = split
@@ -174,7 +206,12 @@ class btb.SplitScanView extends Backbone.View
                 @addChoice(new btb.Document type: type)
         
         # Add "ignored" choices if we have them.
-        @ignoreChoice = new btb.Document pages: [], choiceTitle: "ignore"
+        @ignoreChoice = new btb.Document({
+            pages: [],
+            choiceTitle: "ignore".replace(
+              new RegExp("(#{@typeAccelerators.ignore})"), "<u>$1</u>"
+            )
+        })
         if @split.get("scan").processing_complete
             @ignoreChoice.set(pages: @getUnassignedIds())
 
@@ -218,9 +255,20 @@ class btb.SplitScanView extends Backbone.View
         @typeCount[type] = (@typeCount[type] or 0) + 1
         title = type
         if @typeCount[type] > 1
-            title += " "  + @typeCount[type]
+            for i in [@choices.length-1..0]
+                choice = @choices[i]
+                if choice.get("type") == type
+                    pos = i + 1
+                    @choices.splice(pos, 0, doc)
+                    break
+            title = "#{title} #{@typeCount[type]} (<u>#{pos + 1}</u>)"
+        else
+            if type == "post"
+              title = title + " (<u>1</u>)"
+            else
+              title = title.replace(new RegExp("(#{@typeAccelerators[type]})"), "<u>$1</u>")
+            @choices.push doc
         doc.set choiceTitle: title
-        @choices.push doc
 
     userAddChoice: (type) =>
         doc = new btb.Document type: type
@@ -233,7 +281,7 @@ class btb.SplitScanView extends Backbone.View
             @selectPage(@currentPageIndex)
 
     addPostChoice: (event) => @userAddChoice("post")
-    addPhotoChoice: (event) => @userAddChoice("photo")
+    #addPhotoChoice: (event) => @userAddChoice("photo")
 
     removeChoice: (type) =>
         alert("TODO")
@@ -320,7 +368,7 @@ class btb.SplitScanView extends Backbone.View
                 user = new btb.User scan.author
             else
                 user = null
-            @userToggle = new btb.InPlaceUserChooser(user)
+            @userToggle = new btb.InPlaceUserChooser({user, showState: true})
             @userToggle.bind "chosen", (user) =>
                 @chooseUser(user)
                 @setDirty(true)
@@ -374,6 +422,8 @@ class btb.SplitScanView extends Backbone.View
             })
         $(".page-image img").load =>
             @setPageScale parseFloat $.cookie("scanpagesize") or 1
+        unless @$(".choose-code input").val() or @split.get("scan").author
+            @$(".choose-code input").focus()
         this
 
     chooseCode: (event) =>

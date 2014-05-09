@@ -8,13 +8,20 @@ class btb.PendingScanList extends btb.FilteredPaginatedCollection
     model: btb.PendingScan
     baseUrl: "/scanning/pendingscans.json"
     comparator: (ps) ->
-        return -( new Date(ps.get "created").getTime() )
+        # Hack: if we don't have a date, assume we were just created, and use
+        # 'now'.
+        if ps.get("created")
+            date = btb.strToDate(ps.get "created")
+        else
+            date = new Date()
+        return -(date.getTime())
 
 class btb.PendingScans extends btb.PaginatedView
     template: _.template $("#pendingScanList").html()
     itemTemplate: _.template $("#pendingScanItem").html()
     events:
         'click span.pagelink': 'turnPage'
+        'change select.per-page': 'setPerPage'
         'click input.pending-scan-missing': 'pendingScanMissing'
         'click .remove-pending-scan': 'removePendingScan'
         'click .show-missing': 'showMissing'
@@ -28,7 +35,7 @@ class btb.PendingScans extends btb.PaginatedView
     render: =>
         $(@el).html @template
             orgs: btb.ORGANIZATIONS
-        userChooser = new btb.UserSearch
+        userChooser = new btb.UserSearch(filter: {in_org: 1})
         userChooser.bind "chosen", (user) => @addPendingScan(user)
         $(".user-chooser-holder", @el).html userChooser.render().el
         @renderItems()
@@ -59,7 +66,10 @@ class btb.PendingScans extends btb.PaginatedView
             author_id: user.get "id"
             org_id: $("[name=org_id]", @el).val()
         }, {
-            success: (model) => @render()
+            success: (model) =>
+              @render()
+              @$("tr.item:first").effect("highlight", 5000)
+              @$(".user-chooser-trigger").select()
         }
         
 
@@ -83,6 +93,12 @@ class btb.PendingScans extends btb.PaginatedView
 
     turnPage: (event) =>
         @pendingScanList.filter.page = @newPageFromEvent event
+        @setPageLoading()
+        @fetchItems()
+
+    setPerPage: (event) =>
+        event.preventDefault()
+        @pendingScanList.filter.per_page = parseInt(@$(event.currentTarget).val())
         @setPageLoading()
         @fetchItems()
 

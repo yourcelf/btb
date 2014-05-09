@@ -1,5 +1,6 @@
 {% extends "profiles/base.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{% trans "Add subscription" %}{% endblock %}
 
@@ -11,8 +12,10 @@
 {% if author %}{% trans "posts by" %} {{ author.profile }}?{% endif %}
 {% if document %}{% trans "comments on" %} &ldquo;{{ document.get_title }}&rdquo; {% trans "by" %} {{ document.author.profile }}?{% endif %}
 {% if org %}{% trans "posts from" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em> {% trans "authors" %}{% endif %}
+{% if campaign %}posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?{% endif %}
+{% if affiliation %}posts in the group &ldquo;{{ affiliation.title }}&rdquo;?{% endif %}
 <form method='post' action=''>{% csrf_token %}<input type='submit' value='{% trans "Sign me up!" %}' /></form>
-<a href='{% url subscriptions.settings %}'>{% trans "Subscription settings" %}</a>
+<a href='{% url "subscriptions.settings" %}'>{% trans "Subscription settings" %}</a>
 </p>
 {% if not user.email %}
 <p>

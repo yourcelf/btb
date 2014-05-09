@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.views.static import serve
@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     # Moderator
     url(r'^annotations/', include('annotations.urls')),
+    url(r'^campaigns/', include('campaigns.urls')),
     url(r'^correspondence/', include('correspondence.urls')),
     url(r'^moderation/', include('moderation.urls')),
     url(r'^scanning/', include('scanning.urls')),
@@ -22,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^people/', include('profiles.urls')),
     url(r'^about/', include('about.urls')),
     url(r'^comments/', include('comments.urls')),
+    url(r'^pages/', include('django.contrib.flatpages.urls')),
     url(r'^r/', include('urlcrypt.urls')),
     url(r'^$',  'btb.views.home', name='home'),
     url(r'', include('blogs.urls')),

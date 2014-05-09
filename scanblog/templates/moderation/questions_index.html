@@ -1,0 +1,11 @@
+{% extends "moderation/base.html" %}
+{% block title %}Question stats{% endblock %}
+{% block body %}
+<h1>Database Questions</h1>
+
+<ul>
+{% for key, question in questions %}
+  <li><a href='?q={{ key }}'>{{ question }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

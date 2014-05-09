@@ -10,9 +10,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from notification.models import Notice, NoticeType, NoticeSetting, NOTICE_MEDIA, get_notification_setting
 from subscriptions.models import Subscription
+from subscriptions.forms import MailingListInterestForm
 from scanning.models import Document
 from annotations.models import Tag
-from profiles.models import Organization
+from profiles.models import Organization, Affiliation
+from campaigns.models import Campaign
 
 @login_required
 def subscribe_to_org(request, org_id):
@@ -25,6 +27,32 @@ def subscribe_to_org(request, org_id):
         return redirect("subscriptions.settings")
     return render(request, "subscriptions/subscribe_to.html", {
         'org': org,
+    })
+
+@login_required
+def subscribe_to_campaign(request, slug):
+    campaign = get_object_or_404(Campaign, slug=slug, public=True)
+    if request.method == "POST":
+        sub, created = Subscription.objects.get_or_create(
+                subscriber=request.user,
+                campaign=campaign,
+        )
+        return redirect("subscriptions.settings")
+    return render(request, "subscriptions/subscribe_to.html", {
+        'campaign': campaign,
+    })
+
+@login_required
+def subscribe_to_affiliation(request, affiliation_id):
+    affiliation = get_object_or_404(Affiliation, pk=affiliation_id, public=True)
+    if request.method == "POST":
+        sub, created = Subscription.objects.get_or_create(
+                subscriber=request.user,
+                affiliation=affiliation,
+        )
+        return redirect("subscriptions.settings")
+    return render(request, "subscriptions/subscribe_to.html", {
+        'affiliation': affiliation,
     })
 
 @login_required
@@ -184,3 +212,14 @@ def ajax_delete_all_notices(request):
         raise Http404
     Notice.objects.filter(recipient=request.user).delete()
     return HttpResponse("success")
+
+def mailing_list_interest(request):
+    if request.GET.get("thanks"):
+        return render(request, "subscriptions/mailing_list_thanks.html")
+    form = MailingListInterestForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect(request.path + "?thanks=1")
+    return render(request, "subscriptions/mailing_list_interest.html", {
+        'form': form
+    })

@@ -41,7 +41,17 @@
             <% } %>
             <%= note.text %>
             <% if (note.object) { %>
-                <a class='note-obj-link' href='<%= note.object.edit_url %>'><%= note.object_type %></a>
+                <a class='note-obj-link' href='<%= note.object.edit_url %>'>
+                  <% if (note.object_type == 'document') { %>
+                    <%= note.object.title || note.object.type %> (<%= btb.formatDate(note.object.date_written) %>)
+                  <% } else { %>
+                    <%= note.object_type %>
+                  <% } %>
+                </a>
+
+            <% } %>
+            <% if (note.document_author) { %>
+                by <a href='<%= note.document_author.edit_url %>'><%= note.document_author.display_name %></a>
             <% } %>
         </div>
         <div class='byline'>

@@ -10,9 +10,25 @@ from btb.utils import date_to_string, OrgQuerySet, OrgManager
 
 from correspondence.generate import generate_file, generate_colation
 
+class StockResponse(models.Model):
+    name = models.CharField(max_length=255)
+    body = models.TextField()
+
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name, 'body': self.body}
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-modified']
+        get_latest_by = 'modified'
+
 class LetterManager(OrgManager):
     def unsent(self):
-        return self.filter(sent__isnull=True)
+        return self.filter(sent__isnull=True, recipient__profile__lost_contact=False)
 
     def sent(self):
         return self.filter(sent__isnull=False)
@@ -24,7 +40,9 @@ class Letter(models.Model):
             "first_post", 
             "printout",
             "comments", 
-            "waitlist")
+            "waitlist",
+            "returned_original",
+            "refused_original")
     sender = models.ForeignKey(User, related_name="authored_letters", blank=True)
 
     recipient = models.ForeignKey(User, blank=True, null=True, 
@@ -92,7 +110,7 @@ class Letter(models.Model):
         return {
             'id': self.pk,
             'org_id': self.org_id,
-            'org': self.org.to_dict() if self.org else None,
+            'org': self.org.light_dict() if self.org else None,
             'sender': self.sender.profile.to_dict(),
             'recipient': self.recipient.profile.to_dict() if self.recipient else None,
             'recipient_address': self.recipient_address,

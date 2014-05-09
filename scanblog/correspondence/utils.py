@@ -271,6 +271,62 @@ class TextImage(object):
         response['Content-Disposition'] = 'attachment; filename=%s' % attachment_name
         self.im.save(response, "jpeg")
         return response
+
+class MailingLabelSheet(TextImage):
+    """
+    Produce a mailing label sheet with up to 30 given addresses.
+    """
+    label_height = 1.
+    label_width = 2. + 5./8
+    column_offsets = (
+        (5./32, 0.5),
+        (2. + 15/16., 0.5),
+        (5. + 23/32., 0.5),
+    )
+
+    def __init__(self):
+        super(MailingLabelSheet, self).__init__(8.5, 11, 0)
+
+    def get_dims(self, row, col):
+        x1 = self.column_offsets[col][0]
+        y1 = self.column_offsets[col][1] + row * self.label_height 
+        x2 = self.column_offsets[col][0] + self.label_width
+        y2 = self.column_offsets[col][1] + (row + 1) * self.label_height
+        x1 *= self.density
+        y1 *= self.density
+        x2 *= self.density
+        y2 *= self.density
+        return ((x1, y1), (x2, y2))
+
+    def draw(self, addresses):
+        #self.draw_bounds()
+        for i,address in enumerate(addresses):
+            col = int(i / 10)
+            row = i % 10
+            m = 0.125 * self.density
+            dims = self.get_dims(row, col)
+            dims = ((dims[0][0] + m, dims[0][1] + m), (dims[1][0] + m, dims[1][1] + m))
+            lines = address.split("\n")
+            if len(lines) > 5:
+                lines = [lines[0] + " " + lines[1]] + lines[2:]
+                address = "\n".join(lines)
+                font_size = 40
+            if len(lines) > 4:
+                font_size = 40
+            else:
+                font_size = 46
+            self.draw_wrapped_text(address, dims, font_size=font_size, par_height=0)
+
+    def draw_bounds(self):
+        for row in range(10):
+            for col in range(3):
+                ((x1, y1), (x2, y2)) = self.get_dims(row, col)
+                print col, row, ((x1, y1, x2, y2))
+                draw = ImageDraw.Draw(self.im)
+                draw.line([(x1, y1), (x1, y2)], fill=(0,0,0), width=1)
+                draw.line([(x1, y1), (x2, y1)], fill=(0,0,0), width=1)
+                draw.line([(x2, y1), (x2, y2)], fill=(0,0,0), width=1)
+                draw.line([(x1, y2), (x2, y2)], fill=(0,0,0), width=1)
         
 class Envelope(TextImage):
     def __init__(self, width=9.5, height=4.125, margin=0.5, 

@@ -1,4 +1,5 @@
 {% extends "blogs/base.html" %}
+{% load url from future %}
 {% load humanize %}
 
 {% block title %}
@@ -60,22 +61,25 @@
 {% if post.pk %}
     <br />
     <br />
-    <a href='{% url blogs.delete_post post.pk %}' class='delete-post-button'>
+    <a href='{% url "blogs.delete_post" post.pk %}' class='delete-post-button'>
       {% trans "Delete post" %}
     </a>
 {% endif %}
 {% endblock %}
 
+{# Removing self-tagging for now -- it's getting abused #}
+{% comment %}
 {% block scripts %}
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-ui.min.js'></script>
     <script type='text/javascript' src='{{STATIC_URL}}js/vendor/jquery-tagit/js/tagit.js'></script>
     <script type='text/javascript'>
-	$(".edit-post ul.tags").tagit({
-	    tagSource: "{% url blogs.post_tag_list %}",
-	    triggerKeys: ['enter', 'comma', 'tab', ';'],
-	    allowNewTags: true,
-	    select: true,
-	    name: 'tags'
-	});
+        $(".edit-post ul.tags").tagit({
+            tagSource: "{% url "blogs.post_tag_list" %}",
+            triggerKeys: ['enter', 'comma', 'tab', ';'],
+            allowNewTags: true,
+            select: true,
+            name: 'tags'
+        });
     </script>
 {% endblock %}
+{% endcomment %}

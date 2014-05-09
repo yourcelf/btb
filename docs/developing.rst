@@ -3,12 +3,22 @@
 Developing
 ==========
 
-Running the development server and autocompilation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running the development server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-BtB includes a wrapper for the Django development server that autocompiles coffeescript and SASS, and also runs celery for pdf processing::
+Run the development server in the standard way::
 
-    ./fromage.py
+    python manage.py runserver
+
+To process scans, you'll need to also run the celery deamon::
+
+    python manage.py celeryd
+
+.. note::
+
+    Previous versions of Between the Bars used a custom wrapper for `runserver`
+    which performed compilation of assets.  This is now handled automatically
+    by django_compressor.
 
 Installing test data
 ~~~~~~~~~~~~~~~~~~~~
@@ -22,33 +32,28 @@ The data is described in a YAML file located in ``scanblog/media/test/test_data.
 Running tests
 ~~~~~~~~~~~~~
 
-Tests for Between the Bars are written in two places: as unittests included in the app directories in standard Django style, and as integration tests implemented with `lettuce <http://lettuce.it/>`_ and `selenium <http://seleniumhq.org/>`_.
+Between the Bars includes unit tests and integration tests.  Run unit tests with::
 
-To run just unittests::
+    python manage.py test
 
-    python manage.py test <appname1> <appname2> ...
+Integration tests run with ``selenium webdriver``, which runs a real, scripted
+webbrowser to test the full stack of frontend and backend functionality.  Due
+to the heavy weight of launching and testing with a full browser, these tests
+are excluded from the default testrunner, and must be run explicitly::
 
-To run integration tests (note that this modifies the current database; don't run it on production)::
-
-    python manage.py harvest 
-
-See the `lettuce documentation <http://lettuce.it/>`_ for more on harvest.
+    python manage.py test btb
 
 .. note::
 
-    Between the Bars uses `celery <http://celeryproject.org/>`_ for asynchronous processing of PDFs.  In order
-    to run tests, you need to have celery running.  You can do this by either
-    running::
+    Some combinations of different selenium webdriver and firefox versions have
+    difficulty with native operations (such as mouse drags) or file uploads.
+    We've found Selenium 2.20 and Firefox 10.0 to be a winning combination.
+    Download an `old firefox binary here <https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/>`_,
+    and specify the path to this binary in ``settings.SELENIUM_FIREFOX_BIN``, e.g.::
 
-        ./fromage.py
+        SELENIUM_FIREFOX_BIN = "/path/to/firefox_10/firefox
 
-    or by starting celery manually with::
+.. note::
 
-        python manage.py celeryd
-
-    In production, celery is usually managed by something like supervisord.
-
-To run both types of test, for every app for which BtB has tests::
-
-    ./fromage.py test
-
+    Previous versions of Between the Bars used `lettuce` for tests. This has
+    been removed in favor of the standard Django test framework.

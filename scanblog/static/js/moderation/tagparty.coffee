@@ -15,7 +15,6 @@ class btb.TagForm extends Backbone.View
   initialize: (options) ->
     @possible = new btb.TagList()
     @possible.reset options.tags
-    console.log @possible
     @chosen = []
     @fetchDocument()
 

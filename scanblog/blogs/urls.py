@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 post_id = "(?P<post_id>\d+)"
 author_id = "(?P<author_id>\d+)"
@@ -40,4 +40,12 @@ urlpatterns = patterns('blogs.views',
     url(r'^posts/manage$', 'manage_posts', name='blogs.manage_posts'),
     url(r'^posts/edit/{0}?$'.format(post_id), 'edit_post', name='blogs.edit_post'),
     url(r'^posts/delete/{0}?$'.format(post_id), 'delete_post', name='blogs.delete_post'),
+
+    # Campaigns
+    url(r'^campaigns/(?P<slug>[-\w]+)/feed/$', 'campaign_feed', name='blogs.campaign_feed'),
+    url(r'^campaigns/(?P<slug>[-\w]+)/$', 'show_campaign', name='blogs.show_campaign'),
+
+    # Affiliations
+    url(r'^group/(?P<slug>[-\w]+)/feed/$', 'affiliation_feed', name='blogs.affiliation_feed'),
+    url(r'^group/(?P<slug>[-\w]+)/$', 'show_affiliation', name='blogs.show_affiliation'),
 )

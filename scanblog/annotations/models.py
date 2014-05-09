@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from btb.utils import date_to_string, OrgQuerySet, OrgManager
 
@@ -69,11 +70,17 @@ class Note(models.Model):
 
     def to_dict(self):
         obj = self.content_object()
+        if obj._meta.object_name.lower() == "document" and obj.author:
+            author = obj.author.profile.to_dict()
+        else:
+            author = None
         props = {
                 'id': self.pk,
                 'user_id': self.user_id,
                 'scan_id': self.scan_id,
+                'document_author': author,
                 'document_id': self.document_id,
+                'comment_id': self.comment_id,
                 'resolved': date_to_string(self.resolved),
                 'important': self.important,
                 'text': self.text,
@@ -102,11 +109,50 @@ class Note(models.Model):
     class Meta:
         ordering = ['-important', '-created']
 
+def handle_flag_spam(user, flag_reason):
+    """
+    Determine if this flag looks like spam, and disable the user account if it
+    does.
+
+    Returns True if the flag is to be regarded as spam, False otherwise.
+    """
+    # Simple dumb check -- just check against a blacklist of flags. We can get
+    # fancier if the flag spammers do.
+    spam = False
+    if flag_reason in set([
+                "Tips to save wedding dresses",
+                "Help me choose my dress!!",
+            ]):
+        spam = True
+        recent_flags = []
+    else:
+        recent_flags = list(Note.objects.filter(
+            creator=user,
+            text__icontains="FLAG",
+            created__gte=datetime.datetime.now() - datetime.timedelta(seconds=60)
+        ))
+        spam = len(recent_flags) > 2
+    if spam:
+        for note in recent_flags:
+            note.delete()
+        user.is_active = False
+        user.save()
+        user.notes.create(creator=user,
+                text="User auto-banned for flag spam",
+                resolved=datetime.datetime.now(),
+                important=True)
+        return True
+    return False
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True, db_index=True)
 
     post_count = models.IntegerField(default=0, 
         help_text="Denormalized count of posts with this tag.")
+
+    def get_absolute_url(self):
+        return reverse("blogs.tagged_posts", args=[self.name])
 
     def __unicode__(self):
         return self.name
@@ -120,8 +166,10 @@ class ReplyCode(models.Model):
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
-        orgs = ["document__author__organization"]
-
+        orgs = [
+            "document__author__organization",
+            "campaign__organizations",
+        ]
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -141,10 +189,15 @@ class ReplyCode(models.Model):
         }
 
     def doc_dict(self):
+        document = None
+        campaign = None
         try:
             document = self.document
         except ObjectDoesNotExist:
-            document = None
+            try:
+                campaign = self.campaign
+            except ObjectDoesNotExist:
+                pass
         finally:
             if document:
                 dd = {
@@ -159,10 +212,22 @@ class ReplyCode(models.Model):
                 }
             else:
                 dd = None
+            if campaign:
+                cc = {
+                    'id': campaign.pk,
+                    'title': unicode(campaign.title),
+                    'public': campaign.public,
+                    'created': campaign.created.isoformat(),
+                    'ended': campaign.ended.isoformat() if campaign.ended else None,
+                    'url': campaign.get_absolute_url(),
+                }
+            else:
+                cc = None
         return {
             'id': self.pk,
             'code': self.code,
             'document': dd,
+            'campaign': cc,
         }
 
     def __unicode__(self):

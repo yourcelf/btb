@@ -7,33 +7,36 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 
-from btb.utils import args_method_decorator, JSONView, date_to_string
+from btb.utils import JSONView, date_to_string, permission_required_or_deny
 from annotations.models import Note, ReplyCode
 from scanning.models import Document, Scan
 from profiles.models import Profile
+from comments.models import Comment
 
 class ReplyCodes(JSONView):
-    @args_method_decorator(permission_required, "scanning.change_document")
+    @permission_required_or_deny("scanning.change_document")
     def get(self, request):
         codes = ReplyCode.objects.all()
         if "code" in request.GET:
-            codes = codes.filter(code=request.GET['code'])
+            codes = codes.filter(code__iexact=request.GET['code'])
         else:
             raise Http404
         if "document" in request.GET:
             dict_method = "doc_dict"
-            codes = codes.org_filter(request.user).exclude(document__isnull=True)
+            codes = codes.org_filter(request.user).exclude(
+                document__isnull=True, campaign__isnull=True
+            )
         else:
             dict_method = "to_dict"
         return self.paginated_response(request, codes, dict_method=dict_method)
 
 class Notes(JSONView):
     attr_whitelist = ('id', 'user_id', 'document_id', 'scan_id',
-        'created', 'modified', 'resolved', 'important', 'text')
+        'comment_id', 'created', 'modified', 'resolved', 'important', 'text')
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         #TODO: Remove these in client.
-        for key in ('object', 'object_type', 'creator'):
+        for key in ('object', 'object_type', 'creator', 'document_author'):
             kw.pop(key, None)
         self.whitelist_attrs(kw)
 
@@ -62,6 +65,13 @@ class Notes(JSONView):
                 ).get()
             except Scan.DoesNotExist:
                 raise Http404
+        elif kw.get('comment_id', None):
+            try:
+                rel_obj = Comment.objects.org_filter(
+                        request.user, pk=kw.pop('comment_id')
+                ).get()
+            except Comment.DoesNotExist:
+                raise Http404
         else:
             rel_obj = None
 
@@ -78,7 +88,7 @@ class Notes(JSONView):
                 kw[date_field] = kw[date_field].replace('T', ' ')
         return kw, rel_obj
         
-    @args_method_decorator(permission_required, "annotations.change_note")
+    @permission_required_or_deny("annotations.change_note")
     def get(self, request, note_id=None):
         """
         Filter notes to return.  If note_id is given, returns just the Note
@@ -109,6 +119,9 @@ class Notes(JSONView):
         elif 'scan_id' in request.GET:
             scan = get_object_or_404(Scan, pk=request.GET.get("scan_id"))
             notes = scan.notes.org_filter(request.user).by_resolution()
+        elif 'comment_id' in request.GET:
+            comment = get_object_or_404(Comment, pk=request.GET.get("comment_id"))
+            notes = comment.notes.org_filter(request.user).by_resolution()
         else:
             # All of the above.
             notes = Note.objects.org_filter(request.user).by_resolution()
@@ -123,7 +136,7 @@ class Notes(JSONView):
             notes = notes.order_by(*request.GET['sort'].split(","))
         return self.paginated_response(request, notes)
 
-    @args_method_decorator(permission_required, "annotations.add_note")
+    @permission_required_or_deny("annotations.add_note")
     def post(self, request, note_id=None):
         # Clean params verifies org membership.
         kw, rel_obj = self.clean_params(request)
@@ -133,7 +146,7 @@ class Notes(JSONView):
             return self.json_response(note.to_dict())
         raise Http404
 
-    @args_method_decorator(permission_required, "annotations.change_note")
+    @permission_required_or_deny("annotations.change_note")
     def put(self, request, note_id=None):
         note = get_object_or_404(Note, pk=note_id)
         # Clean params verifies org membership.
@@ -147,7 +160,7 @@ class Notes(JSONView):
         return self.json_response(note.to_dict())
 
 
-    @args_method_decorator(permission_required, "annotations.delete_note")
+    @permission_required_or_deny("annotations.delete_note")
     def delete(self, request, note_id=None):
         try:
             note = Note.objects.org_filter(request.user, pk=note_id).get()

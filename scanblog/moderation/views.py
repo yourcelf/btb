@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import json
+import re
+from collections import defaultdict
+from difflib import SequenceMatcher
+from datetime import datetime, timedelta
+#from moderation.diff_match_patch import *
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required, login_required
@@ -6,8 +13,10 @@ from django.core import paginator
 from django.db.models import Count
 from django.http import Http404
 from djcelery.models import TaskMeta
+from localflavor.us.us_states import STATES_NORMALIZED
 
-from scanning.models import Document, Scan, DocumentPage, EditLock
+from scanning.models import Document, Scan, DocumentPage, EditLock, \
+        TranscriptionRevision
 from scanning import tasks as scanning_tasks
 from profiles.models import Profile, Organization
 from annotations.models import Tag
@@ -25,7 +34,7 @@ def home(request):
     return render(request, "moderation/home.html", {
         'document_states': Document.STATES,
         'organizations_json': json.dumps(
-            [o.to_dict() for o in orgs]
+            [o.light_dict() for o in orgs]
         )
     })
 
@@ -204,7 +213,11 @@ def stats(request):
                 Profile.objects.active().annotate(
                     count=Count('user__received_letters')
                 ).filter(count__gt=0).values('count', 'display_name')
-            )
+            ),
+            'totals': {
+                'sent': Letter.objects.filter(sent__isnull=False).count(),
+                'received': Scan.objects.count(),
+            },
         },
         'comments': {
             'total': Comment.objects.public().count(),
@@ -225,6 +238,426 @@ def stats(request):
     return render(request, "moderation/stats.html", {
         'stats': json.dumps(stats, default=dthandler)
     })
+
+#XXX better permission needed here
+@permission_required("correspondence.manage_correspondence")
+def questions(request):
+    q = request.GET.get('q', None)
+    questions =  {
+        'comment_gap': "How long after a post is published do comments keep coming in?",
+        'writers_by_recency_with_volume': "List of writers by how recently they posted, with number of posts in the last 6 months.",
+        'writers_by_recency': "List of writers by how recently they posted.",
+        'writers_by_volume': "List of writers by number of posts.",
+        'letter_post_ratio': "Ratio of posts published to letters sent for each writer.",
+        'comments_to_posts': "Ratio of comments received to posts published for each writer.",
+        'states': "How many writers in which states?",
+        'transcribers': "Who does transcriptions? (SLOW)",
+#        'transcribed': "What gets transcribed?",
+        'inactive_commenters': "Inactive/shell commenter accounts, with no comments, transcriptions, subscriptions, or anything?",
+        'disabled_commenters': "Disabled commenter accounts.",
+        'pages_and_comments_per_author': "What is the total published page count, and total number of comments, for each author?",
+        'poets': u"Who writes posts tagged with “poetry\"?",
+    }
+
+    author_link = lambda p: "<a href='%s'>%s</a>" % (p.get_edit_url(), p)
+
+
+    if not q:
+        return render(request, "moderation/questions_index.html", {
+            'questions': sorted(questions.items())
+        })
+    elif q == "comment_gap":
+        counter = defaultdict(int)
+        for comment in Comment.objects.public().filter(comment_doc__isnull=True):
+            gap = (comment.created - comment.document.date_written).days
+            counter[gap] += 1
+        header_row = [
+            "Days", "Count", "Total percentage so far"
+        ]
+        rows = []
+        accum = 0
+        total = sum(counter.values())
+        for days, count in sorted(counter.items()):
+            accum += count
+            rows.append((days, count, "%2.2f" % (100. * accum / total)))
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': header_row,
+            'rows': rows,
+        })
+
+    elif q == "writers_by_recency":
+        date_profile = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            try:
+                latest = profile.user.documents_authored.filter(status='published').order_by('-date_written')[0]
+            except IndexError:
+                continue
+            date_profile.append((
+                latest.date_written.strftime("%Y-%m-%d"),
+                author_link(profile),
+            ))
+        date_profile.sort()
+        date_profile.reverse()
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ["", "Date", "Author"],
+            'rows': [(i + 1, d, p) for i,(d,p) in enumerate(date_profile)]
+        })
+    elif q == "writers_by_recency_with_volume":
+        date_profile = []
+        cutoff = datetime.now() - timedelta(days=180)
+        for profile in Profile.objects.enrolled().select_related('user'):
+            docs = profile.user.documents_authored.filter(status='published')
+            try:
+                latest = docs.order_by('-date_written')[0]
+            except IndexError:
+                continue
+            date_profile.append((
+                latest.date_written.strftime("%Y-%m-%d"),
+                author_link(profile),
+                docs.filter(date_written__gte=cutoff).count()
+            ))
+        date_profile.sort()
+        date_profile.reverse()
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ["", "Date", "Author", "Post count"],
+            'rows': [(i + 1, d, p, c) for i,(d,p, c) in enumerate(date_profile)]
+        })
+    elif q == "writers_by_volume":
+        volume_profile = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            volume_profile.append((
+                profile.user.documents_authored.filter(status='published').count(),
+                author_link(profile),
+            ))
+        volume_profile.sort()
+        volume_profile.reverse()
+        total = sum(v for v,p in volume_profile)
+        rows = [(v, "%2.2f" % (100. * v / total), p) for v,p in volume_profile]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Number of posts", 
+                "Percentage of all posts",
+                "Author",
+            ],
+            'rows': rows,
+        })
+    elif q == "letter_post_ratio":
+        posts_vs_letters_profile = []
+        for profile in Profile.objects.filter(blogger=True).select_related('user'):
+            posts = profile.user.documents_authored.filter(status='published').count()
+            letters = profile.user.received_letters.filter(sent__isnull=False).count()
+            if letters == 0:
+                ratio = 0
+            else:
+                ratio = float(posts) / letters
+            posts_vs_letters_profile.append((
+                ratio, posts, letters, profile
+            ))
+        posts_vs_letters_profile.sort()
+        posts_vs_letters_profile.reverse()
+        rows = [("%.4f" % r, p, l, author_link(a)) for r,p,l,a in posts_vs_letters_profile]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Ratio of posts to letters",
+                "Total posts",
+                "Total letters",
+                "Author"
+            ],
+            'rows': rows,
+        })
+    elif q == "comments_to_posts":
+        comments_to_posts = []
+        for profile in Profile.objects.enrolled().select_related('user'):
+            comments = Comment.objects.public().filter(
+                    comment_doc__isnull=True,
+                    document__author=profile.user).count()
+            posts = profile.user.documents_authored.filter(status='published').count()
+            if posts == 0:
+                ratio = 0
+            else:
+                ratio = comments / float(posts)
+            comments_to_posts.append((ratio, comments, posts, profile))
+        rows = [
+            ("%.4f" % r, c, p, author_link(a)) for r,c,p,a in reversed(sorted(comments_to_posts))
+        ]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                "Ratio of comments to posts",
+                "Total comments",
+                "Total posts",
+                "Author"
+            ],
+            'rows': rows,
+        })
+    elif q == "states":
+        states = defaultdict(list)
+        unknown_count = 0
+        for profile in Profile.objects.enrolled():
+            parts = re.split("[^a-zA-Z0-9\.]", profile.mailing_address)
+            for word in parts[::-1]:
+                if word.lower() in STATES_NORMALIZED:
+                    state = STATES_NORMALIZED[word.lower()]
+                    break
+            else:
+                unknown_count += 1
+                state = "Unknown %s" % unknown_count
+            states[state].append(profile)
+        items = [(len(v), k, sorted(v, key=lambda p: p.user.date_joined)) for k,v in states.items()]
+        items.sort()
+        items.reverse()
+        rows = [
+            (s, c, ", ".join(author_link(p) for p in ps)) for c, s, ps in items
+        ]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                'State', 'Count', 'Authors'
+            ],
+            'rows': rows,
+        })
+    elif q == "transcribers":
+        import locale
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        transcribers = defaultdict(lambda: {
+            'posts': set(),
+            'additions': 0,
+            'deletions': 0,
+        })
+        prev = None
+        for rev in TranscriptionRevision.objects.select_related(
+                    'transcription', 'editor'
+                ).order_by('transcription__document', 'revision'):
+            if prev and rev.transcription.document_id != prev.transcription.document_id:
+                prev = None
+            ed = transcribers[rev.editor.username]
+            ed['posts'].add(rev.transcription.document_id)
+            if not prev:
+                ed['additions'] += len(rev.body)
+            else:
+                additions, deletions = _sequence_matcher_count_additions_deletions(
+                    rev.body, prev.body
+                )
+                ed['additions'] += additions
+                ed['deletions'] += deletions
+            prev = rev
+        rows = [(
+                u, len(d['posts']), d['additions'], d['deletions']
+            ) for (u,d) in transcribers.iteritems()]
+        rows.sort(key=lambda r: r[1])
+        rows.reverse()
+        rows = [(
+                i + 1,
+                u,
+                p,
+                locale.format("%d", d, grouping=True),
+                locale.format("%d", a, grouping=True),
+            ) for i, (u, p, d, a) in enumerate(rows)]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ['',
+                'Username',
+                'Number of posts',
+                'Total characters added',
+                'Total characters removed',
+            ],
+            'rows': rows
+        })
+    elif q == "inactive_commenters":
+        users = User.objects.select_related('profile').filter(
+                profile__blogger=False,
+                comment__isnull=True,
+                transcriptionrevision__isnull=True,
+                subscriptions__isnull=True,
+                is_staff=False,
+                is_active=True
+        ).exclude(groups__name="moderator").order_by('date_joined')
+        rows = [(
+           author_link(u.profile),
+           u.email,
+           u.date_joined.strftime("%Y-%m-%d"),
+           u.last_login.strftime("%Y-%m-%d"),
+        ) for u in users]
+        rows.sort(key=lambda u: u[-1])
+        rows.reverse()
+        rows = [(i + 1,) + r for i, r in enumerate(rows)]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ['',
+                'Username',
+                'Email',
+                'Date joined',
+                'Last login',
+            ],
+            'rows': rows,
+        })
+    elif q == "disabled_commenters":
+        users = User.objects.select_related('profile').filter(
+                profile__blogger=False,
+                is_active=False
+        ).order_by('date_joined')
+
+        rows = [(
+            author_link(u.profile),
+            u.email,
+            u.date_joined.strftime("%Y-%m-%d"),
+            u.last_login.strftime("%Y-%m-%d %H:%M:%S"),
+            "<br />".join(
+                n.text for n in u.notes.all()
+            )
+        ) for u in users]
+        rows.sort(key=lambda u: u[-2])
+        rows.reverse()
+        rows = [(i + 1,) + r for i, r in enumerate(rows)]
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': ['',
+                'Username',
+                'Email',
+                'Date joined',
+                'Last login',
+                'Notes (if any)',
+            ],
+            'rows': rows
+        })
+    elif q == "pages_and_comments_per_author":
+        # Get page counts
+        page_authors = DocumentPage.objects.filter(document__status='published').values_list(
+                'document__author', flat=True)
+        page_counts = defaultdict(int)
+        for pk in page_authors:
+            page_counts[pk] += 1
+
+        # Get comment counts
+        comment_recipients = Comment.objects.public().values_list(
+                'document__author', flat=True)
+        comment_counts = defaultdict(int)
+        for pk in comment_recipients:
+            comment_counts[pk] += 1
+
+        rows = [[
+            author_link(profile),
+            page_counts.get(profile.pk, 0),
+            comment_counts.get(profile.pk, 0),
+        ] for profile in Profile.objects.bloggers_with_published_content()]
+        rows.sort(key=lambda u: u[1], reverse=True)
+        for i,row in enumerate(rows):
+            row.insert(0, i + 1)
+
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'header_row': [
+                '',
+                'User',
+                'page count',
+                'comment count',
+            ],
+            'rows': rows,
+        })
+    elif q == "poets":
+        posts = Document.objects.filter(
+                status="published", tags__name="poetry"
+            ).values_list('author_id', flat=True)
+        count = defaultdict(int)
+        for author_id in posts:
+            count[author_id] += 1
+
+        authors = Profile.objects.in_bulk(count.keys())
+
+        latests = Document.objects.filter(
+                author_id__in=count.keys()
+            ).values_list(
+                'author_id', 'date_written'
+            ).order_by('-date_written')
+        latest_date = {}
+        for author_id, date_written in latests:
+            if author_id not in latest_date:
+                latest_date[author_id] = date_written
+        order = latest_date.items()
+        order.sort(key=lambda d: d[1], reverse=True)
+
+        rows = []
+        for i, (author_id, latest_post) in enumerate(order):
+            profile = authors[author_id]
+            rows.append([
+                i,
+                author_link(profile),
+                count[author_id],
+                latest_post.strftime("%Y-%m-%d"),
+                u"<pre>%s</pre>" % profile.full_address(),
+            ])
+        return render(request, "moderation/question_answer.html", {
+            'question': questions[q],
+            'rows': rows,
+            'header_row': [
+                '',
+                'User',
+                'Posts tagged \'poetry\'',
+                'Date of latest post of any kind',
+                'Address'
+            ],
+        })
+
+#    elif q == "transcribed":
+#        posts = defaultdict(lambda: {
+#            'complete': False, 'dates': [], 'size': 0, 'author_pk': None,
+#            'title': None, 'url': None,
+#        })
+#        post_authors = defaultdict(set)
+#        cur = None
+#        struct = None
+#        for rev in TranscriptionRevision.objects.select_related(
+#                    'transcription', 'transcription__document'
+#                ).order_by('transcription__document', 'revision'):
+#            if not cur or cur.transcription != rev.transcription:
+#                struct = posts[rev.transcription.document.pk]
+#                cur = rev
+#            struct['complete'] = rev.transcription.complete
+#            struct['dates'].append(rev.modified)
+#            struct['size'] = len(rev.body)
+#            struct['author_pk'] = rev.transcription.document.author.pk
+#            post_authors[rev.transcription.document.author.pk].add(
+#                rev.transcription.document.pk
+#            )
+#        rows = []
+#        for pk, struct in posts.iteritems():
+
+
+    raise Http404
+
+
+# NOTE: Default performance of this is slower than default performance of
+# sequence matcher; though it could be possible to tweak it to be more
+# performant.
+#def _dmp_count_additions_deletions(s1, s2):
+#    additions = 0
+#    deletions = 0
+#    diffs = diff_match_patch().diff_main(s1, s2)
+#    for (op, string) in diffs:
+#        if op == diff_match_patch.DIFF_DELETE:
+#            deletions += 1
+#        elif op == diff_match_patch.DIFF_INSERT:
+#            additions += 1
+#    return additions, deletions
+
+def _sequence_matcher_count_additions_deletions(s1, s2):
+    additions = 0
+    deletions = 0
+    sm = SequenceMatcher(None, s1, s2)
+    for opcode, a0, a1, b0, b1 in sm.get_opcodes():
+        if opcode == 'insert':
+            additions += b1 - b0
+        elif opcode == 'delete':
+            deletions += a1 - a0
+        elif opcode == 'replace':
+            additions += b1 - b0
+            deletions += a1 - a0
+    return additions, deletions
 
 @permission_required("scanning.add_scan")
 def page_picker(request):

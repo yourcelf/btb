@@ -13,22 +13,24 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
+from django.contrib.auth.views import logout
 
-from btb.utils import args_method_decorator, JSONView
+from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
 from scanning import utils, tasks
 from scanning.models import * 
 from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
-from annotations.models import Tag, Note, ReplyCode
-from profiles.models import Organization, Profile
+from annotations.models import Tag, Note, ReplyCode, handle_flag_spam
+from annotations.tasks import send_flag_notification_email
+from profiles.models import Organization, Profile, Affiliation
 from comments.forms import CommentForm
 
 def get_boolean(val):
     return bool(val == "true" or val == "1")
 
 class Scans(JSONView):
-    @args_method_decorator(permission_required, "scanning.change_scan")
+    @permission_required_or_deny("scanning.change_scan")
     def get(self, request, obj_id=None):
         if obj_id:
             scans = Scan.objects.filter(pk=obj_id)
@@ -76,10 +78,10 @@ class ScanSplits(JSONView):
     }
     """
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         return kw
 
-    @args_method_decorator(permission_required, "scanning.change_scan")
+    @permission_required_or_deny("scanning.change_scan")
     def get(self, request, obj_id=None):
         try:
             scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
@@ -100,8 +102,17 @@ class ScanSplits(JSONView):
             "lock": lock.to_dict() if lock.user_id != request.user.id else None
         }
 
-        documents = Document.objects.distinct().filter(scan__pk=scan.pk)
+        # This will select a duplicate document for each scan page it contains.
+        documents = Document.objects.order_by(
+            'documentpage__scan_page__order'
+        ).distinct().filter(scan__pk=scan.pk)
+
+        # Since we got duplicates, filter them down here.
+        visited = set()
         for doc in documents:
+            if doc.id in visited:
+                continue
+            visited.add(doc.id)
             split['documents'].append({
                 "id": doc.pk,
                 "type": doc.type,
@@ -111,11 +122,8 @@ class ScanSplits(JSONView):
             })
         return self.json_response(split)
 
-    # XXX: This decorator tower could be made less ugly.
-    @args_method_decorator(permission_required, "scanning.change_scan")
-    @args_method_decorator(permission_required, "scanning.add_document")
-    @args_method_decorator(permission_required, "scanning.change_document")
-    @args_method_decorator(permission_required, "scanning.delete_document")
+    @permission_required_or_deny("scanning.change_scan", "scanning.add_document",
+            "scanning.change_document", "scanning.delete_document")
     @args_method_decorator(transaction.commit_on_success)
     def post(self, request, obj_id=None):
         """
@@ -227,22 +235,50 @@ class ScanSplits(JSONView):
 
             # Apportion pages.
             pages = []
-            old_pages = set(document.documentpage_set.all())
+            # We need to transfer old page transforms to new document pages,
+            # indexed by the scanpage_id, which persists.
+            old_page_transformations = {}
+            # ... and do the same for highlight_transform -- we need to change
+            # the documentpage_id to the new documentpage_id.
+            if document.highlight_transform:
+                old_highlight_transform = json.loads(document.highlight_transform)
+            else:
+                old_highlight_transform = ""
+            highlight_scan_page_id = None
+
+            # Loop through current pages to get info to transfer to new pages,
+            # and delete the old pages.
+            for page in document.documentpage_set.all():
+                old_page_transformations[page.scan_page_id] = page.transformations
+
+                # Capture the old highlight transform's scan page ID.
+                if old_highlight_transform and \
+                        page.pk == old_highlight_transform["document_page_id"]:
+                    highlight_scan_page_id = page.scan_page_id
+
+                page.full_delete()
+
+            # Clear the highlight transform so that it remains 'valid' even if
+            # something goes wrong in identifying it with an old scan_page_id.
+            document.highlight_transform = ""
+            # Recreate the new pages, reusing the old transforms.
             for order,scanpage_id in enumerate(doc["pages"]):
-                try:
-                    documentpage = DocumentPage.objects.get(document=document,
-                            scan_page=scanpage_id)
-                except DocumentPage.DoesNotExist:
-                    documentpage = DocumentPage.objects.create(
-                        document=document,
-                        scan_page=ScanPage.objects.get(pk=scanpage_id), 
-                        order=order,
-                    )
-                pages.append(documentpage)
+                documentpage = DocumentPage.objects.create(
+                    document=document,
+                    scan_page=ScanPage.objects.get(pk=scanpage_id), 
+                    order=order,
+                    transformations=old_page_transformations.get(scanpage_id, "{}"),
+                )
+                # Reuse the old highlight transform, if it matches.
+                if scanpage_id == highlight_scan_page_id:
+                    old_highlight_transform["document_page_id"] = documentpage.pk
+                    document.highlight_transform = json.dumps(old_highlight_transform)
+            # Persist any changes to highlight_transform.
+            document.save()
+            if document.status in ("published", "ready"):
+                tasks.update_document_images.apply([document.pk]).get()
             document.documentpage_set = pages
             docs.append(document)
-            for obsolete in (old_pages - set(pages)):
-                obsolete.full_delete()
         scan.document_set = docs
         return self.get(request, obj_id=scan.pk)
 
@@ -251,19 +287,21 @@ class MissingHighlight(Exception):
 
 class Documents(JSONView):
     def clean_params(self, request):
-        kw = json.loads(request.raw_post_data)
+        kw = json.loads(request.body)
         return kw
 
-    @args_method_decorator(permission_required, "scanning.change_document")
+    @permission_required_or_deny("scanning.change_document")
     def get(self, request, obj_id=None):
-        docs = Document.objects.org_filter(request.user, author__profile__managed=True)
+        docs = Document.objects.org_filter(request.user)
         g = request.GET.get
+        if g("author__profile__managed", 0) == "1":
+            docs = docs.filter(author__profile__managed=True)
         if g("author_id", None):
             docs = docs.filter(author__pk=g("author_id"))
         if g("type", None):
             docs = docs.filter(type=g("type"))
         if g("idlist", None):
-            ids = g("idlist").split(".")
+            ids = [a for a in g("idlist").split(".") if a]
             if not ids:
                 raise Http404
             docs = [b for a,b in sorted(docs.in_bulk(ids).items())]
@@ -272,7 +310,7 @@ class Documents(JSONView):
         #TODO: EditLock's for documents.
         return self.paginated_response(request, docs)
 
-    @args_method_decorator(permission_required, "scanning.change_document")
+    @permission_required_or_deny("scanning.change_document")
     @args_method_decorator(transaction.commit_manually)
     def put(self, request, obj_id=None):
         try:
@@ -297,24 +335,26 @@ class Documents(JSONView):
                     raise MissingHighlight
             doc.highlight_transform = json.dumps(kw['highlight_transform'])
 
-            # Remove stale comment instance if this is a reply.  (New comment
-            # is created in document 'save' function, when the document status
-            # is "published" -- but we have to delete here, because "save"
-            # won't know what its previous in_reply_to code was.)
-            try:
-                if (doc.in_reply_to and 
-                        kw['in_reply_to'] != doc.in_reply_to.code and 
-                        doc.comment):
-                    doc.comment.delete()
-            except (Comment.DoesNotExist):
-                pass
-            if kw['in_reply_to'] == None:
+            if not kw['in_reply_to']:
                 doc.in_reply_to = None
             else:
-                doc.in_reply_to = ReplyCode.objects.get(code=kw['in_reply_to'])
+                reply_code = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
+                # Avoid recursion.
+                if reply_code.pk != doc.reply_code.pk:
+                    doc.in_reply_to = reply_code
+                else:
+                    doc.in_reply_to = None
+
+            # Set affiliation, if any
+            try:
+                doc.affiliation = Affiliation.objects.org_filter(request.user).get(
+                        pk=kw['affiliation']['id'])
+            except (TypeError, KeyError, Affiliation.DoesNotExist):
+                doc.affiliation = None
 
             doc.adult = kw['adult']
             # Ensure other processes won't try to serve this until we're done building.
+            doc.date_written = kw['date_written']
             doc.status = "unknown"
             doc.save()
 
@@ -356,7 +396,12 @@ class Documents(JSONView):
         # must commit before executing the task (it needs an up-to-date model).
         transaction.commit()
 
-        tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        try:
+            tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        except Exception as e:
+            transaction.rollback()
+            raise e
+        
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
@@ -372,7 +417,7 @@ class Documents(JSONView):
 #
 
 class PendingScans(JSONView):
-    @args_method_decorator(permission_required, "scanning.change_pendingscan")
+    @permission_required_or_deny("scanning.change_pendingscan")
     def get(self, request, obj_id=None):
         if obj_id:
             pendingscans = PendingScan.objects.filter(pk=obj_id)
@@ -389,9 +434,9 @@ class PendingScans(JSONView):
         pendingscans = pendingscans.org_filter(request.user)
         return self.paginated_response(request, pendingscans)
     
-    @args_method_decorator(permission_required, "scanning.add_pendingscan")
+    @permission_required_or_deny("scanning.add_pendingscan")
     def post(self, request, obj_id=None):
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         try:
             org = Organization.objects.org_filter(
                     request.user, pk=params["org_id"]
@@ -412,7 +457,7 @@ class PendingScans(JSONView):
         )
         return self.json_response(pendingscan.to_dict())
 
-    @args_method_decorator(permission_required, "scanning.change_pendingscan")
+    @permission_required_or_deny("scanning.change_pendingscan")
     def put(self, request, obj_id=None):
         try:
             ps = PendingScan.objects.org_filter(
@@ -421,7 +466,7 @@ class PendingScans(JSONView):
         except PendingScan.DoesNotExist:
             raise PermissionDenied
 
-        params = json.loads(request.raw_post_data)
+        params = json.loads(request.body)
         if 'missing' in params:
             if params['missing'] == 1:
                 ps.completed = datetime.datetime.now()
@@ -430,7 +475,7 @@ class PendingScans(JSONView):
             ps.save()
         return self.json_response(ps.to_dict())
 
-    @args_method_decorator(permission_required, "scanning.delete_scan")
+    @permission_required_or_deny("scanning.delete_scan")
     def delete(self, request, obj_id=None):
         try:
             ps = PendingScan.objects.org_filter(
@@ -466,6 +511,7 @@ def scan_add(request):
             with tempfile.NamedTemporaryFile(delete=False, suffix="scans.zip") as fh:
                 for chunk in request.FILES['file'].chunks():
                     fh.write(chunk)
+                fh.flush()
                 task_id = tasks.process_zip.delay(filename=fh.name, 
                         uploader_id=request.user.pk,
                         org_id=form.cleaned_data['organization'].pk,
@@ -723,9 +769,15 @@ def flag_document(request, document_id):
     """
     Flag a post. 
     """
+    if not request.user.is_active:
+        raise PermissionDenied
     doc = get_object_or_404(Document, pk=document_id)
     form = FlagForm(request.POST or None)
     if form.is_valid():
+        if handle_flag_spam(request.user, form.cleaned_data['reason']):
+            messages.info(request, _(u"Your account has been suspended due to behavior that looks like spam. If this is an error, please contact us using the contact link at the bottom of the page."))
+            logout(request)
+            return redirect("/")
         ticket, created = Note.objects.get_or_create(
             creator=request.user,
             text="FLAG from user. \n %s" % form.cleaned_data['reason'],
@@ -733,6 +785,11 @@ def flag_document(request, document_id):
             important=form.cleaned_data['urgent'],
             document=doc,
         )
+        # Queue up an async process to send notification email in 2 minutes (we
+        # delay to trap spam floods).
+        if created:
+            send_flag_notification_email.apply_async(
+                    args=[ticket.pk], countdown=120)
         messages.info(request, _(u"A moderator will review that post shortly. Thanks for helping us run a tight ship."))
         return redirect(doc.get_absolute_url())
 

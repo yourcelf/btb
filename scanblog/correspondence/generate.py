@@ -23,6 +23,9 @@ def generate_file(letter):
         'printout': printout,
         'comments': comments_letter,
         'waitlist': waitlist_postcard,
+        'refused_original': refused_original,
+        'returned_original': returned_original,
+        'comment_removal': comment_removal,
     }
     if not letter.type:
         return None
@@ -118,7 +121,9 @@ def first_post_letter(letter):
             'letter': letter
         })
     )
-    # First post, if any
+    # First post, if any.  First post uses a dynamic document rather than the
+    # letter.document field, so that if a document is ever removed/unpublished,
+    # we get the updated "first post" on printout.
     try:
         document = Document.objects.filter(status="published", type="post",
                 author__pk=letter.recipient.pk).order_by('date_written')[0]
@@ -160,6 +165,25 @@ def waitlist_postcard(letter):
         'letter': letter,
         'address': letter.recipient.profile.full_address(),
     })
+
+def returned_original(letter):
+    return utils.render_tex_to_pdf("correspondence/returned-original.tex", {
+        'letter': letter,
+        'address': letter.recipient.profile.full_address(),
+    })
+
+def refused_original(letter):
+    return utils.render_tex_to_pdf("correspondence/refused-original.tex", {
+        'letter': letter,
+        'address': letter.recipient.profile.full_address(),
+    })
+
+def comment_removal(letter):
+    return utils.render_tex_to_pdf("correspondence/comment-removal.tex", {
+            'letter': letter,
+            'comment': letter.comments.get(),
+            'message': letter.body,
+        })
 
 def generate_colation(mailing):
     """

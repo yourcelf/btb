@@ -1,7 +1,8 @@
 {% extends "site_base.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block body %}
 <h1>{% trans "Oops!" %}</h1>
-<p>{% trans "That isn't a valid confirmation key.  Please check the link again. If your email reader adds line breaks in the URL, you may need to remove them.  You may also" %} <a href='{% url registration_register %}'>%{ trans "request a new comfirmation email" %}</a>.</p>
+<p>{% trans "That isn't a valid confirmation key.  Please check the link again. If your email reader adds line breaks in the URL, you may need to remove them.  You may also" %} <a href='{% url "registration_register" %}'>%{ trans "request a new comfirmation email" %}</a>.</p>
 {% endblock %}

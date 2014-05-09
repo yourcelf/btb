@@ -1,5 +1,6 @@
 {% extends "notification/base.html" %}
 {% load i18n %}
+{% load url from future %}
 {% load pagination_tags %}
 
 {% block title %}{% trans "Notifications" %}{% endblock %}
@@ -8,10 +9,10 @@
 {% autopaginate notices 10 %}
 
 <div class='notices'>
-    <a href='{% url subscriptions.settings %}'>{% trans "Subscriptions and communication preferences" %}</a>
+    <a href='{% url "subscriptions.settings" %}'>{% trans "Subscriptions and communication preferences" %}</a>
     <h1>{% trans "Notifications" %}</h1>
     {% if notices %}
-        <a href="{% url notification_mark_all_seen %}">{% trans "Mark all as read" %}</a>
+        <a href="{% url "notification_mark_all_seen" %}">{% trans "Mark all as read" %}</a>
         <table>
             <tr>
                 <th>{% trans "Date" %}</th>
@@ -44,8 +45,8 @@
 
 {% block scripts %}
 <script type='text/javascript'>
-var seen_url = "{% url notification_ajax_set_notice_seen 0 %}";
-var delete_url = "{% url notification_ajax_delete_notice 0 %}";
+var seen_url = "{% url "notification_ajax_set_notice_seen" 0 %}";
+var delete_url = "{% url "notification_ajax_delete_notice" 0 %}";
 $("tr.notice.unseen").click(function() {
         var row = this;
         var id = $(row).find(".notice-id").val();
@@ -68,7 +69,7 @@ $(".delete-notice").click(function() {
         return false;
 });
 $(".delete-all-notices").click(function() {
-        $.post("{% url notification_ajax_delete_all_notices %}", {}, function(data) {
+        $.post("{% url "notification_ajax_delete_all_notices" %}", {}, function(data) {
             $("tr.notice").remove();
         });
         return false;

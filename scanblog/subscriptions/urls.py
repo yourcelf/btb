@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 user_id = "(?P<user_id>\d+)"
 
@@ -16,6 +16,12 @@ urlpatterns = patterns('subscriptions.views',
         name='subscriptions.org'),
     url(r'^subscribe/document/(?P<document_id>\d+)$', 'subscribe_to_document',
         name='subscriptions.document'),
+    url(r'^subscribe/campaign/(?P<slug>[-\w]+)$', 'subscribe_to_campaign',
+        name='subscriptions.campaign'),
+    url(r'^subscribe/affiliation/(?P<affiliation_id>\d+)$', 'subscribe_to_affiliation',
+        name='subscriptions.affiliation'),
+    url(r'^list/$', 'mailing_list_interest',
+        name='subscriptions.mailing_list_interest'),
 
     # Notification addendum
     url(r'^toggle_notice/(?P<notice_id>\d+)$', 'ajax_set_notice_seen',
@@ -24,6 +30,7 @@ urlpatterns = patterns('subscriptions.views',
         name='notification_ajax_delete_notice'),
     url(r'^delete_all_notices$', 'ajax_delete_all_notices',
         name='notification_ajax_delete_all_notices'),
+
 
     # Defer to notifications if not found.
     url(r'', include('notification.urls')),

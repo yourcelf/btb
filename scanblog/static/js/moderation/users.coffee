@@ -10,10 +10,24 @@ class btb.LetterList extends btb.FilteredPaginatedCollection
     model: btb.Letter
     baseUrl: "/correspondence/letters.json"
 
-class btb.Organization extends Backbone.Model
-class btb.OrganizationList extends btb.FilteredPaginatedCollection
-    model: btb.Organization
-    url: "/people/organizations.json"
+class btb.CommenterStats extends Backbone.Model
+    url: =>
+        "/people/commenter_stats.json?user_id=#{@get('user_id')}"
+    parse: (response, options) =>
+        attrs = {}
+        for key, val of response
+            switch key
+                when 'activity'
+                    attrs[key] = {
+                        comments: (btb.strToDate(d) for d in val.comments)
+                        favorites: (btb.strToDate(d) for d in val.favorites)
+                        transcriptions: (btb.strToDate(d) for d in val.transcriptions)
+                    }
+                when 'last_login','joined' then attrs[key] = btb.strToDate(val)
+                else
+                    attrs[key] = val
+        return attrs
+
 
 #
 # A widget displaying a form for adding a user.  Used by btb.UserSearch as
@@ -88,9 +102,7 @@ class btb.UserSearch extends btb.PaginatedView
     template: _.template $("#userSearch").html()
     emptyRowTemplate: _.template $("#userSearchResultEmpty").html()
     delay: 100
-    defaultFilter:
-        per_page: 6
-        blogger: true
+    defaultFilter: {per_page: 6, blogger: true}
     events:
         'keyup input.user-chooser-trigger': 'openUserSearch'
         'keyup input.user-search': 'keyUp'
@@ -98,16 +110,23 @@ class btb.UserSearch extends btb.PaginatedView
         'click .result': 'chooseResult'
         'click span.add-user-link': 'addUser'
         'click span.cancel-user-search': 'cancel'
+        'click a': 'nothing'
 
     initialize: (options) =>
         filter = if options then options.filter else {}
         @userList = new btb.UserList()
         @userList.filter = _.extend {}, @defaultFilter, filter
 
+    updateFilter: (properties) =>
+        _.extend(@userList.filter, properties)
+
     render: =>
         $(@el).html this.template
             term: @userList.filter.q or ""
         this
+
+    nothing: (event) =>
+        event.stopPropagation()
 
     keyUp: (event) =>
         switch event.keyCode
@@ -225,12 +244,14 @@ class btb.UserSearch extends btb.PaginatedView
 #
 class btb.InPlaceUserChooser extends Backbone.View
     template: _.template $("#inPlaceUserChooser").html()
+    stateTemplate: _.template $("#userState").html()
     events:
         "click .user-name": "unchoose"
 
-    initialize: (user) ->
-        @user = user
-        @userChooser = new btb.UserSearch
+    initialize: (options) ->
+        @user = options?.user
+        @showState = options?.showState or false
+        @userChooser = new btb.UserSearch(filter: {in_org: 1})
         @userChooser.bind "chosen", (model) =>
             @choose model
             @trigger "chosen", (model)
@@ -244,12 +265,15 @@ class btb.InPlaceUserChooser extends Backbone.View
         $(@el).addClass "in-place-user-chooser"
         $(".user-chooser-holder", @el).html @userChooser.render().el
         if @user?
-            @choose @user
+            @choose(@user)
+        unless @showState
+          @$(".user-state").remove()
         this
 
     choose: (user) =>
         @user = user
         $(".user-name", @el).show().html _.escapeHTML user.get "display_name"
+        @$(".user-state").show().html(@stateTemplate({user: user.toJSON()}))
         $(".user-name", @el).attr("data-user-id", user.id)
         $(".user-chooser-holder", @el).hide()
 
@@ -261,6 +285,7 @@ class btb.InPlaceUserChooser extends Backbone.View
     unchoose: =>
         if @user?
             @userChooser.openUserSearch(null, @user.get "display_name")
+        @$(".user-state").hide().html("")
         $(".user-chooser-holder", @el).show()
         $(".user-name", @el).hide()
 
@@ -289,7 +314,7 @@ class btb.UserCompact extends Backbone.View
                         "<span class='highlight'>$1</span>"
                     )
         $(@el).html @template {user: fields}
-        $(".state", @el).html @stateTemplate {user: fields}
+        $(".user-state", @el).html @stateTemplate {user: fields}
         this
 
 #
@@ -301,7 +326,7 @@ class btb.UserCompact extends Backbone.View
 class btb.DocumentTabularList extends btb.TabularList
     thumbnailTemplate: _.template $("#userDetailDocumentThumbnails").html()
     initialize: (options) ->
-        options.collection = new btb.DocumentList
+        options.collection = new btb.DocumentList()
         options.collection.filter = options.filter
         super options
         @collection.fetch
@@ -327,7 +352,7 @@ class btb.DocumentTabularList extends btb.TabularList
     statusColumn: =>
         heading: "Status"
         render: (obj) =>
-            el = new btb.UserDetailDocumentStatusControl(obj)
+            el = new btb.UserDetailDocumentStatusControl({doc: obj})
             el.bind "letterAdded", => @trigger "letterAdded"
             el.render().el
     commentCountColumn: ->
@@ -342,7 +367,7 @@ class btb.DocumentTabularList extends btb.TabularList
             div = $("<div/>")
             a = $("<a href=#/process/document/#{obj.id}/>")
             div.append(a)
-            collection = new btb.NoteList
+            collection = new btb.NoteList()
             collection.filter = {document_id: obj.id, unresolved: 1}
             collection.fetch
                 success: ->
@@ -362,12 +387,16 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
         "change .status": "updateStatus"
         "change .adult": "updateAdult"
         "click .queue-printout": "queuePrintout"
-    initialize: (doc) ->
-        @doc = doc
+    initialize: (options) ->
+        @doc = options.doc
     render: =>
-        $(@el).html @template adult: @doc.get("adult")
-        $(".status", @el).val _.escapeHTML @doc.get("status")
+        $(@el).html(@template({
+            adult: @doc.get("adult")
+            reply_id: @doc.get("reply_code")
+        }))
+        $(".status", @el).val(_.escapeHTML(@doc.get("status")))
         this
+
     updateStatus: (event) =>
         @showLoading()
         @doc.save({status: $(event.currentTarget).val()}, {
@@ -382,11 +411,13 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
         })
     queuePrintout: =>
         @showLoading()
-        letter = new btb.Letter
+        letter = new btb.Letter()
         letter.save {
             type: "printout"
             recipient_id: @doc.get("author").id
             document_id: @doc.id
+            # UGLY HACK: depends on the org ID from a completely different UI element
+            org_id: $(".org_id").val()
         }, {
             success: =>
                 @hideLoading()
@@ -406,8 +437,8 @@ class btb.UserDetailDocumentStatusControl extends Backbone.View
 # A table of posts by a particular user.
 #
 class btb.PostTabularList extends btb.DocumentTabularList
-    initialize: (userId, docType="post") ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                     @dateColumn("date_written")
                     @thumbnailColumn(1)
@@ -416,69 +447,76 @@ class btb.PostTabularList extends btb.DocumentTabularList
                     @noteCountColumn()
                     @statusColumn()
                 ]
-            filter: {type: docType, author_id: userId, per_page: 5}
-
+            filter: {
+              type: options.docType or "post",
+              author_id: options.userId,
+              per_page: 5
+            }
+        })
 
 #
 # A table of profiles by a particular user.
 #
 class btb.ProfileDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(3)
                 @statusColumn()
             ]
-            filter: {type: "profile", author_id: userId}
+            filter: {type: "profile", author_id: options.userId}
+        })
 
 class btb.RequestDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(3)
                 @noteCountColumn()
                 @needsAttentionColumn()
             ]
-            filter: {type: "request", author_id: userId}
+            filter: {type: "request", author_id: options.userId}
+        })
 
 class btb.LicenseDocumentTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                 @dateColumn("date_written")
                 @thumbnailColumn(1)
             ]
-            filter: {type: "license", author_id: userId}
+            filter: {type: "license", author_id: options.userId}
+        })
 
 #
 # A table of photos by a particular user.
 #
 class btb.PhotoTabularList extends btb.DocumentTabularList
-    initialize: (userId) ->
-        super
+    initialize: (options) ->
+        super({
             columns: [
                     @dateColumn("date_written"), @thumbnailColumn(1)
                     @statusColumn()
                 ]
-            filter: {type: "photo", author_id: userId}
+            filter: {type: "photo", author_id: options.userId}
+        })
 
 #
 # A table of missing scans by a particular user.
 #
 class btb.MissingScanTabularList extends btb.TabularList
-    initialize: (userId) ->
-        options = {}
+    initialize: (options={}) ->
         options.collection = new btb.PendingScanList
-        options.collection.filter = { author_id: userId, missing: true }
+        options.collection.filter = { author_id: options.userId, missing: true }
         options.columns = [
             @dateColumn("created", "Entered"), @dateColumn("completed", "Completed"), {
                 heading: "Missing"
                 render: (model) -> new btb.MissingCheckbox(ps: model).render().el
             }
         ]
-        super options
+        super(options)
         @collection.fetch
             success: => @render()
 
@@ -518,11 +556,91 @@ class btb.UserStatusTable extends Backbone.View
         btb.EditInPlace.factory [
             [@user, "blogger", $(".blogger", @el), "checkbox"]
             [@user, "managed", $(".managed", @el), "checkbox"]
+            [@user, "lost_contact", $(".lost-contact", @el), "checkbox"]
             [@user, "consent_form_received", $(".consent-form-received", @el), "checkbox"]
             [@user, "is_active", $(".is-active", @el), "checkbox"]
         ]
         this
     
+class btb.CommenterStatsView extends Backbone.View
+    template: _.template $("#commenterStats").html()
+    hist_bins: 12
+    events:
+        'click [name=can_tag]': 'setCanTag'
+
+    initialize: (options) ->
+        if options.user_id
+            @fetch(options.user_id)
+
+    render: =>
+        unless @stats.get("activity")
+            @$el.html("<img src='/static/img/spinner.gif />")
+            return this
+
+        max_time = 0
+        min_time = new Date().getTime()
+        for key, list of @stats.get("activity")
+            for date in list
+                time = date.getTime()
+                if time > max_time
+                    max_time = time
+                if time < min_time
+                    min_time = time
+        if max_time == 0 or max_time == min_time
+            histogram = null
+        else
+            diff = (max_time + 1) - min_time
+            interval = diff / @hist_bins
+            histogram = []
+            for i in [0...@hist_bins]
+                cur = min_time + interval * i
+                next = min_time + interval * (i + 1)
+                histogram.push({
+                    label: btb.formatDate(new Date(cur))
+                })
+                for key, list of @stats.get("activity")
+                    histogram[i][key] = {count: 0, percentage: 0}
+                    for date in list
+                        if cur <= date.getTime() < next
+                            histogram[i][key].count += 1
+
+            max_bin = 0
+            for obj in histogram
+                count = obj.comments.count + obj.favorites.count + obj.transcriptions.count
+                max_bin = Math.max(count, max_bin)
+
+            for obj in histogram
+                for key in ["comments", "favorites", "transcriptions"]
+                    obj[key].percentage = obj[key].count * 100 / max_bin
+
+        context = @stats.toJSON()
+        context.histogram = histogram
+        @$el.html(@template(context))
+        this
+
+    fetch: (user_id) =>
+        @stats = new btb.CommenterStats(user_id: user_id)
+        @stats.fetch {
+            success: (data) =>
+                @render()
+        }
+
+    setCanTag: (event) =>
+        el = @$("[name=can_tag]")
+        if el.is(":checked") != @stats.get("can_tag")
+            loading = $("<img src='/static/img/loading.gif />")
+            el.after(loading)
+            @stats.set("can_tag", not @stats.get("can_tag"))
+            @stats.save({}, {
+                success: =>
+                    loading.remove()
+                    el.parent().effect "highlight"
+                error: =>
+                    alert("Server error -- not updated")
+                    loading.remove()
+            })
+
+
 
 #
 # Ye grande olde User Detail Page view
@@ -531,21 +649,44 @@ class btb.UserDetail extends Backbone.View
     template: _.template $("#userManage").html()
     detailTemplate: _.template $("#userDetail").html()
     stateTemplate: _.template $("#userState").html()
+    commenterTemplate: _.template $("#commenterDetail").html()
+    events: {
+      'click [name=usertype]': 'changeUserType'
+    }
+    filter: {in_org: true, blogger: true}
 
     initialize: (options) ->
-        @fetchUser(options.userId) if options.userId
+        if options.userId
+            @fetchUser(options.userId)
 
     render: =>
-        $(@el).html @template()
-        userChooser = new btb.UserSearch(filter: {in_org: 1})
-        userChooser.bind "chosen", (user) => @chooseUser(user)
-        $(".user-chooser-holder", @el).html userChooser.render().el
+        $(@el).html @template(filter: @filter)
+        @userChooser = new btb.UserSearch(filter: @filter)
+        @userChooser.bind "chosen", (user) => @chooseUser(user)
+        $(".user-chooser-holder", @el).html @userChooser.render().el
         if not @user?
             return this
 
+        if @user.get("blogger")
+            @renderBlogger()
+        else
+            @renderCommenter()
+
+    renderCommenter: =>
         userFields = @user.toJSON()
-        $(".user-detail", @el).html @detailTemplate
-            user: userFields
+        @$(".user-detail").html @commenterTemplate({user: userFields})
+        @$(".user-state").html @stateTemplate({user: userFields})
+        @$(".commenter-stats").html new btb.CommenterStatsView({
+            user_id: userFields.id
+        }).render().el
+        $(".notelist", @el).html new btb.NoteManager({
+            filter: {user_id: userFields.id}
+            defaults: {user_id: userFields.id}
+        }).el
+
+    renderBlogger: =>
+        userFields = @user.toJSON()
+        @$(".user-detail").html @detailTemplate({user: userFields})
         btb.EditInPlace.factory [
             [@user, "display_name", $(".display-name", @el)]
             [@user, "mailing_address", $(".mailing-address", @el), "textarea"]
@@ -556,14 +697,14 @@ class btb.UserDetail extends Backbone.View
         $(".user-status-table", @el).html(
             new btb.UserStatusTable(user: @user).render().el
         )
-        $(".state", @el).html @stateTemplate {user: userFields}
+        @$(".user-state").html @stateTemplate {user: userFields}
 
         userId = @user.get "id"
-        licenses = new btb.LicenseDocumentTabularList(userId)
-        posts = new btb.PostTabularList(userId)
-        requests = new btb.RequestDocumentTabularList(userId)
-        profiles = new btb.ProfileDocumentTabularList(userId)
-        photos = new btb.PhotoTabularList(userId)
+        licenses = new btb.LicenseDocumentTabularList({userId})
+        posts = new btb.PostTabularList({userId})
+        requests = new btb.RequestDocumentTabularList({userId})
+        profiles = new btb.ProfileDocumentTabularList({userId})
+        photos = new btb.PhotoTabularList({userId})
 
         $(".licenselist", @el).html licenses.el
         $(".postlist", @el).html posts.el
@@ -584,20 +725,34 @@ class btb.UserDetail extends Backbone.View
         for list in [licenses, posts, requests, profiles, photos]
             list.bind "letterAdded", => correspondence.table.fetchItems()
 
-        $(".missingscanlist", @el).html new btb.MissingScanTabularList(userId).el
+        $(".missingscanlist", @el).html new btb.MissingScanTabularList(userId: userId).el
         this
+
+    setCommenter: =>
+        @filter = {blogger: false, in_org: false}
+        @userChooser?.updateFilter(@filter)
+
+    setBlogger: =>
+        @filter = {blogger: true, in_org: true}
+        @userChooser?.updateFilter(@filter)
+
+    changeUserType: (event) =>
+        val = @$("[name=usertype]:checked").val()
+        if val == "blogger" then @setBlogger() else @setCommenter()
 
     chooseUser: (user) =>
         btb.app.navigate "#/users/#{user.get "id"}"
         @user = user
+        if @user.get("blogger") then @setBlogger() else @setCommenter()
         @render()
 
     fetchUser: (userId) =>
-        ul = new btb.UserList
+        ul = new btb.UserList()
         ul.fetchById userId, {
             success: (userList, response) =>
                 user = userList.at 0
                 @user = userList.at 0
+                if @user.get("blogger") then @setBlogger() else @setCommenter()
                 @render()
         }
 
