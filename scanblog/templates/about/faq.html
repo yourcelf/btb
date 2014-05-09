@@ -6,7 +6,7 @@
 
 {% block body %}
 <h1>{% trans "Frequently Asked Questions" %}</h1>
-{% url about_community_guidelines as about_community_guidelines %}
+{% url "about_community_guidelines" as about_community_guidelines %}
 <p>{% blocktrans %}
   Please also see the
   <a href='{{ about_community_guidelines }}'>community guidelines</a>

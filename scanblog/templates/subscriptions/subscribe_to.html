@@ -16,6 +16,7 @@
 {% if affiliation %}posts in the group &ldquo;{{ affiliation.title }}&rdquo;?{% endif %}
 <form method='post' action=''>{% csrf_token %}<input type='submit' value='{% trans "Sign me up!" %}' /></form>
 <a href='{% url "subscriptions.settings" %}'>{% trans "Subscription settings" %}</a>
+
 </p>
 {% if not user.email %}
 <p>

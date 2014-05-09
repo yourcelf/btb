@@ -57,8 +57,8 @@
       {% endblocktrans %}
     </p>
     
-    {% url registration_register as url_registration_register %}
-    {% url auth_login as url_auth_login %}
+    {% url "registration_register" as url_registration_register %}
+    {% url "auth_login" as url_auth_login %}
     <h2>{% trans "Leave comments" %}</h2>
     <p>
       {% blocktrans %}

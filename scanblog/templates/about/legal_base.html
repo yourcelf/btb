@@ -1,8 +1,9 @@
 {% extends "site_base.html" %}
 {% load url from future %}
+{% load i18n %}
 
 {% block subnav %}
-<a href='{% url "about.copyright" %}'>{% trans "Copyrights" context "Title for copyright policy page"%}</a>
+<a href='{% url "about.copyright" %}'>{% trans "Copyrights" context "Title for copyright policy page" %}</a>
 <a href='{% url "about.terms" %}'>{% trans "Terms of Use" %}</a>
 <a href='{% url "about.privacy" %}'>{% trans "Privacy Policy" %}</a>
 <a href='{% url "about.dmca" %}'>{% trans "DMCA" %}</a>

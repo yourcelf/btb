@@ -1,6 +1,7 @@
 {% extends "moderation/base.html" %}
+{% load i18n %}
 {% load compress %}
-{% block title %}Scans and Moderation{% endblock %}
+{% block title %}{% trans "Scans and Moderation" %}{% endblock %}
 
 {% block css %}
 {% compress css %}
@@ -12,18 +13,18 @@
 {% endblock %}
 
 {% block subnav %}
-    <a href='#'>Dashboard</a>
-    <a href='#/pending'>Incoming mail</a>
-    <!--<a href='#/process'>Process scans</a>-->
-    <a href='#/users'>Manage users</a>
-    <a href='#/mail'>Outgoing mail</a>
+    <a href='#'>{% trans "Dashboard" %}</a>
+    <a href='#/pending'>{% trans "Incoming mail" %}</a>
+    <!--<a href='#/process'>{% trans "Process scans" %}</a>-->
+    <a href='#/users'>{% trans "Manage users" %}</a>
+    <a href='#/mail'>{% trans "Outgoing mail" %}</a>
     |
     {% if perms.profiles.change_organization %}
-      <a href='#/groups'>Groups</a>
+      <a href='#/groups'>{% trans "Groups" %}</a>
     {% endif %}
-    <a href='tagparty'>Tag party</a>
+    <a href='tagparty'>{% trans "Tag party" %}</a>
     |
-    <a href='stats'>Stats</a>
+    <a href='stats'>{% trans "Stats" %}</a>
 {% endblock %}
 {% block body %}
     <div id='app'></div>
