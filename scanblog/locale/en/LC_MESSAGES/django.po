@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-btb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-09 13:47-0500\n"
+"POT-Creation-Date: 2014-05-09 10:20-0400\n"
 "PO-Revision-Date: 2012-08-06 07:07+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,54 +25,61 @@ msgstr ""
 msgid "Email optional."
 msgstr ""
 
-#: accounts/views.py:29
+#: accounts/views.py:30
 msgid "Successfully logged out."
 msgstr ""
 
-#: accounts/views.py:64
+#: accounts/views.py:65
 msgid "Password changed successfully."
 msgstr ""
 
-#: blogs/feeds.py:68
+#: blogs/feeds.py:121
 #, python-format
 msgid "All comments on %s"
 msgstr ""
 
-#: blogs/feeds.py:74 blogs/feeds.py:93
+#: blogs/feeds.py:127 blogs/feeds.py:146
 msgid "Comment"
 msgstr ""
 
-#: blogs/feeds.py:86
+#: blogs/feeds.py:139
 #, python-format
 msgid "Comments on '%s'"
 msgstr ""
 
-#: btb/models.py:21 templates/notification/new_reply/notice.html:2
+#: btb/models.py:22 templates/notification/new_reply/notice.html:2
 msgid "New reply"
 msgstr ""
 
-#: btb/models.py:22
+#: btb/models.py:23
 msgid "new reply to a post you're following"
 msgstr ""
 
-#: btb/models.py:25 templates/notification/new_post/notice.html:1
+#: btb/models.py:26 templates/notification/new_post/notice.html:1
 msgid "New post"
 msgstr ""
 
-#: btb/models.py:26
+#: btb/models.py:27
 msgid "new letter from an author or subject you're following"
 msgstr ""
 
-#: comments/forms.py:18
+#: comments/forms.py:25
 msgid "Reply"
 msgstr ""
 
-#: comments/forms.py:23
+#: comments/forms.py:30
 msgid ""
 "If you enter anything in this field your comment will be treated as spam"
 msgstr ""
 
-#: comments/views.py:81
+#: comments/views.py:91 scanning/views.py:778
+msgid ""
+"Your account has been suspended due to behavior that looks like spam. If "
+"this is an error, please contact us using the contact link at the bottom of "
+"the page."
+msgstr ""
+
+#: comments/views.py:106
 msgid ""
 "A moderator will review that comment shortly. Thanks for helping us run a "
 "tight ship."
@@ -98,27 +105,27 @@ msgstr ""
 msgid "Required."
 msgstr ""
 
-#: profiles/models.py:168
+#: profiles/models.py:176
 msgid "Show posts and comments that have been marked as adult?"
 msgstr ""
 
-#: profiles/views.py:238
+#: profiles/views.py:249
 msgid "Changes saved."
 msgstr ""
 
-#: scanning/models.py:483
+#: scanning/models.py:502
 msgid "Untitled"
 msgstr ""
 
-#: scanning/models.py:546
+#: scanning/models.py:565
 msgid "Check if transcription is complete"
 msgstr ""
 
-#: scanning/views.py:640
+#: scanning/views.py:679
 msgid "Thanks for your attention to detail.  Transcription updated."
 msgstr ""
 
-#: scanning/views.py:743
+#: scanning/views.py:793
 msgid ""
 "A moderator will review that post shortly. Thanks for helping us run a tight "
 "ship."
@@ -151,7 +158,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"You can return to the front page here: <a href='http://%(site.domain)s'>"
+"You can return to the front page here: <a href='//%(site.domain)s'>"
 "%(site.domain)s</a>.\n"
 msgstr ""
 
@@ -159,19 +166,21 @@ msgstr ""
 msgid "Pages:"
 msgstr ""
 
-#: templates/_pagination.html:6
+#: templates/_pagination.html:5
 msgid "Previous page"
 msgstr ""
 
-#: templates/_pagination.html:6
+#: templates/_pagination.html:5
+msgctxt "pagination"
 msgid "Previous"
 msgstr ""
 
-#: templates/_pagination.html:12
+#: templates/_pagination.html:11
 msgid "Next page"
 msgstr ""
 
-#: templates/_pagination.html:12
+#: templates/_pagination.html:11
+msgctxt "pagination"
 msgid "Next"
 msgstr ""
 
@@ -196,7 +205,7 @@ msgid ""
 msgstr ""
 
 #: templates/home.html:24
-msgid "Gives voice to the voiceless."
+msgid "... can only help us become a more compassionate, safer society."
 msgstr ""
 
 #: templates/home.html:28
@@ -207,25 +216,41 @@ msgstr ""
 msgid "Amazing stuff."
 msgstr ""
 
-#: templates/home.html:38 templates/feeds/_featured.html:2
-#: templates/feeds/_subscriptions.html:81
+#: templates/home.html:34
+msgid "criminologist"
+msgstr ""
+
+#: templates/home.html:39 templates/feeds/_featured.html:3
+#: templates/feeds/_subscriptions.html:82
 msgid "Featured posts"
 msgstr ""
 
-#: templates/home.html:62 templates/blogs/_blog_cloud.html:79
+#: templates/home.html:46
+msgid "scanned page"
+msgstr ""
+
+#: templates/home.html:53
+msgctxt "indicate authorship"
+msgid "by"
+msgstr ""
+
+#: templates/home.html:61 templates/blogs/_blog_cloud.html:95
+#: templates/moderation/_correspondence.html:11
 msgid "Recent comments"
 msgstr ""
 
-#: templates/home.html:65 templates/scanning/_column_diff.html:6
-#: templates/scanning/_column_diff.html:8
+#: templates/home.html:64
+msgctxt "time since"
 msgid "ago"
 msgstr ""
 
-#: templates/home.html:67 templates/moderation/_notes.html:51
+#: templates/home.html:66
+msgctxt "indicate authorship"
 msgid "By"
 msgstr ""
 
-#: templates/home.html:67 templates/blogs/_blog_cloud.html:83
+#: templates/home.html:67
+msgctxt "commented on"
 msgid "on"
 msgstr ""
 
@@ -233,97 +258,118 @@ msgstr ""
 msgid "Join the conversation!"
 msgstr ""
 
-#: templates/home.html:76
-msgid "Head on over to the <a href='/blogs/'>blogs</a>."
+#: templates/home.html:77
+#, python-format
+msgid "Head on over to the <a href='%(blogs_url)s'>blogs</a>."
 msgstr ""
 
-#: templates/site_base.html:33
+#: templates/site_base.html:35
 msgid "Blogs"
 msgstr ""
 
-#: templates/site_base.html:34 templates/profiles/profiles_list.html:5
+#: templates/site_base.html:36 templates/profiles/profiles_list.html:5
 msgid "People"
 msgstr ""
 
-#: templates/site_base.html:35 templates/about/index.html:4
+#: templates/site_base.html:37 templates/about/index.html:5
 msgid "About"
 msgstr ""
 
-#: templates/site_base.html:42
+#: templates/site_base.html:44
 msgid "Moderation"
 msgstr ""
 
-#: templates/site_base.html:45 templates/scanning/merge.html:9
+#: templates/site_base.html:47 templates/scanning/merge.html:9
 #: templates/scanning/replace.html:9 templates/scanning/upload.html:11
 msgid "Upload"
 msgstr ""
 
-#: templates/site_base.html:69
+#: templates/site_base.html:56 templates/site_base.html.py:66
+#, python-format
+msgid "%(counter)s unread notification"
+msgid_plural "%(counter)s unread notifications"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/site_base.html:67
+#, python-format
+msgid "%(counter)s message"
+msgid_plural "%(counter)s messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/site_base.html:71
 msgid "Profile"
 msgstr ""
 
-#: templates/site_base.html:70
+#: templates/site_base.html:73
 msgid "Admin"
 msgstr ""
 
-#: templates/site_base.html:80
+#: templates/site_base.html:77
+msgid "My Posts"
+msgstr ""
+
+#: templates/site_base.html:80 templates/blogs/base.html:15
+msgid "Compose"
+msgstr ""
+
+#: templates/site_base.html:83
 msgid "Logout"
 msgstr ""
 
-#: templates/site_base.html:85
+#: templates/site_base.html:88
 msgid "Sign in"
 msgstr ""
 
-#: templates/site_base.html:85
+#: templates/site_base.html:88
 msgid "or"
 msgstr ""
 
-#: templates/site_base.html:86 templates/profiles/groups_list.html:25
+#: templates/site_base.html:89 templates/profiles/groups_list.html:26
 msgid "Join"
 msgstr ""
 
-#: templates/site_base.html:122
+#: templates/site_base.html:126
 msgid "Contact us"
 msgstr ""
 
-#: templates/site_base.html:123
+#: templates/site_base.html:127
 msgid "Copyrights"
 msgstr ""
 
-#: templates/site_base.html:124 templates/about/terms.html:4
+#: templates/site_base.html:128 templates/about/legal_base.html:7
+#: templates/about/terms.html:5
 msgid "Terms of Use"
 msgstr ""
 
-#: templates/site_base.html:125
+#: templates/site_base.html:129 templates/about/legal_base.html:8
 msgid "Privacy Policy"
 msgstr ""
 
-#: templates/site_base.html:126
+#: templates/site_base.html:130 templates/about/legal_base.html:9
 msgid "DMCA"
 msgstr ""
 
-#: templates/about/about_base.html:10
+#: templates/about/about_base.html:11
 msgid "Community Guidelines"
 msgstr ""
 
-#: templates/about/about_base.html:11 templates/about/faq.html:4
-#: templates/about/faq.html.py:7
+#: templates/about/about_base.html:12 templates/about/faq.html:5
+#: templates/about/faq.html.py:8
 msgid "Frequently Asked Questions"
 msgstr ""
 
-#: templates/about/about_base.html:12
-msgid "<a href='http://news.{{ site.domain }}'>News</a>"
-msgstr ""
-
 #: templates/about/about_base.html:13
-msgid "<a href='http://crm.{{ site.domain }}'>Mailing list</a>"
+msgctxt "News about the site"
+msgid "News"
 msgstr ""
 
-#: templates/about/copyright.html:3
+#: templates/about/copyright.html:4
 msgid "Copyright policy"
 msgstr ""
 
-#: templates/about/copyright.html:7
+#: templates/about/copyright.html:8
 #, python-format
 msgid ""
 "\n"
@@ -331,7 +377,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: templates/about/copyright.html:12
+#: templates/about/copyright.html:13
 #, python-format
 msgid ""
 "\n"
@@ -339,7 +385,7 @@ msgid ""
 "<nobr>&copy; %(year)s %(site.name)s</nobr>, all rights reserved.\n"
 msgstr ""
 
-#: templates/about/copyright.html:18
+#: templates/about/copyright.html:19
 msgid ""
 "\n"
 "All blog posts and transcriptions of blog posts are owned and copyrighted "
@@ -350,7 +396,7 @@ msgid ""
 "directly.\n"
 msgstr ""
 
-#: templates/about/copyright.html:27
+#: templates/about/copyright.html:28
 #, python-format
 msgid ""
 "\n"
@@ -359,7 +405,67 @@ msgid ""
 "<a href='%(about_terms_url)s'>Terms of Use</a>.\n"
 msgstr ""
 
-#: templates/about/faq.html:9
+#: templates/about/dmca.html:5
+#, python-format
+msgid ""
+"\n"
+"<h2>%(site_name)s Digital Millenium Copyright Act&nbsp;Policy</h2>\n"
+"<p>\n"
+"Consistent with the Digital Millennium Copyright Act, if you believe that "
+"your\n"
+"copyrighted materials have been copied in a way that constitutes copyright\n"
+"infringement, please send an email or written notice to our designated "
+"agent\n"
+"for notices of infringement and provide the following information:\n"
+"</p>\n"
+"\n"
+"<ol>\n"
+"<li>An electronic or physical signature of the person authorized to act on\n"
+"behalf of the owner of the copyright interest.</li>\n"
+"<li>A description of the copyrighted work that you claim has been infringed."
+"</li>\n"
+"<li>A description of where the material that you claim is infringing is "
+"located\n"
+"on the BtB site.</li>\n"
+"<li>Your address, telephone number, and email address.</li>\n"
+"<li>A statement by you that you have a good faith belief that the disputed "
+"use\n"
+"is not authorized by the copyright owner, its agent, or the law.</li>\n"
+"<li>A statement by you, made under penalty of perjury, that the above\n"
+"information in your notice is accurate and that you are the copyright owner "
+"or\n"
+"authorized to act on the copyright owner's behalf.</li>\n"
+"</ol>\n"
+"\n"
+"\n"
+"<p>\n"
+"Our designated agent for notice for claims of copyright infringement is\n"
+"<b>Andrew Whitacre</b> who can be reached as follows:\n"
+"<dl>\n"
+"<dt>By mail</dt>\n"
+"<dd>77 Massachusetts Ave.<br />\n"
+"E15-321<br />\n"
+"Cambridge, MA 02139</dd>\n"
+"<dt>By phone</dt>\n"
+"<dd>(617) 324-0490</dd>\n"
+"<dt>By fax</dt>\n"
+"<dd>(617) 258-6264</dd>\n"
+"<dt>By email</dt> \n"
+"<dd>awhit@mit.edu</dd>\n"
+"</dl>\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"Note: the above contact information is provided exclusively for notifying\n"
+"%(site_name)s that your copyrighted material may have been infringed. All\n"
+"other inquiries, (e.g., requests for technical assistance or customer "
+"service,\n"
+"reports of email abuse, and piracy reports), will not receive a response\n"
+"through this process.\n"
+"</p>\n"
+msgstr ""
+
+#: templates/about/faq.html:10
 #, python-format
 msgid ""
 "\n"
@@ -369,21 +475,177 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about/faq.html:16
+#: templates/about/faq.html:17
 msgid "Who is behind this?"
 msgstr ""
 
-#: templates/about/faq.html:18
+#: templates/about/faq.html:19
 msgid ""
 "\n"
-"    Between the Bars was founded by Charlie DeTar and Benjamin Mako Hill.  "
-"It is operated by Charlie DeTar and volunteers and staff in the <a "
-"href='http://civic.mit.edu'>Center for Civic Media</a> at MIT.\n"
+"    Since the summer 2011, Between the Bars has been operated by Charlie "
+"DeTar, Carl McLaren, and Benjamin Sugar. The site would not be possible "
+"without the generous contributions of transcribers, commenters, and everyone "
+"at the Center for Civic Media.\n"
 "\t"
 msgstr ""
 
-#: templates/about/faq.html:22
+#: templates/about/faq.html:23
+msgid "How did it begin?"
+msgstr ""
+
+#: templates/about/faq.html:25
+msgid ""
+"\n"
+"    Between the Bars was founded by Charlie DeTar and Benjamin Mako Hill in "
+"the <a href='http://civic.mit.edu'>Center for Future Civic Media</a> at MIT "
+"in October of 2010.\n"
+"\t"
+msgstr ""
+
+#: templates/about/faq.html:29
 msgid "Why blogging?"
+msgstr ""
+
+#: templates/about/faq.html:37
+msgid ""
+"\n"
+"      Derick Attwood, father of imprisoned Shaun Attwood, speaking\n"
+"      about his son's blog,\n"
+"      <a href='http://jonsjailjournal.blogspot.com'>Jon's Jail Journal</a>.</"
+"p>\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:51
+msgid ""
+"\n"
+"           Ethan Zuckerman, speaking about \"bridge blogs\" that\n"
+"           service communities without access to other forms broadcast\n"
+"           media.\n"
+"           (<a href='http://jonsjailjournal.blogspot.com/2005/08/28-july-05-"
+"bridge-blogs-give-voice-to.html'>source</a>)\n"
+"         "
+msgstr ""
+
+#: templates/about/faq.html:60
+msgid ""
+"\n"
+"\tBlogging can not only let people in prison tell their stories and\n"
+"\treport on their conditions, but it can also provide an instrumental\n"
+"\trole in maintaining \"weak-tie\" social networks (acquaintances and\n"
+"\tfriends of friends), which are important for helping people\n"
+"\t<a href='http://citeseerx.ist.psu.edu/viewdoc/download?"
+"doi=10.1.1.128.7760&rep=rep1&type=pdf'>to find jobs and communities in which "
+"to live</a>.  This can reduce recidivism.\n"
+"  "
+msgstr ""
+
+#: templates/about/faq.html:69
+msgid "How often do prisoners receive comments that I leave?"
+msgstr ""
+
+#: templates/about/faq.html:71
+msgid ""
+"\n"
+"    We currently print and mail new comments about once per week.\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:75
+msgid "What does it cost?"
+msgstr ""
+
+#: templates/about/faq.html:77
+msgid ""
+"\n"
+"    Aside from the postage to send us letters, the service is free.\n"
+"    Maintenance expenses are handled through donations and grants, and time "
+"to\n"
+"    scan letters is donated by volunteers.  It is very important to us that\n"
+"    this service always be free.\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:84
+msgid "How long will this last?"
+msgstr ""
+
+#: templates/about/faq.html:86
+msgid ""
+"\n"
+"    We will keep the service running as long as we are able to secure the\n"
+"    funding and volunteer energy necessary for it to continue.\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:91
+msgid "Isn't this dangerous?"
+msgstr ""
+
+#: templates/about/faq.html:93
+msgid ""
+"\n"
+"    We don't believe so.  People in prison already have the ability to send "
+"letters,\n"
+"    which are read and censored by prison officials on the way in and out.\n"
+"    Prisoners blogging is not new &ndash; it is something\n"
+"    <a href='http://prisonerben.blogspot.com/'>many</a>\n"
+"    <a href='http://jonsjailjournal.blogspot.com/'>people</a>\n"
+"    <a href='http://prisonpete.blogspot.com/'>have</a>\n"
+"    <a href='http://supportdaniel.org/blog/'>been</a>\n"
+"    <a href='http://www.spin.com/articles/lil-wayne-starts-blog-"
+"prison'>doing</a>\n"
+"    for a long time.  However, it has previously only been accessible to "
+"people\n"
+"    who have tech-savvy friends or family with enough time on their hands "
+"to\n"
+"    transcribe letters.  Prison blogging has been\n"
+"    <a href='http://www.ethanzuckerman.com/blog/2007/08/31/prison-"
+"blogging/'>widely</a>\n"
+"    <a href='http://www.guardian.co.uk/commentisfree/libertycentral/2009/"
+"sep/09/prison-blogging'>discussed</a>,\n"
+"    <a href='http://www.ojr.org/ojr/law/1082592378.php'>challenged in court</"
+"a>\n"
+"    (and found legal), and is fundamentally no more risky than\n"
+"    <a rel='nofollow' href='http://www.prisonpenpals.com/'>prison</a>\n"
+"    <a rel='nofollow' href='http://www.outlawsonline.com/'>penpal</a>\n"
+"    <a rel='nofollow' href='http://www.writeaprisoner.com/'>services</a>\n"
+"    which\n"
+"    <a rel='nofollow' href='http://www.conpals.com'>abound</a>.\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:117
+msgid "I'd like to republish a prisoner's writing.  Can I do that?"
+msgstr ""
+
+#: templates/about/faq.html:119
+msgid ""
+"\n"
+"    Prisoners maintain the copyrights to all of their writing.  If you'd "
+"like\n"
+"    to republish it, you should ask them for permission.  You can do so by\n"
+"    leaving a comment or, if they have provided an address, contacting them\n"
+"    directly.\n"
+"    "
+msgstr ""
+
+#: templates/about/faq.html:126
+#, python-format
+msgid "\"I want to run %(site_name)s in another country.  Can you help?"
+msgstr ""
+
+#: templates/about/faq.html:128
+#, python-format
+msgid ""
+"We'd love to talk to you.  Please <a href='%(site_email)s'>contact us</a>."
+msgstr ""
+
+#: templates/about/faq.html:131
+#, python-format
+msgid ""
+"Have a question that isn't answered here?  Feel free to <a "
+"href='%(site_email)s'>ask us</a>."
 msgstr ""
 
 #: templates/about/get_involved.html:2
@@ -394,7 +656,126 @@ msgstr ""
 msgid "comment ... volunteer ... process mail ..."
 msgstr ""
 
-#: templates/about/index.html:16
+#: templates/about/guidelines.html:8
+#, python-format
+msgid ""
+"\n"
+"<h1>Community Guidelines</h1>\n"
+"<p>\n"
+"Prison and crime are difficult subjects which impact people in very deep "
+"and\n"
+"personal ways.  Emotions often run high and hot when dealing with those who\n"
+"have caused harm to others, or who feel they have been wronged.  People in\n"
+"prison often feel powerless and crushed by a system that does little to "
+"help\n"
+"them, and victims of crimes often feel angry and vengeful toward those who "
+"hurt\n"
+"them.  \n"
+"</p>\n"
+"<p>\n"
+"These guidelines aim to help us foster a positive community to help\n"
+"<em>everyone</em> involved by dealing with the issues in constructive ways.\n"
+"</p>\n"
+"<h2><a name='comments'></a>Guidelines for comments</h2>\n"
+"<p>\n"
+"We encourage you to engage with the difficult subject of incarceration "
+"openly\n"
+"and honestly, and to leave comments that say what you feel.  But we ask you "
+"to\n"
+"do so within these rules:\n"
+"</p>\n"
+"<p>\n"
+"<ul class='bullets'>\n"
+"    <li>No hate speech.</li>\n"
+"    <li>No personal attacks.</li>\n"
+"    <li>No illegal content.</li>\n"
+"</ul>\n"
+"</p>\n"
+"<p>Instead:</p>\n"
+"<p>\n"
+"<ul class='bullets'>\n"
+"    <li><em>Do</em> say how you feel (without attacking).</li>\n"
+"    <li><em>Do</em> communicate honestly and factually.</li>\n"
+"    <li><em>Do</em> challenge yourself to speak constructively.</li>\n"
+"</ul>\n"
+"</p>\n"
+"<p>\n"
+"Writers love receiving comments &ndash; they often have very little\n"
+"opportunity to communicate with anyone in the outside world.  Even a simple\n"
+"\"thanks for your post\" goes a long way.\n"
+"</p>\n"
+"<p>\n"
+"If you notice any comment which violates these rules, don't hesitate to \n"
+"<a href='mailto:%(site.email)s'>let us know</a> right away.\n"
+"</p>\n"
+"\n"
+"<h2><a name='transcriptions'></a>Guidelines for transcriptions</h2>\n"
+"<p>\n"
+"Transcriptions make posts more accessible to readers with visual "
+"disabilities,\n"
+"search engines, and can help greatly in cases of difficult handwriting or "
+"poor\n"
+"typewriters.  These style guidelines aim to help keep transcriptions "
+"consistent\n"
+"and accurate.\n"
+"</p>\n"
+"<dl>\n"
+"    <dt>Spelling errors</dt>\n"
+"    <dd><p>\n"
+"    Keep in mind that most people in prison are writing without the benefit "
+"of\n"
+"    spell-checkers, without which most of us are hopeless.  That said, "
+"respect\n"
+"    poetic license.  Fix the most obvious errors, but if there's any doubt\n"
+"    about whether it was intentional, stay faithful to the original.\n"
+"    </p></dd>\n"
+"    <dt>Line breaks</dt>\n"
+"    <dd><p> \n"
+"    If line breaks in the original are obviously structured (as in a poem "
+"or\n"
+"    song), preserve the line breaks.  For regular prose and paragraphs, "
+"allow\n"
+"    the lines to wrap within paragraphs.\n"
+"    </p></dd>\n"
+"    <dt>Illegible portions</dt>\n"
+"    <dd><p>\n"
+"    Occasionally, things get smudged, or the handwriting or typewriter "
+"doesn't\n"
+"    read as clearly as it should.  Replace illegible parts within words "
+"with\n"
+"    <em>[?]</em>, and longer sections or whole worlds with <em>[illegible]</"
+"em>.\n"
+"    </p></dd>\n"
+"    <dt>Annotations</dt>\n"
+"    <dd><p>\n"
+"    Add descriptions of photos, drawings, or other imagery in brackets, for "
+"example:\n"
+"    </p>\n"
+"    <blockquote>\n"
+"    [Photo of a black man in his 30's wearing a white shirt, holding a small "
+"child]\n"
+"    </blockquote>\n"
+"    <p>\n"
+"    If necessary for clarity, transcribers should add any additional notes\n"
+"    needed to help a reader make sense of a transcription as a short note "
+"in\n"
+"    brackets.  However, such notes should be kept to a minimum.\n"
+"    </p>\n"
+"    </dd>\n"
+"</dl>\n"
+"\n"
+"<p>\n"
+"If you find a transcription that does not meet these guidelines, please "
+"boldly \n"
+"edit it and correct it.  If you have unanswered questions about "
+"transcribing, \n"
+"<a href='mailto:%(site.email)s'>ask us</a>!\n"
+"</p>\n"
+"\n"
+"</div>\n"
+msgstr ""
+
+#: templates/about/index.html:17
 #, python-format
 msgid ""
 "\n"
@@ -426,7 +807,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:41
+#: templates/about/index.html:42
 #, python-format
 msgid ""
 "\n"
@@ -434,7 +815,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:46
+#: templates/about/index.html:47
 #, python-format
 msgid ""
 "\n"
@@ -453,11 +834,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:61
+#: templates/about/index.html:62
 msgid "Leave comments"
 msgstr ""
 
-#: templates/about/index.html:63
+#: templates/about/index.html:64
 #, python-format
 msgid ""
 "\n"
@@ -469,11 +850,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:71
+#: templates/about/index.html:72
 msgid "Transcribe posts"
 msgstr ""
 
-#: templates/about/index.html:73
+#: templates/about/index.html:74
 #, python-format
 msgid ""
 "\n"
@@ -487,7 +868,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:87
+#: templates/about/index.html:88
 #, python-format
 msgid ""
 "\n"
@@ -496,7 +877,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/index.html:92
+#: templates/about/index.html:93
 #, python-format
 msgid ""
 "\n"
@@ -505,7 +886,16 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/about/privacy.html:9
+#: templates/about/legal_base.html:6
+msgctxt "Title for copyright policy page"
+msgid "Copyrights"
+msgstr ""
+
+#: templates/about/legal_base.html:16
+msgid "Legal resources provided by:"
+msgstr ""
+
+#: templates/about/privacy.html:10
 #, python-format
 msgid ""
 "\n"
@@ -513,7 +903,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/about/privacy.html:15
+#: templates/about/privacy.html:16
 msgid ""
 "\n"
 "    PLEASE REVIEW BEFORE USING THIS WEBSITE – IF YOU DO NOT AGREE WITH ALL "
@@ -522,7 +912,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: templates/about/privacy.html:21
+#: templates/about/privacy.html:22
 #, python-format
 msgid ""
 "\n"
@@ -651,18 +1041,18 @@ msgstr ""
 msgid "Resources"
 msgstr ""
 
-#: templates/about/terms.html:7
+#: templates/about/terms.html:8
 msgid "{{ site.name }} Terms of Use"
 msgstr ""
 
-#: templates/about/terms.html:9
+#: templates/about/terms.html:10
 msgid ""
 "\n"
 "    PLEASE REVIEW BEFORE USING THIS WEBSITE &ndash; IF YOU DO NOT AGREE TO "
 "THESE TERMS OF USE, DO NOT USE THIS WEBSITE.\n"
 msgstr ""
 
-#: templates/about/terms.html:13
+#: templates/about/terms.html:14
 #, python-format
 msgid ""
 "\n"
@@ -1053,90 +1443,98 @@ msgid ""
 "</p>\n"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:6
+#: templates/blogs/_blog_cloud.html:7
 msgid "Categories"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:10 templates/blogs/_blog_cloud.html:66
+#: templates/blogs/_blog_cloud.html:11 templates/blogs/_blog_cloud.html:82
 #: templates/blogs/all_posts_list.html:2
 msgid "Recent posts"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:14
-#: templates/correspondence/base_letter_list.html:138
+#: templates/blogs/_blog_cloud.html:15
 #: templates/correspondence/show_commentmailing.html:37
-#: templates/moderation/stats.html:87
-#: templates/profiles/profile_detail.html:81
+#: templates/moderation/_correspondence.html:372
+#: templates/moderation/stats.html:90
 msgid "Comments"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:18
+#: templates/blogs/_blog_cloud.html:19
 msgid "Authors"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:21
+#: templates/blogs/_blog_cloud.html:22
 msgid "Every Page"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:28
+#: templates/blogs/_blog_cloud.html:29
 msgid "Posts by category"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:39
+#: templates/blogs/_blog_cloud.html:40
 msgid "Uncategorized"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:49
+#: templates/blogs/_blog_cloud.html:50 templates/moderation/_groups.html:12
 msgid "Campaigns"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:74
+#: templates/blogs/_blog_cloud.html:66 templates/moderation/_groups.html:3
+#: templates/moderation/home.html:23
+msgid "Groups"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:90
 msgid "All posts by date"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:83
-#: templates/blogs/_post_bottom_line.html:22
+#: templates/blogs/_blog_cloud.html:99
+msgid "on"
+msgstr ""
+
+#: templates/blogs/_blog_cloud.html:99
+#: templates/blogs/_post_bottom_line.html:25
 #: templates/blogs/_sharing_buttons.html:3
 #: templates/blogs/all_comments_list.html:7
 #: templates/blogs/author_post_list.html:3
 #: templates/blogs/author_post_list.html:14
-#: templates/blogs/post_detail.html:30
-#: templates/btb/admin-email-transcription-edited.txt:2
+#: templates/blogs/post_detail.html:34
+#: templates/btb/admin-email-transcription-edited.txt:3
 #: templates/notification/notice_settings.html:50
 #: templates/notification/new_reply/full.txt:2
-#: templates/subscriptions/subscribe_to.html:12
+#: templates/subscriptions/subscribe_to.html:13
 msgid "by"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:86
+#: templates/blogs/_blog_cloud.html:102
 msgid "All comments"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:91
+#: templates/blogs/_blog_cloud.html:107
 msgid "Authors with recent posts"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:97 templates/profiles/groups_list.html:88
+#: templates/blogs/_blog_cloud.html:113 templates/profiles/groups_list.html:89
 msgid "profile"
 msgstr ""
 
-#: templates/blogs/_blog_cloud.html:102
+#: templates/blogs/_blog_cloud.html:118
 #: templates/profiles/profiles_list.html:10
 msgid "All authors"
 msgstr ""
 
-#: templates/blogs/_post_bottom_line.html:3
+#: templates/blogs/_post_bottom_line.html:4
 msgid "Read more &raquo;"
 msgstr ""
 
-#: templates/blogs/_post_bottom_line.html:20
-#: templates/blogs/post_detail.html:28
-#: templates/correspondence/delete_letter_confirm.html:15
+#: templates/blogs/_post_bottom_line.html:23
+#: templates/blogs/post_detail.html:32
+#: templates/correspondence/delete_letter_confirm.html:16
 msgid "From"
 msgstr ""
 
-#: templates/blogs/_post_bottom_line.html:24
-#: templates/blogs/post_detail.html:34
+#: templates/blogs/_post_bottom_line.html:27
+#: templates/blogs/post_detail.html:38
 msgid "writing for"
 msgstr ""
 
@@ -1156,58 +1554,16 @@ msgstr ""
 msgid "Scanned page"
 msgstr ""
 
-#: templates/blogs/_post_pages.html:34
+#: templates/blogs/_post_pages.html:35
 msgid "uploaded"
 msgstr ""
 
-#: templates/blogs/_post_pages.html:35
+#: templates/blogs/_post_pages.html:36
 msgid "Original (PDF)"
 msgstr ""
 
-#: templates/blogs/_post_tag_list.html:5
+#: templates/blogs/_post_tag_list.html:6
 msgid "filed under:"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:23
-msgid "Flag post"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:30
-#: templates/profiles/profile_detail.html:27
-msgid "Click to read the transcription"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:31
-#: templates/profiles/profile_detail.html:28
-msgid "Transcribed"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:36
-#: templates/profiles/profile_detail.html:32
-msgid "Partially transcribed"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:43
-#: templates/profiles/profile_detail.html:39
-msgid "Add transcription"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:52
-#: templates/blogs/_post_title_line.html:59
-#: templates/btb/admin-email-comment-posted.txt:14
-msgid "Edit"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:67 templates/blogs/edit_post.html:38
-#: templates/blogs/manage_posts.html:12
-#: templates/btb/admin-unmanaged-post-notification.txt:15
-msgid "Tags"
-msgstr ""
-
-#: templates/blogs/_post_title_line.html:73
-#: templates/moderation/_common.html:25 templates/moderation/_scans.html:118
-#: templates/scanning/transcription_edit.html:117
-msgid "Save"
 msgstr ""
 
 #: templates/blogs/_sharing_buttons.html:2
@@ -1246,12 +1602,8 @@ msgstr ""
 msgid "Recent posts from all authors"
 msgstr ""
 
-#: templates/blogs/base.html:13
-msgid "My Blog Posts"
-msgstr ""
-
 #: templates/blogs/base.html:14
-msgid "Compose"
+msgid "My Blog Posts"
 msgstr ""
 
 #: templates/blogs/blogs_front_page.html:3
@@ -1262,38 +1614,51 @@ msgstr ""
 msgid "Recent posts by date"
 msgstr ""
 
-#: templates/blogs/delete_post.html:5
-msgid "Delete the post"
+#: templates/blogs/blogs_front_page.html:10
+msgid "transcribed"
+msgstr ""
+
+#: templates/blogs/blogs_front_page.html:12
+msgid "partially transcribed"
+msgstr ""
+
+#: templates/blogs/blogs_front_page.html:14
+msgid "not transcribed"
 msgstr ""
 
 #: templates/blogs/delete_post.html:6
-msgid "and remove it from the site?"
+msgid "Delete the post"
 msgstr ""
 
 #: templates/blogs/delete_post.html:7
+msgid "and remove it from the site?"
+msgstr ""
+
+#: templates/blogs/delete_post.html:8
 msgid "This can't be undone."
 msgstr ""
 
-#: templates/blogs/delete_post.html:12 templates/blogs/edit_post.html:64
+#: templates/blogs/delete_post.html:13 templates/blogs/edit_post.html:65
 msgid "Delete post"
 msgstr ""
 
-#: templates/blogs/delete_post.html:16
+#: templates/blogs/delete_post.html:17
 #: templates/comments/delete_comment.html:11
+#: templates/moderation/_correspondence.html:46
 #: templates/moderation/_notes.html:27
 #: templates/scanning/transcription_edit.html:118
 msgid "Cancel"
 msgstr ""
 
-#: templates/blogs/edit_post.html:6 templates/blogs/edit_post.html.py:15
+#: templates/blogs/edit_post.html:7 templates/blogs/edit_post.html.py:16
 msgid "Editing post"
 msgstr ""
 
-#: templates/blogs/edit_post.html:8 templates/blogs/edit_post.html.py:17
+#: templates/blogs/edit_post.html:9 templates/blogs/edit_post.html.py:18
 msgid "Compose post"
 msgstr ""
 
-#: templates/blogs/edit_post.html:22
+#: templates/blogs/edit_post.html:23
 #, python-format
 msgid ""
 "\n"
@@ -1305,68 +1670,73 @@ msgid ""
 "\t"
 msgstr ""
 
-#: templates/blogs/edit_post.html:31
+#: templates/blogs/edit_post.html:32
 msgid ""
 "If you'd like to remove the post, click &ldquo;Delete post&ldquo; below."
 msgstr ""
 
-#: templates/blogs/edit_post.html:40
+#: templates/blogs/edit_post.html:39 templates/blogs/manage_posts.html:13
+#: templates/btb/admin-unmanaged-post-notification.txt:15
+msgid "Tags"
+msgstr ""
+
+#: templates/blogs/edit_post.html:41
 msgid "(optional) Comma separated list of categories"
 msgstr ""
 
-#: templates/blogs/edit_post.html:52
+#: templates/blogs/edit_post.html:53
 msgid "Save post"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:4
+#: templates/blogs/manage_posts.html:5
 msgid "My posts"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:7
+#: templates/blogs/manage_posts.html:8
 msgid "Compose new post"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:11
+#: templates/blogs/manage_posts.html:12
 msgid "Title"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:13
-#: templates/moderation/manage_tasks.html:45
+#: templates/blogs/manage_posts.html:14
+#: templates/moderation/manage_tasks.html:46
 msgid "Status"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:14
-#: templates/moderation/manage_tasks.html:44
-#: templates/notification/notices.html:17
-#: templates/scanning/revision_list.html:28
+#: templates/blogs/manage_posts.html:15
+#: templates/moderation/manage_tasks.html:45
+#: templates/notification/notices.html:18
+#: templates/scanning/revision_list.html:29
 msgid "Date"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:24
+#: templates/blogs/manage_posts.html:25
 msgid "Draft"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:27
-#: templates/moderation/_dashboard.html:19 templates/moderation/stats.html:42
+#: templates/blogs/manage_posts.html:28
+#: templates/moderation/_dashboard.html:19 templates/moderation/stats.html:45
 msgid "Ready to publish"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:30
-#: templates/moderation/_dashboard.html:20 templates/moderation/stats.html:41
+#: templates/blogs/manage_posts.html:31
+#: templates/moderation/_dashboard.html:20 templates/moderation/stats.html:44
 msgid "Published"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:33
+#: templates/blogs/manage_posts.html:34
 msgid "Can't be published"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:39
-#: templates/btb/admin-email-comment-posted.txt:4
+#: templates/blogs/manage_posts.html:40
+#: templates/btb/admin-email-comment-posted.txt:5
 #: templates/btb/admin-visitor-profile-notification.txt:4
 msgid "View on site"
 msgstr ""
 
-#: templates/blogs/manage_posts.html:45
+#: templates/blogs/manage_posts.html:46
 msgid "No posts yet."
 msgstr ""
 
@@ -1378,65 +1748,65 @@ msgstr ""
 msgid "By the page"
 msgstr ""
 
-#: templates/blogs/page_picker.html:45
+#: templates/blogs/page_picker.html:46
 msgid ""
-"This page requires javsacript. To browse {{ site.name }} without javascript, "
+"This page requires javascript. To browse {{ site.name }} without javascript, "
 "try"
 msgstr ""
 
-#: templates/blogs/page_picker.html:45
+#: templates/blogs/page_picker.html:46
 msgid "blogs"
 msgstr ""
 
-#: templates/blogs/page_picker.html:47
+#: templates/blogs/page_picker.html:48
 msgid "Every page"
 msgstr ""
 
-#: templates/blogs/page_picker.html:50
+#: templates/blogs/page_picker.html:51
 msgid "Loading..."
 msgstr ""
 
-#: templates/blogs/page_picker.html:53
+#: templates/blogs/page_picker.html:54
 msgid "That's all so far"
 msgstr ""
 
-#: templates/blogs/page_picker.html:54
+#: templates/blogs/page_picker.html:55
 msgid "help us grow"
 msgstr ""
 
-#: templates/blogs/post_detail.html:32
+#: templates/blogs/post_detail.html:36
 msgid ""
 "author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>"
 msgstr ""
 
-#: templates/blogs/post_detail.html:43
+#: templates/blogs/post_detail.html:47
 msgid "This post is in reply to comments on"
 msgstr ""
 
-#: templates/blogs/post_detail.html:75
-#: templates/profiles/profile_detail.html:56
-#: templates/profiles/profile_edit.html:43
+#: templates/blogs/post_detail.html:79
+#: templates/profiles/profile_detail.html:51
+#: templates/profiles/profile_edit.html:44
 msgid "Transcription"
 msgstr ""
 
-#: templates/blogs/post_detail.html:79 templates/comments/_comment.html:36
+#: templates/blogs/post_detail.html:83
 #: templates/notification/notice_settings.html:11
-#: templates/profiles/profile_detail.html:60
-#: templates/profiles/profile_edit.html:44
+#: templates/profiles/profile_detail.html:55
+#: templates/profiles/profile_edit.html:45
 msgid "edit"
 msgstr ""
 
-#: templates/blogs/post_detail.html:80
-#: templates/profiles/profile_detail.html:61
-#: templates/scanning/revision_list.html:5
+#: templates/blogs/post_detail.html:84
+#: templates/profiles/profile_detail.html:56
+#: templates/scanning/revision_list.html:6
 msgid "revisions"
 msgstr ""
 
-#: templates/blogs/post_detail.html:103
+#: templates/blogs/post_detail.html:108
 msgid "Replies"
 msgstr ""
 
-#: templates/blogs/post_detail.html:103
+#: templates/blogs/post_detail.html:108
 msgid "Replies feed"
 msgstr ""
 
@@ -1473,59 +1843,54 @@ msgstr ""
 msgid "Note content"
 msgstr ""
 
-#: templates/btb/admin-email-comment-posted.txt:2
+#: templates/btb/admin-email-comment-posted.txt:3
 msgid "A comment has been posted on"
 msgstr ""
 
-#: templates/btb/admin-email-comment-posted.txt:12
+#: templates/btb/admin-email-comment-posted.txt:13
 msgid "Moderation functions"
 msgstr ""
 
-#: templates/btb/admin-email-comment-posted.txt:13
-#: templates/profiles/confirm_delete_scan.html:6
-msgid "Delete"
-msgstr ""
-
-#: templates/btb/admin-email-comment-posted.txt:16
-#: templates/btb/admin-email-transcription-edited.txt:13
+#: templates/btb/admin-email-comment-posted.txt:17
+#: templates/btb/admin-email-transcription-edited.txt:15
 #: templates/btb/admin-visitor-profile-notification.txt:10
 msgid "Admin functions"
 msgstr ""
 
-#: templates/btb/admin-email-comment-posted.txt:17
-#: templates/btb/admin-email-transcription-edited.txt:14
+#: templates/btb/admin-email-comment-posted.txt:18
+#: templates/btb/admin-email-transcription-edited.txt:16
 #: templates/btb/admin-unmanaged-post-notification.txt:6
 #: templates/btb/admin-visitor-profile-notification.txt:7
 msgid "Edit user"
 msgstr ""
 
-#: templates/btb/admin-email-comment-posted.txt:18
-#: templates/btb/admin-email-transcription-edited.txt:15
+#: templates/btb/admin-email-comment-posted.txt:19
+#: templates/btb/admin-email-transcription-edited.txt:17
 #: templates/btb/admin-visitor-profile-notification.txt:13
 msgid "Delete user"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:2
+#: templates/btb/admin-email-transcription-edited.txt:3
 msgid "The transcription for"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:2
+#: templates/btb/admin-email-transcription-edited.txt:3
 msgid "was edited by user"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:4
+#: templates/btb/admin-email-transcription-edited.txt:6
 msgid "Actions"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:6
+#: templates/btb/admin-email-transcription-edited.txt:8
 msgid "Diff"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:8
+#: templates/btb/admin-email-transcription-edited.txt:10
 msgid "Edit transcription"
 msgstr ""
 
-#: templates/btb/admin-email-transcription-edited.txt:10
+#: templates/btb/admin-email-transcription-edited.txt:12
 msgid "View document"
 msgstr ""
 
@@ -1546,48 +1911,19 @@ msgstr ""
 msgid "A profile PDF was uploaded by user"
 msgstr ""
 
+#: templates/comments/_comment.html:11
+msgid "removed"
+msgstr ""
+
 #: templates/comments/_comment.html:18
-#, python-format
-msgid ""
-"\n"
-"\t\t\t      Posted %(comment.created|timesince)s ago.\n"
-"\t\t\t      "
+msgid "Posted {{ comment.created|timesince }} ago."
 msgstr ""
 
-#: templates/comments/_comment.html:25
-#, python-format
-msgid ""
-"\n"
-"\t\t\t\t    Mailed %(comment.letter_sent|timesince)s ago\n"
-"\t\t\t\t    "
+#: templates/comments/_comment.html:23
+msgid "Mailed {{ comment.letter_sent|timesince }} ago"
 msgstr ""
 
-#: templates/comments/_comment.html:35 templates/comments/edit_comment.html:3
-#: templates/comments/edit_comment.html:5
-msgid "Edit comment"
-msgstr ""
-
-#: templates/comments/_comment.html:40
-msgid "Delete comment"
-msgstr ""
-
-#: templates/comments/_comment.html:41 templates/notification/notices.html:28
-msgid "delete"
-msgstr ""
-
-#: templates/comments/_comment.html:47
-msgid "Flag comment"
-msgstr ""
-
-#: templates/comments/_comment.html:56
-msgid "scanned reply"
-msgstr ""
-
-#: templates/comments/_comment.html:57
-msgid "view as blog post"
-msgstr ""
-
-#: templates/comments/_comment_form.html:6
+#: templates/comments/_comment_form.html:7
 msgid ""
 "\n"
 "\t    We will print and mail your reply by <span class='comment-maildate'></"
@@ -1595,12 +1931,54 @@ msgid ""
 "\t    "
 msgstr ""
 
-#: templates/comments/_comment_form.html:10
+#: templates/comments/_comment_form.html:11
 msgid "Guidelines"
 msgstr ""
 
-#: templates/comments/_comment_form.html:21
+#: templates/comments/_comment_form.html:22
 msgid "Send Reply &raquo;"
+msgstr ""
+
+#: templates/comments/_favorites.html:5
+msgid "Favorited"
+msgstr ""
+
+#: templates/comments/_favorites.html:9
+msgid "Mark as favorite"
+msgstr ""
+
+#: templates/comments/_favorites.html:9
+msgid "Favorite"
+msgstr ""
+
+#: templates/comments/_favorites.html:13
+#, python-format
+msgid "1 user has marked this as a favorite"
+msgid_plural "%(counter)s users have marked this as a favorite"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/comments/_favorites.html:15
+#, python-format
+msgid ""
+"\n"
+"        <a class='get-favorites popover-trigger' href='%(list_fav_url)s'>"
+"%(counter)s Favorite</a>\n"
+"      "
+msgid_plural ""
+"\n"
+"        <a class='get-favorites popover-trigger' href='%(list_fav_url)s'>"
+"%(counter)s Favorites</a>\n"
+"      "
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/comments/_favorites.html:23
+msgid "Close"
+msgstr ""
+
+#: templates/comments/_list_favorites.html:2
+msgid "Favorited by:"
 msgstr ""
 
 #: templates/comments/delete_comment.html:4
@@ -1612,7 +1990,12 @@ msgstr ""
 msgid "Are you sure you want to delete this reply?  There is no undo."
 msgstr ""
 
-#: templates/comments/edit_comment.html:8
+#: templates/comments/edit_comment.html:4
+#: templates/comments/edit_comment.html:6
+msgid "Edit comment"
+msgstr ""
+
+#: templates/comments/edit_comment.html:9
 #, python-format
 msgid ""
 "\n"
@@ -1621,7 +2004,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/comments/edit_comment.html:19
+#: templates/comments/edit_comment.html:20
 msgid "Save changes"
 msgstr ""
 
@@ -1655,216 +2038,178 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: templates/correspondence/base.html:9
+#: templates/correspondence/base.html:10
 msgid "Pending"
 msgstr ""
 
-#: templates/correspondence/base.html:12
-#: templates/correspondence/base_letter_list.html:48
+#: templates/correspondence/base.html:13
+#: templates/correspondence/base_letter_list.html:49
 msgid "Sent"
 msgstr ""
 
-#: templates/correspondence/base.html:15
+#: templates/correspondence/base.html:16
+#: templates/moderation/_correspondence.html:39
 msgid "Write a letter"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:7
-#: templates/correspondence/pending.html:3
+#: templates/correspondence/base_letter_list.html:8
+#: templates/correspondence/pending.html:4
 msgid "Manage correspondence"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:18
+#: templates/correspondence/base_letter_list.html:19
 msgid "Changed letter sent status."
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:47
+#: templates/correspondence/base_letter_list.html:48
 msgid "Recipient"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:49
+#: templates/correspondence/base_letter_list.html:50
+#: templates/moderation/_correspondence.html:379
 msgid "Letters"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:50
+#: templates/correspondence/base_letter_list.html:51
 msgid "Date created"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:51
+#: templates/correspondence/base_letter_list.html:52
 msgid "Sender"
 msgstr ""
 
-#: templates/correspondence/base_letter_list.html:64
-msgid "Address missing"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:66
-msgid "Add one?"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:88
-msgid "Consent form: joined"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:97
-msgid "Signup complete"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:107
-msgid "First post"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:118
-msgid "Letter"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:134
-msgid "Build comment mailing (PDF)"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:159
-msgid "Remove"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:173
-msgid "Show waitlist postcard"
-msgstr ""
-
-#: templates/correspondence/base_letter_list.html:175
-msgid "Waitlist"
-msgstr ""
-
-#: templates/correspondence/delete_letter_confirm.html:2
+#: templates/correspondence/delete_letter_confirm.html:3
 msgid "Confirm delete letter"
 msgstr ""
 
-#: templates/correspondence/delete_letter_confirm.html:6
+#: templates/correspondence/delete_letter_confirm.html:7
 msgid "Are you sure you want to delete this letter?"
 msgstr ""
 
-#: templates/correspondence/delete_letter_confirm.html:8
+#: templates/correspondence/delete_letter_confirm.html:9
 msgid "Delete letter"
 msgstr ""
 
-#: templates/correspondence/delete_letter_confirm.html:10
-#: templates/moderation/_common.html:26
-#: templates/profiles/profile_edit.html:31
+#: templates/correspondence/delete_letter_confirm.html:11
+#: templates/moderation/_common.html:35
+#: templates/profiles/profile_edit.html:32
 msgid "cancel"
 msgstr ""
 
-#: templates/correspondence/delete_letter_confirm.html:14
+#: templates/correspondence/delete_letter_confirm.html:15
 msgid "To"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:3
+#: templates/correspondence/mass_mailing_spreadsheet.html:4
 msgid "Mass Mailing spreadsheet"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:5
+#: templates/correspondence/mass_mailing_spreadsheet.html:6
 msgid "Mass Mailing Spreadsheet"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:7
+#: templates/correspondence/mass_mailing_spreadsheet.html:8
 msgid "Spreadsheets for users in the following organizations:"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:11
+#: templates/correspondence/mass_mailing_spreadsheet.html:12
 msgid "All users in"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:17
+#: templates/correspondence/mass_mailing_spreadsheet.html:18
 msgid "In prison"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:19
+#: templates/correspondence/mass_mailing_spreadsheet.html:20
 msgid "In the system, with returned license agreement or without."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:23
+#: templates/correspondence/mass_mailing_spreadsheet.html:24
 msgid "Invitable"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:25
+#: templates/correspondence/mass_mailing_spreadsheet.html:26
 msgid ""
 "On the waitlist or not yet waitlisted -- we could send them an invitation."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:29
+#: templates/correspondence/mass_mailing_spreadsheet.html:30
 msgid "Waitlistable"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:31
+#: templates/correspondence/mass_mailing_spreadsheet.html:32
 msgid ""
 "We have their name, but we haven't invited them, nor have we sent a waitlist "
 "postcard."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:35
+#: templates/correspondence/mass_mailing_spreadsheet.html:36
 msgid "Waitlisted"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:37
+#: templates/correspondence/mass_mailing_spreadsheet.html:38
 msgid ""
 "We have sent them a waitlist postcard, and we haven't sent an invitation."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:41
+#: templates/correspondence/mass_mailing_spreadsheet.html:42
 msgid "Lost Contact"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:43
+#: templates/correspondence/mass_mailing_spreadsheet.html:44
 msgid ""
 "\n"
-"\tLetters bounce; so these addresses are useless.  \"Lost contact\" people "
-"don't appear in other lists.\n"
-"\t"
+"      Letters bounce; so these addresses are useless.  \"Lost contact\"\n"
+"      people don't appear in other lists.\n"
+"      "
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:49
+#: templates/correspondence/mass_mailing_spreadsheet.html:51
 msgid "Invited users in"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:56
+#: templates/correspondence/mass_mailing_spreadsheet.html:58
 msgid "Invited"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:58
+#: templates/correspondence/mass_mailing_spreadsheet.html:60
 msgid ""
 "An invitation has been sent, but license agreement has not been returned."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:62
+#: templates/correspondence/mass_mailing_spreadsheet.html:64
 msgid "Enrolled"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:64
+#: templates/correspondence/mass_mailing_spreadsheet.html:66
 msgid "In prison, have returned a license agreement."
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:68
+#: templates/correspondence/mass_mailing_spreadsheet.html:70
 msgid "Bloggers with published content"
 msgstr ""
 
-#: templates/correspondence/mass_mailing_spreadsheet.html:70
+#: templates/correspondence/mass_mailing_spreadsheet.html:72
 msgid "Have a post or profile published."
 msgstr ""
 
-#: templates/correspondence/pending.html:6
+#: templates/correspondence/pending.html:7
 msgid "Pending correspondence"
 msgstr ""
 
-#: templates/correspondence/pending.html:9
+#: templates/correspondence/pending.html:10
 msgid "Update pending correspondence"
 msgstr ""
 
-#: templates/correspondence/pending.html:11
+#: templates/correspondence/pending.html:12
 msgid "Refreshes all 'automatic' pending correspondence."
 msgstr ""
 
-#: templates/correspondence/pending.html:15
+#: templates/correspondence/pending.html:16
 msgid "Waitlist consent requests"
 msgstr ""
 
-#: templates/correspondence/pending.html:17
+#: templates/correspondence/pending.html:18
 msgid ""
 "\n"
 "    Generates \"waitlist\" postcards for all consent requests that haven't "
@@ -1872,46 +2217,46 @@ msgid ""
 "    "
 msgstr ""
 
-#: templates/correspondence/pending.html:25
+#: templates/correspondence/pending.html:26
 msgid "Collated mailings:"
 msgstr ""
 
-#: templates/correspondence/pending.html:28
+#: templates/correspondence/pending.html:29
 msgid "Include consent envelopes?"
 msgstr ""
 
-#: templates/correspondence/pending.html:32
+#: templates/correspondence/pending.html:33
 msgid "Before date"
 msgstr ""
 
-#: templates/correspondence/pending.html:42
+#: templates/correspondence/pending.html:43
 msgid "Include waitlist postcards?"
 msgstr ""
 
-#: templates/correspondence/pending.html:48
+#: templates/correspondence/pending.html:49
 msgid ""
 "\n"
 "\t\tInclude \"signup complete\" letters?\n"
 "\t\t"
 msgstr ""
 
-#: templates/correspondence/pending.html:56
+#: templates/correspondence/pending.html:57
 msgid "Include first posts?"
 msgstr ""
 
-#: templates/correspondence/pending.html:62
+#: templates/correspondence/pending.html:63
 msgid "Include comments?"
 msgstr ""
 
-#: templates/correspondence/pending.html:68
+#: templates/correspondence/pending.html:69
 msgid "Include personal letters?"
 msgstr ""
 
-#: templates/correspondence/pending.html:76
+#: templates/correspondence/pending.html:77
 msgid "Build collated mailing"
 msgstr ""
 
-#: templates/correspondence/pending.html:82
+#: templates/correspondence/pending.html:83
 msgid "Mailings:"
 msgstr ""
 
@@ -1966,50 +2311,50 @@ msgid ""
 "profiles until you have received them. Thanks for your patience.\n"
 msgstr ""
 
-#: templates/feeds/_all.html:2
+#: templates/feeds/_all.html:3
 msgid "All posts"
 msgstr ""
 
-#: templates/feeds/_author.html:2 templates/feeds/_subscriptions.html:6
+#: templates/feeds/_author.html:3 templates/feeds/_subscriptions.html:7
 #: templates/notification/notice_settings.html:54
 msgid "Posts by"
 msgstr ""
 
-#: templates/feeds/_comments.html:2 templates/feeds/_subscriptions.html:8
+#: templates/feeds/_comments.html:3 templates/feeds/_subscriptions.html:9
 msgid "Comments on"
 msgstr ""
 
-#: templates/feeds/_org.html:2
+#: templates/feeds/_org.html:3
 msgid "Recent posts from"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:3
+#: templates/feeds/_subscriptions.html:4
 msgid "Subscribe"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:4
+#: templates/feeds/_subscriptions.html:5
 msgid "Get notifications when new letters or replies are posted!"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:7
+#: templates/feeds/_subscriptions.html:8
 #: templates/notification/notice_settings.html:60
 msgid "Posts from"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:9
+#: templates/feeds/_subscriptions.html:10
 msgid "Posts tagged with"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:19
-#: templates/feeds/_subscriptions.html:32
-#: templates/feeds/_subscriptions.html:47
-#: templates/feeds/_subscriptions.html:61
-#: templates/feeds/_subscriptions.html:76
-#: templates/feeds/_subscriptions.html:89
+#: templates/feeds/_subscriptions.html:20
+#: templates/feeds/_subscriptions.html:33
+#: templates/feeds/_subscriptions.html:48
+#: templates/feeds/_subscriptions.html:62
+#: templates/feeds/_subscriptions.html:77
+#: templates/feeds/_subscriptions.html:90
 msgid "email me"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:68
+#: templates/feeds/_subscriptions.html:69
 #, python-format
 msgid ""
 "\n"
@@ -2017,7 +2362,7 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/feeds/_subscriptions.html:95
+#: templates/feeds/_subscriptions.html:96
 #, python-format
 msgid ""
 "\n"
@@ -2025,8 +2370,111 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/feeds/_tag.html:2
+#: templates/feeds/_tag.html:3
 msgid "posts"
+msgstr ""
+
+#: templates/moderation/_common.html:34 templates/moderation/_groups.html:190
+#: templates/moderation/_scans.html:120
+#: templates/scanning/transcription_edit.html:117
+msgid "Save"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:4
+msgid "Add letter:"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:6
+msgid "Letter"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:7
+msgid "Invitation to join"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:8
+msgid "Waitlist postcard"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:9
+msgid "Enrollment confirmation"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:10
+msgid "First post"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:14
+msgid "Return:"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:42
+msgid "Return address:"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:43
+msgid "Add stock response:"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:53
+msgid "Sign letter with your name"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:64
+msgid "Edit list"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:103
+msgid "Special mail handling"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:110
+msgid "Print"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:117
+msgid "Envelope"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:124
+msgid "Resend"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:129
+msgid "Mark unsent"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:134
+msgid "Mark sent"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:138
+#: templates/profiles/confirm_delete_scan.html:6
+msgid "Delete"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:337
+msgid "Waitlist"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:344
+msgid "Invitations"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:351
+msgid "Enrollment"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:358
+msgid "First Post"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:365
+msgid "Printouts"
+msgstr ""
+
+#: templates/moderation/_correspondence.html:386
+msgid "Other"
 msgstr ""
 
 #: templates/moderation/_dashboard.html:5
@@ -2069,6 +2517,142 @@ msgstr ""
 msgid "Needed"
 msgstr ""
 
+#: templates/moderation/_groups.html:11
+msgid "Affiliations"
+msgstr ""
+
+#: templates/moderation/_groups.html:52
+msgid "Public"
+msgstr ""
+
+#: templates/moderation/_groups.html:54
+msgid ""
+"\n"
+"\t\tIf checked, this organization and its members will be\n"
+"\t\tlisted publicly.  If unchecked, members will appear in\n"
+"\t\tthe general site list.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:62
+msgid "Organization name:"
+msgstr ""
+
+#: templates/moderation/_groups.html:67
+msgid "Short name:"
+msgstr ""
+
+#: templates/moderation/_groups.html:69
+msgid ""
+"\n"
+"\t\tName used for URLs. Only letters, numbers, and\n"
+"\t\t&ldquo;-&rdquo; allowed.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:80
+msgid ""
+"\n"
+"                Name to be used when signing auto-generated\n"
+"                correspondence.  If blank, &ldquo;[Organization Name]\n"
+"                staff&rdquo; will be used instead.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:91
+msgid "About:"
+msgstr ""
+
+#: templates/moderation/_groups.html:94
+msgid ""
+"\n"
+"                HTML that will appear at the top of the organization's "
+"detail\n"
+"                page. Unused unless the organization is public.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:103
+msgid "Preview HTML"
+msgstr ""
+
+#: templates/moderation/_groups.html:108
+msgid "Footer:"
+msgstr ""
+
+#: templates/moderation/_groups.html:111
+msgid ""
+"\n"
+"                HTML that will appear at the bottom of posts belonging to "
+"this\n"
+"                organization. Unused unless the organization is public.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:123
+msgid "Mailing address:"
+msgstr ""
+
+#: templates/moderation/_groups.html:126
+msgid "Return address for mail originating from this organization."
+msgstr ""
+
+#: templates/moderation/_groups.html:132
+msgid "Outgoing mail handler:"
+msgstr ""
+
+#: templates/moderation/_groups.html:135
+msgid ""
+"\n"
+"                If this organization does not handle their own outgoing "
+"mail,\n"
+"                choose the organization that handles it here.  Leave blank "
+"if\n"
+"                they handle their own.\n"
+"\t\t"
+msgstr ""
+
+#: templates/moderation/_groups.html:155
+#, python-format
+msgid ""
+"\n"
+"              TODO: Can set in <a href='/admin/profiles/organization/<%%= id "
+"%%>'>admin</a>.\n"
+"\t      "
+msgstr ""
+
+#: templates/moderation/_groups.html:170
+msgid "Moderators"
+msgstr ""
+
+#: templates/moderation/_groups.html:173
+msgid "Members"
+msgstr ""
+
+#: templates/moderation/_groups.html:176
+msgid "Move removed members to:"
+msgstr ""
+
+#: templates/moderation/_groups.html:193
+msgid "Delete Organization"
+msgstr ""
+
+#: templates/moderation/_groups.html:221
+msgid "Show profile"
+msgstr ""
+
+#: templates/moderation/_groups.html:224
+msgid "Edit details"
+msgstr ""
+
+#: templates/moderation/_groups.html:230
+msgid "Undo"
+msgstr ""
+
+#: templates/moderation/_groups.html:234
+msgid "Remove"
+msgstr ""
+
 #: templates/moderation/_notes.html:5
 msgid "Add Note"
 msgstr ""
@@ -2085,35 +2669,39 @@ msgstr ""
 msgid "NEEDS ATTENTION"
 msgstr ""
 
-#: templates/moderation/_notes.html:49
+#: templates/moderation/_notes.html:59
 msgid "Assigned to"
 msgstr ""
 
-#: templates/moderation/_notes.html:58
+#: templates/moderation/_notes.html:61
+msgid "By"
+msgstr ""
+
+#: templates/moderation/_notes.html:68
 msgid "Edit note"
 msgstr ""
 
-#: templates/moderation/_notes.html:59
+#: templates/moderation/_notes.html:69
 msgid "Delete note"
 msgstr ""
 
-#: templates/moderation/_notes.html:61
+#: templates/moderation/_notes.html:71
 msgid "Mark resolved"
 msgstr ""
 
-#: templates/moderation/_scans.html:5
+#: templates/moderation/_scans.html:6
 msgid "Scans needing attention"
 msgstr ""
 
-#: templates/moderation/_scans.html:8
+#: templates/moderation/_scans.html:9
 msgid "Documents needing attention"
 msgstr ""
 
-#: templates/moderation/_scans.html:15 templates/moderation/_scans.html:53
+#: templates/moderation/_scans.html:16 templates/moderation/_scans.html:54
 msgid "Delete scan"
 msgstr ""
 
-#: templates/moderation/_scans.html:19
+#: templates/moderation/_scans.html:20
 #, python-format
 msgid ""
 "\n"
@@ -2125,58 +2713,58 @@ msgid ""
 "                    "
 msgstr ""
 
-#: templates/moderation/_scans.html:42
+#: templates/moderation/_scans.html:43
 msgid "Warning"
 msgstr ""
 
-#: templates/moderation/_scans.html:42
+#: templates/moderation/_scans.html:43
 #, python-format
 msgid ""
 "started editing this scan <%%= btb.englishDateInterval(created, now) %%> "
 "ago.  You might hold up a bit so that your changes don't conflict."
 msgstr ""
 
-#: templates/moderation/_scans.html:48
+#: templates/moderation/_scans.html:49
 msgid "Split Scan"
 msgstr ""
 
-#: templates/moderation/_scans.html:49
+#: templates/moderation/_scans.html:50
 msgid "Original (pdf)"
 msgstr ""
 
-#: templates/moderation/_scans.html:56
+#: templates/moderation/_scans.html:57
 msgid "Replace scan"
 msgstr ""
 
-#: templates/moderation/_scans.html:59
+#: templates/moderation/_scans.html:60
 msgid "Re-parse scan"
 msgstr ""
 
-#: templates/moderation/_scans.html:62
+#: templates/moderation/_scans.html:63
 msgid "Merge scans"
 msgstr ""
 
-#: templates/moderation/_scans.html:92
+#: templates/moderation/_scans.html:93
 msgid "Code"
 msgstr ""
 
-#: templates/moderation/_scans.html:93
+#: templates/moderation/_scans.html:94
 msgid "Scan Code"
 msgstr ""
 
-#: templates/moderation/_scans.html:99
+#: templates/moderation/_scans.html:100
 msgid "Author"
 msgstr ""
 
-#: templates/moderation/_scans.html:115
+#: templates/moderation/_scans.html:116
 msgid "Post"
 msgstr ""
 
-#: templates/moderation/_scans.html:115
+#: templates/moderation/_scans.html:117
 msgid "Photo"
 msgstr ""
 
-#: templates/moderation/_scans.html:118
+#: templates/moderation/_scans.html:120
 msgid "Edit documents"
 msgstr ""
 
@@ -2184,64 +2772,92 @@ msgstr ""
 msgid "active"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:3
-msgid "Manage tasks"
+#: templates/moderation/home.html:4
+msgid "Scans and Moderation"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:36
-msgid "Tasks"
+#: templates/moderation/home.html:16
+msgid "Dashboard"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:39
-msgid "Restrict to"
+#: templates/moderation/home.html:17
+msgid "Incoming mail"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:39
-msgid "PENDING"
+#: templates/moderation/home.html:18
+msgid "Process scans"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:39
-msgid "SUCCESS"
+#: templates/moderation/home.html:19
+msgid "Manage users"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:39
-msgid "FAILURE"
+#: templates/moderation/home.html:20
+msgid "Outgoing mail"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:43
-msgid "Link"
+#: templates/moderation/home.html:25
+msgid "Tag party"
 msgstr ""
 
-#: templates/moderation/manage_tasks.html:46
-msgid "Result"
-msgstr ""
-
-#: templates/moderation/manage_tasks.html:47
-#: templates/moderation/manage_tasks.html:59
-msgid "Traceback"
-msgstr ""
-
-#: templates/moderation/manage_tasks.html:51
-msgid "waiting page for task"
-msgstr ""
-
-#: templates/moderation/manage_tasks.html:51
-msgid "link"
-msgstr ""
-
-#: templates/moderation/stats.html:7
+#: templates/moderation/home.html:27 templates/moderation/stats.html:10
 msgid "Stats"
 msgstr ""
 
-#: templates/moderation/stats.html:10
+#: templates/moderation/manage_tasks.html:4
+msgid "Manage tasks"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:37
+msgid "Tasks"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:40
+msgid "Restrict to"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:40
+msgid "PENDING"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:40
+msgid "SUCCESS"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:40
+msgid "FAILURE"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:44
+msgid "Link"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:47
+msgid "Result"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:48
+#: templates/moderation/manage_tasks.html:60
+msgid "Traceback"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:52
+msgid "waiting page for task"
+msgstr ""
+
+#: templates/moderation/manage_tasks.html:52
+msgid "link"
+msgstr ""
+
+#: templates/moderation/stats.html:13
 msgid "Users"
 msgstr ""
 
-#: templates/moderation/stats.html:12
+#: templates/moderation/stats.html:15
 msgid "Current breakdown"
 msgstr ""
 
-#: templates/moderation/stats.html:15
+#: templates/moderation/stats.html:18
 msgid ""
 "\n"
 "\t    A treemap showing various user statuses, with the number of users\n"
@@ -2251,11 +2867,11 @@ msgid ""
 "\t    "
 msgstr ""
 
-#: templates/moderation/stats.html:22
+#: templates/moderation/stats.html:25
 msgid "New users per week"
 msgstr ""
 
-#: templates/moderation/stats.html:25
+#: templates/moderation/stats.html:28
 msgid ""
 "\n"
 "            The number of new users that are added per week.  Spikes in "
@@ -2266,27 +2882,27 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:34 templates/moderation/stats.html.py:44
+#: templates/moderation/stats.html:37 templates/moderation/stats.html.py:47
 msgid "Posts"
 msgstr ""
 
-#: templates/moderation/stats.html:36 templates/moderation/stats.html.py:88
+#: templates/moderation/stats.html:39 templates/moderation/stats.html.py:91
 msgid "Totals"
 msgstr ""
 
-#: templates/moderation/stats.html:40
+#: templates/moderation/stats.html:43
 msgid "Total"
 msgstr ""
 
-#: templates/moderation/stats.html:49
+#: templates/moderation/stats.html:52
 msgid "Profiles"
 msgstr ""
 
-#: templates/moderation/stats.html:57
+#: templates/moderation/stats.html:60
 msgid "Timeline (by week)"
 msgstr ""
 
-#: templates/moderation/stats.html:60
+#: templates/moderation/stats.html:63
 msgid ""
 "\n"
 "            The timeline shows the number of requests, posts, and profiles\n"
@@ -2296,11 +2912,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:67
+#: templates/moderation/stats.html:70
 msgid "Impact: Posts"
 msgstr ""
 
-#: templates/moderation/stats.html:70
+#: templates/moderation/stats.html:73
 msgid ""
 "\n"
 "            This graph shows the number of posts ordered by author, to\n"
@@ -2309,11 +2925,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:76
+#: templates/moderation/stats.html:79
 msgid "Impact: Pages"
 msgstr ""
 
-#: templates/moderation/stats.html:79
+#: templates/moderation/stats.html:82
 msgid ""
 "\n"
 "            This graph shows the contribution by page count.  Some authors\n"
@@ -2321,23 +2937,23 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:90
+#: templates/moderation/stats.html:93
 msgid "Comments published"
 msgstr ""
 
-#: templates/moderation/stats.html:92
+#: templates/moderation/stats.html:95
 msgid "Comments posted per week"
 msgstr ""
 
-#: templates/moderation/stats.html:95
+#: templates/moderation/stats.html:98
 msgid "This graph shows the number of new comments posted per week."
 msgstr ""
 
-#: templates/moderation/stats.html:98
+#: templates/moderation/stats.html:101
 msgid "Commenter Impact"
 msgstr ""
 
-#: templates/moderation/stats.html:101
+#: templates/moderation/stats.html:104
 msgid ""
 "\n"
 "            This graph shows the number of comments posted by particular "
@@ -2347,7 +2963,7 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:113
+#: templates/moderation/stats.html:120
 msgid ""
 "\n"
 "            This shows the breakdown of letters that we send per week.  "
@@ -2359,7 +2975,7 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:124
+#: templates/moderation/stats.html:131
 msgid ""
 "\n"
 "            This shows the breakdown of recipients of letters we send, "
@@ -2413,7 +3029,7 @@ msgid "Send email notifications for:"
 msgstr ""
 
 #: templates/notification/notice_settings.html:30
-#: templates/notification/notice_settings.html:68
+#: templates/notification/notice_settings.html:71
 msgid "Save preferences"
 msgstr ""
 
@@ -2441,42 +3057,50 @@ msgid "Replies to"
 msgstr ""
 
 #: templates/notification/notice_settings.html:60
-#: templates/subscriptions/subscribe_to.html:13
+#: templates/subscriptions/subscribe_to.html:14
 msgid "authors"
 msgstr ""
 
 #: templates/notification/notice_settings.html:63
+msgid "Posts from the"
+msgstr ""
+
+#: templates/notification/notice_settings.html:66
 msgid ""
 "Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub."
 "campaign.title }}</a></em> campaign"
 msgstr ""
 
-#: templates/notification/notice_settings.html:71
+#: templates/notification/notice_settings.html:74
 msgid "You have no subscriptions."
 msgstr ""
 
-#: templates/notification/notices.html:5
-#: templates/notification/notices.html:12
+#: templates/notification/notices.html:6
+#: templates/notification/notices.html:13
 msgid "Notifications"
 msgstr ""
 
-#: templates/notification/notices.html:11
+#: templates/notification/notices.html:12
 msgid "Subscriptions and communication preferences"
 msgstr ""
 
-#: templates/notification/notices.html:14
+#: templates/notification/notices.html:15
 msgid "Mark all as read"
 msgstr ""
 
-#: templates/notification/notices.html:18
+#: templates/notification/notices.html:19
 msgid "Message"
 msgstr ""
 
-#: templates/notification/notices.html:37
+#: templates/notification/notices.html:29
+msgid "delete"
+msgstr ""
+
+#: templates/notification/notices.html:38
 msgid "Delete all messages"
 msgstr ""
 
-#: templates/notification/notices.html:40
+#: templates/notification/notices.html:41
 msgid "No notifications."
 msgstr ""
 
@@ -2526,7 +3150,7 @@ msgid "to a post you're following"
 msgstr ""
 
 #: templates/profiles/confirm_delete_scan.html:2
-#: templates/profiles/profile_edit.html:37
+#: templates/profiles/profile_edit.html:38
 msgid "Remove scan"
 msgstr ""
 
@@ -2535,7 +3159,7 @@ msgid "Are you sure you want to remove your profile scan?"
 msgstr ""
 
 #: templates/profiles/confirm_delete_self.html:2
-#: templates/profiles/profile_edit.html:48
+#: templates/profiles/profile_edit.html:49
 msgid "Delete account"
 msgstr ""
 
@@ -2593,11 +3217,11 @@ msgstr ""
 msgid "Delete account permanently"
 msgstr ""
 
-#: templates/profiles/groups_list.html:16
+#: templates/profiles/groups_list.html:17
 msgid "Partners"
 msgstr ""
 
-#: templates/profiles/groups_list.html:32
+#: templates/profiles/groups_list.html:33
 #, python-format
 msgid ""
 "\n"
@@ -2605,7 +3229,7 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/profiles/groups_list.html:37
+#: templates/profiles/groups_list.html:38
 #, python-format
 msgid ""
 "\n"
@@ -2618,7 +3242,7 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/profiles/groups_list.html:48
+#: templates/profiles/groups_list.html:49
 #, python-format
 msgid ""
 "\n"
@@ -2628,7 +3252,7 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/profiles/groups_list.html:56
+#: templates/profiles/groups_list.html:57
 #, python-format
 msgid ""
 "\n"
@@ -2639,7 +3263,7 @@ msgid ""
 "\t\t"
 msgstr ""
 
-#: templates/profiles/groups_list.html:69
+#: templates/profiles/groups_list.html:70
 #, python-format
 msgid ""
 "\n"
@@ -2648,7 +3272,7 @@ msgid ""
 "\t\t      "
 msgstr ""
 
-#: templates/profiles/groups_list.html:80
+#: templates/profiles/groups_list.html:81
 #, python-format
 msgid ""
 "\n"
@@ -2657,7 +3281,7 @@ msgid ""
 "\t\t\t    "
 msgstr ""
 
-#: templates/profiles/groups_list.html:95
+#: templates/profiles/groups_list.html:96
 #, python-format
 msgid ""
 "\n"
@@ -2665,41 +3289,16 @@ msgid ""
 "\t\t      "
 msgstr ""
 
-#: templates/profiles/profile_detail.html:6
-#: templates/profiles/profile_detail.html:12
+#: templates/profiles/profile_detail.html:8
 #, python-format
 msgid "%(profile)s's profile"
 msgstr ""
 
-#: templates/profiles/profile_detail.html:19
-msgid "Edit settings"
-msgstr ""
-
-#: templates/profiles/profile_detail.html:51
+#: templates/profiles/profile_detail.html:46
 msgid "Scanned profile"
 msgstr ""
 
-#: templates/profiles/profile_detail.html:73
-#, python-format
-msgid ""
-"\n"
-"\t      Read more from %(profile)s's blog\n"
-"\t      "
-msgstr ""
-
-#: templates/profiles/profile_detail.html:86
-msgid "No comments"
-msgstr ""
-
-#: templates/profiles/profile_detail.html:89
-msgid "Transcriptions"
-msgstr ""
-
-#: templates/profiles/profile_detail.html:94
-msgid "No transcriptions"
-msgstr ""
-
-#: templates/profiles/profile_edit.html:6
+#: templates/profiles/profile_edit.html:7
 #, python-format
 msgid ""
 "\n"
@@ -2707,7 +3306,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/profiles/profile_edit.html:14
+#: templates/profiles/profile_edit.html:15
 #, python-format
 msgid ""
 "\n"
@@ -2715,46 +3314,46 @@ msgid ""
 "  "
 msgstr ""
 
-#: templates/profiles/profile_edit.html:19
+#: templates/profiles/profile_edit.html:20
 msgid "Change password"
 msgstr ""
 
-#: templates/profiles/profile_edit.html:20
+#: templates/profiles/profile_edit.html:21
 msgid "Email subscriptions"
 msgstr ""
 
-#: templates/profiles/profile_edit.html:31
+#: templates/profiles/profile_edit.html:32
 msgid "Save details"
 msgstr ""
 
-#: templates/profiles/profile_edit.html:36
+#: templates/profiles/profile_edit.html:37
 msgid "Current profile page"
 msgstr ""
 
-#: templates/profiles/profile_edit.html:39
+#: templates/profiles/profile_edit.html:40
 msgid "Profile for"
 msgstr ""
 
-#: templates/registration/activate.html:5
+#: templates/registration/activate.html:6
 msgid "Oops!"
 msgstr ""
 
-#: templates/registration/activate.html:6
+#: templates/registration/activate.html:7
 msgid ""
 "That isn't a valid confirmation key.  Please check the link again. If your "
 "email reader adds line breaks in the URL, you may need to remove them.  You "
 "may also"
 msgstr ""
 
-#: templates/registration/activation_complete.html:7
+#: templates/registration/activation_complete.html:8
 msgid "Your registration is now complete."
 msgstr ""
 
-#: templates/registration/activation_complete.html:8
+#: templates/registration/activation_complete.html:9
 msgid "You may now"
 msgstr ""
 
-#: templates/registration/activation_complete.html:8
+#: templates/registration/activation_complete.html:9
 msgid "login"
 msgstr ""
 
@@ -2786,19 +3385,19 @@ msgstr ""
 msgid "Registration Confirmation"
 msgstr ""
 
-#: templates/registration/login.html:3 templates/registration/login.html:11
+#: templates/registration/login.html:4 templates/registration/login.html:12
 msgid "Login"
 msgstr ""
 
-#: templates/registration/login.html:7
+#: templates/registration/login.html:8
 msgid "Have an account?  Login"
 msgstr ""
 
-#: templates/registration/login.html:14
+#: templates/registration/login.html:15
 msgid "Forgot your password?"
 msgstr ""
 
-#: templates/registration/login.html:18
+#: templates/registration/login.html:19
 #, python-format
 msgid ""
 " \n"
@@ -2806,7 +3405,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/registration/login.html:25
+#: templates/registration/login.html:26
 #, python-format
 msgid ""
 "\n"
@@ -2817,16 +3416,16 @@ msgid ""
 "\t"
 msgstr ""
 
-#: templates/registration/login.html:39
-#: templates/registration/registration_form.html:25
+#: templates/registration/login.html:40
+#: templates/registration/registration_form.html:26
 msgid "Register"
 msgstr ""
 
-#: templates/registration/login.html:64
+#: templates/registration/login.html:65
 msgid "Sorry, that name is taken."
 msgstr ""
 
-#: templates/registration/login.html:67
+#: templates/registration/login.html:68
 msgid "Name available."
 msgstr ""
 
@@ -2855,44 +3454,44 @@ msgstr ""
 msgid "Log in"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:4
+#: templates/registration/password_reset_confirm.html:5
 #: templates/registration/password_reset_form.html:8
 msgid "Password reset"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:10
+#: templates/registration/password_reset_confirm.html:11
 msgid "Enter new password"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:12
+#: templates/registration/password_reset_confirm.html:13
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:16
+#: templates/registration/password_reset_confirm.html:17
 msgid "New password:"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:18
+#: templates/registration/password_reset_confirm.html:19
 msgid "Confirm password:"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:19
+#: templates/registration/password_reset_confirm.html:20
 msgid "Change my password"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:24
+#: templates/registration/password_reset_confirm.html:25
 msgid "Password reset unsuccessful"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:26
+#: templates/registration/password_reset_confirm.html:27
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:27
+#: templates/registration/password_reset_confirm.html:28
 msgid "Request password reset"
 msgstr ""
 
@@ -2952,15 +3551,15 @@ msgstr ""
 msgid "Confirmation email sent"
 msgstr ""
 
-#: templates/registration/registration_form.html:4
+#: templates/registration/registration_form.html:5
 msgid "Registration"
 msgstr ""
 
-#: templates/registration/registration_form.html:6
+#: templates/registration/registration_form.html:7
 msgid "New user registration"
 msgstr ""
 
-#: templates/registration/registration_form.html:13
+#: templates/registration/registration_form.html:14
 #, python-format
 msgid ""
 "\n"
@@ -2971,11 +3570,11 @@ msgid ""
 "<a href='%(privacy)s'>Privacy Policy</a>.\" %%}\n"
 msgstr ""
 
-#: templates/registration/welcome.html:3 templates/registration/welcome.html:6
+#: templates/registration/welcome.html:4 templates/registration/welcome.html:7
 msgid "Welcome"
 msgstr ""
 
-#: templates/registration/welcome.html:14
+#: templates/registration/welcome.html:15
 #, python-format
 msgid ""
 "\n"
@@ -2984,7 +3583,7 @@ msgid ""
 "<a href='%(edit_profile)s'>edit your profile</a>.\n"
 msgstr ""
 
-#: templates/registration/welcome.html:21
+#: templates/registration/welcome.html:22
 #, python-format
 msgid ""
 "\n"
@@ -2995,8 +3594,13 @@ msgstr ""
 
 #: templates/scanning/_column_diff.html:6
 #: templates/scanning/_column_diff.html:8
-#: templates/scanning/revision_list.html:25
+#: templates/scanning/revision_list.html:26
 msgid "Revision"
+msgstr ""
+
+#: templates/scanning/_column_diff.html:6
+#: templates/scanning/_column_diff.html:8
+msgid "ago"
 msgstr ""
 
 #: templates/scanning/after_transcribe_comment.html:4
@@ -3093,23 +3697,23 @@ msgstr ""
 msgid "Choose a PDF file to replace this scan's with."
 msgstr ""
 
-#: templates/scanning/revision_list.html:10
+#: templates/scanning/revision_list.html:11
 msgid "Transcription revisions"
 msgstr ""
 
-#: templates/scanning/revision_list.html:13
+#: templates/scanning/revision_list.html:14
 msgid "edit transcription"
 msgstr ""
 
-#: templates/scanning/revision_list.html:26
+#: templates/scanning/revision_list.html:27
 msgid "Compare"
 msgstr ""
 
-#: templates/scanning/revision_list.html:27
+#: templates/scanning/revision_list.html:28
 msgid "Editor"
 msgstr ""
 
-#: templates/scanning/revision_list.html:56
+#: templates/scanning/revision_list.html:57
 msgid "No transcription yet.  Add one!"
 msgstr ""
 
@@ -3141,44 +3745,40 @@ msgstr ""
 msgid "Upload individual PDF files, or zip files containing multiple PDFs."
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:4
-#: templates/subscriptions/subscribe_to.html:8
+#: templates/subscriptions/subscribe_to.html:5
+#: templates/subscriptions/subscribe_to.html:9
 msgid "Add subscription"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:9
+#: templates/subscriptions/subscribe_to.html:10
 msgid "Add a subscription to"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:10
+#: templates/subscriptions/subscribe_to.html:11
 msgid "posts tagged"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:11
+#: templates/subscriptions/subscribe_to.html:12
 msgid "posts by"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:12
+#: templates/subscriptions/subscribe_to.html:13
 msgid "comments on"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:13
+#: templates/subscriptions/subscribe_to.html:14
 msgid "posts from"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:14
-msgid "posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?"
-msgstr ""
-
-#: templates/subscriptions/subscribe_to.html:15
+#: templates/subscriptions/subscribe_to.html:17
 msgid "Sign me up!"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:16
+#: templates/subscriptions/subscribe_to.html:18
 msgid "Subscription settings"
 msgstr ""
 
-#: templates/subscriptions/subscribe_to.html:20
+#: templates/subscriptions/subscribe_to.html:23
 #, python-format
 msgid ""
 "\n"
