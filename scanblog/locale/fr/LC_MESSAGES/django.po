@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Between the Bars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-09 10:36-0400\n"
+"POT-Creation-Date: 2014-05-22 17:50-0400\n"
 "PO-Revision-Date: 2013-11-20 12:18+0000\n"
 "Last-Translator: arthur.lutz <arthur.lutz@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/btb/language/"
@@ -299,8 +299,8 @@ msgstr "À propos"
 msgid "Moderation"
 msgstr "Modération"
 
-#: templates/site_base.html:47 templates/scanning/merge.html:9
-#: templates/scanning/replace.html:9 templates/scanning/upload.html:11
+#: templates/site_base.html:47 templates/scanning/merge.html:10
+#: templates/scanning/replace.html:10 templates/scanning/upload.html:11
 msgid "Upload"
 msgstr "Envoi de fichiers"
 
@@ -318,11 +318,11 @@ msgid_plural "%(counter)s messages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/site_base.html:71
+#: templates/site_base.html:71 templates/moderation/_users.html:209
 msgid "Profile"
 msgstr "Profile"
 
-#: templates/site_base.html:73
+#: templates/site_base.html:73 templates/moderation/_users.html:210
 msgid "Admin"
 msgstr "Administration"
 
@@ -1489,9 +1489,10 @@ msgid "Recent posts"
 msgstr "Articles récents"
 
 #: templates/blogs/_blog_cloud.html:15
+#: templates/btb/daily_spam_check_email.html:28
 #: templates/correspondence/show_commentmailing.html:37
 #: templates/moderation/_correspondence.html:372
-#: templates/moderation/stats.html:90
+#: templates/moderation/_users.html:243 templates/moderation/stats.html:91
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -1525,6 +1526,7 @@ msgid "All posts by date"
 msgstr "Tous les articles par date"
 
 #: templates/blogs/_blog_cloud.html:99
+#: templates/btb/daily_spam_check_email.html:34
 msgid "on"
 msgstr "le"
 
@@ -1536,6 +1538,8 @@ msgstr "le"
 #: templates/blogs/author_post_list.html:14
 #: templates/blogs/post_detail.html:34
 #: templates/btb/admin-email-transcription-edited.txt:3
+#: templates/btb/daily_spam_check_email.html:36
+#: templates/btb/daily_spam_check_email.html:56
 #: templates/notification/notice_settings.html:50
 #: templates/notification/new_reply/full.txt:2
 #: templates/subscriptions/subscribe_to.html:13
@@ -1550,7 +1554,8 @@ msgstr "Tous les commentaires"
 msgid "Authors with recent posts"
 msgstr "Auteurs ayant des articles récents"
 
-#: templates/blogs/_blog_cloud.html:113 templates/profiles/groups_list.html:89
+#: templates/blogs/_blog_cloud.html:113 templates/moderation/_users.html:158
+#: templates/profiles/groups_list.html:89
 msgid "profile"
 msgstr "profil"
 
@@ -1591,6 +1596,7 @@ msgid "Scanned page"
 msgstr "Page scannée"
 
 #: templates/blogs/_post_pages.html:35
+#: templates/btb/daily_spam_check_email.html:57
 msgid "uploaded"
 msgstr "télétransmis"
 
@@ -1677,27 +1683,27 @@ msgstr "et le supprimer de ce site ?"
 msgid "This can't be undone."
 msgstr "Cette opération est irreversible."
 
-#: templates/blogs/delete_post.html:13 templates/blogs/edit_post.html:65
+#: templates/blogs/delete_post.html:13 templates/blogs/edit_post.html:66
 msgid "Delete post"
 msgstr "Supprimer l'article"
 
 #: templates/blogs/delete_post.html:17
-#: templates/comments/delete_comment.html:11
+#: templates/comments/delete_comment.html:12
 #: templates/moderation/_correspondence.html:46
-#: templates/moderation/_notes.html:27
+#: templates/moderation/_notes.html:27 templates/moderation/_users.html:61
 #: templates/scanning/transcription_edit.html:118
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/blogs/edit_post.html:7 templates/blogs/edit_post.html.py:16
+#: templates/blogs/edit_post.html:8 templates/blogs/edit_post.html.py:17
 msgid "Editing post"
 msgstr "Edition de l'article"
 
-#: templates/blogs/edit_post.html:9 templates/blogs/edit_post.html.py:18
+#: templates/blogs/edit_post.html:10 templates/blogs/edit_post.html.py:19
 msgid "Compose post"
 msgstr "Écrire un article"
 
-#: templates/blogs/edit_post.html:23
+#: templates/blogs/edit_post.html:24
 #, python-format
 msgid ""
 "\n"
@@ -1709,23 +1715,23 @@ msgid ""
 "\t"
 msgstr ""
 
-#: templates/blogs/edit_post.html:32
+#: templates/blogs/edit_post.html:33
 msgid ""
 "If you'd like to remove the post, click &ldquo;Delete post&ldquo; below."
 msgstr ""
 "Si vous souhaitez supprimer cet article, cliquez sur &ldquo;Supprimer "
 "l'article&ldquo; ci-dessous."
 
-#: templates/blogs/edit_post.html:39 templates/blogs/manage_posts.html:13
+#: templates/blogs/edit_post.html:40 templates/blogs/manage_posts.html:13
 #: templates/btb/admin-unmanaged-post-notification.txt:15
 msgid "Tags"
 msgstr "Tags"
 
-#: templates/blogs/edit_post.html:41
+#: templates/blogs/edit_post.html:42
 msgid "(optional) Comma separated list of categories"
 msgstr "(optionnel) Liste de catégories séparées par des virgules"
 
-#: templates/blogs/edit_post.html:53
+#: templates/blogs/edit_post.html:54
 msgid "Save post"
 msgstr "Enregistré l'article"
 
@@ -1742,6 +1748,8 @@ msgid "Title"
 msgstr "Titre"
 
 #: templates/blogs/manage_posts.html:14
+#: templates/moderation/_documents.html:40
+#: templates/moderation/_users.html:326
 #: templates/moderation/manage_tasks.html:46
 msgid "Status"
 msgstr "Status"
@@ -1758,12 +1766,12 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #: templates/blogs/manage_posts.html:28
-#: templates/moderation/_dashboard.html:19 templates/moderation/stats.html:45
+#: templates/moderation/_dashboard.html:19 templates/moderation/stats.html:46
 msgid "Ready to publish"
 msgstr "Prêt à la publication"
 
 #: templates/blogs/manage_posts.html:31
-#: templates/moderation/_dashboard.html:20 templates/moderation/stats.html:44
+#: templates/moderation/_dashboard.html:20 templates/moderation/stats.html:45
 msgid "Published"
 msgstr "Publié"
 
@@ -1907,6 +1915,7 @@ msgstr "Fonctions d'administation"
 #: templates/btb/admin-email-transcription-edited.txt:16
 #: templates/btb/admin-unmanaged-post-notification.txt:6
 #: templates/btb/admin-visitor-profile-notification.txt:7
+#: templates/moderation/_users.html:147
 msgid "Edit user"
 msgstr "Éditer l'utilisateur"
 
@@ -1956,6 +1965,141 @@ msgstr "Éditer l'utilisateur en tant qu'administrateur"
 #: templates/btb/admin-visitor-profile-notification.txt:2
 msgid "A profile PDF was uploaded by user"
 msgstr "Un PDF de profil a été envoyé par l'utilisateur"
+
+#: templates/btb/daily_spam_check_email.html:26
+#, fuzzy
+msgid "BtB Comment/Transcription report"
+msgstr "Editeur de retranscription"
+
+#: templates/btb/daily_spam_check_email.html:37
+#, fuzzy
+msgid "remove"
+msgstr "Supprimer"
+
+#: templates/btb/daily_spam_check_email.html:38
+msgid "spam"
+msgstr ""
+
+#: templates/btb/daily_spam_check_email.html:48
+#: templates/moderation/_users.html:245
+msgid "Transcriptions"
+msgstr "Retranscriptions"
+
+#: templates/btb/daily_spam_check_email.html:57
+#: templates/scanning/revision_list.html:14
+msgid "edit transcription"
+msgstr "editer la retranscription"
+
+#: templates/btb/daily_spam_check_email.html:58
+#, fuzzy
+msgid "view document"
+msgstr "Voir le document"
+
+#: templates/btb/daily_spam_check_email.html:59
+msgid "full diff"
+msgstr ""
+
+#: templates/btb/daily_spam_check_email.html:63
+#: templates/moderation/_notes.html:61
+msgid "By"
+msgstr "Par"
+
+#: templates/btb/daily_spam_check_email.html:64
+#, fuzzy
+msgid "edit user"
+msgstr "Éditer l'utilisateur"
+
+#: templates/btb/daily_spam_check_email.html:65
+#, fuzzy
+msgid "delete user"
+msgstr "Supprimer l'utilisateur"
+
+#: templates/btb/org_status_email.html:32
+msgid "The State of the {{ org.name }} is"
+msgstr ""
+
+#: templates/btb/org_status_email.html:34
+msgid "Distance from inbox zero:"
+msgstr ""
+
+#: templates/btb/org_status_email.html:37
+msgid "CONGRATULATIONS!  Is the PO Box empty too?"
+msgstr ""
+
+#: templates/btb/org_status_email.html:42
+msgid "Type"
+msgstr ""
+
+#: templates/btb/org_status_email.html:42
+msgid "TODO"
+msgstr ""
+
+#: templates/btb/org_status_email.html:42
+msgid "Oldest"
+msgstr ""
+
+#: templates/btb/org_status_email.html:42
+msgid "Last work"
+msgstr ""
+
+#: templates/btb/org_status_email.html:45
+#, fuzzy
+msgid "Tickets"
+msgstr "Tickets ouverts"
+
+#: templates/btb/org_status_email.html:49
+#: templates/btb/org_status_email.html:65
+#: templates/btb/org_status_email.html:79
+#: templates/btb/org_status_email.html:92
+#: templates/btb/org_status_email.html:110
+msgid "OVERDUE"
+msgstr ""
+
+#: templates/btb/org_status_email.html:53
+#: templates/btb/org_status_email.html:68
+#: templates/btb/org_status_email.html:82
+#: templates/btb/org_status_email.html:95
+#: templates/btb/org_status_email.html:115
+msgid "old"
+msgstr ""
+
+#: templates/btb/org_status_email.html:57
+#: templates/btb/org_status_email.html:71
+#: templates/btb/org_status_email.html:85
+#: templates/btb/org_status_email.html:98
+#: templates/btb/org_status_email.html:120
+#: templates/scanning/_column_diff.html:6
+#: templates/scanning/_column_diff.html:8
+msgid "ago"
+msgstr "il y a"
+
+#: templates/btb/org_status_email.html:61
+#: templates/correspondence/base.html:10
+#: templates/moderation/_pendingscans.html:39
+msgid "Pending"
+msgstr "En attente"
+
+#: templates/btb/org_status_email.html:75
+msgid "Scan Splitting"
+msgstr ""
+
+#: templates/btb/org_status_email.html:89
+#: templates/moderation/_dashboard.html:22
+msgid "Documents"
+msgstr "Documents"
+
+#: templates/btb/org_status_email.html:102 templates/moderation/home.html:20
+#, fuzzy
+msgid "Outgoing mail"
+msgstr "Courrier sortant"
+
+#: templates/btb/org_status_email.html:131
+msgid "The collective noun-thing of the day is"
+msgstr ""
+
+#: templates/btb/org_status_email.html:135
+msgid "When"
+msgstr ""
 
 #: templates/comments/_comment.html:11
 #, fuzzy
@@ -2034,12 +2178,12 @@ msgstr ""
 msgid "Favorited by:"
 msgstr ""
 
-#: templates/comments/delete_comment.html:4
-#: templates/comments/delete_comment.html:10
+#: templates/comments/delete_comment.html:5
+#: templates/comments/delete_comment.html:11
 msgid "Delete reply"
 msgstr "Supprimer la réponse"
 
-#: templates/comments/delete_comment.html:5
+#: templates/comments/delete_comment.html:6
 msgid "Are you sure you want to delete this reply?  There is no undo."
 msgstr ""
 "Êtes-vous sûr de vouloir supprimer cette réponse ? Cette opération est "
@@ -2093,9 +2237,167 @@ msgstr "ou faites des changement"
 msgid "Preview"
 msgstr "Aperçu"
 
-#: templates/correspondence/base.html:10
-msgid "Pending"
-msgstr "En attente"
+#: templates/comments/removal-email-body.txt:7
+#, fuzzy
+msgid "The removed comment was:"
+msgstr "Laisser des commentaires"
+
+#: templates/comments/removal-email-subject.txt:2
+#, fuzzy
+msgid "Comment removed"
+msgstr "Commentaires activés"
+
+#: templates/comments/remove_comment.html:4
+#, fuzzy
+msgid "Remove comment"
+msgstr "Laisser des commentaires"
+
+#: templates/comments/remove_comment.html:36
+#, fuzzy
+msgid "Remove Comment"
+msgstr "Commentaires récents"
+
+#: templates/comments/remove_comment.html:39
+#, fuzzy
+msgid "This comment has been removed."
+msgstr "Un commentaire a été posté à propos de "
+
+#: templates/comments/remove_comment.html:40
+msgid "Restore (unremove) this comment"
+msgstr ""
+
+#: templates/comments/remove_comment.html:43
+#, python-format
+msgid ""
+"Remove the following comment by <em>{{ comment.user.profile }}</em>? (If "
+"this is spam, use <a href='{%% url "
+msgstr ""
+
+#: templates/comments/remove_comment.html:59
+msgid ""
+"What is the reason for removing this comment? This will set defaults for the "
+"notification messages as well."
+msgstr ""
+
+#: templates/comments/remove_comment.html:60
+#, fuzzy
+msgid "edit reasons"
+msgstr "editer la retranscription"
+
+#: templates/comments/remove_comment.html:67
+msgid "If blank, no removal message will appear on the web."
+msgstr ""
+
+#: templates/comments/remove_comment.html:79
+msgid "Comment has no email address; no message can be sent."
+msgstr ""
+
+#: templates/comments/remove_comment.html:82
+msgid "The author has already been notified; this can't be changed"
+msgstr ""
+
+#: templates/comments/remove_comment.html:84
+msgid "If left blank, the comment author will not be notified."
+msgstr ""
+
+#: templates/comments/remove_comment.html:113
+msgid "The cryptic error message we got was:"
+msgstr ""
+
+#: templates/comments/remove_comment.html:117
+#, python-format
+msgid ""
+" \n"
+"          Usually, errors are the result of special characters like\n"
+"          &amp;, _, or %% &ndash; try putting a \"\\\" before them\n"
+"          (e.g. \\&amp;, \\_, \\%%).  Contact <a\n"
+"          href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>\n"
+"          if you don't understand how to fix this.\n"
+"          "
+msgstr ""
+
+#: templates/comments/remove_comment.html:128
+msgid "The post author has already been notified; this field can't be changed:"
+msgstr ""
+
+#: templates/comments/remove_comment.html:130
+msgid ""
+"If blank, no message will be sent to post author.  Format is raw <a "
+"href='https://en.wikipedia.org/wiki/LaTeX'>LaTeX</a>."
+msgstr ""
+
+#: templates/comments/remove_comment.html:135
+msgid "Greetings,"
+msgstr ""
+
+#: templates/comments/remove_comment.html:145
+#: templates/correspondence/generic-postcard.txt:7
+#, fuzzy
+msgid "Sincerely,"
+msgstr "Sincèrement"
+
+#: templates/comments/remove_comment.html:150
+msgid "Preview rendered letter"
+msgstr ""
+
+#: templates/comments/remove_comment.html:154
+msgid "Remove comment and send notifications"
+msgstr ""
+
+#: templates/comments/spam_can_comment.html:6
+#, fuzzy
+msgid "Remove Spam"
+msgstr "Supprimer scan"
+
+#: templates/comments/spam_can_comment.html:8
+#, python-format
+msgid ""
+"\n"
+"   Remove the following comment by <em>%(comment.user.profile)s</em>\n"
+"   as spam? (If this is a violation of guidelines or anything other\n"
+"   than spam, use <a href='{%% url \"comments.moderator_remove\"\n"
+"   comment.pk %%}'>this form</a> instead)\n"
+"    "
+msgstr ""
+
+#: templates/comments/spam_can_comment.html:26
+msgid "Is the user a spambot?"
+msgstr ""
+
+#: templates/comments/spam_can_comment.html:27
+msgid ""
+"If the user is a spambot, remove the whole user instead.  This will delete "
+"all of the following, including the above comment:"
+msgstr ""
+
+#: templates/comments/spam_can_comment.html:29
+#, fuzzy
+msgid "User:"
+msgstr "Utilisateurs"
+
+#: templates/comments/spam_can_comment.html:42
+msgid "Delete user and all their content"
+msgstr ""
+
+#: templates/comments/unremove_comment.html:5
+#, fuzzy
+msgid "Unremove comment"
+msgstr "Laisser des commentaires"
+
+#: templates/comments/unremove_comment.html:8
+#, fuzzy
+msgid "Unremove Comment"
+msgstr "Laisser des commentaires"
+
+#: templates/comments/unremove_comment.html:10
+msgid ""
+"Restore the following comment, which was removed on {{ removal.date|date }}?"
+msgstr ""
+
+#: templates/comments/unremove_comment.html:20
+#, fuzzy
+msgid "Restore comment"
+msgstr "Plus de commentaires"
 
 #: templates/correspondence/base.html:13
 #: templates/correspondence/base_letter_list.html:49
@@ -2154,6 +2456,10 @@ msgstr "annuler"
 #: templates/correspondence/delete_letter_confirm.html:15
 msgid "To"
 msgstr "À"
+
+#: templates/correspondence/generic-postcard.txt:3
+msgid "Greeting,"
+msgstr ""
 
 #: templates/correspondence/mass_mailing_spreadsheet.html:4
 msgid "Mass Mailing spreadsheet"
@@ -2449,8 +2755,24 @@ msgstr ""
 msgid "posts"
 msgstr "articles"
 
-#: templates/moderation/_common.html:34 templates/moderation/_groups.html:190
-#: templates/moderation/_scans.html:120
+#: templates/moderation/_common.html:6
+#, fuzzy
+msgid "Per page:"
+msgstr "Toutes les pages"
+
+#: templates/moderation/_common.html:13
+#, fuzzy
+msgid "Page:"
+msgstr "Pages:"
+
+#: templates/moderation/_common.html:30
+msgid "-- click to add --"
+msgstr ""
+
+#: templates/moderation/_common.html:34
+#: templates/moderation/_documents.html:27
+#: templates/moderation/_documents.html:132
+#: templates/moderation/_groups.html:190 templates/moderation/_scans.html:120
 #: templates/scanning/transcription_edit.html:117
 msgid "Save"
 msgstr "Enregistrer"
@@ -2505,6 +2827,7 @@ msgid "Edit list"
 msgstr "Liste d'attente"
 
 #: templates/moderation/_correspondence.html:103
+#: templates/moderation/_users.html:317
 msgid "Special mail handling"
 msgstr ""
 
@@ -2581,10 +2904,6 @@ msgstr "Scans"
 msgid "Needs attention"
 msgstr "A besoin d'une intervention"
 
-#: templates/moderation/_dashboard.html:22
-msgid "Documents"
-msgstr "Documents"
-
 #: templates/moderation/_dashboard.html:28
 msgid "Open Tickets"
 msgstr "Tickets ouverts"
@@ -2600,6 +2919,191 @@ msgstr "Dans la file d'attente"
 #: templates/moderation/_dashboard.html:45
 msgid "Needed"
 msgstr "Needed???"
+
+#: templates/moderation/_documents.html:5
+#, fuzzy
+msgid "Editing"
+msgstr "Edition de l'article"
+
+#: templates/moderation/_documents.html:12
+#, fuzzy
+msgid "Document"
+msgstr "Documents"
+
+#: templates/moderation/_documents.html:14
+#, fuzzy
+msgid "Really delete this document?  There is no undo."
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer cette réponse ? Cette opération est "
+"irreversible."
+
+#: templates/moderation/_documents.html:15
+#, fuzzy
+msgid "Delete document"
+msgstr "Supprimer le commentaire"
+
+#: templates/moderation/_documents.html:35
+#, fuzzy
+msgid "Correspondence for"
+msgstr "Correspondance envoyée"
+
+#: templates/moderation/_documents.html:40
+#: templates/moderation/_documents.html:57
+#: templates/moderation/_documents.html:138
+#, fuzzy
+msgid "Edit author"
+msgstr "Editeur"
+
+#: templates/moderation/_documents.html:46
+msgid "Type:"
+msgstr ""
+
+#: templates/moderation/_documents.html:52
+msgid "(error - no parent scan.)"
+msgstr ""
+
+#: templates/moderation/_documents.html:56
+#, fuzzy
+msgid "Author:"
+msgstr "Auteurs"
+
+#: templates/moderation/_documents.html:63
+#, fuzzy
+msgid "Title:"
+msgstr "Titre"
+
+#: templates/moderation/_documents.html:67
+#, fuzzy
+msgid "Affiliation:"
+msgstr "Notifications"
+
+#: templates/moderation/_documents.html:68
+msgid "Document belongs to group:"
+msgstr ""
+
+#: templates/moderation/_documents.html:78
+#, fuzzy
+msgid "Date:"
+msgstr "Date"
+
+#: templates/moderation/_documents.html:83
+msgid "Adult"
+msgstr ""
+
+#: templates/moderation/_documents.html:84
+msgid "Contains adult conent. (if checked, post is hidden for most users)"
+msgstr ""
+
+#: templates/moderation/_documents.html:88
+#: templates/moderation/tagparty.html:22
+#, fuzzy
+msgid "Tags:"
+msgstr "Tags"
+
+#: templates/moderation/_documents.html:90
+msgid "Separate tags with commas"
+msgstr ""
+
+#: templates/moderation/_documents.html:91
+msgid "Separate with commas"
+msgstr ""
+
+#: templates/moderation/_documents.html:96
+#: templates/moderation/_users.html:380
+#, fuzzy
+msgid "Reply ID:"
+msgstr "Identifiant de réponse"
+
+#: templates/moderation/_documents.html:98
+#, fuzzy
+msgid "This document is a reply to:"
+msgstr "Cet article est en réponse aux commentaires sur"
+
+#: templates/moderation/_documents.html:103
+msgid "Replies to <em>this</em> document use this code:"
+msgstr ""
+
+#: templates/moderation/_documents.html:111
+#, fuzzy
+msgid "Status:"
+msgstr "Status"
+
+#: templates/moderation/_documents.html:124
+msgid ""
+"Document is not public because the author is not enrolled or not active."
+msgstr ""
+
+#: templates/moderation/_documents.html:135
+msgid "Queue for return:"
+msgstr ""
+
+#: templates/moderation/_documents.html:135
+msgid "return by request"
+msgstr ""
+
+#: templates/moderation/_documents.html:136
+msgid "<i>refuse</i> by policy</a>"
+msgstr ""
+
+#: templates/moderation/_documents.html:152 templates/scanning/delete.html:11
+msgid "comments"
+msgstr "commentaires"
+
+#: templates/moderation/_documents.html:159
+#, fuzzy
+msgid "Campaign"
+msgstr "Campagnes"
+
+#: templates/moderation/_documents.html:160
+#, fuzzy
+msgid "public"
+msgstr "Publié"
+
+#: templates/moderation/_documents.html:160
+msgid "not public yet"
+msgstr ""
+
+#: templates/moderation/_documents.html:166
+#, fuzzy
+msgid "Page"
+msgstr "Pages:"
+
+#: templates/moderation/_documents.html:167
+msgid "rotate counter-clockwise"
+msgstr ""
+
+#: templates/moderation/_documents.html:168
+msgid "rotate clockwise"
+msgstr ""
+
+#: templates/moderation/_documents.html:169
+msgid "rotate 1 degree counter-clockwise"
+msgstr ""
+
+#: templates/moderation/_documents.html:170
+msgid "rotate 1 degree clockwise"
+msgstr ""
+
+#: templates/moderation/_documents.html:171
+msgid "move this page up"
+msgstr ""
+
+#: templates/moderation/_documents.html:172
+msgid "move this page down"
+msgstr ""
+
+#: templates/moderation/_documents.html:173
+#: templates/moderation/_documents.html:174
+msgid "redact image"
+msgstr ""
+
+#: templates/moderation/_documents.html:175
+msgid "crop image"
+msgstr ""
+
+#: templates/moderation/_documents.html:176
+msgid "select highlight"
+msgstr ""
 
 #: templates/moderation/_groups.html:11
 #, fuzzy
@@ -2767,10 +3271,6 @@ msgstr "NECESSITE UNE INTERVENTION"
 msgid "Assigned to"
 msgstr "Assigné à"
 
-#: templates/moderation/_notes.html:61
-msgid "By"
-msgstr "Par"
-
 #: templates/moderation/_notes.html:68
 msgid "Edit note"
 msgstr "Éditer la note"
@@ -2782,6 +3282,61 @@ msgstr "Supprimer la note"
 #: templates/moderation/_notes.html:71
 msgid "Mark resolved"
 msgstr "Marquer comme résolu"
+
+#: templates/moderation/_pendingscans.html:5
+#, fuzzy
+msgid "Incoming Mail"
+msgstr "Courrier sortant"
+
+#: templates/moderation/_pendingscans.html:7
+msgid ""
+"\n"
+"\t  The following letters have been received, but scans for them\n"
+"\t  have not yet been processed.\n"
+"\t  "
+msgstr ""
+
+#: templates/moderation/_pendingscans.html:17
+#, fuzzy
+msgid "Organization:"
+msgstr "Supprimer le compte"
+
+#: templates/moderation/_pendingscans.html:29
+#, fuzzy
+msgid "Add new letter:"
+msgstr "Ajouter une note"
+
+#: templates/moderation/_pendingscans.html:40
+msgid "Missing"
+msgstr ""
+
+#: templates/moderation/_pendingscans.html:44
+msgid "Received"
+msgstr ""
+
+#: templates/moderation/_pendingscans.html:45
+#: templates/moderation/_users.html:310
+#, fuzzy
+msgid "Address"
+msgstr "Adresse manquante"
+
+#: templates/moderation/_pendingscans.html:46
+#, fuzzy
+msgid "Remove?"
+msgstr "Supprimer"
+
+#: templates/moderation/_pendingscans.html:47
+msgid "Missing?"
+msgstr ""
+
+#: templates/moderation/_pendingscans.html:48
+#: templates/moderation/_scans.html:93
+msgid "Code"
+msgstr "Code"
+
+#: templates/moderation/_pendingscans.html:74
+msgid "scan"
+msgstr ""
 
 #: templates/moderation/_scans.html:6
 msgid "Scans needing attention"
@@ -2838,10 +3393,6 @@ msgstr "Re-importer le scan"
 msgid "Merge scans"
 msgstr "Fusionner les scans"
 
-#: templates/moderation/_scans.html:93
-msgid "Code"
-msgstr "Code"
-
 #: templates/moderation/_scans.html:94
 msgid "Scan Code"
 msgstr "Code du scan"
@@ -2861,6 +3412,258 @@ msgstr "Photo"
 #: templates/moderation/_scans.html:120
 msgid "Edit documents"
 msgstr "Editer les documents"
+
+#: templates/moderation/_users.html:7 templates/moderation/_users.html:62
+#, fuzzy
+msgid "Create new user"
+msgstr "Supprimer l'utilisateur"
+
+#: templates/moderation/_users.html:10
+msgid "Full name*"
+msgstr ""
+
+#: templates/moderation/_users.html:12
+msgid "e.g., John Smith (Do not include number here)"
+msgstr ""
+
+#: templates/moderation/_users.html:16
+#, fuzzy
+msgid "Mailing address*"
+msgstr "Adresse email"
+
+#: templates/moderation/_users.html:21
+msgid "Prisoner number as first line.  Full address on next."
+msgstr ""
+
+#: templates/moderation/_users.html:25
+msgid "Blogger?*"
+msgstr ""
+
+#: templates/moderation/_users.html:32
+msgid "Managed?*"
+msgstr ""
+
+#: templates/moderation/_users.html:39
+msgid "Email&nbsp;"
+msgstr ""
+
+#: templates/moderation/_users.html:43
+msgid "Blog name&nbsp;"
+msgstr ""
+
+#: templates/moderation/_users.html:47
+msgid "leave blank unless specified by user"
+msgstr ""
+
+#: templates/moderation/_users.html:51 templates/moderation/_users.html:336
+#, fuzzy
+msgid "Organization"
+msgstr "Supprimer le compte"
+
+#: templates/moderation/_users.html:73
+msgid "Create new user?"
+msgstr ""
+
+#: templates/moderation/_users.html:81
+msgid "No results."
+msgstr ""
+
+#: templates/moderation/_users.html:94
+#, fuzzy
+msgid "Bloggers"
+msgstr "Blogs"
+
+#: templates/moderation/_users.html:99
+#, fuzzy
+msgid "Commenters"
+msgstr "Commentaires"
+
+#: templates/moderation/_users.html:104
+#, fuzzy
+msgid "Select user:"
+msgstr "Supprimer l'utilisateur"
+
+#: templates/moderation/_users.html:113
+#, fuzzy
+msgid "Inactive"
+msgstr "actif"
+
+#: templates/moderation/_users.html:116
+#, fuzzy
+msgid "Blogger:"
+msgstr "Blogs"
+
+#: templates/moderation/_users.html:120
+msgid "Mail held"
+msgstr ""
+
+#: templates/moderation/_users.html:123 templates/moderation/_users.html:174
+#, fuzzy
+msgid "Managed"
+msgstr "Gérer les tâches"
+
+#: templates/moderation/_users.html:126
+msgid "Unmanaged"
+msgstr ""
+
+#: templates/moderation/_users.html:129
+#, fuzzy
+msgid "invited"
+msgstr "Invités"
+
+#: templates/moderation/_users.html:131
+#, fuzzy
+msgid "waitlisted"
+msgstr "Sur liste d'attente"
+
+#: templates/moderation/_users.html:133
+#, fuzzy
+msgid "waitlistable"
+msgstr "Possibilité d'entrer sur la liste d'attente"
+
+#: templates/moderation/_users.html:135 templates/moderation/_users.html:157
+#, fuzzy
+msgid "blog"
+msgstr "blogs"
+
+#: templates/moderation/_users.html:137
+#, fuzzy
+msgid "Commenter"
+msgstr "Commentaire"
+
+#: templates/moderation/_users.html:154
+#, fuzzy
+msgid "Joined:"
+msgstr "S'inscrire"
+
+#: templates/moderation/_users.html:156
+#, fuzzy
+msgid "letters"
+msgstr "Lettres"
+
+#: templates/moderation/_users.html:172
+#, fuzzy
+msgid "Active"
+msgstr "actif"
+
+#: templates/moderation/_users.html:173
+#, fuzzy
+msgid "Blogger"
+msgstr "Blogs"
+
+#: templates/moderation/_users.html:175
+msgid "License signed"
+msgstr ""
+
+#: templates/moderation/_users.html:176
+msgid "Hold Mail"
+msgstr ""
+
+#: templates/moderation/_users.html:195
+msgid "No email on file."
+msgstr ""
+
+#: templates/moderation/_users.html:199 templates/moderation/_users.html:349
+#, fuzzy
+msgid "Notes"
+msgstr "Ajouter une note"
+
+#: templates/moderation/_users.html:215 templates/moderation/_users.html:330
+#, fuzzy
+msgid "Joined"
+msgstr "S'inscrire"
+
+#: templates/moderation/_users.html:221
+#, fuzzy
+msgid "Last login"
+msgstr "s'authentifier"
+
+#: templates/moderation/_users.html:226
+msgid "Tagger"
+msgstr ""
+
+#: templates/moderation/_users.html:229
+msgid "May add tags to posts:"
+msgstr ""
+
+#: templates/moderation/_users.html:238
+msgid "No activity."
+msgstr ""
+
+#: templates/moderation/_users.html:240
+msgid "Activity over time"
+msgstr ""
+
+#: templates/moderation/_users.html:244
+#, fuzzy
+msgid "Favorites"
+msgstr "Invités"
+
+#: templates/moderation/_users.html:278
+msgid "Relationships"
+msgstr ""
+
+#: templates/moderation/_users.html:279
+msgid "This commenter has interacted with the following bloggers:"
+msgstr ""
+
+#: templates/moderation/_users.html:306
+msgid "Name"
+msgstr ""
+
+#: templates/moderation/_users.html:320
+msgid "Blog name"
+msgstr ""
+
+#: templates/moderation/_users.html:323
+#, fuzzy
+msgid "Email"
+msgstr "envoyez moi un mail"
+
+#: templates/moderation/_users.html:339 templates/moderation/stats.html:53
+msgid "Profiles"
+msgstr "Profils"
+
+#: templates/moderation/_users.html:341 templates/moderation/stats.html:38
+#: templates/moderation/stats.html.py:48
+msgid "Posts"
+msgstr "Articles"
+
+#: templates/moderation/_users.html:343
+msgid "Requests"
+msgstr ""
+
+#: templates/moderation/_users.html:345
+#, fuzzy
+msgid "Photos"
+msgstr "Photo"
+
+#: templates/moderation/_users.html:351
+#, fuzzy
+msgid "Correspondence"
+msgstr "Correspondance envoyée"
+
+#: templates/moderation/_users.html:354
+#, fuzzy
+msgid "Missing Scans"
+msgstr "Fusionner la numérisation"
+
+#: templates/moderation/_users.html:356
+msgid "License Agreement"
+msgstr ""
+
+#: templates/moderation/_users.html:370
+#, fuzzy
+msgid "Server error! Changes not saved."
+msgstr "Changements enregistrés."
+
+#: templates/moderation/_users.html:377
+msgid "Adult:"
+msgstr ""
+
+#: templates/moderation/_users.html:379
+msgid "Queue printout"
+msgstr ""
 
 #: templates/moderation/base.html:3
 msgid "active"
@@ -2890,16 +3693,11 @@ msgstr "Fusionner les scans"
 msgid "Manage users"
 msgstr "Gérer les tâches"
 
-#: templates/moderation/home.html:20
-#, fuzzy
-msgid "Outgoing mail"
-msgstr "Courrier sortant"
-
 #: templates/moderation/home.html:25
 msgid "Tag party"
 msgstr ""
 
-#: templates/moderation/home.html:27 templates/moderation/stats.html:10
+#: templates/moderation/home.html:27 templates/moderation/stats.html:11
 msgid "Stats"
 msgstr "Stats"
 
@@ -2948,15 +3746,43 @@ msgstr "en attente de la page pour la tâche"
 msgid "link"
 msgstr "lien"
 
-#: templates/moderation/stats.html:13
+#: templates/moderation/page_picker.html:7
+msgid "Page picker"
+msgstr ""
+
+#: templates/moderation/page_picker.html:40
+#, fuzzy
+msgid "Document page IDs:"
+msgstr "Documents"
+
+#: templates/moderation/page_picker.html:41
+#, fuzzy
+msgid "Read page IDs"
+msgstr "Pages numérisées"
+
+#: templates/moderation/page_picker.html:42
+#, fuzzy
+msgid "Document IDs:"
+msgstr "Documents"
+
+#: templates/moderation/questions_index.html:3
+#, fuzzy
+msgid "Question stats"
+msgstr "Préférences d'abonnements"
+
+#: templates/moderation/questions_index.html:5
+msgid "Database Questions"
+msgstr ""
+
+#: templates/moderation/stats.html:14
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: templates/moderation/stats.html:15
+#: templates/moderation/stats.html:16
 msgid "Current breakdown"
 msgstr "Répartission actuelle"
 
-#: templates/moderation/stats.html:18
+#: templates/moderation/stats.html:19
 msgid ""
 "\n"
 "\t    A treemap showing various user statuses, with the number of users\n"
@@ -2966,11 +3792,11 @@ msgid ""
 "\t    "
 msgstr ""
 
-#: templates/moderation/stats.html:25
+#: templates/moderation/stats.html:26
 msgid "New users per week"
 msgstr "Nouveaux utilisateurs par semaine"
 
-#: templates/moderation/stats.html:28
+#: templates/moderation/stats.html:29
 msgid ""
 "\n"
 "            The number of new users that are added per week.  Spikes in "
@@ -2981,27 +3807,19 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:37 templates/moderation/stats.html.py:47
-msgid "Posts"
-msgstr "Articles"
-
-#: templates/moderation/stats.html:39 templates/moderation/stats.html.py:91
+#: templates/moderation/stats.html:40 templates/moderation/stats.html.py:92
 msgid "Totals"
 msgstr "Totaux"
 
-#: templates/moderation/stats.html:43
+#: templates/moderation/stats.html:44
 msgid "Total"
 msgstr "Total"
 
-#: templates/moderation/stats.html:52
-msgid "Profiles"
-msgstr "Profils"
-
-#: templates/moderation/stats.html:60
+#: templates/moderation/stats.html:61
 msgid "Timeline (by week)"
 msgstr "Ligne de temps (par semaine)"
 
-#: templates/moderation/stats.html:63
+#: templates/moderation/stats.html:64
 msgid ""
 "\n"
 "            The timeline shows the number of requests, posts, and profiles\n"
@@ -3011,11 +3829,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:70
+#: templates/moderation/stats.html:71
 msgid "Impact: Posts"
 msgstr "Impact: Articles"
 
-#: templates/moderation/stats.html:73
+#: templates/moderation/stats.html:74
 msgid ""
 "\n"
 "            This graph shows the number of posts ordered by author, to\n"
@@ -3024,11 +3842,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:79
+#: templates/moderation/stats.html:80
 msgid "Impact: Pages"
 msgstr "Impact: Pages"
 
-#: templates/moderation/stats.html:82
+#: templates/moderation/stats.html:83
 msgid ""
 "\n"
 "            This graph shows the contribution by page count.  Some authors\n"
@@ -3036,23 +3854,23 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:93
+#: templates/moderation/stats.html:94
 msgid "Comments published"
 msgstr "Commentaires publiés"
 
-#: templates/moderation/stats.html:95
+#: templates/moderation/stats.html:96
 msgid "Comments posted per week"
 msgstr "Commentaires publiés par semaine"
 
-#: templates/moderation/stats.html:98
+#: templates/moderation/stats.html:99
 msgid "This graph shows the number of new comments posted per week."
 msgstr "Ce graph montre le nombre de nouveaux commentaires postés par semaine."
 
-#: templates/moderation/stats.html:101
+#: templates/moderation/stats.html:102
 msgid "Commenter Impact"
 msgstr "Impact du commenteur"
 
-#: templates/moderation/stats.html:104
+#: templates/moderation/stats.html:105
 msgid ""
 "\n"
 "            This graph shows the number of comments posted by particular "
@@ -3062,7 +3880,7 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:120
+#: templates/moderation/stats.html:121
 msgid ""
 "\n"
 "            This shows the breakdown of letters that we send per week.  "
@@ -3074,13 +3892,47 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/moderation/stats.html:131
+#: templates/moderation/stats.html:132
 msgid ""
 "\n"
 "            This shows the breakdown of recipients of letters we send, "
 "showing\n"
 "            which users receive the largest portion of mail.\n"
 "            "
+msgstr ""
+
+#: templates/moderation/tagparty.html:35
+msgid "Next&nbsp;&raquo;"
+msgstr ""
+
+#: templates/moderation/wait_for_processing.html:9
+#, fuzzy
+msgid "Processing"
+msgstr "Fusionner les scans"
+
+#: templates/moderation/wait_for_processing.html:12
+msgid "Waiting for processing to finish"
+msgstr ""
+
+#: templates/moderation/wait_for_processing.html:15
+msgid "You will be redirected when we are finished."
+msgstr ""
+
+#: templates/moderation/wait_for_processing.html:32
+msgid "Invalid task."
+msgstr ""
+
+#: templates/moderation/wait_for_processing.html:40
+msgid "Task exited with errors."
+msgstr ""
+
+#: templates/moderation/wait_for_processing.html:42
+#, fuzzy
+msgid "View task"
+msgstr "Voir l'article"
+
+#: templates/moderation/wait_for_processing.html:51
+msgid "Error communicating with server.  Refresh page to retry."
 msgstr ""
 
 #: templates/notification/email_body.txt:2
@@ -3265,16 +4117,16 @@ msgstr "Supprimer scan"
 msgid "Are you sure you want to remove your profile scan?"
 msgstr "Êtes vous sûr de vouloir supprimer le scan de votre profil ?"
 
-#: templates/profiles/confirm_delete_self.html:2
+#: templates/profiles/confirm_delete_self.html:3
 #: templates/profiles/profile_edit.html:49
 msgid "Delete account"
 msgstr "Supprimer le compte"
 
-#: templates/profiles/confirm_delete_self.html:4
+#: templates/profiles/confirm_delete_self.html:5
 msgid "Delete account permanently?"
 msgstr "Supprimer le compte de manière permantente ?"
 
-#: templates/profiles/confirm_delete_self.html:6
+#: templates/profiles/confirm_delete_self.html:7
 msgid ""
 "\n"
 "Are you sure you want to delete your account?  This cannot be undone.  You "
@@ -3287,11 +4139,11 @@ msgstr ""
 "irreversible. Vous ne pourrez plus vous authentifier et toutes les "
 "informations de votre profil seront supprimées.\n"
 
-#: templates/profiles/confirm_delete_self.html:19
+#: templates/profiles/confirm_delete_self.html:20
 msgid "Delete comments"
 msgstr "Supprimer les commentaires"
 
-#: templates/profiles/confirm_delete_self.html:22
+#: templates/profiles/confirm_delete_self.html:23
 msgid ""
 "\n"
 "        Note: Once things are on the Internet, it's nearly impossible for "
@@ -3312,7 +4164,7 @@ msgstr ""
 "imprimés et envoyés par la poste aux auteurs des articles commentés. Nous "
 "pouvons néansmoins supprimer ces informations."
 
-#: templates/profiles/confirm_delete_self.html:31
+#: templates/profiles/confirm_delete_self.html:32
 msgid ""
 "\n"
 "        Once you delete your account, you will be unable to later delete\n"
@@ -3325,7 +4177,7 @@ msgstr ""
 "supprimer vos commentaires si vous ne les supprimez pas maintenant. Dans "
 "tous les cas, votre profil ne sera plus associé à ces commentaires."
 
-#: templates/profiles/confirm_delete_self.html:38
+#: templates/profiles/confirm_delete_self.html:39
 #, python-format
 msgid ""
 "\n"
@@ -3334,7 +4186,7 @@ msgid ""
 "\t"
 msgstr ""
 
-#: templates/profiles/confirm_delete_self.html:45
+#: templates/profiles/confirm_delete_self.html:46
 msgid "Delete account permanently"
 msgstr "Supprimer le compte définitivement"
 
@@ -3382,9 +4234,9 @@ msgid ""
 "\t\t"
 msgstr ""
 "\n"
-"Pour les organisation assistants plusieurs auteurs, %(site.name)s peut mettre "
-"en place une page spécifique à cette organisation permettant ainsi de mettre "
-"en valeur ces auteurs ainsi que l'organisation en elle même."
+"Pour les organisation assistants plusieurs auteurs, %(site.name)s peut "
+"mettre en place une page spécifique à cette organisation permettant ainsi de "
+"mettre en valeur ces auteurs ainsi que l'organisation en elle même."
 
 #: templates/profiles/groups_list.html:57
 #, python-format
@@ -3772,11 +4624,6 @@ msgstr ""
 msgid "Revision"
 msgstr "Révision"
 
-#: templates/scanning/_column_diff.html:6
-#: templates/scanning/_column_diff.html:8
-msgid "ago"
-msgstr "il y a"
-
 #: templates/scanning/after_transcribe_comment.html:4
 msgid "Leave a note"
 msgstr "Laisser une note"
@@ -3821,10 +4668,6 @@ msgstr "Supprimer (irreversible)"
 msgid "pages"
 msgstr "pages"
 
-#: templates/scanning/delete.html:11
-msgid "comments"
-msgstr "commentaires"
-
 #: templates/scanning/delete.html:14
 msgid "Scan pages"
 msgstr "Pages numérisées"
@@ -3845,11 +4688,11 @@ msgstr ""
 msgid "Notify moderators"
 msgstr "Prévenir les modérateurs"
 
-#: templates/scanning/merge.html:5
+#: templates/scanning/merge.html:6
 msgid "Merge Scan"
 msgstr "Fusionner la numérisation"
 
-#: templates/scanning/merge.html:6
+#: templates/scanning/merge.html:7
 msgid ""
 "Choose a PDF file to merge (add to the bottom of) this scan's PDF. Use this "
 "if, for example, someone adds an additional page to a profile."
@@ -3867,25 +4710,21 @@ msgid ""
 "with this scan unavailable until the import is finished."
 msgstr ""
 
-#: templates/scanning/replace.html:3 templates/scanning/upload.html:4
+#: templates/scanning/replace.html:4 templates/scanning/upload.html:4
 msgid "Upload scans"
 msgstr "Envoi de fichiers"
 
-#: templates/scanning/replace.html:5
+#: templates/scanning/replace.html:6
 msgid "Replace Scan"
 msgstr "Remplacer la numérisation"
 
-#: templates/scanning/replace.html:6
+#: templates/scanning/replace.html:7
 msgid "Choose a PDF file to replace this scan's with."
 msgstr "Choisir un PDF pour remplacer cette numérisation."
 
 #: templates/scanning/revision_list.html:11
 msgid "Transcription revisions"
 msgstr "Révisions de la retranscription"
-
-#: templates/scanning/revision_list.html:14
-msgid "edit transcription"
-msgstr "editer la retranscription"
 
 #: templates/scanning/revision_list.html:27
 msgid "Compare"
@@ -3928,6 +4767,35 @@ msgid "Upload individual PDF files, or zip files containing multiple PDFs."
 msgstr ""
 "Envoyer des fichiers PDF individuellement ou un fichier ZIP contenant "
 "plusieurs PDFs. "
+
+#: templates/subscriptions/mailing_list_interest.html:5
+msgid "Sign up for mailing list"
+msgstr ""
+
+#: templates/subscriptions/mailing_list_interest.html:8
+#, fuzzy
+msgid "Mailing List"
+msgstr "Publipostages : "
+
+#: templates/subscriptions/mailing_list_interest.html:9
+msgid ""
+"Sign up for our low-volume mailing list to stay up to date with Between the "
+"Bars!"
+msgstr ""
+
+#: templates/subscriptions/mailing_list_interest.html:15
+#, fuzzy
+msgid "Sign up"
+msgstr "Enregistrez moi!"
+
+#: templates/subscriptions/mailing_list_thanks.html:5
+#: templates/subscriptions/mailing_list_thanks.html:8
+msgid "Thanks!"
+msgstr ""
+
+#: templates/subscriptions/mailing_list_thanks.html:9
+msgid "Sign up received.  Thanks for your interest!"
+msgstr ""
 
 #: templates/subscriptions/subscribe_to.html:5
 #: templates/subscriptions/subscribe_to.html:9
@@ -3987,9 +4855,6 @@ msgstr ""
 #~ msgid "Edit"
 #~ msgstr "Éditer"
 
-#~ msgid "Delete comment"
-#~ msgstr "Supprimer le commentaire"
-
 #~ msgid "Flag comment"
 #~ msgstr "Signaler le commentaire"
 
@@ -3998,9 +4863,6 @@ msgstr ""
 
 #~ msgid "view as blog post"
 #~ msgstr "voir comme un article de blog"
-
-#~ msgid "Address missing"
-#~ msgstr "Adresse manquante"
 
 #~ msgid "Add one?"
 #~ msgstr "Ajouter une adresse ?"
@@ -4024,9 +4886,6 @@ msgstr ""
 
 #~ msgid "No comments"
 #~ msgstr "Pas de commentaires"
-
-#~ msgid "Transcriptions"
-#~ msgstr "Retranscriptions"
 
 #~ msgid "No transcriptions"
 #~ msgstr "Pas de retranscriptions"
