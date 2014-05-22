@@ -3,14 +3,14 @@
     <% if (pagination.count > 0 && (pageLinksToShow.length > 1 || !hideForSinglePage)) { %>
         <%= pagination.count %> results.
         <span class='per-page-holder'>
-          Per page: <select name='per-page' class='per-page'>
+          {% trans "Per page:" %} <select name='per-page' class='per-page'>
               <option value='6'>6</option>
               <option value='12'>12</option>
               <option value='24'>24</option>
               <option value='96'>96</option>
           </select>
         </span>
-        Page:
+        {% trans "Page:" %}
         <% var prevPage = 0; %>
         <% for (var i = 0; i < pageLinksToShow.length ; i++) { %>
             <% var p = pageLinksToShow[i]; %>
@@ -27,7 +27,7 @@
     <% } %>
     <img src='{{ STATIC_URL }}img/spinner.gif' class='pagination-loading' style='display: none;' />
 </script>
-<script type='text/template' id="editInPlace"><span class='edit-in-place'><%= field !== null && field !== undefined && field !== "" ? field : "-- click to add --" %></span></script>
+<script type='text/template' id="editInPlace"><span class='edit-in-place'><%= field !== null && field !== undefined && field !== "" ? field : "{% trans "-- click to add --" %}" %></span></script>
 <script type='text/template' id="editorInPlace">{% spaceless %}
     <span class='editor-in-place'>
         <span class='edit-tag'></span><br />

@@ -1,9 +1,10 @@
 {% extends "about/about_base.html" %}
+{% load i18n %}
 {% load url from future %}
 
-{% block title %}Thanks!{% endblock %}
+{% block title %}{% trans "Thanks!" %}{% endblock %}
 
 {% block body %}
-<h2>Thanks!</h2>
-<p>Sign up received.  Thanks for your interest!</h2>
+<h2>{% trans "Thanks!" %}</h2>
+<p>{% trans "Sign up received.  Thanks for your interest!" %}</h2>
 {% endblock %}

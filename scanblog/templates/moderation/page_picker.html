@@ -1,9 +1,10 @@
 {% load thumbnail %}
 {% load public_url %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page picker</title>
+    <title>{% trans "Page picker" %}</title>
     <style type='text/css'>
         .page {
             border: 2px solid white;
@@ -36,9 +37,9 @@
     {% endspaceless %}
 </div>
 <div class='selections'>
-    Document page IDs: <textarea id='document_page_ids'></textarea>
-    <input id='readpageids' type='button' value='Read page IDs' />
-    Document IDs: <textarea id='document_ids'></textarea>
+    {% trans "Document page IDs:" %} <textarea id='document_page_ids'></textarea>
+    <input id='readpageids' type='button' value='{% trans "Read page IDs" %}' />
+    {% trans "Document IDs:" %} <textarea id='document_ids'></textarea>
 </div>
 
 <script type='text/javascript' src='{{ STATIC_URL }}js/vendor/jquery.min.js'></script>

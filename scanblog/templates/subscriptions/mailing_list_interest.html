@@ -1,17 +1,18 @@
 {% extends "about/about_base.html" %}
+{% load i18n %}
 {% load url from future %}
 
-{% block title %}Sign up for mailing list{% endblock %}
+{% block title %}{% trans "Sign up for mailing list" %}{% endblock %}
 
 {% block body %}
-<h2>Mailing List</h2>
-<p>Sign up for our low-volume mailing list to stay up to date with Between the Bars!</p>
+<h2>{% trans "Mailing List" %}</h2>
+<p>{% trans "Sign up for our low-volume mailing list to stay up to date with Between the Bars!" %}</p>
 
 <form method='post' action=''>{% csrf_token %}
   <table>
     {{ form.as_table }}
     <tr>
-      <td></td><td><input type='submit' value='Sign up' /></td>
+      <td></td><td><input type='submit' value='{% trans "Sign up" %}' /></td>
     </tr>
   </table>
 </form>

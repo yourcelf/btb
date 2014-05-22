@@ -1,5 +1,6 @@
 {% extends "moderation/base.html" %}
 {% load compress %}
+{% load i18n %}
 {% block title %}Tag Party!{% endblock %}
 {% block css %}
     {% compress css %}
@@ -18,7 +19,7 @@
             <table>
                 <tr>
                     <td>
-                        Tags:
+                        {% trans "Tags:" %}
                     </td>
                     <td>
                         <ul class='chosen-tags'>
@@ -31,7 +32,7 @@
                         <input type='submit' value='Save' class='save-post-button' />
                     </td>
                     <td><div class='status'></div></td>
-                    <td><a href=''>Next&nbsp;&raquo;</a></td>
+                    <td><a href=''>{% trans "Next&nbsp;&raquo;" %}</a></td>
                 </tr>
             </table>
             <table class='possible-tags'>

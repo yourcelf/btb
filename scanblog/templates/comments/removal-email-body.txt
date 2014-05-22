@@ -1,9 +1,10 @@
 {% extends "notification/email_body.txt" %}
+{% load i18n %}
 
 {% block message %}
 {{ block.super }}
 
-The removed comment was:
+{% trans "The removed comment was:" %}
 
 "{{ removal.comment.comment }}"
 
