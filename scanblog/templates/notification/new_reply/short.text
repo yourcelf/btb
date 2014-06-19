@@ -1,1 +1,1 @@
-New reply from {{ author.profile }}
+{% trans "New reply from" %} {{ author.profile }}

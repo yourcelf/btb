@@ -1,21 +1,22 @@
 {% extends "notification/base.html" %}
+{% load i18n %}
 {% load url from future %}
 {% load pagination_tags %}
 
-{% block title %}Notifications{% endblock %}
+{% block title %}{% trans "Notifications" %}{% endblock %}
 
 {% block body %}
 {% autopaginate notices 10 %}
 
 <div class='notices'>
-    <a href='{% url "subscriptions.settings" %}'>Subscriptions and communication preferences</a>
-    <h1>Notifications</h1>
+    <a href='{% url "subscriptions.settings" %}'>{% trans "Subscriptions and communication preferences" %}</a>
+    <h1>{% trans "Notifications" %}</h1>
     {% if notices %}
-        <a href="{% url "notification_mark_all_seen" %}">Mark all as read</a>
+        <a href="{% url "notification_mark_all_seen" %}">{% trans "Mark all as read" %}</a>
         <table>
             <tr>
-                <th>Date</th>
-                <th>Message</th>
+                <th>{% trans "Date" %}</th>
+                <th>{% trans "Message" %}</th>
             </tr>
             {% for notice in notices %}
                 <tr class='notice {% if notice.unseen %}unseen{% endif %}'>
@@ -25,7 +26,7 @@
                     </td>
                     <td>{{ notice.message|safe }}</td>
                     <td>
-                        <a href='#' class='delete-notice'>delete</a>&nbsp;
+                        <a href='#' class='delete-notice'>{% trans "delete" %}</a>&nbsp;
                     </td>
                 </tr>
             {% endfor %}
@@ -34,10 +35,10 @@
         {% paginate %}
 
         <p style='margin-top: 3em;'>
-        <a href="#" class='delete-all-notices'>Delete all messages</a>
+        <a href="#" class='delete-all-notices'>{% trans "Delete all messages" %}</a>
         </p>
     {% else %}
-        <p>No notifications.</p>
+        <p>{% trans "No notifications." %}</p>
     {% endif %}
 </div>
 {% endblock %}

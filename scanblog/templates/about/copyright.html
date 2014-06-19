@@ -1,23 +1,34 @@
 {% extends "about/legal_base.html" %}
 {% load url from future %}
-
-{% block title %}Copyright policy{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Copyright policy" %}{% endblock %}
 {% block body %}
 <div class='terms'>
-<h2>Between the Bars Copyright Policy</h2>
+  <h2>
+    {% blocktrans with site_name=site.name %}
+    {{ site_name }} Copyright Policy
+    {% endblocktrans %}
+  </h2>
 <p>
-The {{ site.name }} site, design, and content is copyrighted 
-<nobr>&copy;{% now "Y" %} {{ site.name }}</nobr>, all rights reserved.
+{% blocktrans with year=now.year site_name=site.name %}
+The {{ site_name }} site, design, and content is copyrighted
+<nobr>&copy; {{ year }} {{ site.name }}</nobr>, all rights reserved.
+{% endblocktrans %}
 </p>
 <p>
+{% blocktrans %}
 All blog posts and transcriptions of blog posts are owned and copyrighted by
 the blog post authors, who retain all rights.  If you wish to reproduce any
 blog post, you should seek permission of the original author by contacting them
-directly. 
+directly.
+{% endblocktrans %}
 </p>
 <p>
-All comments are owned by the people who submit them, in accordance with the 
-<a href='{% url "about.terms" %}'>Terms of Use</a>.
+{% url "about.terms" as about_terms_url %}
+{% blocktrans %}
+All comments are owned by the people who submit them, in accordance with the
+<a href='{{ about_terms_url }}'>Terms of Use</a>.
+{% endblocktrans %}
 </p>
 </div>
 {% endblock body %}

@@ -1,14 +1,20 @@
+{% load i18n %}
 <!-- Pending Scans -->
 <script type='text/template' id="pendingScanList">
     <div class='pending-scans'>
-        <h1>Incoming Mail</h1>
-        <p>The following letters have been received, but scans for them have not yet been processed.</p>
+        <h1>{% trans "Incoming Mail" %}</h1>
+        <p>
+	  {% blocktrans %}
+	  The following letters have been received, but scans for them
+	  have not yet been processed.
+	  {% endblocktrans %}
+	</p>
         <div class='pending-scans'>
             <div class='add'>
                 <form>
                     <table>
                         <tr>
-                            <th><label>Organization:</label></th>
+                            <th><label>{% trans "Organization:" %}</label></th>
                             <td>
                                 <select class='orgs' name='org_id'>
                                     <% for (var i = 0; i < orgs.length; i++) { %>
@@ -20,7 +26,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th><label>Add new letter:</label></th>
+                            <th><label>{% trans "Add new letter:" %}</label></th>
                             <td>
                                 <div class='user-chooser-holder'>
                             </td>
@@ -30,16 +36,16 @@
             </div>
             <div class='pagination'></div>
             <div class='pending-scan-choices'>
-                <span class='show-pending chosen'>Pending</span
-                ><span class='show-missing'>Missing</span>
+                <span class='show-pending chosen'>{% trans "Pending" %}</span
+                ><span class='show-missing'>{% trans "Missing" %}</span>
             </div>
             <table class='pending-scan-list results'>
                 <tr>
-                    <th>Received</th>
-                    <th>Address</th>
-                    <th>Remove?</th>
-                    <th>Missing?</th>
-                    <th>Code</th>
+                    <th>{% trans "Received" %}</th>
+                    <th>{% trans "Address" %}</th>
+                    <th>{% trans "Remove?" %}</th>
+                    <th>{% trans "Missing?" %}</th>
+                    <th>{% trans "Code" %}</th>
                 </tr>
             </table>
             <div class='pagination'></div>
@@ -65,7 +71,7 @@
                     <% } %>
                 />
             <% } else { %>
-                <a href='#/process/scan/<%= pendingscan.scan_id %>'>scan</a>
+                <a href='#/process/scan/<%= pendingscan.scan_id %>'>{% trans "scan" %}</a>
             <% } %>
         </td>
         <td class='reply-code'>

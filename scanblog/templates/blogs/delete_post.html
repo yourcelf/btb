@@ -3,16 +3,17 @@
 {% block title %}Delete post?{% endblock %}
 {% block body %}
     <p>
-    Delete the post <em>{{ post.get_title }}</em> and remove it from the site?
-    This can't be undone.
+    {% trans "Delete the post" %} <em>{{ post.get_title }}</em>
+    {% trans "and remove it from the site?" %}
+    {% trans "This can't be undone." %}
     </p>
 
     <p>
     <form method='post' action=''>{% csrf_token %}
-        <input type='submit' value='Delete post'>
+        <input type='submit' value='{% trans "Delete post" %}'>
     </form>
     </p>
     <p>
-    <a href='{% url "blogs.edit_post" post.pk %}'>Cancel</a>
+    <a href='{% url "blogs.edit_post" post.pk %}'>{% trans "Cancel" %}</a>
     </p>
 {% endblock %}

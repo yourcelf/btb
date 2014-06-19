@@ -1,9 +1,9 @@
 {% extends "profiles/base.html" %}
-{% block title %}Remove scan{% endblock %}
+{% block title %}{% trans "Remove scan" %}{% endblock %}
 {% block body %}
-<p>Are you sure you want to remove your profile scan?</p>
+<p>{% trans "Are you sure you want to remove your profile scan?" %}</p>
 <form action='' method='post'>{% csrf_token %}
-    <input type='submit' value='Delete' />
+    <input type='submit' value='{% trans "Delete" %}' />
 </form>
 <br />
 <img src='{{ profile.scan_page_file.url }}' />

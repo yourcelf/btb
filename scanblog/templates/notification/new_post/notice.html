@@ -1,1 +1,1 @@
-New post, &ldquo;<a href='{{ document.get_absolute_url }}'>{{ document.get_title }}</a>&rdquo;, from {{ document.author.profile }}
+{% trans "New post" %}, &ldquo;<a href='{{ document.get_absolute_url }}'>{{ document.get_title }}</a>&rdquo;, {% trans "from" %} {{ document.author.profile }}

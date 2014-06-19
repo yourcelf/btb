@@ -1,16 +1,17 @@
 {% load url from future %}
+{% load i18n %}
 <script type="text/template" id="letterMenu">
-        Add letter: <select class='type-chooser'>
+        {% trans "Add letter:" %} <select class='type-chooser'>
             <option value="">--------</option>
-            <option value="letter">Letter</option>
-            <option value="consent_form">Invitation to join</option>
-            <option value="waitlist">Waitlist postcard</option>
-            <option value="signup_complete">Enrollment confirmation</option>
-            <option value="first_post">First post</option>
-            <option value="comments">Recent comments</option>
+            <option value="letter">{% trans "Letter" %}</option>
+            <option value="consent_form">{% trans "Invitation to join" %}</option>
+            <option value="waitlist">{% trans "Waitlist postcard" %}</option>
+            <option value="signup_complete">{% trans "Enrollment confirmation" %}</option>
+            <option value="first_post">{% trans "First post" %}</option>
+            <option value="comments">{% trans "Recent comments" %}</option>
         </select><img class='loading' style='display: none;' href='{{ STATIC_URL }}img/spinner.gif' />
         <span class='org-chooser'>
-            Return:
+            {% trans "Return:" %}
             {# NB: Duplicated below, grep org_id #}
             <select class='org_id' name='org_id'>
                 <% for (var i = 0; i < recipient.organizations.length; i++) { %>
@@ -35,18 +36,21 @@
 </script>
 <script type='text/template' id='letterEditor'>
     <div class='custom-letter'>
-        <h2>Write a letter</h2>
+        <h2>{% trans "Write a letter" %}</h2>
         <div class='letter-error'></div>
         <form method='post' action='{% url "correspondence.preview_letter" %}'>{% csrf_token %}
-            Return address: <span class='org-chooser'></span><br />
-            Add stock response: <span class='stock-response-chooser'></span><br />
+            {% trans "Return address:" %} <span class='org-chooser'></span><br />
+            {% trans "Add stock response:" %} <span class='stock-response-chooser'></span><br />
             <textarea class='letter-body' name='body'><%= letter.body || "" %></textarea><br />
             <input type='hidden' name='recipient_id' value='<%= letter.recipient.id %>' />
-            <span class='link-like cancel'>Cancel</span>
+            <span class='link-like cancel'>{% trans "Cancel" %}</span>
             <input type='submit' value='Preview' class='preview-letter' />
             <input type='button' value='Save' class='enqueue-letter' />
             <img class='loading' style='display: none;' href='{{ STATIC_URL }}img/spinner.gif' />
-            <input type='checkbox' <% if (!letter.send_anonymously) { %> checked='checked'<% } %> name='signed' class='not-anonymous' /> Sign letter with your name
+            <input type='checkbox' 
+		   <% if (!letter.send_anonymously) { %> checked='checked'<% } %> 
+		   name='signed' class='not-anonymous' />
+	    {% trans "Sign letter with your name" %}
         </form>
     </div>
 </script>
@@ -57,7 +61,7 @@
       <option value='<%= stock_response.id %>'><%= stock_response.get("name") %></option>
     <% }); %>
   </select>
-  <a href='/admin/correspondence/stockresponse/'>Edit list</a>
+  <a href='/admin/correspondence/stockresponse/'>{% trans "Edit list" %}</a>
 </script>
 <script type='text/template' id='correspondenceControlsScan'>
     <%= scan.author.display_name %><br />
@@ -96,27 +100,43 @@
                     <% } %>
                     <% if (letter.recipient && letter.recipient.special_mail_handling) { %>
                         <li class='special-handling' style='color: red;'>
-                            Special mail handling
+                            {% trans "Special mail handling" %}
                         </li>
                     <% } %>
                     <% if (letter.type != "") { %>
                         <li class='print-letter' 
                             onclick="window.location.href='{% url "correspondence.show_letter" %}<%= letter.id %>'"
-                            ><span class='ui-icon ui-icon-script'></span>Print</li>
+                            ><span class='ui-icon
+                            ui-icon-script'></span>{% trans "Print" %}</li>
                     <% } %>
                     <% if (letter.is_postcard == false) { %>
                         <li class='print-envelope'
                             onclick="window.location.href='{% url "correspondence.print_envelope" %}<%= letter.recipient ? letter.recipient.id : "?address=" + letter.recipient_address %>'" 
-                            ><span class='ui-icon ui-icon-mail-closed'></span>Envelope</li>
+                            >
+			  <span class='ui-icon ui-icon-mail-closed'></span>
+			  {% trans "Envelope" %}
+			</li>
                     <% } %>
                     <% if (letter.sent) { %>
                         <% if (letter.type != "") { %>
-                            <li class='resend-letter'><span class='ui-icon ui-icon-refresh'></span>Resend</li>
+                            <li class='resend-letter'>
+			      <span class='ui-icon ui-icon-refresh'></span>
+			      {% trans "Resend" %}
+			    </li>
                         <% } %>
-                        <li class='mark-letter-unsent'><span class='ui-icon ui-icon-close'></span>Mark unsent</li>
+                        <li class='mark-letter-unsent'>
+			  <span class='ui-icon ui-icon-close'></span>
+			  {% trans "Mark unsent" %}
+			</li>
                     <% } else { %>
-                        <li class='mark-letter-sent'><span class='ui-icon ui-icon-check'></span>Mark sent</li>
-                        <li class='delete-letter'><span class='ui-icon ui-icon-trash'></span>Delete</li>
+                        <li class='mark-letter-sent'>
+			  <span class='ui-icon ui-icon-check'></span>
+			  {% trans "Mark sent" %}
+			</li>
+                        <li class='delete-letter'>
+			  <span class='ui-icon ui-icon-trash'></span>
+			  {% trans "Delete" %}
+			</li>
                     <% } %>
                 </ul>
             </div>
@@ -313,42 +333,58 @@
     <div style='float: left;'>
         <span class='choice waitlist'>
             <input checked="checked"  type='checkbox' name='waitlist' id='waitlist' 
-            /><label for='waitlist'>Waitlist (<span class='count'></span>)</label>
+            /><label for='waitlist'>
+	      {% trans "Waitlist" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice consent_form'>
             <input checked="checked"  type='checkbox' name='consent_form' id='consent_form' 
-            /><label for='consent_form'>Invitations (<span class='count'></span>)</label>
+            /><label for='consent_form'>
+	      {% trans "Invitations" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice signup_complete'>
             <input checked="checked"  type='checkbox' name='signup_complete' id='signup_complete' 
-            /><label for='signup_complete'>Enrollment (<span class='count'></span>)</label>
+            /><label for='signup_complete'>
+	      {% trans "Enrollment" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice first_post'>
             <input checked="checked"  type='checkbox' name='first_post' id='first_post' 
-            /><label for='first_post'>First Post (<span class='count'></span>)</label>
+            /><label for='first_post'>
+	      {% trans "First Post" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice printout'>
             <input checked="checked"  type='checkbox' name='printout' id='printout' 
-            /><label for='printout'>Printouts (<span class='count'></span>)</label>
+            /><label for='printout'>
+	      {% trans "Printouts" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice comments'>
             <input checked="checked"  type='checkbox' name='comments' id='comments' 
-            /><label for='comments'>Comments (<span class='count'></span>)</label>
+            /><label for='comments'>
+	      {% trans "Comments" %} (<span class='count'></span>)
+	    </label>
         </span>
         
         <span class='choice letter'>
             <input checked="checked"  type='checkbox' name='letter' id='letter' 
-            /><label for='letter'>Letters (<span class='count'></span>)</label>
+            /><label for='letter'>
+	      {% trans "Letters" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <span class='choice other'>
             <input checked="checked" type='checkbox' name='other' id='other'
-            /><label for='letter'>Other (<span class='count'></span>)</label>
+            /><label for='letter'>
+	      {% trans "Other" %} (<span class='count'></span>)
+	    </label>
         </span>
 
         <input type='text' name='search' id='search' />

@@ -1,54 +1,58 @@
 {% extends "blogs/base.html" %}
+{% load i18n %}
+{% trans "By the page" as i18n_by_the_page%}
+{% block title %}{{ i18n_by_the_page }}{% endblock %}
 {% load url from future %}
-
-{% block title %}By the page{% endblock %}
 
 {% block body %}
 <style type='text/css'>
     .pagepick {
-        float: left;
-        cursor: pointer;
-        border: 1px solid white;
+	float: left;
+	cursor: pointer;
+	border: 1px solid white;
     }
     .pagepick:hover {
-        border: 1px solid green;
+	border: 1px solid green;
     }
     .page-overlay {
-        position: absolute;
-        background-color: white;
-        padding: 10px;
-        border: 1px solid #aaa;
-        top: 0;
-        left: 0;
+	position: absolute;
+	background-color: white;
+	padding: 10px;
+	border: 1px solid #aaa;
+	top: 0;
+	left: 0;
     }
     .page-overlay img {
-        width: 38px;
+	width: 38px;
     }
     .page-overlay.fullwidth img {
-        -moz-transition-property: width;
-        -webkit-transition-property: width;
-        transition-property: width;
-        -moz-transition-duration: 0.2s;
-        -webkit-transition-duration: 0.2s;
-        transition-delay: 0.2s;
-        width: 100px !important;
+	-moz-transition-property: width;
+	-webkit-transition-property: width;
+	transition-property: width;
+	-moz-transition-duration: 0.2s;
+	-webkit-transition-duration: 0.2s;
+	transition-delay: 0.2s;
+	width: 100px !important;
     }
     .page-overlay .pagepick:hover {
-        border: 1px solid white;
+	border: 1px solid white;
     }
     .page-overlay td {
-        vertical-align: top;
-        padding: 5px;
+	vertical-align: top;
+	padding: 5px;
     }
 </style>
 <noscript>
-    This page requires javsacript.  To browse Between the Bars without javascript, try <a href='{% url "blogs.home" %}'>blogs</a>.
+    {% trans "This page requires javascript. To browse {{ site.name }} without javascript, try" %} <a href='{% url "blogs.home" %}'>{% trans "blogs" %}</a>.
 </noscript>
-<h1>Every page</h1>
+<h1>{% trans "Every page" %}</h1>
 <div id='pagepicker'></div>
-<div class='pagepicker-loading'><img src='{{ STATIC_URL }}img/spinner.gif'> Loading...</div>
+<div class='pagepicker-loading'>
+  <img src='{{ STATIC_URL }}img/spinner.gif'/> {% trans "Loading..." %}
+</div>
 <div class='helpusgrow' style='display: none; clear: both;'>
-    That's all so far &ndash; <a href='{% url "profiles.profile_list" "join" %}'>help us grow</a>.
+    {% trans "That's all so far" %} &ndash;
+    <a href='{% url profiles.profile_list "join" %}'>{% trans "help us grow" %}</a>.
 </div>
 {% endblock %}
 
@@ -59,90 +63,90 @@
     var pageData = [];
 
     function loadImages() {
-        $(".pagepicker-loading").show();
-        (function(manifestIndex) {
-            var dataset = manifest[manifestIndex];
-            for (var i = 0; i < dataset.num_images; i++) {
-                (function(i) {
-                    var buildPage = function() {
-                        return $("<div>").attr(
-                            'class', 'pagepick'
-                        ).css({
-                            backgroundPosition: (-i * dataset.image_size[0]) + "px 0px",
-                            backgroundImage: "url(" + dataset.image + ")",
-                            width: dataset.image_size[0] + "px",
-                            height: dataset.image_size[1] + "px"
-                        }).attr({
-                            "data-dataset": manifestIndex,
-                            "data-index": i
-                        });
-                    }
-                    var overTimeout = null;
-                    var showOverlay = function(event) {
-                        var data = pageData[manifestIndex].data[i];
-                        var overlay = $("<div>").attr(
-                            "class", "page-overlay"
-                        ).append([
-                            "<table><tr><td style='width: 100px; min-height: 129px;'>",
-                            "<a href='", data.url, "'>",
-                                "<img style='float: left;' src='", data.larger, "'>",
-                            "</a>",
-                            "</td><td>",
-                            "<a href='", data.url, "'>", data.title, "</a>",
-                            "<br />",
-                            "<nobr>(", data.page_count, " page", 
-                                 data.page_count == 1 ? "" : "s", ")</nobr>", 
-                            "<br />",
-                            "<b>",
-                                "<a href='", data.author_url, "'><nobr>", data.author, "</nobr></a>",
-                            "</b><br />",
-                            data.date,
-                            "</td></tr></table>"
-                        ].join("")).hover(function() {}, function() {
-                            $(this).remove();
-                        });
-                        var pos = $(event.currentTarget).offset();
-                        $("body").append(overlay.fadeIn());
-                        //overlay.addClass("fullwidth") // start css transition
-                        $(overlay).css({
-                            left: Math.min(pos.left - 12,
-                                $("#pagepicker").offset().left + $("#pagepicker").width() - overlay.width() - 22) + "px",
-                            top: (pos.top - 12)+ "px"
-                        });
-                        $(overlay).addClass("fullwidth");
-                    };
-                    $("#pagepicker").append(
-                        buildPage().click(showOverlay).mouseover(function(event) {
-                            overTimeout = window.setTimeout(function() {
-                                showOverlay(event);
-                            }, 500);
-                        }).mouseout(function() { 
-                            clearTimeout(overTimeout); 
-                        })
-                    );
+	$(".pagepicker-loading").show();
+	(function(manifestIndex) {
+	    var dataset = manifest[manifestIndex];
+	    for (var i = 0; i < dataset.num_images; i++) {
+		(function(i) {
+		    var buildPage = function() {
+			return $("<div>").attr(
+			    'class', 'pagepick'
+			).css({
+			    backgroundPosition: (-i * dataset.image_size[0]) + "px 0px",
+			    backgroundImage: "url(" + dataset.image + ")",
+			    width: dataset.image_size[0] + "px",
+			    height: dataset.image_size[1] + "px"
+			}).attr({
+			    "data-dataset": manifestIndex,
+			    "data-index": i
+			});
+		    }
+		    var overTimeout = null;
+		    var showOverlay = function(event) {
+			var data = pageData[manifestIndex].data[i];
+			var overlay = $("<div>").attr(
+			    "class", "page-overlay"
+			).append([
+			    "<table><tr><td style='width: 100px; min-height: 129px;'>",
+			    "<a href='", data.url, "'>",
+				"<img style='float: left;' src='", data.larger, "'>",
+			    "</a>",
+			    "</td><td>",
+			    "<a href='", data.url, "'>", data.title, "</a>",
+			    "<br />",
+			    "<nobr>(", data.page_count, " page",
+				 data.page_count == 1 ? "" : "s", ")</nobr>",
+			    "<br />",
+			    "<b>",
+				"<a href='", data.author_url, "'><nobr>", data.author, "</nobr></a>",
+			    "</b><br />",
+			    data.date,
+			    "</td></tr></table>"
+			].join("")).hover(function() {}, function() {
+			    $(this).remove();
+			});
+			var pos = $(event.currentTarget).offset();
+			$("body").append(overlay.fadeIn());
+			//overlay.addClass("fullwidth") // start css transition
+			$(overlay).css({
+			    left: Math.min(pos.left - 12,
+				$("#pagepicker").offset().left + $("#pagepicker").width() - overlay.width() - 22) + "px",
+			    top: (pos.top - 12)+ "px"
+			});
+			$(overlay).addClass("fullwidth");
+		    };
+		    $("#pagepicker").append(
+			buildPage().click(showOverlay).mouseover(function(event) {
+			    overTimeout = window.setTimeout(function() {
+				showOverlay(event);
+			    }, 500);
+			}).mouseout(function() {
+			    clearTimeout(overTimeout);
+			})
+		    );
 
-                })(i);
-            }
-            $.get(dataset.datafile, function(data) {
-                pageData[manifestIndex] = data; 
-            });
-            return manifestIndex;
-        })(manifestIndex);
-        manifestIndex++;
+		})(i);
+	    }
+	    $.get(dataset.datafile, function(data) {
+		pageData[manifestIndex] = data;
+	    });
+	    return manifestIndex;
+	})(manifestIndex);
+	manifestIndex++;
     }
 
     $.get("{{ PUBLIC_MEDIA_URL }}pagepicker/manifest.json", function(data) {
-        manifest = data.images;
-        loadImages();
+	manifest = data.images;
+	loadImages();
     });
     $(window).scroll(function() {
-        if (manifest && manifestIndex < manifest.length &&
-                $(window).scrollTop() >= $(document).height() - $(window).height() - $(".pagepicker-loading").offset().top) {
-            loadImages();
-        } else if (manifest && manifestIndex >= manifest.length) {
-            $(".helpusgrow").show();
-            $(".pagepicker-loading").hide();
-        }
+	if (manifest && manifestIndex < manifest.length &&
+		$(window).scrollTop() >= $(document).height() - $(window).height() - $(".pagepicker-loading").offset().top) {
+	    loadImages();
+	} else if (manifest && manifestIndex >= manifest.length) {
+	    $(".helpusgrow").show();
+	    $(".pagepicker-loading").hide();
+	}
 
     });
 

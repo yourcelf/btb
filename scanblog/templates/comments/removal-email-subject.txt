@@ -1,1 +1,2 @@
-Comment removed
+{% load i18n %}
+{% trans "Comment removed" %}

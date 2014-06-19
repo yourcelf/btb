@@ -1,10 +1,11 @@
+{% load i18n %}
 {% load scanning_text_diffs %}
 
 <table id='diffs'>
     <tr>
-        <th id='heading1'>Revision {{ earliest.revision }}: {{ earliest.editor.profile }}, {{ earliest.modified|timesince }} ago</th>
+        <th id='heading1'>{% trans "Revision" %} {{ earliest.revision }}: {{ earliest.editor.profile }}, {{ earliest.modified|timesince }} {% trans "ago" %}</th>
         {% if earliest != latest %}
-            <th id='heading2'>Revision {{ latest.revision }}: {{ latest.editor.profile }}, {{ latest.modified|timesince }} ago</th>
+            <th id='heading2'>{% trans "Revision" %} {{ latest.revision }}: {{ latest.editor.profile }}, {{ latest.modified|timesince }} {% trans "ago" %}</th>
         {% endif %}
     </tr>
     {% if earliest != latest %}

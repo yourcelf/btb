@@ -3,14 +3,22 @@
 {% load public_url %}
 {% load i18n %}
 
-{% block title %}Edit profile for {{profile.display_name}}{% endblock %}
+{% block title %}
+  {% blocktrans %}
+    Edit profile for {{profile.display_name}}
+  {% endblocktrans %}
+{% endblock %}
 {% block extra_head %}{{ form.media }}{% endblock %}
 
 {% block body %}
-<h1>Profile for {{profile.user.profile.display_name}}</h1>
+<h1>
+  {% blocktrans %}
+    Profile for {{profile.user.profile.display_name}}
+  {% endblocktrans %}
+</h1>
 {% if can_edit_user %}
-<p><a href='{% url "mod_change_password" profile.user.id %}'>Change password</a>,
-   <a href='{% url "subscriptions.settings" %}'>Email subscriptions</a></p>
+<p><a href='{% url "mod_change_password" profile.user.id %}'>{% trans "Change password" %}</a>,
+   <a href='{% url "subscriptions.settings" %}'>{% trans "Email subscriptions" %}</a></p>
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action=''>{% csrf_token %}
 <div>
@@ -21,22 +29,22 @@
     </table>
 </div>
 <div>
-    <input type='submit' value='{% trans "Save details" %}'/> <a href='{% url "profiles.profile_show" profile.pk %}'>cancel</a>
+    <input type='submit' value='{% trans "Save details" %}'/> <a href='{% url "profiles.profile_show" profile.pk %}'>{% trans "cancel" %}</a>
 </div>
 </form>
 <br />
 {% if document %}
-    <h2>Current profile page:</h2>
-    <p><a href='{% url "profiles.remove_scan" profile.pk %}'>Remove scan</a></p>
+    <h2>{% trans "Current profile page" %}:</h2>
+    <p><a href='{% url "profiles.remove_scan" profile.pk %}'>{% trans "Remove scan" %}</a></p>
     {% for page in document.documentpage_set.all %}
-        <img src='{{ page.image.url|public_url }}' alt='Profile for {{ profile.display_name }}' /><br />
+        <img src='{{ page.image.url|public_url }}' alt='{% trans "Profile for" %} {{ profile.display_name }}' /><br />
     {% endfor %}
 {% endif %}
 {% if document.transcription %}
-    <h2>Transcription</h2>
-    <p><a href='{% url "scanning.transcribe_document" document.pk %}'>edit</a></p>
+    <h2>{% trans "Transcription" %}</h2>
+    <p><a href='{% url "scanning.transcribe_document" document.pk %}'>{% trans "edit" %}</a></p>
     {{ document.transcription.current.body|linebreaksbr }}
 {% endif %}
 <br />
-<a href='{% url "profiles.delete" profile.pk %}'>Delete account</a>
+<a href='{% url "profiles.delete" profile.pk %}'>{% trans "Delete account" %}</a>
 {% endblock %}

@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
-{% block title %}404 - Not found{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "404 - Not found" %}{% endblock %}
 {% block body %}
-<h1>404 Not Found</h1>
-<p>Sorry, no page with that address can be found.</p>
+<h1>{% trans "404 Not Found" %}</h1>
+<p>{% trans "Sorry, no page with that address can be found." %}</p>
 {% endblock %}

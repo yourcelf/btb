@@ -9,10 +9,10 @@
     </div>
     <div class='post-warning'>
         <p>
-            {% url "profiles.own_profile_edit" as edit_profile_url %}
-            This post contains adult content.
+            {% url profiles.own_profile_edit as edit_profile_url %}
+            {% trans "This post contains adult content.
             To view this post, please enable &#147;show adult content&#148;
-            <a href='{{ edit_profile_url }}'>in your profile</a>.
+            <a href='{{ edit_profile_url }}'>in your profile</a>." %}
         </p>
     </div>
     {% include "blogs/_post_bottom_line.html" %}

@@ -1,15 +1,18 @@
 {% extends "blogs/base_post_list.html" %}
+{% load i18n %}
+{% trans "Posts tagged" as posts_tagged%}
+{% trans "Uncategorized posts" as uncat_posts %}
 {% block title %}
     {% if tag %}
-        Posts tagged &ldquo;{{ tag|title }}&rdquo;
+        {{ posts_tagged }} &ldquo;{{ tag|title }}&rdquo;
     {% else %}
-        Uncategorized posts
+        {{ uncat_posts }}
     {% endif %}
 {% endblock %}
 {% block heading %}
     {% if tag %}
-        <h1>Posts tagged &ldquo;{{ tag|title }}&rdquo;</h1>
+        <h1>{{ posts_tagged }} &ldquo;{{ tag|title }}&rdquo;</h1>
     {% else %}
-        <h1>Uncategorized posts</h1>
+        <h1>{{ uncat_posts }}</h1>
     {% endif %}
 {% endblock %}

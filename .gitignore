@@ -1,9 +1,11 @@
 # Editor trash/compiled files
 *.pyc
+*~
 *.swp
 .sass-cache
 .DS_Store*
 doc_data.txt
+*.mo
 
 # Local settings
 settings.py

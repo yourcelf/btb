@@ -8,7 +8,7 @@
     <h2><a href='{{post.get_absolute_url}}'>{{post.title}}</a></h2>
     {% endif %}
     {% if post.status != "published" %}<h2>(unpublished &ndash; {{ post.status }})</h2>{% endif %}
- 
+
     <div style='float: left;'>{% include "blogs/_post_tag_list.html" %}</div>
     <div class='controls'>
         {% spaceless %}

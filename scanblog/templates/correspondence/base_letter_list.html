@@ -16,7 +16,7 @@ function post_letter_sent(letter_id, checked) {
             'letter_id': letter_id,
             'checked': checked,
     }, function() {
-        message("{% trans 'Changed letter sent status.' %}");
+	message("{% trans 'Changed letter sent status.' %}");
     });
 }
 
@@ -28,28 +28,28 @@ function post_letter_sent(letter_id, checked) {
 
 <style type='text/css'>
     .comment-group {
-        padding: 1em;
-        background-color: #eff;
+	padding: 1em;
+	background-color: #eff;
     }
     table td, table th {
-        border: 1px solid #eee;
-        vertical-align: top;
+	border: 1px solid #eee;
+	vertical-align: top;
     }
     table th {
-        background-color: #ddd;
-        text-align: center;
+	background-color: #ddd;
+	text-align: center;
     }
     .ui-icon {
-        float: left;
+	float: left;
     }
 </style>
 <table>
     <tr>
-        <th>Recipient</th>
-        <th>Sent</th>
-        <th>Letters</th>
-        <th>Date created</th>
-        <th>Sender</th>
+	<th>{% trans "Recipient" %}</th>
+	<th>{% trans "Sent" %}</th>
+	<th>{% trans "Letters" %}</th>
+	<th>{% trans "Date created" %}</th>
+	<th>{% trans "Sender" %}</th>
     </tr>
 {% for letter in letters %}
     {% with u=letter.recipient name=letter.recipient_name %}

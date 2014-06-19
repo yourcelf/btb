@@ -1,2 +1,3 @@
+{% load i18n %}
 {% load url from future %}
-<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ tag }} posts" href="{% url "blogs.tagged_posts_feed" tag %}" />
+<link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {{ tag }} {% trans "posts" %}" href="{% url "blogs.tagged_posts_feed" tag %}" />

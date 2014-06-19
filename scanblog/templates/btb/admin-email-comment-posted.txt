@@ -1,7 +1,8 @@
+{% load i18n %}
 {% load url from future %}
-A comment has been posted on {{ comment.document.get_title }}:
+{% trans "A comment has been posted on" %} {{ comment.document.get_title }}:
 
-View on site:
+{% trans "View on site" %}:
 http://{{ site.domain }}{{ comment.get_absolute_url }}
 
 {{ comment.user.profile }}
@@ -9,11 +10,11 @@ http://{{ site.domain }}{{ comment.get_absolute_url }}
 {{ comment.comment|safe }}
 ----
 
-Moderation functions:
+{% trans "Moderation functions" %}:
 spam: <http://{{ site.domain }}{% url "comments.spam_can_comment" comment.id %}>
 abuse: <http://{{ site.domain }}{% url "comments.moderator_remove" comment.id %}>
 
-Admin functions:
-Edit user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
-Delete user: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete>
+{% trans "Admin functions" %}:
+{% trans "Edit user" %}: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/>
+{% trans "Delete user" %}: <http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete>
 {# Can't use base_url here because we can't get RequestContext #}

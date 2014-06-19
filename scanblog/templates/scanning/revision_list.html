@@ -11,7 +11,7 @@
     <h2>{% trans "Transcription revisions" %}</h2>
     <h3><a href='{{ document.get_absolute_url }}'>{% firstof document.title "Untitled" %}</a>, by {{ document.author.profile }}</h3>
     {% if perms.scanning.change_transcription and not document.transcription.locked and transcription_open %}
-    <p><a href='{% url "scanning.transcribe_document" document.id %}'>edit transcription</a></p>
+    <p><a href='{% url "scanning.transcribe_document" document.id %}'>{% trans "edit transcription" %} </a></p>
     {% endif %}
 
     <style type='text/css'>
@@ -23,10 +23,10 @@
         {% if revisions|length > 1 %}
         <table>
             <tr>
-                <th>Revision</th>
-                <th colspan='2'>Compare</th>
-                <th>Editor</th>
-                <th>Date</th>
+                <th>{% trans "Revision" %}</th>
+                <th colspan='2'>{% trans "Compare" %}</th>
+                <th>{% trans "Editor" %}</th>
+                <th>{% trans "Date" %}</th>
         {% for rev in revisions %}
             <tr>
                 <td>{{ rev.revision }}</td>
@@ -54,7 +54,7 @@
         </div>
         {% endif %}
     {% else %}
-        No transcription yet.  Add one!
+        {% trans "No transcription yet.  Add one!" %}
     {% endif %}
 </div>
 

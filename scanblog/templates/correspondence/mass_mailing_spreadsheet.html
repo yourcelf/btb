@@ -1,31 +1,75 @@
 {% extends "moderation/base.html" %}
 {% load url from future %}
-{% block title %}Mass mailing spreadsheet{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Mass Mailing spreadsheet" %}{% endblock %}
 {% block body %}
-<h1>Mass Mailing Spreadsheet</h1>
+<h1>{% trans "Mass Mailing Spreadsheet" %}</h1>
 <p>
-Spreadsheets for users in the following organizations:
+{% trans "Spreadsheets for users in the following organizations:" %}
 </p>
 {% url "correspondence.mass_mailing_spreadsheet" as base %}
 <h2>
-    All users in:
+    {% trans "All users in" %}:
     <i>{% for org in orgs %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</i>
 </h2>
 <ul>
-    <li><a href='{{ base }}bloggers'>In prison</a>:  In the system, with returned license agreement or without.</li>
-    <li><a href='{{ base }}invitable'>Invitable</a>: On the waitlist or not yet waitlisted -- we could send them an invitation.</li>
-    <li><a href='{{ base }}waitlistable'>Waitlistable</a>: We have their name, but we haven't invited them, nor have we sent a waitlist postcard.</li>
-    <li><a href='{{ base }}waitlisted'>Waitlisted</a>: We have sent them a waitlist postcard, and we haven't sent an invitation.</li>
-    <li><a href='{{ base }}lost_contact'>Lost Contact</a>: Letters bounce; so these addresses are useless.  "Lost contact" people don't appear in other lists.</li>
+    <li>
+      <a href='{{ base }}bloggers'>
+	{% trans "In prison" %}
+      </a>:
+      {% trans "In the system, with returned license agreement or without." %}
+    </li>
+    <li>
+      <a href='{{ base }}invitable'>
+	{% trans "Invitable" %}
+      </a>:
+      {% trans "On the waitlist or not yet waitlisted -- we could send them an invitation." %}
+    </li>
+    <li>
+      <a href='{{ base }}waitlistable'>
+	{% trans "Waitlistable" %}
+      </a>:
+      {% trans "We have their name, but we haven't invited them, nor have we sent a waitlist postcard." %}
+    </li>
+    <li>
+      <a href='{{ base }}waitlisted'>
+	{% trans "Waitlisted" %}
+      </a>:
+      {% trans "We have sent them a waitlist postcard, and we haven't sent an invitation." %}
+    </li>
+    <li>
+      <a href='{{ base }}lost_contact'>
+	{% trans "Lost Contact" %}
+      </a>: 
+      {% blocktrans %}
+      Letters bounce; so these addresses are useless.  "Lost contact"
+      people don't appear in other lists.
+      {% endblocktrans %}
+    </li>
 </ul>
 <h2>
-    Invited users in:
+    {% trans "Invited users in" %}:
     <i>{% for org in orgs %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</i>
 
 </h2>
 <ul>
-    <li><a href='{{ base }}invited'>Invited</a>: An invitation has been sent, but license agreement has not been returned.</li>
-    <li><a href='{{ base }}enrolled'>Enrolled</a>:  In prison, have returned a license agreement.</li>
-    <li><a href='{{ base }}bloggers_with_published_content'>Bloggers with published content</a>: Have a post or profile published.</a></li>
+    <li>
+      <a href='{{ base }}invited'>
+	{% trans "Invited" %}
+      </a>:
+      {% trans "An invitation has been sent, but license agreement has not been returned." %}
+    </li>
+    <li>
+      <a href='{{ base }}enrolled'>
+	{% trans "Enrolled" %}
+      </a>:
+      {% trans "In prison, have returned a license agreement." %}
+    </li>
+    <li>
+      <a href='{{ base }}bloggers_with_published_content'>
+	{% trans "Bloggers with published content" %}
+      </a>:
+      {% trans "Have a post or profile published." %}
+    </li>
 </ul>
 {% endblock %}

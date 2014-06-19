@@ -1,17 +1,18 @@
 {% extends "site_base.html" %}
 {% load url from future %}
+{% load i18n %}
 
 {% block subnav %}
-<a href='{% url "about.copyright" %}'>Copyrights</a>
-<a href='{% url "about.terms" %}'>Terms of Use</a>
-<a href='{% url "about.privacy" %}'>Privacy Policy</a>
-<a href='{% url "about.dmca" %}'>DMCA</a>
+<a href='{% url "about.copyright" %}'>{% trans "Copyrights" context "Title for copyright policy page" %}</a>
+<a href='{% url "about.terms" %}'>{% trans "Terms of Use" %}</a>
+<a href='{% url "about.privacy" %}'>{% trans "Privacy Policy" %}</a>
+<a href='{% url "about.dmca" %}'>{% trans "DMCA" %}</a>
 {% endblock %}
 
 {% block body %}<div class='legal'>{{ block.super }}</div>{% endblock %}
 
 {% block after_body %}
 {{ block.super }}
-Legal resources provided by:<br />
+{% trans "Legal resources provided by:" %}<br />
 <a href="http://www.citmedialaw.org/network" title="Citizen Media Law Project"><img src="http://www.citmedialaw.org/sites/citmedialaw.org/files/cmlp_badge1.gif" border="0" alt="Citizen Media Law Project: Legal Resources for Citizen Media" width="135" height="82" /></a>
 {% endblock %}
