@@ -25,14 +25,9 @@ class BtbTestRunner(CeleryTestSuiteRunner):
         settings.CELERY_EAGER_PROPAGATES_EXCEPTIONS = True  # Issue #75
 
     def run_tests(self, test_labels, **kwargs):
-        # NOTE: exclude 'btb' by default, as it does slow integration tests
-        # with selenium.  Explicitly list it to run those tests, e.g.:
-        #
-        #   python manage.py test btb.tests
-        #
         if not test_labels:
             test_labels = ("about", "accounts", "annotations", "blogs",
                            "campaigns", "comments", "correspondence",
                            "moderation", "profiles", "scanning",
-                           "subscriptions")
+                           "subscriptions", "btb.tests")
         return super(BtbTestRunner, self).run_tests(test_labels, **kwargs)
