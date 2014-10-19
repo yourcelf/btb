@@ -180,8 +180,6 @@ TRANSCRIPTION_OPEN = True
 
 CACHE_MIDDLEWARE_SECONDS = 60 * 10
 
-# django profile framework
-AUTH_PROFILE_MODULE = 'profiles.Profile'
 # django-registration
 ACCOUNT_ACTIVATION_DAYS = 2
 

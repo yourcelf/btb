@@ -398,8 +398,6 @@ class Documents(JSONView):
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
 
-        # Keep the transaction manager happy by committing again at the very
-        # end.
         response = self.json_response(doc.to_dict())
         return response
 
