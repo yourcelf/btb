@@ -85,10 +85,13 @@ class UserNotificationLog(models.Model):
 class MailingListInterest(models.Model):
     email = models.EmailField(max_length=254)
     volunteering = models.BooleanField(
+            default=False,
             help_text="Are you interested in volunteering?")
     allies = models.BooleanField(
+            default=False,
             help_text="Are you interested in joining with Between the Bars in campaigns?")
     announcements = models.BooleanField(
+            default=False,
             help_text="Are you interested in announcements about new projects and features?")
     details = models.TextField(blank=True,
             help_text="Tell us more about your interests, if you like.")

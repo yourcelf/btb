@@ -9,6 +9,9 @@ from campaigns.models import Campaign
 from profiles.models import Organization
 from annotations.models import ReplyCode
 
+class Not200Exception(Exception):
+    pass
+
 class CampaignsJSON(JSONView):
     @permission_required_or_deny("campaigns.change_campaign")
     def get(self, request):
@@ -50,11 +53,16 @@ class CampaignsJSON(JSONView):
             campaign.delete()
         return self.json_response({"status": "success"})
 
-    @args_method_decorator(transaction.commit_on_success)
     def update_attrs(self, request, campaign, attrs):
-        res = self._update_attrs(request, campaign, attrs)
-        if res.status_code != 200:
-            transaction.rollback()
+        # With Django > 1.6, this is the cleanest way we have to do what we
+        # used to do with 'commit_on_success'.
+        try:
+            with transaction.atomic():
+                res = self._update_attrs(request, campaign, attrs)
+                if res.status_code != 200:
+                    raise Not200Exception()
+        except Not200Exception:
+            pass
         return res
 
     def _update_attrs(self, request, campaign, attrs):

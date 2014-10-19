@@ -2,7 +2,7 @@ import time
 from .base import BtbLiveServerTestCase
 
 from django.contrib.auth.models import User
-from scanblog.comments.models import Comment, Favorite
+from comments.models import Comment, Favorite
 
 class TestComments(BtbLiveServerTestCase):
     def test_comment_while_not_signed_in(self):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
-SETTINGS_ROOT = os.path.abspath(os.path.dirname(__file__))
+from btb.log_filter import skip_unreadable_post
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 TEST_RUNNER = 'btb.test_runner.BtbTestRunner'
 
@@ -23,7 +24,7 @@ USE_L10N = True
 # MEDIA_ROOT to by default be private.
 
 # These refer to private media only.
-MEDIA_ROOT = os.path.join(SETTINGS_ROOT, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/private_media/'
 UPLOAD_TO = "uploads"
 FILE_UPLOAD_PERMISSIONS = 0664
@@ -37,11 +38,11 @@ PUBLIC_MEDIA_URL = '/media/'
 # Static files (js, css, etc).  Before deployment, these live in 'static' (or
 # individual apps' static dirs).  When we deply to production, we use django's
 # staticfiles to collect them into 'site_static'.
-STATIC_ROOT = os.path.join(SETTINGS_ROOT, "site_static")
+STATIC_ROOT = os.path.join(BASE_DIR, "site_static")
 STATIC_URL = '/static/'
 
 #ADMIN_MEDIA_PREFIX = '/static/admin/'
-STATICFILES_DIRS = (os.path.join(SETTINGS_ROOT, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -51,7 +52,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/javascript', 'cat'), # this shouldn't be necessary, but is
     ('text/css', 'cat'), # this shouldn't be necessary, but is
     ('text/coffeescript', 'coffee --compile --stdio'),
-    ('text/x-sass', 'sass --compass -I "%s"' % (os.path.join(SETTINGS_ROOT, "static", "css"))),
+    ('text/x-sass', 'sass --compass -I "%s"' % (os.path.join(BASE_DIR, "static", "css"))),
 )
 
 #
@@ -78,7 +79,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 TEMPLATE_DIRS = (
-    os.path.join(SETTINGS_ROOT, "templates"),
+    os.path.join(BASE_DIR, "templates"),
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -155,7 +156,7 @@ LOGGING = {
         },
         'skip_unreadable_posts': {
             '()': 'django.utils.log.CallbackFilter',
-            'callback': 'btb.log_filter.skip_unreadable_post'
+            'callback': skip_unreadable_post,
         }
     }
 }
@@ -196,7 +197,7 @@ import djcelery
 djcelery.setup_loader()
 BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = "amqp"
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 

@@ -26,6 +26,9 @@ from scanning.tasks import process_scan_to_profile, move_scan_file
 from annotations.models import Note
 from comments.models import Comment, Favorite
 
+class Not200Exception(Exception):
+    pass
+
 def list_profiles(request):
     return render(request, "profiles/profiles_list.html", {
         'authors': Profile.objects.bloggers_with_published_content()
@@ -443,11 +446,14 @@ class OrganizationsJSON(JSONView):
         org.delete()
         return self.json_response(dest_org.to_dict())
 
-    @args_method_decorator(transaction.commit_on_success)
     def update_attrs(self, request, org, dest_attrs):
-        res = self._update_attrs(request, org, dest_attrs)
-        if res.status_code != 200:
-            transaction.rollback()
+        try:
+            with transaction.atomic():
+                res = self._update_attrs(request, org, dest_attrs)
+                if res.status_code != 200:
+                    raise Not200Exception()
+        except Not200Exception:
+            pass
         return res
 
     def _update_attrs(self, request, org, dest_attrs):
@@ -591,11 +597,14 @@ class AffiliationsJSON(JSONView):
         aff.delete()
         return self.json_response({"status": "success"})
 
-    @args_method_decorator(transaction.commit_on_success)
     def update_attrs(self, request, aff, attrs):
-        res = self._update_attrs(request, aff, attrs)
-        if res.status_code != 200:
-            transaction.rollback()
+        try:
+            with transaction.atomic():
+                res = self._update_attrs(request, aff, attrs)
+                if res.status_code != 200:
+                    raise Not200Exception()
+        except Not200Exception:
+            pass
         return res
 
     def error(self, msg):
