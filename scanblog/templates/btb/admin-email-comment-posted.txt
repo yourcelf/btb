@@ -1,4 +1,3 @@
-{% load url from future %}
 A comment has been posted on {{ comment.document.get_title }}:
 
 View on site:

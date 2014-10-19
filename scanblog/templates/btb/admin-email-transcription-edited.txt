@@ -1,4 +1,3 @@
-{% load url from future %}
 The transcription for {{ document.type }} by {{ document.author.profile }} was edited by user: {{ revision.editor.profile }}
 
 Actions:
