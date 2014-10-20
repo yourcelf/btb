@@ -18,7 +18,7 @@ from django.contrib.auth.views import logout
 from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
 from scanning import utils, tasks
-from scanning.models import * 
+from scanning.models import *
 from scanning.forms import LockForm, TranscriptionForm, ScanUploadForm, \
         FlagForm, get_org_upload_form
 from annotations.models import Tag, Note, ReplyCode, handle_flag_spam
@@ -124,163 +124,163 @@ class ScanSplits(JSONView):
 
     @permission_required_or_deny("scanning.change_scan", "scanning.add_document",
             "scanning.change_document", "scanning.delete_document")
-    @args_method_decorator(transaction.commit_on_success)
     def post(self, request, obj_id=None):
         """
         Execute splits for a scan.  This could be updating an existing models,
         or creating new ones.
         """
-        try:
-            scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
-        except Scan.DoesNotExist:
-            raise PermissionDenied
-        params = self.clean_params(request)
-
-        #
-        # Save scan.
-        #
-        try:
-            scan.author = Profile.objects.org_filter(request.user, 
-                pk=params["scan"]["author"]["id"]
-            ).get().user
-            scan.processing_complete = params["scan"]["processing_complete"]
-        except (KeyError, TypeError, Profile.DoesNotExist):
-            # Processing complete is always False if there is no author; hence
-            # two cases in the try block.
-            scan.author = None
-            scan.processing_complete = False
-        scan.save()
-
-        # Set pending scan.
-        ps_code = (params['scan'].pop("pendingscan_code", None) or "").strip()
-        try:
-            has_ps = bool(scan.pendingscan)
-        except PendingScan.DoesNotExist:
-            has_ps = False
-        if not ps_code and has_ps:
-            # Remove the cached pendingscan reference. Ugh.  (simply setting
-            # scan.pendingscan to None raises an error)
-            ps = scan.pendingscan
-            ps.scan = None
-            ps.completed = None
-            ps.save()
-            scan = Scan.objects.get(pk=scan.pk)
-        elif ps_code:
+        with transaction.atomic():
             try:
-                ps = PendingScan.objects.org_filter(
-                        request.user, code=ps_code.strip()
-                ).get()
+                scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
+            except Scan.DoesNotExist:
+                raise PermissionDenied
+            params = self.clean_params(request)
+
+            #
+            # Save scan.
+            #
+            try:
+                scan.author = Profile.objects.org_filter(request.user,
+                    pk=params["scan"]["author"]["id"]
+                ).get().user
+                scan.processing_complete = params["scan"]["processing_complete"]
+            except (KeyError, TypeError, Profile.DoesNotExist):
+                # Processing complete is always False if there is no author; hence
+                # two cases in the try block.
+                scan.author = None
+                scan.processing_complete = False
+            scan.save()
+
+            # Set pending scan.
+            ps_code = (params['scan'].pop("pendingscan_code", None) or "").strip()
+            try:
+                has_ps = bool(scan.pendingscan)
             except PendingScan.DoesNotExist:
-                pass
-            else:
-                if ps.scan_id != scan.id:
-                    ps.scan = scan
-                    ps.completed = datetime.datetime.now()
-                    ps.save()
-
-        #
-        # Split documents
-        #
-
-        docs = []
-        for doc in params["documents"]:
-            if ("pages" not in doc) or (len(doc["pages"]) == 0):
-                # Delete stale document.
-                if "id" in doc:
-                    try:
-                        Document.objects.org_filter(
-                            request.user, pk=doc["id"]
-                        ).get().full_delete()
-                    except Document.DoesNotExist:
-                        pass
-                continue
-            if "id" in doc:
-                # Retrieve existing document.
+                has_ps = False
+            if not ps_code and has_ps:
+                # Remove the cached pendingscan reference. Ugh.  (simply setting
+                # scan.pendingscan to None raises an error)
+                ps = scan.pendingscan
+                ps.scan = None
+                ps.completed = None
+                ps.save()
+                scan = Scan.objects.get(pk=scan.pk)
+            elif ps_code:
                 try:
-                    document = Document.objects.org_filter(
-                            request.user, pk=doc["id"]
+                    ps = PendingScan.objects.org_filter(
+                            request.user, code=ps_code.strip()
                     ).get()
-                except Document.DoesNotExist:
-                    raise PermissionDenied
-
-            else:
-                # Create new document.
-                if doc["type"] in ("request", "license"):
-                    status = "unpublishable"
+                except PendingScan.DoesNotExist:
+                    pass
                 else:
-                    status = "unknown"
-                document = Document.objects.create(
-                        scan=scan,
-                        editor=request.user,
-                        author=scan.author,
-                        type=doc["type"],
-                        status=status,
-                )
-                # Create tickets
-                if doc["type"] == "request":
-                    Note.objects.create(
-                        text="Request from scan.",
-                        document=document,
-                        resolved=None,
-                        creator=request.user,
+                    if ps.scan_id != scan.id:
+                        ps.scan = scan
+                        ps.completed = datetime.datetime.now()
+                        ps.save()
+
+            #
+            # Split documents
+            #
+
+            docs = []
+            for doc in params["documents"]:
+                if ("pages" not in doc) or (len(doc["pages"]) == 0):
+                    # Delete stale document.
+                    if "id" in doc:
+                        try:
+                            Document.objects.org_filter(
+                                request.user, pk=doc["id"]
+                            ).get().full_delete()
+                        except Document.DoesNotExist:
+                            pass
+                    continue
+                if "id" in doc:
+                    # Retrieve existing document.
+                    try:
+                        document = Document.objects.org_filter(
+                                request.user, pk=doc["id"]
+                        ).get()
+                    except Document.DoesNotExist:
+                        raise PermissionDenied
+
+                else:
+                    # Create new document.
+                    if doc["type"] in ("request", "license"):
+                        status = "unpublishable"
+                    else:
+                        status = "unknown"
+                    document = Document.objects.create(
+                            scan=scan,
+                            editor=request.user,
+                            author=scan.author,
+                            type=doc["type"],
+                            status=status,
                     )
-                elif doc["type"] == "license" and \
-                        not document.author.profile.consent_form_received:
-                    Note.objects.create(
-                        text="Please check this license agreement, then update the user's license status accordingly.",
+                    # Create tickets
+                    if doc["type"] == "request":
+                        Note.objects.create(
+                            text="Request from scan.",
+                            document=document,
+                            resolved=None,
+                            creator=request.user,
+                        )
+                    elif doc["type"] == "license" and \
+                            not document.author.profile.consent_form_received:
+                        Note.objects.create(
+                            text="Please check this license agreement, then update the user's license status accordingly.",
+                            document=document,
+                            resolved=None,
+                            creator=request.user,
+                        )
+
+                # Apportion pages.
+                pages = []
+                # We need to transfer old page transforms to new document pages,
+                # indexed by the scanpage_id, which persists.
+                old_page_transformations = {}
+                # ... and do the same for highlight_transform -- we need to change
+                # the documentpage_id to the new documentpage_id.
+                if document.highlight_transform:
+                    old_highlight_transform = json.loads(document.highlight_transform)
+                else:
+                    old_highlight_transform = ""
+                highlight_scan_page_id = None
+
+                # Loop through current pages to get info to transfer to new pages,
+                # and delete the old pages.
+                for page in document.documentpage_set.all():
+                    old_page_transformations[page.scan_page_id] = page.transformations
+
+                    # Capture the old highlight transform's scan page ID.
+                    if old_highlight_transform and \
+                            page.pk == old_highlight_transform["document_page_id"]:
+                        highlight_scan_page_id = page.scan_page_id
+
+                    page.full_delete()
+
+                # Clear the highlight transform so that it remains 'valid' even if
+                # something goes wrong in identifying it with an old scan_page_id.
+                document.highlight_transform = ""
+                # Recreate the new pages, reusing the old transforms.
+                for order,scanpage_id in enumerate(doc["pages"]):
+                    documentpage = DocumentPage.objects.create(
                         document=document,
-                        resolved=None,
-                        creator=request.user,
+                        scan_page=ScanPage.objects.get(pk=scanpage_id),
+                        order=order,
+                        transformations=old_page_transformations.get(scanpage_id, "{}"),
                     )
-
-            # Apportion pages.
-            pages = []
-            # We need to transfer old page transforms to new document pages,
-            # indexed by the scanpage_id, which persists.
-            old_page_transformations = {}
-            # ... and do the same for highlight_transform -- we need to change
-            # the documentpage_id to the new documentpage_id.
-            if document.highlight_transform:
-                old_highlight_transform = json.loads(document.highlight_transform)
-            else:
-                old_highlight_transform = ""
-            highlight_scan_page_id = None
-
-            # Loop through current pages to get info to transfer to new pages,
-            # and delete the old pages.
-            for page in document.documentpage_set.all():
-                old_page_transformations[page.scan_page_id] = page.transformations
-
-                # Capture the old highlight transform's scan page ID.
-                if old_highlight_transform and \
-                        page.pk == old_highlight_transform["document_page_id"]:
-                    highlight_scan_page_id = page.scan_page_id
-
-                page.full_delete()
-
-            # Clear the highlight transform so that it remains 'valid' even if
-            # something goes wrong in identifying it with an old scan_page_id.
-            document.highlight_transform = ""
-            # Recreate the new pages, reusing the old transforms.
-            for order,scanpage_id in enumerate(doc["pages"]):
-                documentpage = DocumentPage.objects.create(
-                    document=document,
-                    scan_page=ScanPage.objects.get(pk=scanpage_id), 
-                    order=order,
-                    transformations=old_page_transformations.get(scanpage_id, "{}"),
-                )
-                # Reuse the old highlight transform, if it matches.
-                if scanpage_id == highlight_scan_page_id:
-                    old_highlight_transform["document_page_id"] = documentpage.pk
-                    document.highlight_transform = json.dumps(old_highlight_transform)
-            # Persist any changes to highlight_transform.
-            document.save()
-            if document.status in ("published", "ready"):
-                tasks.update_document_images.apply([document.pk]).get()
-            document.documentpage_set = pages
-            docs.append(document)
-        scan.document_set = docs
-        return self.get(request, obj_id=scan.pk)
+                    # Reuse the old highlight transform, if it matches.
+                    if scanpage_id == highlight_scan_page_id:
+                        old_highlight_transform["document_page_id"] = documentpage.pk
+                        document.highlight_transform = json.dumps(old_highlight_transform)
+                # Persist any changes to highlight_transform.
+                document.save()
+                if document.status in ("published", "ready"):
+                    tasks.update_document_images.apply([document.pk]).get()
+                document.documentpage_set = pages
+                docs.append(document)
+            scan.document_set = docs
+            return self.get(request, obj_id=scan.pk)
 
 class MissingHighlight(Exception):
     pass
@@ -311,105 +311,94 @@ class Documents(JSONView):
         return self.paginated_response(request, docs)
 
     @permission_required_or_deny("scanning.change_document")
-    @args_method_decorator(transaction.commit_manually)
     def put(self, request, obj_id=None):
         try:
-            try:
-                doc = Document.objects.org_filter(request.user, pk=obj_id).get()
-            except Document.DoesNotExist:
-                raise PermissionDenied
-            kw = self.clean_params(request)
-            try:
-                doc.author = Profile.objects.org_filter(
-                    request.user, 
-                    pk=kw['author']['id']
-                ).get().user
-            except Profile.DoesNotExist:
-                raise PermissionDenied
-            doc.editor = request.user
-            doc.title = kw['title']
-            if doc.type == "post":
+            with transaction.atomic():
                 try:
-                    assert len(kw['highlight_transform']['crop']) > 0
-                except (AssertionError, KeyError):
-                    raise MissingHighlight
-            doc.highlight_transform = json.dumps(kw['highlight_transform'])
+                    doc = Document.objects.org_filter(request.user, pk=obj_id).get()
+                except Document.DoesNotExist:
+                    raise PermissionDenied
+                kw = self.clean_params(request)
+                try:
+                    doc.author = Profile.objects.org_filter(
+                        request.user,
+                        pk=kw['author']['id']
+                    ).get().user
+                except Profile.DoesNotExist:
+                    raise PermissionDenied
+                doc.editor = request.user
+                doc.title = kw['title']
+                if doc.type == "post":
+                    try:
+                        assert len(kw['highlight_transform']['crop']) > 0
+                    except (AssertionError, KeyError):
+                        raise MissingHighlight
+                doc.highlight_transform = json.dumps(kw['highlight_transform'])
 
-            if not kw['in_reply_to']:
-                doc.in_reply_to = None
-            else:
-                reply_code = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
-                # Avoid recursion.
-                if reply_code.pk != doc.reply_code.pk:
-                    doc.in_reply_to = reply_code
-                else:
+                if not kw['in_reply_to']:
                     doc.in_reply_to = None
+                else:
+                    reply_code = ReplyCode.objects.get(code__iexact=kw['in_reply_to'])
+                    # Avoid recursion.
+                    if reply_code.pk != doc.reply_code.pk:
+                        doc.in_reply_to = reply_code
+                    else:
+                        doc.in_reply_to = None
 
-            # Set affiliation, if any
-            try:
-                doc.affiliation = Affiliation.objects.org_filter(request.user).get(
-                        pk=kw['affiliation']['id'])
-            except (TypeError, KeyError, Affiliation.DoesNotExist):
-                doc.affiliation = None
+                # Set affiliation, if any
+                try:
+                    doc.affiliation = Affiliation.objects.org_filter(request.user).get(
+                            pk=kw['affiliation']['id'])
+                except (TypeError, KeyError, Affiliation.DoesNotExist):
+                    doc.affiliation = None
 
-            doc.adult = kw['adult']
-            # Ensure other processes won't try to serve this until we're done building.
-            doc.date_written = kw['date_written']
-            doc.status = "unknown"
-            doc.save()
+                doc.adult = kw['adult']
+                # Ensure other processes won't try to serve this until we're done building.
+                doc.date_written = kw['date_written']
+                doc.status = "unknown"
+                doc.save()
 
-            # tags
-            tags = []
-            for name in kw['tags'].split(';'):
-                name = name.strip()
-                if name:
-                    tag, created = Tag.objects.get_or_create(name=name.strip().lower())
-                    tags.append(tag)
-            doc.tags = tags
+                # tags
+                tags = []
+                for name in kw['tags'].split(';'):
+                    name = name.strip()
+                    if name:
+                        tag, created = Tag.objects.get_or_create(name=name.strip().lower())
+                        tags.append(tag)
+                doc.tags = tags
 
-            # pages
-            order_changed = []
-            for page in kw['pages']:
-                docpage = doc.documentpage_set.get(pk=page['id'])
-                transformations = json.dumps(page['transformations'] or "")
-                if docpage.transformations != transformations:
-                    docpage.transformations = transformations
-                    docpage.save()
-                if page['order'] != docpage.order:
-                    # Save a nonsensical order to avoid constraint clash, set
-                    # correct order, but don't save until we're all done.
-                    docpage.order = -docpage.order - 1
-                    docpage.save()
-                    docpage.order = page['order']
-                    order_changed.append(docpage)
+                # pages
+                order_changed = []
+                for page in kw['pages']:
+                    docpage = doc.documentpage_set.get(pk=page['id'])
+                    transformations = json.dumps(page['transformations'] or "")
+                    if docpage.transformations != transformations:
+                        docpage.transformations = transformations
+                        docpage.save()
+                    if page['order'] != docpage.order:
+                        # Save a nonsensical order to avoid constraint clash, set
+                        # correct order, but don't save until we're all done.
+                        docpage.order = -docpage.order - 1
+                        docpage.save()
+                        docpage.order = page['order']
+                        order_changed.append(docpage)
 
-            for page in order_changed:
-                page.save()
+                for page in order_changed:
+                    page.save()
         except MissingHighlight:
-            transaction.rollback()
             return HttpResponseBadRequest("Missing highlight.")
-        except:
-            transaction.rollback()
-            raise
-        
+
         # We want to wait until all document/page edits are done to commit, but
         # must commit before executing the task (it needs an up-to-date model).
-        transaction.commit()
 
-        try:
+        with transaction.atomic():
             tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
-        except Exception as e:
-            transaction.rollback()
-            raise e
-        
+
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
 
-        # Keep the transaction manager happy by committing again at the very
-        # end.
         response = self.json_response(doc.to_dict())
-        transaction.commit()
         return response
 
 #
@@ -433,7 +422,7 @@ class PendingScans(JSONView):
             pendingscans = pendingscans.filter(author__pk=request.GET["author_id"])
         pendingscans = pendingscans.org_filter(request.user)
         return self.paginated_response(request, pendingscans)
-    
+
     @permission_required_or_deny("scanning.add_pendingscan")
     def post(self, request, obj_id=None):
         params = json.loads(request.body)
@@ -492,7 +481,7 @@ class ScanCodes(JSONView):
             raise Http404
 
         pss = PendingScan.objects.org_filter(
-                request.user, 
+                request.user,
                 code__icontains=request.GET.get("term"),
                 scan__isnull=True,
         )
@@ -512,7 +501,7 @@ def scan_add(request):
                 for chunk in request.FILES['file'].chunks():
                     fh.write(chunk)
                 fh.flush()
-                task_id = tasks.process_zip.delay(filename=fh.name, 
+                task_id = tasks.process_zip.delay(filename=fh.name,
                         uploader_id=request.user.pk,
                         org_id=form.cleaned_data['organization'].pk,
                         redirect=reverse("moderation.home")
@@ -524,7 +513,7 @@ def scan_add(request):
                 pdf=os.path.relpath(path, settings.MEDIA_ROOT),
                 under_construction=True,
                 org=form.cleaned_data['organization'])
-            task_id = tasks.split_scan.delay(scan_id=scan.pk, 
+            task_id = tasks.split_scan.delay(scan_id=scan.pk,
                     redirect=reverse("moderation.edit_scan", args=[scan.pk]))
         return redirect('moderation.wait_for_processing', task_id)
     return render(request, "scanning/upload.html", {'form': form})
@@ -545,7 +534,7 @@ def scan_merge(request, scan_id):
                 fh.write(chunk)
             name = fh.name
         task_id = tasks.merge_scans.delay(
-                scan_id=scan_id, 
+                scan_id=scan_id,
                 filename=name,
                 redirect=reverse("moderation.edit_scan", args=[scan.pk])
             )
@@ -569,7 +558,7 @@ def scan_replace(request, scan_id=None):
         scan.save()
 
         task_id = tasks.split_scan.delay(
-            scan_id=scan.pk, 
+            scan_id=scan.pk,
             redirect=reverse("moderation.edit_scan", args=[scan.pk])
         )
         return redirect('moderation.wait_for_processing', task_id)
@@ -614,7 +603,7 @@ def scan_reimport(request, scan_id=None):
             'scan': scan
         })
     task_id = tasks.process_scan.delay(
-            scan_id=scan_id, 
+            scan_id=scan_id,
             redirect=reverse("moderation.home") + \
                     "#/process/scan/%s" % scan.id
     ).task_id
@@ -663,7 +652,7 @@ def transcribe_document(request, document_id):
             cutoff = datetime.datetime.now() - datetime.timedelta(seconds=120)
             transcription.complete = form.cleaned_data.get('complete', False)
             transcription.save()
-            if (current and current.editor == request.user and 
+            if (current and current.editor == request.user and
                     cutoff < current.modified):
                 current.body = form.cleaned_data['body']
                 current.save()
@@ -699,7 +688,7 @@ def after_transcribe_comment(request, document_id):
     """
     Prompt for a comment after a transcription is done.
     """
-    document = get_object_or_404(Document, pk=document_id, 
+    document = get_object_or_404(Document, pk=document_id,
                                  type="post",
                                  scan__isnull=False,
                                  transcription__isnull=False)
@@ -724,7 +713,7 @@ def after_transcribe_comment(request, document_id):
         if created:
             comment.document = document
         return redirect("%s#%s" % (request.path, comment.pk))
-    
+
     return render(request, "scanning/after_transcribe_comment.html", {
         'document': document,
         'form': form,
@@ -759,7 +748,7 @@ def revision_compare(request, document_id):
                 transcription__document=document,
                 revision=int(request.GET['latest']))
     except (KeyError, Document.DoesNotExist, TranscriptionRevision.DoesNotExist):
-        raise 
+        raise
     return render(request, "scanning/_column_diff.html", {
         'document': document, 'earliest': earliest, 'latest': latest,
     })
@@ -767,7 +756,7 @@ def revision_compare(request, document_id):
 @login_required
 def flag_document(request, document_id):
     """
-    Flag a post. 
+    Flag a post.
     """
     if not request.user.is_active:
         raise PermissionDenied

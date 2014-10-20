@@ -1,7 +1,7 @@
 import json
 import os
 import logging
-from functools import wraps
+from functools import wraps, update_wrapper
 
 from django.conf import settings
 from django.core import paginator
@@ -9,7 +9,6 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db.models import Q, Manager
 from django.db.models.query import QuerySet, EmptyQuerySet
 from django.http import HttpResponse, Http404
-from django.utils.functional import update_wrapper
 from django.views.generic import View
 from sorl.thumbnail.base import ThumbnailBackend, serialize, EXTENSIONS, tokey
 
@@ -26,13 +25,6 @@ class OrgManager(Manager):
 
     def get_query_set(self):
         return self.model.QuerySet(self.model)
-
-class EmptyOrgQuerySet(EmptyQuerySet):
-    def org_filter(self, *args, **kwargs):
-        return self
-
-    def mail_filter(self, *args, **kwargs):
-        return self
 
 class OrgQuerySet(QuerySet):
     orgs = []

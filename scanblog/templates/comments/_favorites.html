@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from future %}
 <span class='favorites-control'>
   {% if has_favorited %}
     <a class='toggle favorite-button active' href='{{ thing.unmark_favorite_url }}' title='{% trans "Favorited" %}'>&nbsp;</a>

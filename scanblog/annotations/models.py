@@ -20,7 +20,7 @@ class NoteManager(OrgManager):
 
 class Note(models.Model):
     resolved = models.DateTimeField(blank=True, null=True)
-    important = models.BooleanField()
+    important = models.BooleanField(default=False)
     text = models.TextField()
 
     creator = models.ForeignKey(User, related_name='notes_authored')
