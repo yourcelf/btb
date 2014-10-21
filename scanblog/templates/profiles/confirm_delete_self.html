@@ -36,7 +36,7 @@ removed.
 	{% endblocktrans %}
         </p>
         <p>
-	{% blocktrans %}
+	{% blocktrans with site_email=site.email %}
         If you have any questions or concerns about this, please contact
         <a href='mailto:{{ site_email }}'>{{ site_email }}</a>.
 	{% endblocktrans %}

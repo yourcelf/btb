@@ -101,7 +101,7 @@ class Scan(models.Model):
     org = models.ForeignKey('profiles.Organization', null=True)
 
     processing_complete = models.BooleanField(default=False)
-    under_construction = models.BooleanField()
+    under_construction = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(default=datetime.datetime.now)
@@ -267,12 +267,13 @@ class Document(models.Model):
 
     # Locking
     under_construction = models.BooleanField(
+        default=False,
         help_text="Deprecated, don't use.  Use status instead.")
 
     # State
     status = models.CharField(max_length=20, choices=STATES, 
                               db_index=True, default="unknown")
-    adult = models.BooleanField()
+    adult = models.BooleanField(default=False)
 
     tags = models.ManyToManyField('annotations.Tag', blank=True, null=True)
     reply_code = models.OneToOneField('annotations.ReplyCode')
@@ -562,7 +563,9 @@ class Transcription(models.Model):
     This is the transcription of an entire document.
     """
     document = models.OneToOneField('Document')
-    complete = models.BooleanField(help_text=_("Check if transcription is complete"))
+    complete = models.BooleanField(
+            default=False,
+            help_text=_("Check if transcription is complete"))
     locked = models.BooleanField(default=False)
     created = models.DateTimeField(default=datetime.datetime.now)
 

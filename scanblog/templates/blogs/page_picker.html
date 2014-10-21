@@ -1,8 +1,5 @@
 {% extends "blogs/base.html" %}
 {% load i18n %}
-{% trans "By the page" as i18n_by_the_page%}
-{% block title %}{{ i18n_by_the_page }}{% endblock %}
-{% load url from future %}
 
 {% block body %}
 <style type='text/css'>
@@ -52,7 +49,7 @@
 </div>
 <div class='helpusgrow' style='display: none; clear: both;'>
     {% trans "That's all so far" %} &ndash;
-    <a href='{% url profiles.profile_list "join" %}'>{% trans "help us grow" %}</a>.
+    <a href='{% url "profiles.profile_list" "join" %}'>{% trans "help us grow" %}</a>.
 </div>
 {% endblock %}
 

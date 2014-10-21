@@ -1,5 +1,6 @@
 {% extends "about/legal_base.html" %}
-{% block title %}Digital Millenium Copyright Act Policy{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Digital Millenium Copyright Act Policy" %}{% endblock %}
 {% block body %}
 <div class='terms'>
 {% blocktrans with site_name=site.name %}

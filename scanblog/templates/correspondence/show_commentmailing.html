@@ -1,5 +1,6 @@
 {% extends "blogs/base.html" %}
-{% block title %}Recent comments left for {{ letter.recipient.profile }}{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktrans with author=letter.recipient.profile %}Recent comments left for {{ author }}{% endblocktrans %}{% endblock %}
 {% block body %}
     <style type='text/css'>
         .post-title-line .controls {

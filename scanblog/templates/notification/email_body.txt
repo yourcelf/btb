@@ -5,7 +5,7 @@
 
 -----
 
-{% encoded_url recipient subscriptions.unsubscribe as unsubscribe_url %}
+{% encoded_url recipient "subscriptions.unsubscribe" as unsubscribe_url %}
 {% blocktrans %}
 You received this email because you are subscribed to receive emails from {{ current_site }}.
 To manage your {{ current_site }} email preferences, please go to:

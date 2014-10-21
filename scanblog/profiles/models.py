@@ -12,7 +12,7 @@ from django.conf import settings
 
 from scanning.models import Document
 from comments.models import Comment
-from btb.utils import OrgManager, OrgQuerySet, EmptyOrgQuerySet
+from btb.utils import OrgManager, OrgQuerySet
 
 class ProfileManager(OrgManager):
     """
@@ -167,24 +167,25 @@ class ProfileManager(OrgManager):
                 where=[where],
                 params=pks
             )
-        return EmptyOrgQuerySet(self.model)
+        return self.none()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     display_name = models.CharField(max_length=50)
     show_adult_content = models.BooleanField(
+        default=False,
         help_text=_('Show posts and comments that have been marked as adult?')
     )
 
-    blogger = models.BooleanField()
-    managed = models.BooleanField()
-    lost_contact = models.BooleanField()
+    blogger = models.BooleanField(default=False)
+    managed = models.BooleanField(default=False)
+    lost_contact = models.BooleanField(default=False)
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
     mailing_address = models.TextField(blank=True, default="")
     special_mail_handling = models.TextField(blank=True, default="")
 
-    consent_form_received = models.BooleanField()
+    consent_form_received = models.BooleanField(default=False)
 
     objects = ProfileManager()
 
@@ -282,6 +283,7 @@ class Organization(models.Model):
     slug = models.SlugField(unique=True)
     personal_contact = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(
+        default=False,
         help_text="Check to make this organization appear in the 'Groups' tab"
     )
     custom_intro_packet = models.FileField(upload_to=settings.UPLOAD_TO + "/org_intro_packets",
@@ -372,6 +374,7 @@ class Affiliation(models.Model):
             help_text="Which organizations are allowed to mark posts"
                       " as belonging to this affiliation?")
     public = models.BooleanField(
+            default=False,
             help_text="If false, the affiliation won't be listed publicly.")
 
     order = models.IntegerField(

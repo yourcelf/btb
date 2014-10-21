@@ -3,14 +3,14 @@
 {% load i18n %}
 {% block opening %}{% trans "Greetings and welcome," %}{% endblock %}
 {% block body %}
-{% blocktrans %}
+{% blocktrans with blog_url=letter.recipient.profile.get_bare_blog_url|absolute_url|tex_escape %}
 We have received your signed consent form and have created a blog for you on
 our web site. You can tell anybody with access to the Internet how to visit
 your blog by giving them the following ``URL'' or Internet address:
 {% endblocktrans %}
 
 \begin{quote}
-\url{ {{ letter.recipient.profile.get_bare_blog_url|absolute_url|tex_escape }} }
+\url{ {{ blog_url }} }
 \end{quote}
 
 {% blocktrans %}

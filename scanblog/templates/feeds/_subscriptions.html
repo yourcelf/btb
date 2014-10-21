@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from future %}
 <div class='feeds'>
     <h2>{% trans "Subscribe" %}</h2>
     <p>{% trans "Get notifications when new letters or replies are posted!" %}
@@ -14,7 +13,7 @@
 		{{ posts_by }} {{ feed_author.profile }}:
 	    </th>
 	    <td>
-		<a href='{% url "blogs.blog_feed feed_author.pk" %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
+		<a href='{% url "blogs.blog_feed" feed_author.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
 	    </td>
 	    <td>
 		<a href='{% url "subscriptions.author" feed_author.pk %}'>{%trans "email me" %}</a>

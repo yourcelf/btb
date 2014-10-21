@@ -7,7 +7,7 @@ look into fixing this as soon as possible.
 {% endblocktrans %}
 </p>
 <p>
-{% blocktrans %}
-You can return to the front page here: <a href='//{{ site.domain }}'>{{ site.domain }}</a>.
+{% blocktrans with domain=site.domain %}
+You can return to the front page here: <a href='//{{ domain }}'>{{ domain }}</a>.
 {% endblocktrans %}
 </p>

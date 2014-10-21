@@ -52,7 +52,7 @@ class Comment(models.Model):
 
     # Metadata
     ip_address = models.IPAddressField(blank=True, null=True)
-    removed = models.BooleanField()
+    removed = models.BooleanField(default=False)
 
     objects = CommentManager()
 

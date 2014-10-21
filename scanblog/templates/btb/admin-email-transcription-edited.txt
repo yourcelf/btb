@@ -1,7 +1,7 @@
 {% load i18n %}
-{% load url from future %}
-{% trans "The transcription for" %} {{ document.type }} {% trans "by" %} {{ document.author.profile }} {% trans "was edited by user" %}: {{ revision.editor.profile }}
-
+{% blocktrans with document_type=document.type author_name=author.profile editor_name=revision.editor.profile %}
+The transcription for {{ document_type }} by {{ author_name }} was edited by user: {{ editor_name }}
+{% endblocktrans %}
 
 {% trans "Actions" %}:
 

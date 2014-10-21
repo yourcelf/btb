@@ -20,7 +20,7 @@ class Campaign(models.Model):
             help_text="Which organizations are allowed to mark posts"
                       " as being part of this campaign?")
     reply_code = models.OneToOneField('annotations.ReplyCode')
-    public = models.BooleanField()
+    public = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(blank=True)

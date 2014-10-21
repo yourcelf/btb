@@ -1,1 +1,1 @@
-{% trans "New post" %}, &ldquo;<a href='{{ document.get_absolute_url }}'>{{ document.get_title }}</a>&rdquo;, {% trans "from" %} {{ document.author.profile }}
+{% load i18n %}{% blocktrans with url=document.get_absolute_url title=document.get_title author=document.author.profile %}New post, &ldquo;<a href='{{ url }}'>{{ title }}</a>&rdquo;, from {{ author }}{% endblocktrans %}

@@ -1,4 +1,2 @@
 {% load i18n %}
-{% load url from future %}
 <link rel="alternate" type="application/atom+xml" title="{{ site.name }}: {%trans "Comments on" %} {{ coment_feed_obj }}" href="{% url "blogs.post_comments_feed" comment_feed_obj.id %}" />
-

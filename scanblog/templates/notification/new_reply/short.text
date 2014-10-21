@@ -1,1 +1,1 @@
-{% trans "New reply from" %} {{ author.profile }}
+{% load i18n %}{% trans "New reply from" %} {{ author.profile }}

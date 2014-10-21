@@ -1,5 +1,4 @@
 {% extends "about/about_base.html" %}
-{% load url from future %}
 
 {% load i18n %}
 {% block title %}{% trans "About" %}{% endblock %}
@@ -39,13 +38,13 @@
       {% endblocktrans %}
     </div>
     <h1>
-      {% blocktrans %}
-      About {{ site.name }}
+      {% blocktrans with site_name=site.name %}
+      About {{ site_name }}
       {% endblocktrans %}
     </h1>
     <p>
-      {% blocktrans %}
-    <a href='/'>{{ site.name }}</a> is a weblog platform for people in
+      {% blocktrans with site_name=site.name %}
+    <a href='/'>{{ site_name }}</a> is a weblog platform for people in
     prison, through which the 1% of America which is behind bars can tell their
     stories.  Since people in prison are routinely denied access to the
     Internet, we enable them to blog by scanning letters.  We aim to provide a
@@ -71,8 +70,8 @@
     </p>
     <h2>{% trans "Transcribe posts" %}</h2>
     <p>
-      {% blocktrans %}
-	{{ site.name }} relies on visitors to transcribe its bloggers' posts.
+      {% blocktrans with site_name=site.name %}
+	{{ site_name }} relies on visitors to transcribe its bloggers' posts.
 	You can help us out by
 	<a href="{{ url_registration_register }}">signing up</a> and
 	<a href="{{ url_auth_login }}">logging in</a>,
@@ -90,8 +89,8 @@
       {% endblocktrans %}
     </div>
     <p><br />
-      {% blocktrans %}
-      {{ site.name }} is supported by generous sponsorship from the
+      {% blocktrans with site_name=site.name %}
+      {{ site_name }} is supported by generous sponsorship from the
       <a href='http://civic.mit.edu'>Center for Civic Media</a> at MIT.
       {% endblocktrans %}
     </p>

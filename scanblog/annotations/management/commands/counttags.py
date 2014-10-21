@@ -18,6 +18,6 @@ class Command(BaseCommand):
             for tag in post.tags.all():
                 tag_counts[tag.pk] += 1
 
-        with transaction.commit_on_success():
+        with transaction.atomic(): # Django 1.6
             for pk, count in tag_counts.iteritems():
                 Tag.objects.filter(pk=pk).update(post_count=count)

@@ -1,8 +1,7 @@
 {% extends "profiles/base.html" %}
 {% load i18n %}
-{% load url from future %}
 {% load humanize %}
-{% block title %}People{% if chosen_org %} : {{ chosen_org.name }}{% endif %}{% endblock %}
+{% block title %}{% trans "People" %}{% if chosen_org %} : {{ chosen_org.name }}{% endif %}{% endblock %}
 {% block body %}
 <div class='partners-page'>
 
@@ -30,13 +29,13 @@
 	<td class='about'>
 	    {% if chosen_org.slug == "join" %}
 		<h2>
-		{% blocktrans %}
-		  {{ site.name }} partners program
+		{% blocktrans with site_name=site.name %}
+		  {{ site_name }} partners program
 		{% endblocktrans %}
 		</h2>
 		<p>
-		{% blocktrans %}
-		Do you know someone in prison who would like to blog? {{ site.name }}
+		{% blocktrans with site_name=site.name %}
+		Do you know someone in prison who would like to blog? {{ site_name }}
 		is growing through the support of volunteers around the world
 		who help to facilitate blogging. All you need to get started is
 		access to a scanner so that you can scan letters you receive, and
@@ -46,15 +45,15 @@
 		</p>
 
 		<p>
-		{% blocktrans %}
-		For organizations with multiple writers, {{ site.name }} can set
+		{% blocktrans with site_name=site.name %}
+		For organizations with multiple writers, {{ site_name }} can set
 		up a partner page to draw traffic and attention to your writers,
 		and represent your organization and its mission.
 		{% endblocktrans %}
 		</p>
 
 		<p>
-		{% blocktrans %}
+		{% blocktrans with site_email=site.email %}
 		If you are an individual or organization that is interested in
 		making a commitment to help people in prison express themselves,
 		please contact us at <a
@@ -67,8 +66,8 @@
 		{% else %}
 
 		    <p>
-		      {% blocktrans %}
-		      Independent writers, supported by volunteers and staff for {{ site.name }}:
+		      {% blocktrans with site_name=site.name %}
+		      Independent writers, supported by volunteers and staff for {{ site_name }}:
 		      {% endblocktrans %}
 		    </p>
 		{% endif %}
@@ -78,9 +77,9 @@
 			{% if profile.authored_posts_count > 0 %}
 			    <a class='bloglink'
 			       href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
-			    {% blocktrans %}
-			    {{ profile.authored_posts_count }} posts;
-			    latest {{ profile.latest_post|naturalday }}.
+			    {% blocktrans with post_count=profile.authored_posts_count latest=profile.latest_post|naturalday %}
+			    {{ post_count }} posts;
+			    latest {{ latest }}.
 			    {% endblocktrans %}
 			{% else %}
 			    {{ profile }}
@@ -92,9 +91,9 @@
 		{% endfor %}
 		</ul>
 		{% if chosen_org.public %}
-		    <a href='{% url blogs.org_post_list chosen_org.slug %}'>
-		      {% blocktrans %}
-		      All <em>{{ chosen_org.name }}</em> posts
+		    <a href='{% url "blogs.org_post_list" chosen_org.slug %}'>
+		      {% blocktrans with org_name=chosen_org.name %}
+		      All <em>{{ org_name }}</em> posts
 		      {% endblocktrans %}
 		    </a>
 		{% endif %}

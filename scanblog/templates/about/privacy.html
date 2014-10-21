@@ -1,14 +1,13 @@
 {% extends "about/legal_base.html" %}
 {% load i18n %}
-{% load url from future %}
-{% block title %}Privacy Policy{% endblock %}
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
 {% block body %}
 
 
 <div class='terms'>
 <h2>
-  {% blocktrans %}
-  {{ site.name }} Privacy Policy
+  {% blocktrans with site_name=site.name %}
+  {{ site_name }} Privacy Policy
   {% endblocktrans %}
 </h2>
 
@@ -18,11 +17,11 @@
     THE TERMS OF THE BTB PRIVACY POLICY, DO NOT USE THIS WEBSITE.
     {% endblocktrans %}
 </b></p>
-{% url home as url_home %}
-      {% blocktrans %}
+{% url "home" as url_home %}
+{% blocktrans with site_name=site.name site_email=site.email %}
 <p>
 The following discloses the information gathering and dissemination
-practices for the {{ site.name }} (“BtB”) website available at
+practices for the {{ site_name }} (“BtB”) website available at
 <a href='{{ url_home }}'>{{ url_home }}</a> (the “Site”).
 Your use of the Site constitutes your agreement to this privacy policy
 and consent to the terms herein.
@@ -108,7 +107,7 @@ privacy policy signifies your acceptance of the revised privacy policy.
 <h3>Contacting BtB</h3>
 <p>
 If you have any questions regarding this privacy policy, you can contact us by
-emailing <a href='mailto:{{ site.email }}'>{{ site.email }}</a>.
+emailing <a href='mailto:{{ site_email }}'>{{ site_email }}</a>.
 </p>
 
 <p>

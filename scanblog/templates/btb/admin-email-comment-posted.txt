@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from future %}
 {% trans "A comment has been posted on" %} {{ comment.document.get_title }}:
 
 {% trans "View on site" %}:

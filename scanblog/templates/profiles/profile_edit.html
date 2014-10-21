@@ -1,19 +1,18 @@
 {% extends "profiles/base.html" %}
-{% load url from future %}
 {% load public_url %}
 {% load i18n %}
 
 {% block title %}
-  {% blocktrans %}
-    Edit profile for {{profile.display_name}}
+  {% blocktrans with name=profile.display_name %}
+    Edit profile for {{ name }}
   {% endblocktrans %}
 {% endblock %}
 {% block extra_head %}{{ form.media }}{% endblock %}
 
 {% block body %}
 <h1>
-  {% blocktrans %}
-    Profile for {{profile.user.profile.display_name}}
+  {% blocktrans with name=profile.display_name %}
+    Profile for {{ name }}
   {% endblocktrans %}
 </h1>
 {% if can_edit_user %}

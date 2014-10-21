@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 
 def site(request):
     site = Site.objects.get_current()
+    site.email = settings.SITE_EMAIL
     return {
         'site': site,
         'scheme': 'http://',

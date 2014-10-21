@@ -157,12 +157,12 @@ Send us a letter, and say clearly at the top that you want us to remove some blo
 \end{itemize}
 {% endblocktrans %}
 
-{% blocktrans %}
+{% blocktrans with mailing_address=letter.org.mailing_address|tex_escape %}
 \section*{Other questions?}
 If you have a question we didn't answer here (or a suggestion), please don't hesitate to write us.
 
 \begin{itemize}
-    \item[] {{ letter.org.mailing_address|tex_escape }}
+    \item[] {{ mailing_address }}
 \end{itemize}
 {% endblocktrans %}
 

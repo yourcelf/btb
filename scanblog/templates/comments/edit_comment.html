@@ -1,11 +1,10 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% load url from future %}
 {% block title %}{% trans "Edit comment" %} {% endblock %}
 {% block body %}
 <h2>{% trans "Edit comment" %}</h2>
 <p>
-  {% url about.community_guidelines as guidelines_url %}
+  {% url "about.community_guidelines" as guidelines_url %}
   {% blocktrans %}
   Please consider our <a href='{{ guidelines_url }}'>guidelines</a> while writing.
   {% endblocktrans %}
