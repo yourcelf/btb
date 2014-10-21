@@ -19,12 +19,12 @@
         <div class='comment-list-foot'>{{ posted_on }} <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> {{ i18n_by }} {{ comment.document.author.profile }}</em>
             {% thumbnail doc.documentpage_set.all.0.image.path "100" as im %}
             <a href='{{ doc.get_absolute_url }}'>
-	      <img src='{{ im.url|public_url }}'
+              <img src='{{ im.url|public_url }}'
                     width='{{ im.x }}'
                     height='{{ im.y }}'
                     title='{{ doc.get_title }}'
                     alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/>
-	    </a>
+            </a>
             {% endthumbnail %}
         </div>
         {% endwith %}

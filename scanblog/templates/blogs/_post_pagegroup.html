@@ -2,22 +2,22 @@
 {% load public_url %}
 {% for page in documentpages %}
     <div class='scan-page-number'>
-	<a name='order{{ page.order }}'></a>
-	<a href='?minorder={{ page.order }}#order{{ page.order }}' style='color: inherit; text-decoration: none;'>
-	{% trans "page" %} {{ page.page_number }}/{{ documentpage_count }}
-	</a>
+        <a name='order{{ page.order }}'></a>
+        <a href='?minorder={{ page.order }}#order{{ page.order }}' style='color: inherit; text-decoration: none;'>
+        {% trans "page" %} {{ page.page_number }}/{{ documentpage_count }}
+        </a>
     </div>
     <div class='scan-page'>
-	<img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned page' %}" />
+        <img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned page' %}" />
     </div>
     {% if forloop.last and documentpage_count > page.page_number %}
-	<a class='read-more' href='?minorder={{page.page_number}}#order{{ page.page_number }}'
-	   onclick='return load_more_pages({{page.page_number}}, this);'>
-	  {% trans "Read more" %}
-	  {% if remaining %}
-	  {# FIXME don't know how to translate remaining w/ pluralize #}
-	  ({{ remaining }} more page{{ remaining|pluralize }})
-	  {% endif %}
-	</a>
+        <a class='read-more' href='?minorder={{page.page_number}}#order{{ page.page_number }}'
+           onclick='return load_more_pages({{page.page_number}}, this);'>
+          {% trans "Read more" %}
+          {% if remaining %}
+          {# FIXME don't know how to translate remaining w/ pluralize #}
+          ({{ remaining }} more page{{ remaining|pluralize }})
+          {% endif %}
+        </a>
     {% endif %}
 {% endfor %}

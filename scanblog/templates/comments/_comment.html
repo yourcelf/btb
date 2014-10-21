@@ -14,8 +14,8 @@
                         </td>
                         <td>
                             <span class='comment-date'>
-			      {% trans "Posted {{ comment.created|timesince }} ago." %}
-			    </span>
+                              {% trans "Posted {{ comment.created|timesince }} ago." %}
+                            </span>
                             {% if comment.letter_sent and not comment.removed %}
                                 <span class='comment-date-mailed'>
                                     &check;

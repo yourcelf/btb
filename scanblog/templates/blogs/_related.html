@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load i18n %}
 {% load public_url %}
 {% if related.items %}
     {% if related.title %}
@@ -26,7 +27,7 @@
         {% endfor%}
         {% if related.more %}
             <td class='more'>
-                <a href='{{ related.more }}'>{{ more }}...</a>
+                <a href='{{ related.more }}'>{% trans "More..." %}</a>
             </td>
         {% endif %}
     </tr>

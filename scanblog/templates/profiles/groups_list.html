@@ -7,100 +7,100 @@
 
 <table>
     <tr>
-	<td class='group-links'>
-	    <ul>
-		<li class='org{% if chosen_org.name == site.name %} active{% endif %}'>
-		  <a href='{% url "profiles.profile_list" %}'>{{ site.name }}</a>
-		</li>
-	    {% if orgs %}
-    		<li>{% trans "Partners" %} :</li>
-	    {% endif %}
-	    {% for org in orgs %}
-		<li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
-		    {# We don't use get_absolute_url here because independent org doesn't have one #}
-		    <a href='{% url "profiles.profile_list" org.slug %}'>{{ org.name }}</a>
-		</li>
-	    {% endfor %}
-	    <li {% if chosen_org.slug == "join" %}class='active'{% endif %}>
-	      <a href='{% url "profiles.profile_list" "join" %}'>{% trans "Join" %}</a>
-	    </li>
-	    </ul>
-	</td>
-	<td class='about'>
-	    {% if chosen_org.slug == "join" %}
-		<h2>
-		{% blocktrans with site_name=site.name %}
-		  {{ site_name }} partners program
-		{% endblocktrans %}
-		</h2>
-		<p>
-		{% blocktrans with site_name=site.name %}
-		Do you know someone in prison who would like to blog? {{ site_name }}
-		is growing through the support of volunteers around the world
-		who help to facilitate blogging. All you need to get started is
-		access to a scanner so that you can scan letters you receive, and
-		to be willing to make a commitment to the people you'll be
-		representing.
-		{% endblocktrans %}
-		</p>
+        <td class='group-links'>
+            <ul>
+                <li class='org{% if chosen_org.name == site.name %} active{% endif %}'>
+                  <a href='{% url "profiles.profile_list" %}'>{{ site.name }}</a>
+                </li>
+            {% if orgs %}
+                    <li>{% trans "Partners" %} :</li>
+            {% endif %}
+            {% for org in orgs %}
+                <li class='org{% if org.name == chosen_org.name %} active{% endif %}'>
+                    {# We don't use get_absolute_url here because independent org doesn't have one #}
+                    <a href='{% url "profiles.profile_list" org.slug %}'>{{ org.name }}</a>
+                </li>
+            {% endfor %}
+            <li {% if chosen_org.slug == "join" %}class='active'{% endif %}>
+              <a href='{% url "profiles.profile_list" "join" %}'>{% trans "Join" %}</a>
+            </li>
+            </ul>
+        </td>
+        <td class='about'>
+            {% if chosen_org.slug == "join" %}
+                <h2>
+                {% blocktrans with site_name=site.name %}
+                  {{ site_name }} partners program
+                {% endblocktrans %}
+                </h2>
+                <p>
+                {% blocktrans with site_name=site.name %}
+                Do you know someone in prison who would like to blog? {{ site_name }}
+                is growing through the support of volunteers around the world
+                who help to facilitate blogging. All you need to get started is
+                access to a scanner so that you can scan letters you receive, and
+                to be willing to make a commitment to the people you'll be
+                representing.
+                {% endblocktrans %}
+                </p>
 
-		<p>
-		{% blocktrans with site_name=site.name %}
-		For organizations with multiple writers, {{ site_name }} can set
-		up a partner page to draw traffic and attention to your writers,
-		and represent your organization and its mission.
-		{% endblocktrans %}
-		</p>
+                <p>
+                {% blocktrans with site_name=site.name %}
+                For organizations with multiple writers, {{ site_name }} can set
+                up a partner page to draw traffic and attention to your writers,
+                and represent your organization and its mission.
+                {% endblocktrans %}
+                </p>
 
-		<p>
-		{% blocktrans with site_email=site.email %}
-		If you are an individual or organization that is interested in
-		making a commitment to help people in prison express themselves,
-		please contact us at <a
-		href='mailto:{{ site_email }}'>{{ site_email }}</a>.
-		{% endblocktrans %}
-		</p>
-	    {% else %}
-		{% if chosen_org.public %}
-		    {{ chosen_org.about|safe }}
-		{% else %}
+                <p>
+                {% blocktrans with site_email=site.email %}
+                If you are an individual or organization that is interested in
+                making a commitment to help people in prison express themselves,
+                please contact us at <a
+                href='mailto:{{ site_email }}'>{{ site_email }}</a>.
+                {% endblocktrans %}
+                </p>
+            {% else %}
+                {% if chosen_org.public %}
+                    {{ chosen_org.about|safe }}
+                {% else %}
 
-		    <p>
-		      {% blocktrans with site_name=site.name %}
-		      Independent writers, supported by volunteers and staff for {{ site_name }}:
-		      {% endblocktrans %}
-		    </p>
-		{% endif %}
-		<ul class='partners-user-list'>
-		{% for profile in profiles %}
-		    <li class='person'>
-			{% if profile.authored_posts_count > 0 %}
-			    <a class='bloglink'
-			       href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
-			    {% blocktrans with post_count=profile.authored_posts_count latest=profile.latest_post|naturalday %}
-			    {{ post_count }} posts;
-			    latest {{ latest }}.
-			    {% endblocktrans %}
-			{% else %}
-			    {{ profile }}
-			{% endif %}
-			{% if profile.has_public_profile %}
-			    <a href='{{ profile.get_absolute_url }}'>{% trans "profile" %}</a>
-			{% endif %}
-		    </li>
-		{% endfor %}
-		</ul>
-		{% if chosen_org.public %}
-		    <a href='{% url "blogs.org_post_list" chosen_org.slug %}'>
-		      {% blocktrans with org_name=chosen_org.name %}
-		      All <em>{{ org_name }}</em> posts
-		      {% endblocktrans %}
-		    </a>
-		{% endif %}
+                    <p>
+                      {% blocktrans with site_name=site.name %}
+                      Independent writers, supported by volunteers and staff for {{ site_name }}:
+                      {% endblocktrans %}
+                    </p>
+                {% endif %}
+                <ul class='partners-user-list'>
+                {% for profile in profiles %}
+                    <li class='person'>
+                        {% if profile.authored_posts_count > 0 %}
+                            <a class='bloglink'
+                               href='{{ profile.get_blog_url }}'>{{ profile }}</a> &ndash;
+                            {% blocktrans with post_count=profile.authored_posts_count latest=profile.latest_post|naturalday %}
+                            {{ post_count }} posts;
+                            latest {{ latest }}.
+                            {% endblocktrans %}
+                        {% else %}
+                            {{ profile }}
+                        {% endif %}
+                        {% if profile.has_public_profile %}
+                            <a href='{{ profile.get_absolute_url }}'>{% trans "profile" %}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+                {% if chosen_org.public %}
+                    <a href='{% url "blogs.org_post_list" chosen_org.slug %}'>
+                      {% blocktrans with org_name=chosen_org.name %}
+                      All <em>{{ org_name }}</em> posts
+                      {% endblocktrans %}
+                    </a>
+                {% endif %}
 
 {{ chosen_org.footer|safe }}
-	    {% endif %}
-	</td>
+            {% endif %}
+        </td>
     </tr>
 </table>
 </div>

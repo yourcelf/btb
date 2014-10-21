@@ -20,26 +20,26 @@ removed.
         <label for='delete_comments'>{% trans "Delete comments" %}</label>
         <input type='checkbox' name='delete_comments' id='delete_comments' /><br />
         <p>
-	{% blocktrans %}
+        {% blocktrans %}
         Note: Once things are on the Internet, it's nearly impossible for them
         to be removed completely.  Search engines and other sites may retain
         copies of the comments, and they may have been printed and mailed to
         the authors of blog posts.  However, we will make a good faith effort
         to remove your information.
-	{% endblocktrans %}
+        {% endblocktrans %}
         </p>
         <p>
-	{% blocktrans %}
+        {% blocktrans %}
         Once you delete your account, you will be unable to later delete
         comments if you don't delete them now.  Either way, your profile
         information will no longer be associated with the comments.
-	{% endblocktrans %}
+        {% endblocktrans %}
         </p>
         <p>
-	{% blocktrans with site_email=site.email %}
+        {% blocktrans with site_email=site.email %}
         If you have any questions or concerns about this, please contact
         <a href='mailto:{{ site_email }}'>{{ site_email }}</a>.
-	{% endblocktrans %}
+        {% endblocktrans %}
         </p>
 
     <p>

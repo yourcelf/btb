@@ -17,10 +17,10 @@
             <% if (obj.lock) { %>
                 <span class='being-edited'>
                     {% blocktrans %}
-		      <%= obj.lock.user.display_name %>
-		      started editing
+                      <%= obj.lock.user.display_name %>
+                      started editing
                       <%= btb.englishDateInterval(obj.lock.created, obj.lock.now) %>
-		      ago.
+                      ago.
                     {% endblocktrans %}
                 </span>
             <% } %>
@@ -113,7 +113,7 @@
             <ul class='ignore-choice'></ul>
             <ul class='type-list'></ul><br />
             <span class='add-post'>{% trans "Post" %}</span>
-	    <!--<span class='add-photo'>{% trans "Photo" %}</span>-->
+            <!--<span class='add-photo'>{% trans "Photo" %}</span>-->
             <span style='float: right;'>
                 <div class='post-save-message'></div>
                 <span class='save'>{% trans "Save" %}</span><span class='switch-to-edit-documents'>{% trans "Edit documents" %} &raquo;</span>

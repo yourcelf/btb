@@ -7,14 +7,14 @@
 <ul>
     {% if perms.correspondence.manage_correspondence %}
         <li><a href='{% url "correspondence.home" %}'>
-	    {% trans "Pending" %}
-	</a></li>
+            {% trans "Pending" %}
+        </a></li>
         <li><a href='{% url "correspondence.sent" %}'>
-	    {% trans "Sent" %}
-	</a></li>
+            {% trans "Sent" %}
+        </a></li>
         <li><a href='{% url "correspondence.edit_generic_letter" %}'>
-	    {% trans "Write a letter" %}
-	</a></li>
+            {% trans "Write a letter" %}
+        </a></li>
     {% endif %}
 </ul>
 {% endblock %}

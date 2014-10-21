@@ -28,4 +28,6 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
             if re.search(r"""\{\% blocktrans (?!(with |count |\%\}))""", txt):
                 print "blocktrans missing with", path
                 
-
+            # Look for tabs
+            if "\t" in txt:
+                print "has tab characters", path

@@ -23,22 +23,22 @@
       {% url "about.terms" as url_terms %}
       {% url "about.privacy" as url_privacy %}
         {% blocktrans %}
-	Registered users can leave comments and transcribe posts.  By
+        Registered users can leave comments and transcribe posts.  By
         registering, you are agreeing to the
         <a href='{{ url_terms }}'>Terms of Service</a> and
         <a href='{{ url_privacy }}'>Privacy Policy</a>.
-	{% endblocktrans %}
+        {% endblocktrans %}
     </p>
 
     <form action='{% url "registration_register" %}' method='post'>{% csrf_token %}
         <table class='form'>
             {{ reg_form }}
             <tr>
-	      <td></td>
-	      <td>
-		<input type='submit' value="{% trans 'Register' %}" />
-	      </td>
-	    </tr>
+              <td></td>
+              <td>
+                <input type='submit' value="{% trans 'Register' %}" />
+              </td>
+            </tr>
         </table>
     </form>
 

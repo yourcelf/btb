@@ -20,21 +20,21 @@
                     <h3>{% trans "Excerpt" %}</h3>
                     {% include "blogs/_post_highlight.html" %}
                     <p>
-		      {% trans "Reply ID" %}:
-		      <b class='mono'>{{ post.reply_code.code }}</b>
-		    </p>
+                      {% trans "Reply ID" %}:
+                      <b class='mono'>{{ post.reply_code.code }}</b>
+                    </p>
                     <p>
-		      {% blocktrans %}
-		      To reply to these comments, please print the
-		      following &ldquo;reply ID&rdquo; at the top of
-		      the page: <b class='mono'>{{
-		      post.reply_code.code }}</b>. This will allow us
-		      to notify the comment authors that you have
-		      written a response.  Please only include one
-		      reply ID at a time &ndash; to reply to more than
-		      one set of comments, use a separate page.
-		      {% endblocktrans %}
-		    </p>
+                      {% blocktrans %}
+                      To reply to these comments, please print the
+                      following &ldquo;reply ID&rdquo; at the top of
+                      the page: <b class='mono'>{{
+                      post.reply_code.code }}</b>. This will allow us
+                      to notify the comment authors that you have
+                      written a response.  Please only include one
+                      reply ID at a time &ndash; to reply to more than
+                      one set of comments, use a separate page.
+                      {% endblocktrans %}
+                    </p>
                     <div><h3>{% trans "Comments" %}</h3></div>
                 {% endifchanged %}
                 {% include "comments/_comment.html" %}

@@ -2,7 +2,6 @@ import json
 import datetime
 from collections import defaultdict
 
-from django.conf import settings
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render, redirect
@@ -95,7 +94,6 @@ def delete(request, user_id):
 
     if request.method != 'POST':
         return render(request, "profiles/confirm_delete_self.html")
-
     # POST
     delete_comments = request.POST.get('delete_comments', False)
     if delete_comments:

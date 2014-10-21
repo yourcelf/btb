@@ -51,12 +51,12 @@
             <p>
               <label>{% trans "Public" %}: <input type='checkbox' id='public_control' <%= public ? "checked='checked'" : "" %> /></label><br />
               <span class='help-block'>
-		{% blocktrans %}
-		If checked, this organization and its members will be
-		listed publicly.  If unchecked, members will appear in
-		the general site list.
-		{% endblocktrans %}
-	      </span>
+        {% blocktrans %}
+        If checked, this organization and its members will be
+        listed publicly.  If unchecked, members will appear in
+        the general site list.
+        {% endblocktrans %}
+      </span>
             </p>
             <p>
               <label for='name_control'>{% trans "Organization name:" %}</label>
@@ -66,22 +66,22 @@
             <p>
               <label for='slug_control'>{% trans "Short name:" %}</label>
               <span class='help-block'>
-		{% blocktrans %}
-		Name used for URLs. Only letters, numbers, and
-		&ldquo;-&rdquo; allowed.
-		{% endblocktrans %}
-	      </span>
+        {% blocktrans %}
+        Name used for URLs. Only letters, numbers, and
+        &ldquo;-&rdquo; allowed.
+        {% endblocktrans %}
+      </span>
               <br />
               <input type='text' id='slug_control' value='<%= slug %>' />
             </p>
             <p>
               <label for='personal_contact_control'>Personal contact:</label>
               <span class='help-block'>
-		{% blocktrans %}
+        {% blocktrans %}
                 Name to be used when signing auto-generated
                 correspondence.  If blank, &ldquo;[Organization Name]
                 staff&rdquo; will be used instead.
-		{% endblocktrans %}
+        {% endblocktrans %}
               </span>
               <br />
               <input type='text' id='personal_contact_control' value='<%= personal_contact %>' />
@@ -91,27 +91,27 @@
                 {% trans "About:" %}
               </label>
               <span class='help-block'>
-		{% blocktrans %}
+        {% blocktrans %}
                 HTML that will appear at the top of the organization's detail
                 page. Unused unless the organization is public.
-		{% endblocktrans %}
+        {% endblocktrans %}
               </span>
               <br />
               <textarea id='about_control' rows='10' cols='30'><%= about %></textarea>
               <br />
               <a class='html-preview' data-source='about_control'>
-		{% trans "Preview HTML" %}
-	      </a>
+        {% trans "Preview HTML" %}
+      </a>
             </p>
             <p>
               <label for='footer_control'>
                 {% trans "Footer:" %}
               </label>
               <span class='help-block'>
-		{% blocktrans %}
+        {% blocktrans %}
                 HTML that will appear at the bottom of posts belonging to this
                 organization. Unused unless the organization is public.
-		{% endblocktrans %}
+        {% endblocktrans %}
               </span>
               <br />
               <textarea id='footer_control' rows='10' cols='30'><%= footer %></textarea>
@@ -132,11 +132,11 @@
                 {% trans "Outgoing mail handler:" %}
               </label>
               <span class='help-block'>
-		{% blocktrans %}
+        {% blocktrans %}
                 If this organization does not handle their own outgoing mail,
                 choose the organization that handles it here.  Leave blank if
                 they handle their own.
-		{% endblocktrans %}
+        {% endblocktrans %}
               </span>
               <select class='org' id='outgoing_mail_control'>
                 <option value=''>--------</option>
@@ -152,9 +152,9 @@
             </p>
             <p>
               <label for='custom_intro_packet'>Custom intro packet</label><br />
-	      {% blocktrans %}
+      {% blocktrans %}
               TODO: Can set in <a href='/admin/profiles/organization/<%= id %>'>admin</a>.
-	      {% endblocktrans %}
+      {% endblocktrans %}
               <!--
               <% if (custom_intro_packet_url) { %>
                 <a href='<%= custom_intro_packet_url %>'><%= custom_intro_packet_url %></a>
@@ -218,20 +218,20 @@
           <tr class="<%= col.cssclass %>">
             <td class='name'>
               <a href='<%= model.get("profile_url") %>' 
-		 title='{% trans "Show profile" %}'>
+         title='{% trans "Show profile" %}'>
                 <%= model.get("display_name") %>
                 </a> <a href='<%= model.get("edit_url") %>' 
-			title='{% trans "Edit details" %}'><span class='ui-icon ui-icon-person'></span></a>
+                title='{% trans "Edit details" %}'><span class='ui-icon ui-icon-person'></span></a>
             </td>
             <td>
             <% if (col.cssclass == "removed") { %>
               <span class='restore ui-icon ui-icon-arrowreturnthick-1-w'
                     data-user-id="<%= model.id %>" 
-		    title='{% trans "Undo" %}'></span>
+                    title='{% trans "Undo" %}'></span>
             <% } else { %>
               <span class='remove ui-icon ui-icon-circle-minus'
                     data-user-id="<%= model.id %>" 
-		    title='{% trans "Remove" %}'></span>
+                    title='{% trans "Remove" %}'></span>
             <% } %>
             </td>
           </tr>

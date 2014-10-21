@@ -6,13 +6,13 @@
 <h2>{% trans "Pending correspondence" %}</h2>
 <p>
     <form method='post'  action="{% url "correspondence.generate_process_letters" %}">{% csrf_token %}
-	<input type='submit' value='{% trans "Update pending correspondence" %}' /><br />
+        <input type='submit' value='{% trans "Update pending correspondence" %}' /><br />
     </form>
     {% trans "Refreshes all 'automatic' pending correspondence." %}
 </p>
 <p>
     <form method='post' action='{% url "correspondence.add_unconsented_to_waitlist" %}'>{% csrf_token %}
-	<input type='submit' value='{% trans "Waitlist consent requests" %}' /><br />
+        <input type='submit' value='{% trans "Waitlist consent requests" %}' /><br />
     </form>
     {% blocktrans %}
     Generates "waitlist" postcards for all consent requests that haven't received them.
@@ -21,61 +21,61 @@
 
 <form method='get' action='{% url "correspondence.collate_mailing" %}'>
     <table>
-	<tr>
-	    <th colspan='2'>{% trans "Collated mailings:" %}</th>
-	</tr>
-	<tr>
-	    <td><label for='id_consent'>{% trans "Include consent envelopes?" %}</label></td>
-	    <td>
-		<input id='id_consent' type='checkbox' name='consent' checked='checked' />
-		<label for='id_consent_cutoff'>
-		  {% trans "Before date" %}:
-		</label> <input type='text' name='consent_cutoff' id='id_consent_cutoff' />
-		<script type='text/javascript'>
-		    $("#id_consent_cutoff").datepicker({"dateFormat": "yy-mm-dd"});
-		</script>
-	    </td>
+        <tr>
+            <th colspan='2'>{% trans "Collated mailings:" %}</th>
+        </tr>
+        <tr>
+            <td><label for='id_consent'>{% trans "Include consent envelopes?" %}</label></td>
+            <td>
+                <input id='id_consent' type='checkbox' name='consent' checked='checked' />
+                <label for='id_consent_cutoff'>
+                  {% trans "Before date" %}:
+                </label> <input type='text' name='consent_cutoff' id='id_consent_cutoff' />
+                <script type='text/javascript'>
+                    $("#id_consent_cutoff").datepicker({"dateFormat": "yy-mm-dd"});
+                </script>
+            </td>
 
-	</tr>
-	<tr>
-	    <td><label for='id_consent'>
-		{% trans "Include waitlist postcards?" %}
-	    </label></td>
-	    <td><input id='id_consent' type='checkbox' name='waitlist' checked='checked' /></td>
-	</tr>
-	<tr>
-	    <td><label for='id_complete'>
-		{% blocktrans %}
-		Include "signup complete" letters?
-		{% endblocktrans %}
-	    </label></td>
-	    <td><input id='id_complete' type='checkbox' name='complete' checked='checked' /></td>
-	</tr>
-	<tr>
-	    <td><label for='id_first_post'>
-		{% trans "Include first posts?" %}
-	    </label></td>
-	    <td><input id='id_first_post' type='checkbox' name='first_post' checked='checked' /></td>
-	</tr>
-	<tr>
-	    <td><label for='id_comments'>
-		{% trans "Include comments?" %}
-	    </label></td>
-	    <td><input id='id_comments' type='checkbox' name='comments' checked='checked' /></td>
-	</tr>
-	<tr>
-	    <td><label for='id_letters'>
-		{% trans "Include personal letters?" %}
-	    </label></td>
-	    <td><input id='id_letters' type='checkbox' name='letters' checked='checked' /></td>
-	</tr>
-	<tr>
-	    <td></td>
-	    <td>
-	      <input type='submit' name='collate'
-		     value='{% trans "Build collated mailing" %}' />
-	    </td>
-	</tr>
+        </tr>
+        <tr>
+            <td><label for='id_consent'>
+                {% trans "Include waitlist postcards?" %}
+            </label></td>
+            <td><input id='id_consent' type='checkbox' name='waitlist' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_complete'>
+                {% blocktrans %}
+                Include "signup complete" letters?
+                {% endblocktrans %}
+            </label></td>
+            <td><input id='id_complete' type='checkbox' name='complete' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_first_post'>
+                {% trans "Include first posts?" %}
+            </label></td>
+            <td><input id='id_first_post' type='checkbox' name='first_post' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_comments'>
+                {% trans "Include comments?" %}
+            </label></td>
+            <td><input id='id_comments' type='checkbox' name='comments' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td><label for='id_letters'>
+                {% trans "Include personal letters?" %}
+            </label></td>
+            <td><input id='id_letters' type='checkbox' name='letters' checked='checked' /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+              <input type='submit' name='collate'
+                     value='{% trans "Build collated mailing" %}' />
+            </td>
+        </tr>
     </table>
 </form>
 
