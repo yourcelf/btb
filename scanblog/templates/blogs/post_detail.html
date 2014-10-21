@@ -7,7 +7,8 @@
 {% load favorites %}
 
 <!-- don't know how to trans 'Untitled' FIXME -->
-{% block title %}{% firstof post.title "Untitled" %} &mdash; {{post.author.profile}}{% endblock %}
+{% trans "Untitled" as untitled_i18n %}
+{% block title %}{% firstof post.title untitled_i18n %} &mdash; {{post.author.profile}}{% endblock %}
 
 {% block head %}
     {% with feed_author=post.author comment_feed_obj=post %}
@@ -33,7 +34,8 @@
             {% endif %}
             {% trans "by" %} <a href='{{post.author.profile.get_blog_url}}'>{{ post.author.profile.display_name }}</a>
             {% if post.author.profile.has_public_profile %}
-                ({% trans "author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>" %})
+                {% blocktrans with profile_url=post.author.profile.get_absolute_url %}
+                (author's <a href='{{ profile_url }}'>profile</a>)
             {% endif %}
             {% if org.public %}, {% trans "writing for" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
             {% if org.public %}{{ org.footer|safe }}{% endif %}

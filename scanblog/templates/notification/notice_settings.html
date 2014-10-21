@@ -63,7 +63,9 @@
                         {% trans "Posts from the" %} <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign
                     {% endif %}
                     {% if sub.affiliation_id %}
-                        {% trans "Posts from the <em><a href='{{ sub.campaign.get_absolute_url }}'>{{ sub.campaign.title }}</a></em> campaign" %}
+                        {% blocktrans with campaign_url=sub.campaign.get_absolute_url campaign_title=sub.campaign.title %}
+                        Posts from the <em><a href='{{ campaign_url }}'>{{ campaign_title }}</a></em> campaign
+                        {% endblocktrans %}
                     {% endif %}
                 </td>
             </tr>

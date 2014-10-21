@@ -3,7 +3,11 @@
 {% block title %}Flag document{% endblock %}
 {% block body %}
 <h1>{% trans "Flag content" %}</h1>
-<p>{% trans "A flag lets moderators now that something is not right about a particular post, profile, or comment.  Please help us by flagging any posts that seem to be against our <a href='{{ about.guidelines }}'>guidelines</a>, or have been improperly edited (for example, pages not rotated correctly)." %}
+<p>
+{% url "about.guidelines" as about_guidelines_url %}
+{% blocktrans %}
+A flag lets moderators now that something is not right about a particular post, profile, or comment.  Please help us by flagging any posts that seem to be against our <a href='{{ about_guidelines }}'>guidelines</a>, or have been improperly edited (for example, pages not rotated correctly).
+{% endblocktrans %}
 </p>
 <form method='post' action=''>{% csrf_token %}
     <table class='form'>

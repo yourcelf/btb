@@ -4,7 +4,11 @@
 {% block title %}{% trans "Terms of Use" %}{% endblock %}
 {% block body %}
 <div class='terms'>
-<h2>{% trans "{{ site.name }} Terms of Use" %}</h2>
+<h2>
+  {% blocktrans with site_name=site.name %}
+  Terms of Use
+  {% endblocktrans %}
+</h2>
 <p><b>
 {% blocktrans %}
     PLEASE REVIEW BEFORE USING THIS WEBSITE &ndash; IF YOU DO NOT AGREE TO THESE TERMS OF USE, DO NOT USE THIS WEBSITE.

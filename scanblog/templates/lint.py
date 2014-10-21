@@ -3,6 +3,8 @@ import os
 
 for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
     for fn in files:
+        if fn.endswith(".swp"):
+            continue
         path = os.path.join(root, fn)
         with open(path) as fh:
             txt = fh.read()
@@ -31,3 +33,9 @@ for root, dirs, files in os.walk(os.path.abspath(os.path.dirname(__file__))):
             # Look for tabs
             if "\t" in txt:
                 print "has tab characters", path
+
+            # Look for blocks and variables inside {% trans "" %} tags
+            for match in re.finditer(r"""\{\% trans ((.(?!\%\}))*) \%\}""", txt):
+                if re.search("[\{\}]+", match.group(1)):
+                    print "tags in trans", path
+

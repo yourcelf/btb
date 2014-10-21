@@ -40,7 +40,10 @@
     }
 </style>
 <noscript>
-    {% trans "This page requires javascript. To browse {{ site.name }} without javascript, try" %} <a href='{% url "blogs.home" %}'>{% trans "blogs" %}</a>.
+    {% url "blogs.home" as blogs_home_url %}
+    {% blocktrans with site_name=site.name %}
+    This page requires javascript. To browse {{ site_name }} without javascript, try <a href='{{ blogs_home_url }}'>the main blogs page</a>.
+    {% endblocktrans %}
 </noscript>
 <h1>{% trans "Every page" %}</h1>
 <div id='pagepicker'></div>

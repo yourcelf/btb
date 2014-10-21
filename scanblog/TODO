@@ -2,4 +2,12 @@
 
 * replace &#9997 by css class and css display
 
-* optionnal sharing buttons 
+* optional sharing buttons
+
+* Replace atomic translations with blocktrans in the following:
+  -  scanblog/templates/blogs/_sharing_buttons.html
+  -  scanblog/templates/blogs/all_comments_list.html
+  -  scanblog/templates/blogs/delete_post.html
+  -  scanblog/templates/blogs/tag_post_list.html
+  -  scanblog/templates/btb/admin-content-flagged.txt
+  -  scanblog/templates/comments/unremove_comment.html

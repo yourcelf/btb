@@ -14,12 +14,15 @@
                         </td>
                         <td>
                             <span class='comment-date'>
-                              {% trans "Posted {{ comment.created|timesince }} ago." %}
+                              {% blocktrans with time_since_created=comment.created|timesince %}
+                              Posted {{ time_since_created }} ago.
+                              {% endblocktrans %}
                             </span>
                             {% if comment.letter_sent and not comment.removed %}
                                 <span class='comment-date-mailed'>
                                     &check;
-                                    {% trans "Mailed {{ comment.letter_sent|timesince }} ago" %}
+                                    {% blocktrans with time_since_sent=comment.letter_sent|timesince %}
+                                    Mailed {{ time_since_sent }} ago
                                 </span>
                             {% endif %}
                         </td>

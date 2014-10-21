@@ -28,7 +28,11 @@
 </style>
 </head>
 <body>
-    <h1>{% trans "The State of the {{ org.name }} is" %} <em>{{ adjective.word }}</em></h1>
+    <h1>
+      {% blocktrans with org_name=org.name adjective_word=adjective.word %}
+      The State of the {{ org_name }} is <em>{{ adjective_word }}</em>
+      {% endblocktrans %}
+    </h1>
     <span style='font-size: 8px'><b>{{ adjective.word }}</b>: <i>{{ adjective.definition }}</i></span>
     <h2>{% trans "Distance from inbox zero:" %} {{ inbox_zero_distance }}.</h2>
     {% if inbox_zero_distance == 0 %}

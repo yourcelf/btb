@@ -36,11 +36,15 @@
 <h1>{% trans "Remove Comment" %}</h1>
   {% if removal.pk %}
     <p>
-      <b>{% trans "This comment has been removed." %}</b> {% trans "You can edit the messages that haven't been sent below.
-      Changed your mind?" %} <a href='{% url "comments.moderator_unremove" comment.pk %}'>{% trans "Restore (unremove) this comment" %}</a>.
+      <b>{% trans "This comment has been removed." %}</b>
+         {% trans "You can edit the messages that haven't been sent below.  Changed your mind?" %} <a href='{% url "comments.moderator_unremove" comment.pk %}'>{% trans "Restore (unremove) this comment" %}</a>.
     </p>
   {% else %}
-    <p>{% trans "Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url "comments.spam_can_comment" comment.pk %}'>this form</a> instead)" %}</p>
+    <p>
+    {% url "comments.spam_can_comment" comment.pk as spam_comment_url %}
+    {% blocktrans with commenter=comment.user.profile %}
+    Remove the following comment by <em>{{ commenter }}</em>? (If this is spam, use <a href='{{ spam_comment_url }}'>this form</a> instead)</p>
+    {% endblocktrans %}
   {% endif %}
 
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
@@ -107,8 +111,7 @@
     {% if form.post_author_message.errors %}
       <div class='error'>
         <h3>
-          {% trans "There was an error with the message body below; we couldn't
-          compile it into a letter." %}
+          {% trans "There was an error with the message body below; we couldn't compile it into a letter." %}
         </h3>
         <p>{% trans "The cryptic error message we got was:" %}</p>
         <pre>{{ form.post_author_message.errors }}</pre>
