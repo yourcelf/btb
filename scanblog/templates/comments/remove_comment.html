@@ -42,7 +42,7 @@
     <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url "comments.spam_can_comment" comment.pk %}'>this form</a> instead)</p>
   {% endif %}
 
-  <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
+  <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on
             <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by
             <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a></p>
     <blockquote>
@@ -127,7 +127,7 @@
       <br />
       <div style='white-space: pre-wrap;'>{% spaceless %}
         {% if blogger_notified %}
-          <span class='post-author-message'>{% filter escape %}{% include "correspondence/_comment-removal-body.tex" with message=removal.post_author_message %}{% endfilter %}</span>
+          <span class='post-author-message'>{% filter force_escape %}{% include "correspondence/_comment-removal-body.tex" with message=removal.post_author_message %}{% endfilter %}</span>
         {% else %}
           <span class='post-author-message'>{% include "correspondence/_comment-removal-body.tex" with message=form.post_author_message %}</span>
         {% endif %}
@@ -174,7 +174,7 @@
       $("#id_post_author_message").val());
     $("form", iframe.contentWindow.document).submit();
   });
-    
+
 </script>
 
 {% endblock %}
