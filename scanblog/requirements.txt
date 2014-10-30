@@ -9,7 +9,7 @@ fabric
 django-bcrypt
 python-magic
 django_compressor
-sorl-thumbnail
+sorl-thumbnail>=11.12.1b
 python-memcached
 -e git+https://github.com/yourcelf/django-notification.git@btb#egg=django_notification
 django-pagination
@@ -22,3 +22,4 @@ pytz
 django-localflavor
 django-debug-toolbar
 -e git+https://github.com/jmoiron/johnny-cache.git#egg=johnny_cache
+requests

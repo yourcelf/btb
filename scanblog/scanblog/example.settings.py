@@ -116,6 +116,10 @@ LOGGING = {
         }
     }
 }
+MAILBOX_FORWARDING = {
+    "username": "benjamin@betweenthebars.org",
+    "password": "plantcamerestnatural",
+}
 
 # Uncomment the following to enable django debug toolbar. You'll need to
 # install it first with e.g. `pip install django-debug-toolbar`

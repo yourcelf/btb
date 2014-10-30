@@ -106,6 +106,11 @@ class Scan(models.Model):
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(default=datetime.datetime.now)
 
+    # A unique ID identifying this scan by an external source (e.g. mail
+    # scanner) which we can use to track whether a document has been loaded or
+    # not.
+    source_id = models.CharField(blank=True, max_length=100)
+
     objects = OrgManager()
 
     class QuerySet(OrgQuerySet):
