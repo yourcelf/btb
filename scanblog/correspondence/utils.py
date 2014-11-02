@@ -192,6 +192,8 @@ def url_to_pdf(url):
         except OSError:
             pass
         raise HtmlToPdfError(["; ".join((stderrdata.split("\n")[-2], url))])
+    if os.stat(pdf_name).st_size == 0:
+        raise HtmlToPdfError("wkhtmltopdf produced PDF of size 0 for {}".format(url))
     return pdf_name
 
 def build_envelope(from_address, to_address):
