@@ -43,7 +43,7 @@ PDFTK_CMD = '/usr/bin/pdftk'
 RUBBER_PIPE_CMD = '/usr/bin/rubber-pipe'
 PDFINFO_CMD = '/usr/bin/pdfinfo'
 CONVERT_CMD = '/usr/bin/convert'
-WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'bin', 'wkhtmltopdf-i386')
+#WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'bin', 'wkhtmltopdf-i386')
 # Selenium for running tests. Depending on the current state of firefox
 # binaries/selenium libraries, it may be necessary to pin to older versions
 # that work properly together.

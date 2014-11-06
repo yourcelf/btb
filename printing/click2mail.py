@@ -15,7 +15,7 @@ class Click2MailBatch(object):
                 "stage-" if staging else "")
 
     @classmethod
-    def print_options_xml(cls, **kwargs):
+    def letter_options_xml(cls, **kwargs):
         return E("printProductionOptions", 
             E("documentClass", "Letter 8.5 x 11"),
             E("layout", "Address on Separate Page"),
@@ -25,6 +25,17 @@ class Click2MailBatch(object):
             E("paperType", "White 24#"),
             E("printOption", "Printing both sides"),
             E("mailClass", "First Class"))
+
+    @classmethod
+    def postcard_options_xml(cls, **kwargs):
+        return E("printProductionOptions",
+            E("documentClass", "Postcard 3.5 x 5"),
+            E("layout", "Single Sided Postcard"),
+            E("productionTime", "Next Day"),
+            E("color", "Black and White"),
+            E("paperType", "White Matte"),
+            E("printOption", "Printing both sides"),
+            E("mailClass", "FirstClass"))
 
     @classmethod
     def return_address_xml(cls):
@@ -51,12 +62,16 @@ class Click2MailBatch(object):
     def build_batch_xml(self):
         jobs_els = []
         for job in self.jobs:
-            num_pages = job["endingPage"] - job["startingPage"]
-            envelope = "#10 Double Window" if num_pages <= 10 else "Flat Envelope"
+            if job['type'] == "postcard":
+                print_options = self.postcard_options_xml()
+            else:
+                num_pages = job["endingPage"] - job["startingPage"]
+                envelope = "#10 Double Window" if num_pages <= 10 else "Flat Envelope"
+                print_options = self.letter_options_xml(envelope=envelope)
             jobs_els.append(E("job",
                 E("startingPage", str(job["startingPage"])),
                 E("endingPage", str(job["endingPage"])),
-                self.print_options_xml(envelope=envelope),
+                print_options,
                 self.return_address_xml(),
                 self.recipient_xml(job["recipient"]),
             ))

@@ -1,4 +1,5 @@
 import os
+import json
 import glob
 import shutil
 import tempfile
@@ -209,75 +210,67 @@ def generate_colation(mailing):
     outdir = os.path.join(tmpdir, outname)
     os.makedirs(outdir) # also makes outdir
 
-    envelopes = set()
-    postcards = []
-    letters = []
-    manifest = defaultdict(int)
+    manifest = {"letters": [], "postcards": []}
     for letter in mailing.letters.all():
         if not letter.get_file():
             continue
-        address = letter.get_recipient_address()
-        slug = slugify(address.split("\n")[0])
+        details = {
+            "recipient": letter.get_recipient_address(),
+            "sender": letter.org.mailing_address,
+            "type": letter.type,
+            "file": letter.get_file(),
+            "id": letter.id,
+        }
+        details["slug"] = slugify(details["recipient"].split("\n")[0])
         if letter.is_postcard:
-            postcards.append((slug, letter))
-            continue
-        letters.append((slug, letter))
-        envelopes.add((slug, address, letter.org.mailing_address))
-        count = get_pdf_page_count(letter.get_file())
-        if count:
-            manifest[(slug, address)] += count
-
-    # Write manifest file
-    if manifest:
-        items = manifest.items()
-        items.sort()
-        rows = [(a.split("\n")[0].strip(), str((c + c%2)/2)) for (s, a),c in items]
-        utils.write_csv(rows, os.path.join(outdir, "manifest.csv"))
+            manifest["postcards"].append(details)
+        else:
+            manifest["letters"].append(details)
 
     # Write envelopes
-    if envelopes:
+    if manifest["letters"]:
         envelope_dir = os.path.join(outdir, "envelopes")
         os.makedirs(envelope_dir)
-        for slug, addr, from_address in envelopes:
-            env_fh = utils.build_envelope(
-                    from_address=from_address,
-                    to_address=addr)
+        unique_envelopes = set(
+            (d["slug"], d["recipient"], d["sender"]) for d in manifest["letters"]
+        )
+        for slug, addr, from_address in unique_envelopes:
+            env_fh = utils.build_envelope(from_address=from_address, to_address=addr)
             path = os.path.join(envelope_dir, "%s-envelope.jpg" % slug)
             with open(path, 'w') as fh:
                 fh.write(env_fh.getvalue())
 
-        # Write addresses CSV
-        sorted_addresses = [a for s, a, r in sorted(envelopes)]
-        utils.write_address_csv(sorted_addresses,
-                os.path.join(outdir, "addresses.csv"))
-
     # Write postcards
-    if postcards:
-        postcard_dir = os.path.join(outdir, "postcards")
-        os.makedirs(postcard_dir)
-        for slug, postcard in postcards:
-            dest = os.path.join(postcard_dir,
-                    "{0}-{1}{2}.jpg".format(
-                        slug,
-                        postcard.type,
-                        postcard.pk
-                    ))
-            shutil.copy(postcard.get_file(), dest)
+    for key in ("postcards", "letters"):
+        if not manifest[key]:
+            continue
 
-    # Copy and combine letters
-    if letters:
-        letter_dir = os.path.join(outdir, "letters")
-        os.makedirs(letter_dir)
-        for slug, letter in letters:
-            dest = os.path.join(letter_dir,
-                    "{0}-{1}{2}.pdf".format(slug, letter.type, letter.pk))
-            shutil.copy(letter.get_file(), dest)
-        sorted_pdfs = sorted(glob.glob(os.path.join(letter_dir, "*.pdf")))
+        file_dir = os.path.join(outdir, key)
+        os.makedirs(file_dir)
+        for details in manifest[key]:
+            dest = os.path.join(file_dir,
+                "{0}-{1}{2}.{3}".format(
+                    details["slug"],
+                    details["type"],
+                    details["id"],
+                    ("jpg" if key == "postcards" else "pdf")
+                ))
+            shutil.copy(details["file"], dest)
+            # Replace 'file' in manifest with zipfile-relative path
+            details["file"] = os.path.relpath(dest, outdir)
+            
+    # Make combined letters pdf.
+    if manifest["letters"]:
+        sorted_pdfs = sorted(glob.glob(os.path.join(outdir, "letters", "*.pdf")))
         utils.combine_pdfs(*sorted_pdfs,
-                add_blanks=True,
-                filename=os.path.join(outdir, "all_letters.pdf")
+            add_blanks=True,
+            filename=os.path.join(outdir, "all_letters.pdf")
         )
-    
+
+    # Write manifest file
+    with open(os.path.join(outdir, "manifest.json"), 'w') as fh:
+        json.dump(manifest, fh, indent=2)
+
     # Zip
     tmp_zip_path = "{0}.zip".format(outdir)
     zipbase = os.path.basename(outdir)
