@@ -117,8 +117,8 @@ LOGGING = {
     }
 }
 MAILBOX_FORWARDING = {
-    "username": "benjamin@betweenthebars.org",
-    "password": "plantcamerestnatural",
+    "username": "<your username>",
+    "password": "<your password>",
 }
 
 # Uncomment the following to enable django debug toolbar. You'll need to
