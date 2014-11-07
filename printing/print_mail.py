@@ -93,8 +93,7 @@ def main():
             jobs=jobs,
             staging=args.staging)
     if batch.run(args.dry_run):
-        pass
-    #    os.remove(filename)
+        os.remove(filename)
 
 if __name__ == "__main__":
     main()
