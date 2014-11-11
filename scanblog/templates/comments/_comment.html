@@ -23,6 +23,7 @@
                                     &check;
                                     {% blocktrans with time_since_sent=comment.letter_sent|timesince %}
                                     Mailed {{ time_since_sent }} ago
+                                    {% endblocktrans %}
                                 </span>
                             {% endif %}
                         </td>
@@ -30,20 +31,20 @@
                             {% if user == comment.user and not comment.letter_sent %}
                                 <a href='{% url "comments.edit_comment" comment.pk %}' 
                                     class='comment-edit'
-                                    title ='Edit comment'>edit</a
+                                    title ='{% trans "Edit comment" %}'>{% trans "edit" %}</a
                                 ><a href='{% url "comments.delete_comment" comment.pk %}' 
                                     class='comment-delete'
-                                    title='Delete comment'>delete</a>
+                                    title='{% trans "Delete comment" %}'>{% trans "delete" %}</a>
                             {% endif %}
                             {% if user != comment.user %}
                                 <a href='{% url "comments.flag_comment" comment.pk %}' 
                                    class='comment-flag'
-                                   title='Flag comment'>&nbsp;</a>
+                                   title='{% trans "Flag comment" %}'>&nbsp;</a>
                             {% endif %}
                             {% if perms.comments.change_comment %}
-                              <a href='{% url "comments.spam_can_comment" comment.pk %}'>spam</a>
+                              <a href='{% url "comments.spam_can_comment" comment.pk %}'>{% trans "spam" %}</a>
                               |
-                              <a href='{% url "comments.moderator_remove" comment.pk %}'>{% if comment.removed %}edit removal{% else %}remove{% endif %}</a>
+                              <a href='{% url "comments.moderator_remove" comment.pk %}'>{% if comment.removed %}{% trans "edit removal" %}{% else %}{% trans "remove" %}{% endif %}</a>
                             {% endif %}
                             {% favorites comment %}
                         </td>
@@ -53,7 +54,7 @@
             {% if comment.removed %}
               {% with removal=comment.commentremoval %}
                 <div class='commentbody'>
-                  <h4>Comment removed by staff</h4>
+                  <h4>{% trans "Comment removed by staff" %}</h4>
                   {{ removal.web_message|urlize|linebreaks }}
                 </div>
               {% endwith %}
@@ -61,7 +62,7 @@
               <div class='commentbody'>
                   {% if comment.comment_doc_id %}
                       {% with post=comment.comment_doc %}
-                          (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
+                          ({% trans "scanned reply" %} &ndash; <a href='{{ post.get_absolute_url }}'>{% trans "view as blog post" %}</a>)
                           {% with documentpages=post.documentpage_set.all %}
                               {% with documentpage_count=documentpages.count %}
                                   {% include "blogs/_post_pages.html" %} 
