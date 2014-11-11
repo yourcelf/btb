@@ -3,8 +3,6 @@
 {% load thumbnail %}
 {% load public_url %}
 {% trans "Recent Comments" as recent_comments %}
-{% trans "Posted on" as posted_on %}
-{% trans "by" as i18n_by %}
 {% trans "More comments" as more_comments %}
 {% block title %}Recent comments{% endblock %}
 {% block body %}
@@ -16,7 +14,11 @@
     <div class='comment-list-item'>
         {% include "comments/_comment.html" %}
         {% with doc=comment.document %}
-        <div class='comment-list-foot'>{{ posted_on }} <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> {{ i18n_by }} {{ comment.document.author.profile }}</em>
+        <div class='comment-list-foot'>
+          {% blocktrans with doc_url=doc.get_absolute_url doc_title=doc.get_title author_profile=comment.document.author.profile %}
+          Posted on <a href='{{ doc_url }}'>{{ doc_title }}</a> by {{ author_profile }}
+          {% endblocktrans %}
+        </div>
             {% thumbnail doc.documentpage_set.all.0.image.path "100" as im %}
             <a href='{{ doc.get_absolute_url }}'>
               <img src='{{ im.url|public_url }}'

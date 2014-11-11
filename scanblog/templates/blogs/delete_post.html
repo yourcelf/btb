@@ -3,9 +3,11 @@
 {% block title %}{% trans "Delete post?" %}{% endblock %}
 {% block body %}
     <p>
-    {% trans "Delete the post" %} <em>{{ post.get_title }}</em>
-    {% trans "and remove it from the site?" %}
-    {% trans "This can't be undone." %}
+    {% blocktrans with post_title=post.get_title %}
+    Delete the post <em>{{ post_title }}</em>
+    and remove it from the site?
+    This can't be undone.
+    {% endblocktrans %}
     </p>
 
     <p>

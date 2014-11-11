@@ -1,5 +1,7 @@
 {% load i18n %}
-{% trans "A flag was created for" %} {{ note.content_object }} {% trans "by user" %} "{{ note.creator.profile }}".
+{% blocktrans with note_content_object=note.content_object note_creator_profile=note.creator.profile %}
+A flag was created for {{ note_content_object }} by user "{{ note_creator_profile }}".
+{% endblocktrans %}
 
 {% trans "Content URL" %}:
 http://{{ site.domain }}{{ note.content_object.get_absolute_url }}
