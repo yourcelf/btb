@@ -36,6 +36,7 @@
             {% if post.author.profile.has_public_profile %}
                 {% blocktrans with profile_url=post.author.profile.get_absolute_url %}
                 (author's <a href='{{ profile_url }}'>profile</a>)
+                {% endblocktrans %}
             {% endif %}
             {% if org.public %}, {% trans "writing for" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
             {% if org.public %}{{ org.footer|safe }}{% endif %}
