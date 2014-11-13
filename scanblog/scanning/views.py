@@ -391,7 +391,7 @@ class Documents(JSONView):
                     page.save()
         except MissingHighlight:
             return HttpResponseBadRequest("Missing highlight.")
-        logger.debug("saved document with", kw)
+        logger.debug("saved document with {}".format(kw))
 
         # Split images.
         result = tasks.update_document_images.delay(
