@@ -14,6 +14,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
 from django.contrib.auth.views import logout
+from celery.result import AsyncResult
+from scanblog.celery import app
 
 from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
@@ -388,11 +390,11 @@ class Documents(JSONView):
         except MissingHighlight:
             return HttpResponseBadRequest("Missing highlight.")
 
-        # We want to wait until all document/page edits are done to commit, but
-        # must commit before executing the task (it needs an up-to-date model).
-
-        with transaction.atomic():
-            tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        # Split images.
+        task_id = tasks.update_document_images.delay(
+                document_id=doc.pk, status=kw['status'])
+        result = AsyncResult(task_id, app=app)
+        result.get()
 
 
         # Update to get current status after task finishes.
