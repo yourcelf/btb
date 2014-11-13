@@ -276,7 +276,7 @@ class ScanSplits(JSONView):
                 # Persist any changes to highlight_transform.
                 document.save()
                 if document.status in ("published", "ready"):
-                    tasks.update_document_images.apply([document.pk]).get()
+                    tasks.update_document_images.delay(document.pk).get()
                 document.documentpage_set = pages
                 docs.append(document)
             scan.document_set = docs
