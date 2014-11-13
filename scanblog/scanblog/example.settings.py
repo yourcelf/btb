@@ -116,6 +116,7 @@ LOGGING = {
         }
     }
 }
+SOUTH_TESTS_MIGRATE = False
 MAILBOX_FORWARDING = {
     "username": "<your username>",
     "password": "<your password>",

@@ -17,7 +17,7 @@ from pyPdf.utils import PdfReadError
 
 from django.contrib.auth.models import User
 from django.conf import settings
-from celery.task import task
+from scanblog.celery import app
 from sorl.thumbnail import get_thumbnail
 
 from scanning.models import Scan, ScanPage, Document, DocumentPage, EditLock
@@ -25,7 +25,7 @@ from profiles.models import Organization
 
 logger = logging.getLogger(__name__)
 
-@task
+@app.task
 def update_document_images(document_id=None, process_pages=True, 
         process_highlight=True, document=None, status=None):
     """
@@ -50,7 +50,7 @@ def update_document_images(document_id=None, process_pages=True,
     logger.debug("Update document images done.")
     return True
 
-@task
+@app.task
 def process_zip(filename, uploader_id, org_id, redirect=None):
     """
     Take a zip file, and process all PDFs that are in it as scans.
@@ -98,7 +98,7 @@ def process_zip(filename, uploader_id, org_id, redirect=None):
 
     return redirect
 
-@task
+@app.task
 def process_scan_to_profile(scan_id, redirect):
     """
     This scan processor is used by users who upload pdf's for their own
@@ -123,7 +123,7 @@ def process_scan_to_profile(scan_id, redirect):
     update_document_images(document=doc)
     return redirect
 
-@task
+@app.task
 def split_scan(scan_id=None, redirect=None, scan=None):
     """
     Split a Scan into ScanPage's
@@ -223,7 +223,7 @@ def split_scan(scan_id=None, redirect=None, scan=None):
     scan.save()
     return redirect
 
-@task
+@app.task
 def merge_scans(scan_id=None, filename=None, redirect=None):
     scan = Scan.objects.get(pk=scan_id)
     concatenated = _concatenate_pdfs(scan.pdf.path, filename)
@@ -236,7 +236,7 @@ def merge_scans(scan_id=None, filename=None, redirect=None):
     os.remove(filename)
     return redirect
 
-@task
+@app.task
 def expire_editlock(editlock_id=None):
     EditLock.objects.filter(pk=editlock_id).delete()
     return "success"

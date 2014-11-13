@@ -11,7 +11,6 @@ from .base import BtbLiveServerTestCase, NoSuchElementException
 from scanning.models import Scan, PendingScan, Document, DocumentPage
 from django.contrib.auth.models import User
 
-
 class TestModScans(BtbLiveServerTestCase):
     def test_process_scan_with_pending(self):
         # NOTE: This one is a might lengthy; but it's easier than mocking.
