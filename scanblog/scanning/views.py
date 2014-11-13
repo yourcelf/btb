@@ -1,6 +1,8 @@
 import json
 import datetime
 import tempfile
+import logging
+logger = logging.getLogger("django.request")
 
 from django.conf import settings
 from django.contrib import messages
@@ -389,10 +391,10 @@ class Documents(JSONView):
                     page.save()
         except MissingHighlight:
             return HttpResponseBadRequest("Missing highlight.")
+        logger.debug("saved document with", kw)
 
         # Split images.
-        with transaction.atomic():
-            task_id = tasks.update_document_images.delay(
+        result = tasks.update_document_images.delay(
                     document_id=doc.pk, status=kw['status']).get()
 
         # Update to get current status after task finishes.
