@@ -391,11 +391,9 @@ class Documents(JSONView):
             return HttpResponseBadRequest("Missing highlight.")
 
         # Split images.
-        task_id = tasks.update_document_images.delay(
-                document_id=doc.pk, status=kw['status'])
-        result = AsyncResult(task_id, app=app)
-        result.get()
-
+        with transaction.atomic():
+            task_id = tasks.update_document_images.delay(
+                    document_id=doc.pk, status=kw['status']).get()
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
