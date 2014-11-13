@@ -215,6 +215,7 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
+THUMBNAIL_CACHE = 'default'
 
 AUTHENTICATION_BACKENDS = (
     'urlcrypt.auth_backends.UrlCryptBackend',
