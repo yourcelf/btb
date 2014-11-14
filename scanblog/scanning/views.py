@@ -284,7 +284,9 @@ class ScanSplits(JSONView):
                 document.documentpage_set = pages
                 docs.append(document)
             scan.document_set = docs
-            return self.get(request, obj_id=scan.pk)
+        #XXX Shouldn't be necessary but seems to be.
+        scan.save()
+        return self.get(request, obj_id=scan.pk)
 
 class MissingHighlight(Exception):
     pass
@@ -391,11 +393,16 @@ class Documents(JSONView):
                     page.save()
         except MissingHighlight:
             return HttpResponseBadRequest("Missing highlight.")
-        logger.debug("saved document with {}".format(kw))
+
+	#XXX this additional save should not be needed, but seems to be. Issue
+        # with transaction.atomic() ?
+	doc.save()
 
         # Split images.
         result = tasks.update_document_images.delay(
                     document_id=doc.pk, status=kw['status']).get()
+
+        logger.debug(u"post image update {}".format(doc.highlight_transform))
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
