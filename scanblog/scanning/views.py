@@ -133,6 +133,7 @@ class ScanSplits(JSONView):
         Execute splits for a scan.  This could be updating an existing models,
         or creating new ones.
         """
+        logger.debug("Starting split")
         with transaction.atomic():
             try:
                 scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
@@ -277,13 +278,15 @@ class ScanSplits(JSONView):
                     if scanpage_id == highlight_scan_page_id:
                         old_highlight_transform["document_page_id"] = documentpage.pk
                         document.highlight_transform = json.dumps(old_highlight_transform)
-                # Persist any changes to highlight_transform.
                 document.save()
-                if document.status in ("published", "ready"):
-                    tasks.update_document_images.delay(document.pk).get()
                 document.documentpage_set = pages
                 docs.append(document)
             scan.document_set = docs
+        # Must do update_document_images outside transaction.atomic
+        for document in docs:
+            if document.status in ("published", "ready"):
+                # Persist any changes to highlight_transform.
+                tasks.update_document_images.delay(document.pk).get()
         #XXX Shouldn't be necessary but seems to be.
         scan.save()
         return self.get(request, obj_id=scan.pk)
