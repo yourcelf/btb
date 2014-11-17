@@ -5,7 +5,7 @@ from btb.log_filter import skip_unreadable_post
 DEBUG = TEMPLATE_DEBUG = True
 THUMBNAIL_DEBUG = DEBUG
 
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DISABLE_NOTIFICATIONS = False
 DISABLE_ADMIN_NOTIFICATIONS = False
 

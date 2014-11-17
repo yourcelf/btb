@@ -384,6 +384,15 @@ class UsersJSON(JSONView):
                     dirty = True
                     setattr(user, param, params[param])
 
+        # If we're changing to "unmanaged" but have a blank password, set
+        # something random for the password so they can use the password reset
+        # functionality. Since https://code.djangoproject.com/ticket/20079,
+        # users with blank passwords cannot use "reset my password" (email
+        # doesn't send) if user.has_usable_password is False.
+        if user.profile.managed and params["managed"] == False and not user.has_usable_password():
+            user.profile.set_random_password()
+            user.save()
+
         for param in ('display_name', 'mailing_address', 
                 'special_mail_handling', 'consent_form_received', 
                 'blogger', 'managed', 'lost_contact', 'blog_name'):

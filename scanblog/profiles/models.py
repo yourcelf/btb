@@ -1,4 +1,7 @@
+import os
 import datetime
+import itertools
+import string
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
@@ -273,6 +276,14 @@ class Profile(models.Model):
     def has_blog_posts(self):
         return Document.objects.filter(author__pk=self.pk, type="post",
                                        status="published").exists()
+
+    def set_random_password(self):
+        """
+        Set a random password on our associated user object.  Does not save the user.
+        """
+        chars = set(string.ascii_uppercase + string.digits)
+        char_gen = (c for c in itertools.imap(os.urandom, itertools.repeat(1)) if c in chars)
+        self.user.set_password(''.join(itertools.islice(char_gen, None, 32)))
 
 class OrganizationManager(OrgManager):
     def public(self):
