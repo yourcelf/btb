@@ -32,10 +32,11 @@ class Click2MailBatch(object):
             E("documentClass", "Postcard 3.5 x 5"),
             E("layout", "Single Sided Postcard"),
             E("productionTime", "Next Day"),
+            E("envelope", ""),
             E("color", "Black and White"),
             E("paperType", "White Matte"),
             E("printOption", "Printing both sides"),
-            E("mailClass", "FirstClass"))
+            E("mailClass", "First Class"))
 
     @classmethod
     def return_address_xml(cls):
@@ -57,7 +58,7 @@ class Click2MailBatch(object):
             upkey = "postalCode" if key == "zip" else key
             parts.append(E(upkey, recipient.get(key, "")))
         parts.append(E("country", ""))
-        return E("recipients", E("address", *parts))
+        return E("address", *parts)
 
     def build_batch_xml(self):
         jobs_els = []
@@ -65,7 +66,7 @@ class Click2MailBatch(object):
             if job['type'] == "postcard":
                 print_options = self.postcard_options_xml()
             else:
-                num_pages = job["endingPage"] - job["startingPage"]
+                num_pages = job["endingPage"] - job["startingPage"] + 1
                 envelope = "#10 Double Window" if num_pages <= 10 else "Flat Envelope"
                 print_options = self.letter_options_xml(envelope=envelope)
             jobs_els.append(E("job",
@@ -73,7 +74,7 @@ class Click2MailBatch(object):
                 E("endingPage", str(job["endingPage"])),
                 print_options,
                 self.return_address_xml(),
-                self.recipient_xml(job["recipient"]),
+                E("recipients", *[self.recipient_xml(r) for r in job["recipients"]]),
             ))
         
         xml = u'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
