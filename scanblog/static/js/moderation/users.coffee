@@ -133,7 +133,7 @@ class btb.UserSearch extends btb.PaginatedView
             when 40 then @highlightResult(1) # down
             when 38 then @highlightResult(-1) # up
             when 13 then @chooseHighlighted() # enter
-            else @fetchItems()
+            else _.debounce(_.bind(@fetchItems, this), 200)
         return false
 
     highlightResult: (change) =>
