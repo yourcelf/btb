@@ -357,14 +357,15 @@ class Mailings(JSONView):
             ).order_by(
                 'document__author', 'document'
             ))
-            doc = None
+            author = None
             letter = None
             for c in comments:
-                if c.document != doc:
+                if c.document.author != author:
                     doc = c.document
-                    letter = Letter.objects.create(recipient=doc.author,
+                    author = c.document.author
+                    letter = Letter.objects.create(recipient=c.document.author,
                             type="comments",
-                            org=doc.author.organization_set.get(),
+                            org=c.document.author.organization_set.get(),
                             **kw
                     )
                     to_send.append(letter)
@@ -665,7 +666,9 @@ def recent_comments_letter(request, letter_id=None, pdf=None):
 
     # NB: we're trusting localhost with full access to comment letters here,
     # unfiltered.
-    letter = get_object_or_404(Letter, pk=letter_id)
+    letter = get_object_or_404(
+            Letter.objects.select_related('document', 'recipient'),
+            pk=letter_id)
     if letter.type != "comments":
         raise Http404
     # ignore comments by the letter recipient.  This happens when writers reply
