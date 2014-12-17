@@ -272,6 +272,29 @@ class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
         self.assertEquals(removal.post_author_message, "They done goofed")
         self.assertTrue(CommentRemoval.objects.needing_letters().exists())
 
+    def test_comments_disabled(self):
+        p = self.doc.author.profile
+        p.comments_disabled = True
+        p.save()
+        res = self.client.get(self.doc.get_absolute_url())
+        self.assertContains(res, "Comments disabled by author")
+        self.assertNotContains(res, "<form")
+
+        self.loginAs("reader")
+        res = self.client.post(self.doc.get_absolute_url(), {
+            "comment": "This won't work"
+        })
+        self.assertEquals(res.status_code, 403)
+
+        p.comments_disabled = False
+        p.save()
+        res = self.client.post(self.doc.get_absolute_url(), {
+            "comment": "This will work"
+        })
+        self.assertEquals(res.status_code, 302)
+        self.assertEquals(self.doc.comments.get().comment, "This will work")
+
+
 class TestFavorites(BtbLoginTestCase):
     def test_login_redirect(self):
         self.assertRedirectsToLogin(reverse("comments.mark_favorite"))

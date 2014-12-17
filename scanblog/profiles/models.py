@@ -185,6 +185,7 @@ class Profile(models.Model):
     lost_contact = models.BooleanField(default=False)
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
+    comments_disabled = models.BooleanField(default=False)
     mailing_address = models.TextField(blank=True, default="")
     special_mail_handling = models.TextField(blank=True, default="")
 

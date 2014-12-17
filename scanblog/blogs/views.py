@@ -338,6 +338,8 @@ def post_detail(request, post_id=None, slug=None):
     else:
         form = CommentForm(request.POST or None)
     if form.is_valid():
+        if post.author.profile.comments_disabled:
+            raise PermissionDenied
         if request.user.is_authenticated():
             # Use get_or_create to avoid duplicates
             comment, created = Comment.objects.get_or_create(

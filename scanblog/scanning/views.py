@@ -706,7 +706,9 @@ def after_transcribe_comment(request, document_id):
                                  transcription__isnull=False)
 
     # Don't prompt for comment if they've already commented on this post.
-    if document.comments.filter(user=request.user).exists() or (not settings.COMMENTS_OPEN):
+    if document.comments.filter(user=request.user).exists() or \
+            (not settings.COMMENTS_OPEN) or \
+            document.author.profile.comments_disabled:
         return redirect(document.get_absolute_url() + "#transcription")
 
     if document.transcription.complete:

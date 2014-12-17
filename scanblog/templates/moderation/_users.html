@@ -46,6 +46,16 @@
                 </td>
             </tr>
             <tr>
+                <th></th>
+                <td class='<%= errors.comments_disabled ? "ui-state-error" : "" %>'>
+                    <%= errors.comments_disabled ? errors.comments_disabled + "<br />" : "" %>
+                    <label>
+                      <input type='checkbox' name='comments_disabled'
+                          <%= defaults.comments_disabled ? "checked='checked'" : "" %>>
+                      Disable comments
+                    </label>
+                </td>
+            <tr>
                 <th>Organization</th>
                 <td>
                     <select class='org' name='org_id'>
@@ -316,6 +326,9 @@
                     <td class='special-mail-handling'></td>
                 </tr><tr>
                     <th>Blog name</th><td class='blog-name'></td>
+                </tr>
+                <tr>
+                  <th>Disable comments</th><td class='comments-disabled'></td>
                 </tr>
                 <tr>
                     <th>Email</th><td class='email'></td>
