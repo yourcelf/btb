@@ -5,7 +5,7 @@
         {% with post.comments.count as comment_count %}
         <a href='{{post.get_absolute_url}}#comments'>{% spaceless %}
         {% if comment_count == 0 %}
-            {% if comments_open %}
+            {% if comments_open and not post.author.profile.comments_disabled %}
                 Leave a reply!
             {% endif %}
         {% else %}{% if comment_count == 1 %}
