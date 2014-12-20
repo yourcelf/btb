@@ -206,6 +206,7 @@ class Profile(models.Model):
             'blogger': self.blogger,
             'managed': self.managed,
             'lost_contact': self.lost_contact,
+            'comments_disabled': self.comments_disabled,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,
