@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     # 3rd party dependencies
     'registration',
     'djcelery',
-    'django_bcrypt',
     'compressor',
     'sorl.thumbnail',
     'notification',
