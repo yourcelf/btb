@@ -17,13 +17,14 @@ class CommentManager(OrgManager):
                   removed=True, commentremoval__isnull=False)
             )
 
+    def excluding_boilerplate_and_responses(self):
+        return self.excluding_boilerplate().exclude(comment_doc__isnull=False)
+
     def excluding_boilerplate(self):
         return self.public().exclude(
                 comment="Thanks for writing! I finished the transcription for your post."
             ).exclude(
                 comment="Thanks for writing! I worked on the transcription for your post."
-            ).exclude(
-                comment_doc__isnull=False
             )
 
     def with_mailed_annotation(self):
