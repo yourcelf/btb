@@ -66,7 +66,7 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         if self.document:
-            return "%s#c%s" % (self.document.get_absolute_url(), self.pk)
+            return "%s#c%s" % (self.document.get_standalone_url(), self.pk)
         return ""
 
     def mark_favorite_url(self):

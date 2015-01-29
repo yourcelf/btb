@@ -410,6 +410,15 @@ class Document(models.Model):
             except ThumbnailError:
                 pass
 
+    def _get_post_url(self):
+        return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
+
+    def get_standalone_url(self):
+        if self.type == "post":
+            return self._get_post_url()
+        else:
+            return self.get_absolute_url()
+
     def get_absolute_url(self):
         if self.type == "post":
             # Be careful to avoid accidental recursion here, if a document ever
@@ -420,7 +429,7 @@ class Document(models.Model):
                     return self.comment.get_absolute_url()
             except Comment.DoesNotExist:
                 pass
-            return reverse("blogs.post_show", args=[self.pk, self.get_slug()])
+            return self._get_post_url()
         elif self.type == "profile":
             return reverse("profiles.profile_show", args=[self.author.pk])
         else:
