@@ -10,6 +10,34 @@ from click2mail import Click2MailBatch
 
 parser.add_argument("directory", help="Path to downloaded mail batch")
 
+def fix_lines(address):
+    """
+    Click2Mail screws up addresses with 3 lines.  If we have only one address
+    line, put it in "address1".  If we have more, put the first in
+    "organization", and subsequent ones in "addressN".
+    """
+    lines = [a for a in [
+        address.get('organization', None),
+        address.get('address1', None),
+        address.get('address2', None),
+        address.get('address3', None)] if a]
+    if len(lines) == 1:
+        address['organization'] = ''
+        address['address1'] = lines[0]
+        address['address2'] = ''
+        address['address3'] = ''
+    if len(lines) >= 2:
+        address['organization'] = lines[0]
+        address['address1'] = lines[1]
+        address['address2'] = ''
+        address['address3'] = ''
+    if len(lines) >= 3:
+        address['address2'] = lines[2]
+        address['address3'] = ''
+    if len(lines) >= 4:
+        address['address3'] = lines[3]
+    return address
+
 def collate_letters(mailing_dir, letters, page=1):
     # Sort by recipient.
     recipient_letters = defaultdict(list)
@@ -29,10 +57,11 @@ def collate_letters(mailing_dir, letters, page=1):
         jobs[recipient] = {
             "startingPage": page,
             "endingPage": end - 1,
-            "recipients": [addresscleaner.parse_address(recipient)],
+            "recipients": [fix_lines(addresscleaner.parse_address(recipient))],
             "sender": addresscleaner.parse_address(sender),
             "type": "letter"
         }
+        
         page = end
 
     vals = jobs.values()
@@ -58,7 +87,7 @@ def collate_postcards(postcards, page=1):
             "startingPage": page + len(files) - 1,
             "endingPage": page + len(files) - 1,
             "recipients": [
-                addresscleaner.parse_address(letter['recipient']) for letter in letters
+                fix_lines(addresscleaner.parse_address(letter['recipient'])) for letter in letters
             ],
             "sender": addresscleaner.parse_address(sender),
             "type": "postcard",
