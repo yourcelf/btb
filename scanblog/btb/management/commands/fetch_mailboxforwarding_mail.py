@@ -6,6 +6,12 @@ import json
 import tempfile
 import requests
 
+# Work around InseurePlatformWarning:
+# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+# Remove this when we upgrade to python3.
+import urllib3.contrib.pyopenssl
+urllib3.contrib.pyopenssl.inject_into_urllib3()
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand

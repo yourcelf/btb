@@ -433,7 +433,7 @@ def more_pages(request, post_id):
 def post_tag_list(request):
     term = request.GET.get("term", "")
     vals = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
-    response = HttpResponse(mimetype="application/json")
+    response = HttpResponse(content_type="application/json")
     response.write(json.dumps(list(vals)))
     return response
 

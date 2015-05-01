@@ -2,7 +2,7 @@ import os
 import datetime
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 from comments.models import Comment
 from scanning.models import Document
@@ -43,9 +43,9 @@ class Letter(models.Model):
             "waitlist",
             "returned_original",
             "refused_original")
-    sender = models.ForeignKey(User, related_name="authored_letters", blank=True)
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="authored_letters", blank=True)
 
-    recipient = models.ForeignKey(User, blank=True, null=True, 
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, 
             related_name="received_letters")
 
     org = models.ForeignKey('profiles.Organization', blank=True, null=True,
@@ -58,7 +58,7 @@ class Letter(models.Model):
     type = models.CharField(max_length=255, choices=[(a, a) for a in TYPES])
     auto_generated = models.BooleanField(default=False)
     document = models.ForeignKey(Document, null=True, blank=True)
-    comments = models.ManyToManyField(Comment, null=True, blank=True)
+    comments = models.ManyToManyField(Comment, blank=True)
     created = models.DateTimeField(default=datetime.datetime.now)
     sent = models.DateTimeField(null=True)
 
@@ -157,9 +157,9 @@ class MailingManager(OrgManager):
         return self.all().filter(date_finished__isnull=False)
 
 class Mailing(models.Model):
-    letters = models.ManyToManyField(Letter, blank=True, null=True)
+    letters = models.ManyToManyField(Letter, blank=True)
     date_finished = models.DateTimeField(blank=True, null=True)
-    editor = models.ForeignKey(User)
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(auto_now=True)
 

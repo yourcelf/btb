@@ -36,9 +36,6 @@ urlpatterns = patterns('profiles.views',
     url(r'^password/reset/$', auth_views.password_reset,
         name='password_reset'),
 
-    # Support old style base36 password reset links; remove in Django 1.7
-    url(r'^password/reset/confirm/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        auth_views.password_reset_confirm_uidb36),
     url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         auth_views.password_reset_confirm,
         name='password_reset_confirm'),

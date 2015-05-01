@@ -3,9 +3,8 @@ import random
 import datetime
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
@@ -23,7 +22,7 @@ class Note(models.Model):
     important = models.BooleanField(default=False)
     text = models.TextField()
 
-    creator = models.ForeignKey(User, related_name='notes_authored')
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notes_authored')
     modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(default=datetime.datetime.now)
 
@@ -34,7 +33,7 @@ class Note(models.Model):
             related_name='notes')
     document = models.ForeignKey('scanning.Document', blank=True, null=True, 
             related_name='notes')
-    user = models.ForeignKey('auth.User', blank=True, null=True, 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, 
             related_name='notes')
     comment = models.ForeignKey('comments.Comment', blank=True, null=True,
             related_name='notes')

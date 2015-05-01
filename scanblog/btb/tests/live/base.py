@@ -16,7 +16,10 @@ from profiles.models import Organization
 from scanning.models import Document
 
 class BtbLiveServerTestCase(LiveServerTestCase):
-    fixtures = ["initial_data.json"]
+    # ``serialized_rollback`` seems to cause problems with re-loading
+    # contenttypes.  Doing it manually in setUp instead.
+    # serialized_rollback = True
+
     @classmethod
     def setUpClass(cls):
         if hasattr(settings, "SELENIUM_FIREFOX_BIN"):
@@ -42,6 +45,25 @@ class BtbLiveServerTestCase(LiveServerTestCase):
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
+        super(BtbLiveServerTestCase, cls).tearDownClass()
+
+    def setUp(self):
+        # XXX run set_up_groups migration... can't get the various combinations
+        # of fixture loading/migrations/serialized_rollback to play nice to
+        # ensure that the groups actually exist in all test cases.  Possible
+        # places to look:
+        # https://code.djangoproject.com/ticket/23422
+        # https://code.djangoproject.com/ticket/22487
+        # https://code.djangoproject.com/ticket/9207
+        # https://code.djangoproject.com/ticket/10827
+        if Group.objects.count() == 0:
+            from btb.management import set_up_groups
+            set_up_groups()
+
+        # Resume non-hackish startup routine.
+        self.add_test_users()
+        self.doc = self.create_test_doc()
+
 
     def create_user(self, username, password=None, email="",
             user_kwargs=None, profile_kwargs=None, groups=None):
@@ -93,10 +115,6 @@ class BtbLiveServerTestCase(LiveServerTestCase):
             consent_form_received=True,
         ))
         o.members.add(u)
-
-    def setUp(self):
-        self.add_test_users()
-        self.doc = self.create_test_doc()
 
     def tearDown(self):
         self.doc.delete()

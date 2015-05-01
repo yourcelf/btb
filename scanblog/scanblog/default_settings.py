@@ -95,6 +95,20 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    # django internal apps (list first)
+
+    # 'contenttypes' must come before 'auth'
+    # http://stackoverflow.com/a/18292090/85461
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.humanize',
+    'django.contrib.admin',
+    'django.contrib.flatpages',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
     # btb includes
     'about',
     'accounts',
@@ -109,17 +123,6 @@ INSTALLED_APPS = (
     'scanning',
     'campaigns',
 
-    # django internal apps
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.humanize',
-    'django.contrib.admin',
-    'django.contrib.flatpages',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
     # 3rd party dependencies
     'registration',
     'djcelery',
@@ -128,7 +131,6 @@ INSTALLED_APPS = (
     'notification',
     'pagination',
     'urlcrypt',
-    'south',
 )
 
 LOGGING = {
@@ -163,6 +165,7 @@ LOGGING = {
 AUTHENTICATION_BACKENDS = (
     'scanblog.accounts.backends.CaseInsensitiveAuthenticationBackend',
 )
+AUTH_USER_MODEL = "auth.User"
 
 CONTACT_EMAIL = "contact@betweenthebars.org"
 MAIL_DROP_ID = 1
@@ -194,8 +197,9 @@ import djcelery
 djcelery.setup_loader()
 BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
-#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERY_RESULT_BACKEND = 'amqp'
+CELERY_IGNORE_RESULT = True
+#CELERY_RESULT_BACKEND = 'amqp'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 TEXT_IMAGE_FONT = "/usr/share/fonts/truetype/gentium/GenR102.ttf"
 
@@ -230,3 +234,10 @@ THUMBNAIL_PREFIX = "cache/"
 MAX_READY_TO_PUBLISH_DAYS = 6
 PUBLISHING_HOURS = (7, 23)
 SELENIUM_FIREFOX_BIN = "/usr/bin/firefox"
+
+# Handle apps that don't play nice with migrations.
+MIGRATION_MODULES = {
+    'djcelery': 'btb.djcelery_migrations',
+    'registration': 'btb.registration_migrations',
+    'sorl.thumbnail': 'btb.sorl_migrations'
+}

@@ -1,8 +1,8 @@
 import datetime
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from btb.utils import OrgManager, OrgQuerySet
 
@@ -40,7 +40,7 @@ class CommentManager(OrgManager):
         )
 
 class Comment(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(default=datetime.datetime.now)
 
@@ -52,7 +52,7 @@ class Comment(models.Model):
             related_name='comments')
 
     # Metadata
-    ip_address = models.IPAddressField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
     removed = models.BooleanField(default=False)
 
     objects = CommentManager()
@@ -170,7 +170,7 @@ class FavoriteManager(OrgManager):
     pass
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     comment = models.ForeignKey(Comment, blank=True, null=True)
     document = models.ForeignKey('scanning.Document', blank=True, null=True)
     created = models.DateTimeField(default=datetime.datetime.now)

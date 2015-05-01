@@ -12,11 +12,17 @@ from django.conf import settings
 if "test" in sys.argv:
     # Connect a signal which will update task state, even if
     # CELERY_ALWAYS_EAGER is True.
-    from celery.signals import task_postrun
+    from celery.signals import task_postrun, task_failure
+
     @task_postrun.connect
-    def postrun(sender, task_id, task, args, kwargs, retval, state, **more):
+    def postrun(sender, task_id, task, args, kwargs, retval, *margs, **mkwargs):
         app = current_app._get_current_object()
-        DatabaseBackend(app=app).store_result(task_id, retval, state)
+        DatabaseBackend(app=app).mark_as_done(task_id, retval)
+
+    @task_failure.connect
+    def failure(task_id, exception, args, kwargs, traceback, einfo, *margs, **mkwargs):
+        app = current_app._get_current_object()
+        DatabaseBackend(app=app).mark_as_failure(task_id, exception, traceback)
 
 class BtbTestRunner(CeleryTestSuiteRunner):
     def run_tests(self, test_labels, **kwargs):

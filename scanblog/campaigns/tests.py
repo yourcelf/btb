@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.models import User
 
-from btb.tests import BtbLoginTransactionTestCase
+from btb.tests import BtbLoginTestCase
 from btb.utils import dthandler
 
 from annotations.models import ReplyCode
@@ -10,7 +10,7 @@ from campaigns.models import Campaign
 from profiles.models import Organization
 from scanning.models import Document
 
-class TestCampaignsJSON(BtbLoginTransactionTestCase):
+class TestCampaignsJSON(BtbLoginTestCase):
     url = "/campaigns/campaigns.json"
     required_keys = ["title", "slug", "body", "organizations",
                      "reply_code", "public", "ended"]
@@ -106,7 +106,7 @@ class TestCampaignsJSON(BtbLoginTransactionTestCase):
                 'title': "Second Campaign",
                 'slug': "second-campaign",
                 'body': "nice body",
-                'reply_code': 'second-reply-code',
+                'reply_code': '2nd-reply-code',
                 'public': True,
                 'ended': None,
                 'organizations': [self.org.light_dict()],

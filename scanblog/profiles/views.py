@@ -512,9 +512,6 @@ class OrganizationsJSON(JSONView):
                 Profile.objects.org_filter(request.user).filter(managed=True),
                 clobber=True)
         if extra:
-            # We make heavy reliance on commit_on_success and the wrapper which
-            # rolls back 400's to ensure we don't leave users without an
-            # Organization.
             try:
                 replacement = Organization.objects.org_filter(request.user).get(
                         pk=dest_attrs.get('replacement_org'))
@@ -702,7 +699,7 @@ class CommenterStatsJSON(JSONView):
         return self.json_response({
             "joined": profile.user.date_joined.isoformat(),
             "can_tag": profile.user.has_perm("scanning.tag_post"),
-            "last_login": profile.user.last_login.isoformat(),
+            "last_login": profile.user.last_login.isoformat() if profile.user.last_login else None,
             "activity": {
                 'comments': [c[0] for c in comments],
                 'favorites': [f[0] for f in favorites],

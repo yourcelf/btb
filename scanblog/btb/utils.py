@@ -18,12 +18,12 @@ dthandler = lambda obj: obj.isoformat() if hasattr(obj, "isoformat") else None
 
 class OrgManager(Manager):
     def org_filter(self, *args, **kwargs):
-        return self.get_query_set().org_filter(*args, **kwargs)
+        return self.get_queryset().org_filter(*args, **kwargs)
 
     def mail_filter(self, *args, **kwargs):
-        return self.get_query_set().mail_filter(*args, **kwargs)
+        return self.get_queryset().mail_filter(*args, **kwargs)
 
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.QuerySet(self.model)
 
 class OrgQuerySet(QuerySet):
@@ -198,7 +198,8 @@ class SameDirThumbnailBackend(ThumbnailBackend):
         """
         key = tokey(source.key, geometry_string, serialize(options))
         return os.path.join(
-            os.path.relpath(os.path.dirname(source.name), settings.MEDIA_ROOT),
+            settings.MEDIA_ROOT,
+            os.path.dirname(source.name),
             settings.THUMBNAIL_PREFIX,
             "%s.%s" % (key, EXTENSIONS[options['format']])
         )

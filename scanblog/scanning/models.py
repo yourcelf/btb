@@ -7,7 +7,6 @@ import datetime
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import slugify
 
@@ -43,8 +42,8 @@ class PendingScan(models.Model):
      # Trying to avoid ambiguous letters (when written by hand)
     CHARACTERS = "abcdefghijkmnpqrtuvwxy2346789"
 
-    editor = models.ForeignKey(User, related_name="pending_scans_edited")
-    author = models.ForeignKey(User, related_name="pending_scans_authored")
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="pending_scans_edited")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="pending_scans_authored")
     org = models.ForeignKey('profiles.Organization', null=True)
 
     scan = models.OneToOneField('Scan', blank=True, null=True)
@@ -95,9 +94,9 @@ class Scan(models.Model):
     This is the raw scan with envelope and all.
     """
     pdf = models.FileField(upload_to=TMP_UPLOAD, blank=True)
-    author = models.ForeignKey(User, related_name="scans_authored", 
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="scans_authored", 
             blank=True, null=True)
-    uploader = models.ForeignKey(User, related_name="scans_uploaded")
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="scans_uploaded")
     org = models.ForeignKey('profiles.Organization', null=True)
 
     processing_complete = models.BooleanField(default=False)
@@ -265,7 +264,7 @@ class Document(models.Model):
             blank=True, null=True)
     in_reply_to = models.ForeignKey('annotations.ReplyCode', 
         related_name="document_replies", blank=True, null=True)
-    author = models.ForeignKey(User, related_name='documents_authored')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='documents_authored')
     date_written = models.DateTimeField(null=True)
     highlight = models.ImageField(upload_to=TMP_UPLOAD, blank=True)
     highlight_transform = models.TextField(blank=True)
@@ -280,10 +279,10 @@ class Document(models.Model):
                               db_index=True, default="unknown")
     adult = models.BooleanField(default=False)
 
-    tags = models.ManyToManyField('annotations.Tag', blank=True, null=True)
+    tags = models.ManyToManyField('annotations.Tag', blank=True)
     reply_code = models.OneToOneField('annotations.ReplyCode')
 
-    editor = models.ForeignKey(User, related_name='documents_edited',
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='documents_edited',
             help_text="The last person to edit this document.")
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(default=datetime.datetime.now)
@@ -603,7 +602,7 @@ class TranscriptionRevision(models.Model):
     transcription = models.ForeignKey(Transcription, related_name="revisions")
     revision = models.IntegerField(default=0)
     body = models.TextField()
-    editor = models.ForeignKey(User)
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL)
     modified = models.DateTimeField(default=datetime.datetime.now)
 	
     class Meta:
@@ -613,7 +612,7 @@ class TranscriptionRevision(models.Model):
 class EditLock(models.Model):
     scan = models.ForeignKey(Scan, null=True, blank=True)
     document = models.ForeignKey(Document, null=True, blank=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now=True)
 
     def to_dict(self):

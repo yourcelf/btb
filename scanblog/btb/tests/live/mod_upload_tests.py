@@ -11,6 +11,7 @@ class TestModUploads(BtbLiveServerTestCase):
     def setUp(self):
         super(TestModUploads, self).setUp()
         self.applied_tasks = []
+
     def tearDown(self):
         super(TestModUploads, self).tearDown()
         for s in Scan.objects.all():
@@ -19,6 +20,7 @@ class TestModUploads(BtbLiveServerTestCase):
     def upload_file(self, path, number_of_scans):
         assert os.path.exists(path)
         assert Scan.objects.count() == 0
+
         b = self.selenium
         b.get(self.url("/"))
         b.find_element_by_link_text("Upload").click()

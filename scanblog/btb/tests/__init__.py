@@ -1,4 +1,4 @@
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
@@ -9,7 +9,6 @@ from profiles.models import Organization
 from live import *
 
 class BtbBaseTestCase():
-    fixtures = ["initial_data.json"]
     def loginAs(self, name):
         self.assertTrue(self.client.login(username=name, password=name))
 
@@ -39,10 +38,8 @@ class BtbMailTestCase(BtbTestCase):
     def get_outbox(self):
         return mail.outbox
 
-class BtbTransactionTestCase(TransactionTestCase, BtbBaseTestCase):
-    pass
-
 class BtbLoginMixin(object):
+
     def add_user(self, struct):
         user = User.objects.create(username=struct['username'],
                 is_superuser = struct.get('is_superuser', False))
@@ -99,7 +96,4 @@ class BtbLoginMixin(object):
         self.assertEquals(res.status_code, 200)
 
 class BtbLoginTestCase(BtbLoginMixin, BtbTestCase):
-    pass
-
-class BtbLoginTransactionTestCase(BtbLoginMixin, BtbTransactionTestCase):
     pass

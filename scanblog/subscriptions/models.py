@@ -1,6 +1,5 @@
 import datetime
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
@@ -15,10 +14,10 @@ from notification import models as notification
 
 # Create your models here.
 class Subscription(models.Model):
-    subscriber = models.ForeignKey(User, related_name="subscriptions")
+    subscriber = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="subscriptions")
     document = models.ForeignKey(Document, related_name="subscriptions",
             blank=True, null=True)
-    author = models.ForeignKey(User, related_name="author_subscriptions",
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="author_subscriptions",
             blank=True, null=True)
     tag = models.ForeignKey(Tag, related_name="tag_subscriptions",
             blank=True, null=True)
@@ -42,7 +41,7 @@ class DocumentNotificationLog(models.Model):
     even if the user is multiply subscribed (e.g. to featured posts as well as
     posts by an author).
     """
-    recipient = models.ForeignKey(User)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL)
     document = models.ForeignKey(Document)
 
     def __unicode__(self):
@@ -53,7 +52,7 @@ class CommentNotificationLog(models.Model):
     Log notifications of comments, so that we only send once per comment,
     even if the comment is edited.
     """
-    recipient = models.ForeignKey(User)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL)
     comment = models.ForeignKey(Comment)
 
     def __unicode__(self):
@@ -73,7 +72,7 @@ class UserNotificationLog(models.Model):
     Log of each notification sent to a user, used for throttling of
     notifications.
     """
-    recipient = models.ForeignKey(User)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL)
     date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):

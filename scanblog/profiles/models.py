@@ -10,7 +10,6 @@ from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-from django.contrib.contenttypes import generic
 from django.conf import settings
 
 from scanning.models import Document
@@ -173,7 +172,7 @@ class ProfileManager(OrgManager):
         return self.none()
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     display_name = models.CharField(max_length=50)
     show_adult_content = models.BooleanField(
         default=False,
@@ -314,8 +313,8 @@ class Organization(models.Model):
         help_text="Additional text that will appear at the bottom of each post by a member of this organization.",
     )
 
-    members = models.ManyToManyField(User, blank=True)
-    moderators = models.ManyToManyField(User,
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    moderators = models.ManyToManyField(settings.AUTH_USER_MODEL,
         related_name="organizations_moderated",
         blank=True
     )

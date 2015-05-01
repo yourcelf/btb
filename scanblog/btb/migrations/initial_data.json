@@ -1,0 +1,93 @@
+[
+{
+  "fields": {
+    "name": "readers",
+    "permissions": [
+      [ "add_transcription", "scanning", "transcription" ],
+      [ "change_transcription", "scanning", "transcription" ]
+    ]
+  },
+  "model": "auth.group",
+  "pk": 1
+},
+{
+  "fields": {
+    "name": "authors",
+    "permissions": [
+      [ "add_transcription", "scanning", "transcription" ],
+      [ "change_transcription", "scanning", "transcription" ]
+    ]
+  },
+  "model": "auth.group",
+  "pk": 2
+},
+{
+  "fields": {
+    "name": "moderators",
+    "permissions": [
+      [ "add_note", "annotations", "note" ],
+      [ "change_note", "annotations", "note" ],
+      [ "delete_note", "annotations", "note" ],
+      [ "add_user", "auth", "user" ],
+      [ "change_user", "auth", "user" ],
+      [ "delete_user", "auth", "user" ],
+      [ "add_comment", "comments", "comment" ],
+      [ "change_comment", "comments", "comment" ],
+      [ "delete_comment", "comments", "comment" ],
+      [ "add_commentremoval", "comments", "commentremoval" ],
+      [ "change_commentremoval", "comments", "commentremoval" ],
+      [ "delete_commentremoval", "comments", "commentremoval" ],
+      [ "add_removalreason", "comments", "removalreason" ],
+      [ "change_removalreason", "comments", "removalreason" ],
+      [ "delete_removalreason", "comments", "removalreason" ],
+      [ "manage_correspondence", "correspondence", "letter" ],
+      [ "add_profile", "profiles", "profile" ],
+      [ "change_profile", "profiles", "profile" ],
+      [ "add_document", "scanning", "document" ],
+      [ "change_document", "scanning", "document" ],
+      [ "delete_document", "scanning", "document" ],
+      [ "tag_post", "scanning", "document" ],
+      [ "add_documentpage", "scanning", "documentpage" ],
+      [ "change_documentpage", "scanning", "documentpage" ],
+      [ "delete_documentpage", "scanning", "documentpage" ],
+      [ "add_pendingscan", "scanning", "pendingscan" ],
+      [ "change_pendingscan", "scanning", "pendingscan" ],
+      [ "delete_pendingscan", "scanning", "pendingscan" ],
+      [ "add_scan", "scanning", "scan" ],
+      [ "change_scan", "scanning", "scan" ],
+      [ "delete_scan", "scanning", "scan" ],
+      [ "add_scanpage", "scanning", "scanpage" ],
+      [ "change_scanpage", "scanning", "scanpage" ],
+      [ "delete_scanpage", "scanning", "scanpage" ],
+      [ "add_transcription", "scanning", "transcription" ],
+      [ "change_locked_transcription", "scanning", "transcription" ],
+      [ "change_transcription", "scanning", "transcription" ],
+      [ "lock_transcription", "scanning", "transcription" ]
+    ]
+  },
+  "model": "auth.group",
+  "pk": 3
+},
+{
+  "fields": {
+    "username": "uploader",
+    "first_name": "",
+    "last_name": "",
+    "is_active": true,
+    "is_superuser": false,
+    "is_staff": false,
+    "last_login": "2009-03-27T11:47:44",
+    "groups": [
+      [
+        "readers"
+      ]
+    ],
+    "user_permissions": [],
+    "password": "",
+    "email": "",
+    "date_joined": "2009-03-27T11:47:44"
+  },
+  "model": "auth.user",
+  "pk": 100
+}
+]

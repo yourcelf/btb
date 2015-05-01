@@ -269,7 +269,7 @@ class TextImage(object):
         return self.im.save(filename, fmt)
 
     def to_response(self, attachment_name):
-        response = HttpResponse(mimetype='application/jpeg')
+        response = HttpResponse(content_type='application/jpeg')
         response['Content-Disposition'] = 'attachment; filename=%s' % attachment_name
         self.im.save(response, "jpeg")
         return response
