@@ -1,8 +1,8 @@
 import datetime
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from btb.utils import OrgManager, OrgQuerySet
 
@@ -17,13 +17,14 @@ class CommentManager(OrgManager):
                   removed=True, commentremoval__isnull=False)
             )
 
+    def excluding_boilerplate_and_responses(self):
+        return self.excluding_boilerplate().exclude(comment_doc__isnull=False)
+
     def excluding_boilerplate(self):
         return self.public().exclude(
                 comment="Thanks for writing! I finished the transcription for your post."
             ).exclude(
                 comment="Thanks for writing! I worked on the transcription for your post."
-            ).exclude(
-                comment_doc__isnull=False
             )
 
     def with_mailed_annotation(self):
@@ -39,7 +40,7 @@ class CommentManager(OrgManager):
         )
 
 class Comment(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(default=datetime.datetime.now)
     modified = models.DateTimeField(default=datetime.datetime.now)
 
@@ -51,7 +52,7 @@ class Comment(models.Model):
             related_name='comments')
 
     # Metadata
-    ip_address = models.IPAddressField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
     removed = models.BooleanField(default=False)
 
     objects = CommentManager()
@@ -66,7 +67,7 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         if self.document:
-            return "%s#c%s" % (self.document.get_absolute_url(), self.pk)
+            return "%s#c%s" % (self.document.get_standalone_url(), self.pk)
         return ""
 
     def mark_favorite_url(self):
@@ -169,7 +170,7 @@ class FavoriteManager(OrgManager):
     pass
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     comment = models.ForeignKey(Comment, blank=True, null=True)
     document = models.ForeignKey('scanning.Document', blank=True, null=True)
     created = models.DateTimeField(default=datetime.datetime.now)

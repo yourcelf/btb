@@ -338,6 +338,8 @@ def post_detail(request, post_id=None, slug=None):
     else:
         form = CommentForm(request.POST or None)
     if form.is_valid():
+        if post.author.profile.comments_disabled:
+            raise PermissionDenied
         if request.user.is_authenticated():
             # Use get_or_create to avoid duplicates
             comment, created = Comment.objects.get_or_create(
@@ -431,7 +433,7 @@ def more_pages(request, post_id):
 def post_tag_list(request):
     term = request.GET.get("term", "")
     vals = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
-    response = HttpResponse(mimetype="application/json")
+    response = HttpResponse(content_type="application/json")
     response.write(json.dumps(list(vals)))
     return response
 
@@ -492,8 +494,7 @@ def org_post_feed(request, slug, filtered=True):
     })
 
 def all_comments_feed(request):
-    comments = Comment.objects.excluding_boilerplate().exclude(
-            comment_doc__isnull=False).order_by('-created')[0:10]
+    comments = Comment.objects.excluding_boilerplate().order_by('-created')[0:10]
     return feeds.all_comments_feed(request, comments)
 
 def post_comments_feed(request, post_id):

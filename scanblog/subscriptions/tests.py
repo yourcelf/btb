@@ -20,7 +20,6 @@ from campaigns.models import Campaign
 
 @override_settings(DISABLE_NOTIFICATIONS=False, DISABLE_ADMIN_NOTIFICATIONS=False)
 class TestSubscriptions(BtbMailTestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self):
         super(TestSubscriptions, self).setUp()
         self.editor = User.objects.create(username='editor')

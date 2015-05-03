@@ -14,7 +14,8 @@ class Command(BaseCommand):
         # the moment.  It could be executed, for example, as a single SQL
         # query.
         tag_counts = defaultdict(int)
-        for post in Document.objects.public().filter(type="post"):
+        docs = Document.objects.public().filter(type="post").select_related(None).only("pk")
+        for post in docs:
             for tag in post.tags.all():
                 tag_counts[tag.pk] += 1
 

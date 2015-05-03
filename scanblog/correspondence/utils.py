@@ -192,6 +192,8 @@ def url_to_pdf(url):
         except OSError:
             pass
         raise HtmlToPdfError(["; ".join((stderrdata.split("\n")[-2], url))])
+    if os.stat(pdf_name).st_size == 0:
+        raise HtmlToPdfError("wkhtmltopdf produced PDF of size 0 for {}".format(url))
     return pdf_name
 
 def build_envelope(from_address, to_address):
@@ -267,7 +269,7 @@ class TextImage(object):
         return self.im.save(filename, fmt)
 
     def to_response(self, attachment_name):
-        response = HttpResponse(mimetype='application/jpeg')
+        response = HttpResponse(content_type='application/jpeg')
         response['Content-Disposition'] = 'attachment; filename=%s' % attachment_name
         self.im.save(response, "jpeg")
         return response

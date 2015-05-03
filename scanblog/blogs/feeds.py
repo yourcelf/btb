@@ -72,7 +72,7 @@ def posts_feed(request, context):
             pubdate=post.date_written,
         )
 
-    response = HttpResponse(mimetype=feed.mime_type)
+    response = HttpResponse(content_type=feed.mime_type)
     feed.write(response, 'utf-8')
     return response
 
@@ -113,7 +113,7 @@ def full_posts_feed(request, context):
             transcription_status=tx_status
         )
 
-    response = HttpResponse(mimetype=feed.mime_type)
+    response = HttpResponse(content_type=feed.mime_type)
     feed.write(response, 'utf-8')
     return response
 
@@ -131,7 +131,7 @@ def all_comments_feed(request, comments):
             author_link=comment.user.profile.get_absolute_url(),
             pubdate=comment.created,
         )
-    response = HttpResponse(mimetype=feed.mime_type)
+    response = HttpResponse(content_type=feed.mime_type)
     feed.write(response, 'utf-8')
     return response
 
@@ -152,6 +152,6 @@ def post_comments_feed(request, obj):
             pubdate=comment.created,
         )
 
-    response = HttpResponse(mimetype=feed.mime_type)
+    response = HttpResponse(content_type=feed.mime_type)
     feed.write(response, 'utf-8')
     return response

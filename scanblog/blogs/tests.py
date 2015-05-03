@@ -6,7 +6,6 @@ from scanning.models import Document
 from profiles.models import Organization
 
 class TestPostFromWeb(BtbTestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self):
         for name in ('unmanaged', 'unmanaged2', 'managed', 'not_author'):
             u = User.objects.create(username=name)

@@ -47,6 +47,17 @@
                 </td>
             </tr>
             <tr>
+                <th></th>
+                <td class='<%= errors.comments_disabled ? "ui-state-error" : "" %>'>
+                    <%= errors.comments_disabled ? errors.comments_disabled + "<br />" : "" %>
+                    <label>
+                      <input type='checkbox' name='comments_disabled'
+                          <%= defaults.comments_disabled ? "checked='checked'" : "" %>>
+                      {% trans "Disable comments" %}
+                    </label>
+                </td>
+            </tr>
+            <tr>
                 <th>{% trans "Organization" %}</th>
                 <td>
                     <select class='org' name='org_id'>
@@ -319,7 +330,14 @@
                     <th>{% trans "Blog name" %}</th><td class='blog-name'></td>
                 </tr>
                 <tr>
+<<<<<<< HEAD
                     <th>{% trans "Email" %}</th><td class='email'></td>
+=======
+                  <th>Disable comments</th><td class='comments-disabled'></td>
+                </tr>
+                <tr>
+                    <th>Email</th><td class='email'></td>
+>>>>>>> master
                 </tr>
                 <tr>
                     <th>{% trans "Status" %}</th>

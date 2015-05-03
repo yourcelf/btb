@@ -11,7 +11,6 @@ from .base import BtbLiveServerTestCase, NoSuchElementException
 from scanning.models import Scan, PendingScan, Document, DocumentPage
 from django.contrib.auth.models import User
 
-
 class TestModScans(BtbLiveServerTestCase):
     def test_process_scan_with_pending(self):
         # NOTE: This one is a might lengthy; but it's easier than mocking.
@@ -25,6 +24,7 @@ class TestModScans(BtbLiveServerTestCase):
 
         # Add a pending scan.
         b.get(self.url("/moderation/#/pending"))
+        self.await_selector(".user-chooser-trigger")
         self.css(".user-chooser-trigger").send_keys("T")
         time.sleep(0.5)
         self.css(".user-search").send_keys("est Author")
@@ -120,7 +120,7 @@ class TestModScans(BtbLiveServerTestCase):
             if ptype is None:
                 continue
             self.css(".pagestatus.page-%s" % i).click()
-            time.sleep(0.1)
+            time.sleep(0.5)
             choices = {}
             for el in self.csss(".page-type-choice"):
                 if ptype in el.text.strip():

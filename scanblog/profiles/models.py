@@ -1,4 +1,7 @@
+import os
 import datetime
+import itertools
+import string
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
@@ -7,7 +10,6 @@ from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-from django.contrib.contenttypes import generic
 from django.conf import settings
 
 from scanning.models import Document
@@ -170,7 +172,7 @@ class ProfileManager(OrgManager):
         return self.none()
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     display_name = models.CharField(max_length=50)
     show_adult_content = models.BooleanField(
         default=False,
@@ -182,6 +184,7 @@ class Profile(models.Model):
     lost_contact = models.BooleanField(default=False)
 
     blog_name = models.CharField(blank=True, default="", max_length=255)
+    comments_disabled = models.BooleanField(default=False)
     mailing_address = models.TextField(blank=True, default="")
     special_mail_handling = models.TextField(blank=True, default="")
 
@@ -202,6 +205,7 @@ class Profile(models.Model):
             'blogger': self.blogger,
             'managed': self.managed,
             'lost_contact': self.lost_contact,
+            'comments_disabled': self.comments_disabled,
             'blog_name': self.blog_name,
             'display_name': self.display_name,
             'mailing_address': self.mailing_address,
@@ -274,6 +278,14 @@ class Profile(models.Model):
         return Document.objects.filter(author__pk=self.pk, type="post",
                                        status="published").exists()
 
+    def set_random_password(self):
+        """
+        Set a random password on our associated user object.  Does not save the user.
+        """
+        chars = set(string.ascii_uppercase + string.digits)
+        char_gen = (c for c in itertools.imap(os.urandom, itertools.repeat(1)) if c in chars)
+        self.user.set_password(''.join(itertools.islice(char_gen, None, 32)))
+
 class OrganizationManager(OrgManager):
     def public(self):
         return self.filter(public=True)
@@ -301,8 +313,8 @@ class Organization(models.Model):
         help_text="Additional text that will appear at the bottom of each post by a member of this organization.",
     )
 
-    members = models.ManyToManyField(User, blank=True)
-    moderators = models.ManyToManyField(User,
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    moderators = models.ManyToManyField(settings.AUTH_USER_MODEL,
         related_name="organizations_moderated",
         blank=True
     )

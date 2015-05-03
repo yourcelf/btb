@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from about.models import SiteBanner
 
 class TestAccess(TestCase):
-    fixtures = ["initial_data.json"]
     def test_access(self):
         for page in ("about", "about.copyright", "about.faq",
                 "about.resources", "about.community_guidelines", "about.terms",

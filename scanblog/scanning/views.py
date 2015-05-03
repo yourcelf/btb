@@ -1,6 +1,8 @@
 import json
 import datetime
 import tempfile
+import logging
+logger = logging.getLogger("django.request")
 
 from django.conf import settings
 from django.contrib import messages
@@ -14,6 +16,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
 from django.contrib.auth.views import logout
+from celery.result import AsyncResult
+from scanblog.celery import app
 
 from btb.utils import args_method_decorator, permission_required_or_deny, JSONView
 
@@ -129,6 +133,7 @@ class ScanSplits(JSONView):
         Execute splits for a scan.  This could be updating an existing models,
         or creating new ones.
         """
+        logger.debug("Starting split")
         with transaction.atomic():
             try:
                 scan = Scan.objects.org_filter(request.user, pk=obj_id).get()
@@ -273,14 +278,18 @@ class ScanSplits(JSONView):
                     if scanpage_id == highlight_scan_page_id:
                         old_highlight_transform["document_page_id"] = documentpage.pk
                         document.highlight_transform = json.dumps(old_highlight_transform)
-                # Persist any changes to highlight_transform.
                 document.save()
-                if document.status in ("published", "ready"):
-                    tasks.update_document_images.apply([document.pk]).get()
                 document.documentpage_set = pages
                 docs.append(document)
             scan.document_set = docs
-            return self.get(request, obj_id=scan.pk)
+        # Must do update_document_images outside transaction.atomic
+        for document in docs:
+            if document.status in ("published", "ready"):
+                # Persist any changes to highlight_transform.
+                tasks.update_document_images.delay(document.pk).get()
+        #XXX Shouldn't be necessary but seems to be.
+        scan.save()
+        return self.get(request, obj_id=scan.pk)
 
 class MissingHighlight(Exception):
     pass
@@ -388,12 +397,15 @@ class Documents(JSONView):
         except MissingHighlight:
             return HttpResponseBadRequest("Missing highlight.")
 
-        # We want to wait until all document/page edits are done to commit, but
-        # must commit before executing the task (it needs an up-to-date model).
+	#XXX this additional save should not be needed, but seems to be. Issue
+        # with transaction.atomic() ?
+	doc.save()
 
-        with transaction.atomic():
-            tasks.update_document_images.delay(document_id=doc.pk, status=kw['status']).get()
+        # Split images.
+        result = tasks.update_document_images.delay(
+                    document_id=doc.pk, status=kw['status']).get()
 
+        logger.debug(u"post image update {}".format(doc.highlight_transform))
 
         # Update to get current status after task finishes.
         doc = Document.objects.get(pk=doc.pk)
@@ -694,7 +706,9 @@ def after_transcribe_comment(request, document_id):
                                  transcription__isnull=False)
 
     # Don't prompt for comment if they've already commented on this post.
-    if document.comments.filter(user=request.user).exists() or (not settings.COMMENTS_OPEN):
+    if document.comments.filter(user=request.user).exists() or \
+            (not settings.COMMENTS_OPEN) or \
+            document.author.profile.comments_disabled:
         return redirect(document.get_absolute_url() + "#transcription")
 
     if document.transcription.complete:

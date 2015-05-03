@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch>
+  <username>username</username>
+  <password>password</password>
+  <filename>somefile.pdf</filename>
+  <job>
+    <startingPage>1</startingPage>
+    <endingPage>13</endingPage>
+    <printProductionOptions>
+      <documentClass>Letter 8.5 x 11</documentClass>
+      <layout>Address on Separate Page</layout>
+      <productionTime>Next Day</productionTime>
+      <envelope>Flat Envelope</envelope>
+      <color>Black and White</color>
+      <paperType>White 24#</paperType>
+      <printOption>Printing both sides</printOption>
+      <mailClass>First Class</mailClass>
+    </printProductionOptions>
+    <returnAddress>
+      <name>Between the Bars</name>
+      <organization></organization>
+      <address1>PO Box 425103</address1>
+      <address2></address2>
+      <city>Cambridge</city>
+      <state>MA</state>
+      <postalCode>02142</postalCode>
+    </returnAddress>
+    <recipients>
+      <address>
+        <name>Franti&#353;ek Loukianos</name>
+        <organization></organization>
+        <address1>#69725379</address1>
+        <address2>367 Cherry Tree Lane</address2>
+        <address3></address3>
+        <city>City Name</city>
+        <state>NE</state>
+        <postalCode>05397</postalCode>
+        <country></country>
+      </address>
+    </recipients>
+  </job>
+  <job>
+    <startingPage>14</startingPage>
+    <endingPage>18</endingPage>
+    <printProductionOptions>
+      <documentClass>Letter 8.5 x 11</documentClass>
+      <layout>Address on Separate Page</layout>
+      <productionTime>Next Day</productionTime>
+      <envelope>#10 Double Window</envelope>
+      <color>Black and White</color>
+      <paperType>White 24#</paperType>
+      <printOption>Printing both sides</printOption>
+      <mailClass>First Class</mailClass>
+    </printProductionOptions>
+    <returnAddress>
+      <name>Between the Bars</name>
+      <organization></organization>
+      <address1>PO Box 425103</address1>
+      <address2></address2>
+      <city>Cambridge</city>
+      <state>MA</state>
+      <postalCode>02142</postalCode>
+    </returnAddress>
+    <recipients>
+      <address>
+        <name>Valentin Rosemary</name>
+        <organization></organization>
+        <address1>#74271666</address1>
+        <address2>642 Cherry Tree Lane</address2>
+        <address3></address3>
+        <city>City Name</city>
+        <state>WY</state>
+        <postalCode>70903</postalCode>
+        <country></country>
+      </address>
+    </recipients>
+  </job>
+  <job>
+    <startingPage>19</startingPage>
+    <endingPage>19</endingPage>
+    <printProductionOptions>
+      <documentClass>Postcard 3.5 x 5</documentClass>
+      <layout>Single Sided Postcard</layout>
+      <productionTime>Next Day</productionTime>
+      <color>Black and White</color>
+      <paperType>White Matte</paperType>
+      <printOption>Printing both sides</printOption>
+      <mailClass>FirstClass</mailClass>
+    </printProductionOptions>
+    <returnAddress>
+      <name>Between the Bars</name>
+      <organization></organization>
+      <address1>PO Box 425103</address1>
+      <address2></address2>
+      <city>Cambridge</city>
+      <state>MA</state>
+      <postalCode>02142</postalCode>
+    </returnAddress>
+    <recipients>
+      <address>
+        <name>Franti&#353;ek Loukianos</name>
+        <organization></organization>
+        <address1>#69725379</address1>
+        <address2>367 Cherry Tree Lane</address2>
+        <address3></address3>
+        <city>City Name</city>
+        <state>NE</state>
+        <postalCode>05397</postalCode>
+        <country></country>
+      </address>
+    </recipients>
+  </job>
+</batch>

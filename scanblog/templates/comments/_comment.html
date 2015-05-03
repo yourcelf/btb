@@ -61,7 +61,7 @@
               <div class='commentbody'>
                   {% if comment.comment_doc_id %}
                       {% with post=comment.comment_doc %}
-                          (scanned reply &ndash; <a href='{{ post.get_absolute_url }}'>view as blog post</a>)
+                          (scanned reply &ndash; <a href='{{ post.get_standalone_url }}'>view as blog post</a>)
                           {% with documentpages=post.documentpage_set.all %}
                               {% with documentpage_count=documentpages.count %}
                                   {% include "blogs/_post_pages.html" %} 

@@ -115,6 +115,7 @@ def delete(request, user_id):
     p = u.profile
     p.display_name = "(withdrawn)"
     p.blog_name = ""
+    p.comments_disabled = False
     p.mailing_address = ""
     p.special_mail_handling = ""
     p.show_adult_content = False
@@ -334,7 +335,7 @@ class UsersJSON(JSONView):
         missing = set()
         params = json.loads(request.body)
         for key in ("display_name", "mailing_address", "blogger", "managed", 
-                    "email", "blog_name", "org_id"):
+                    "email", "blog_name", "comments_disabled", "org_id"):
             if not key in params:
                 missing.add(key)
         if missing:
@@ -364,6 +365,7 @@ class UsersJSON(JSONView):
         p.display_name = params["display_name"]
         p.mailing_address = params["mailing_address"]
         p.blog_name = params["blog_name"]
+        p.comments_disabled = params["comments_disabled"]
         p.blogger = params["blogger"]
         p.managed = params["managed"]
         p.lost_contact = params.get("lost_contact", False)
@@ -384,9 +386,18 @@ class UsersJSON(JSONView):
                     dirty = True
                     setattr(user, param, params[param])
 
+        # If we're changing to "unmanaged" but have a blank password, set
+        # something random for the password so they can use the password reset
+        # functionality. Since https://code.djangoproject.com/ticket/20079,
+        # users with blank passwords cannot use "reset my password" (email
+        # doesn't send) if user.has_usable_password is False.
+        if user.profile.managed and params["managed"] == False and not user.has_usable_password():
+            user.profile.set_random_password()
+            user.save()
+
         for param in ('display_name', 'mailing_address', 
                 'special_mail_handling', 'consent_form_received', 
-                'blogger', 'managed', 'lost_contact', 'blog_name'):
+                'blogger', 'managed', 'lost_contact', 'comments_disabled', 'blog_name'):
             if param in params:
                 if params[param] != getattr(user.profile, param):
                     dirty = True
@@ -501,9 +512,6 @@ class OrganizationsJSON(JSONView):
                 Profile.objects.org_filter(request.user).filter(managed=True),
                 clobber=True)
         if extra:
-            # We make heavy reliance on commit_on_success and the wrapper which
-            # rolls back 400's to ensure we don't leave users without an
-            # Organization.
             try:
                 replacement = Organization.objects.org_filter(request.user).get(
                         pk=dest_attrs.get('replacement_org'))
@@ -691,7 +699,7 @@ class CommenterStatsJSON(JSONView):
         return self.json_response({
             "joined": profile.user.date_joined.isoformat(),
             "can_tag": profile.user.has_perm("scanning.tag_post"),
-            "last_login": profile.user.last_login.isoformat(),
+            "last_login": profile.user.last_login.isoformat() if profile.user.last_login else None,
             "activity": {
                 'comments': [c[0] for c in comments],
                 'favorites': [f[0] for f in favorites],

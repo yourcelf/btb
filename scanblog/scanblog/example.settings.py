@@ -5,19 +5,29 @@ from btb.log_filter import skip_unreadable_post
 DEBUG = TEMPLATE_DEBUG = True
 THUMBNAIL_DEBUG = DEBUG
 
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DISABLE_NOTIFICATIONS = False
 DISABLE_ADMIN_NOTIFICATIONS = False
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'W^X~>p2j+u9XmNfNyt<9;ffaIVo{2vsfI-?_o8z893V8t$<[7\\'
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': os.path.join(BASE_DIR, 'deploy', 'dev.db'),  # Or path to database file if using sqlite3.
+#        'USER': '',                      # Not used with sqlite3.
+#        'PASSWORD': '',                  # Not used with sqlite3.
+#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#    }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(BASE_DIR, 'deploy', 'dev.db'),  # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'btb',  # Or path to database file if using sqlite3.
+        'USER': 'btb',                      # Not used with sqlite3.
+        'PASSWORD': 'btb',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -43,7 +53,7 @@ PDFTK_CMD = '/usr/bin/pdftk'
 RUBBER_PIPE_CMD = '/usr/bin/rubber-pipe'
 PDFINFO_CMD = '/usr/bin/pdfinfo'
 CONVERT_CMD = '/usr/bin/convert'
-WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'bin', 'wkhtmltopdf-i386')
+#WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'bin', 'wkhtmltopdf-i386')
 # Selenium for running tests. Depending on the current state of firefox
 # binaries/selenium libraries, it may be necessary to pin to older versions
 # that work properly together.
@@ -115,6 +125,11 @@ LOGGING = {
             'callback': skip_unreadable_post
         }
     }
+}
+SOUTH_TESTS_MIGRATE = False
+MAILBOX_FORWARDING = {
+    "username": "<your username>",
+    "password": "<your password>",
 }
 
 # Uncomment the following to enable django debug toolbar. You'll need to

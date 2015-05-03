@@ -1,3 +1,4 @@
+import re
 import json
 from datetime import datetime, timedelta
 
@@ -79,6 +80,10 @@ class TestScanJson(BtbLoginTestCase):
                 [not_finished_no_user, not_finished_managed])
 
 class TestInReplyTo(BtbLoginTestCase):
+    def assertRegExMatches(self, regex, testString):
+        self.assertTrue(re.match(regex, testString) is not None,
+            "\"{}\" does not match /{}/".format(testString, regex))
+
     def setUp(self):
         super(TestInReplyTo, self).setUp()
         self.doc1 = Document.objects.create(
@@ -106,10 +111,26 @@ class TestInReplyTo(BtbLoginTestCase):
     def test_in_reply_to_url(self):
         self.doc2.in_reply_to = self.doc1.reply_code
         self.doc2.save()
+        # Post URL should be comment URL.
         self.assertEquals(
             self.doc2.get_absolute_url(),
             self.doc2.comment.get_absolute_url()
         )
+        # Comment URL shold be anchor on parent document.
+        self.assertRegExMatches("^{}#c\d+$".format(re.escape(self.doc1.get_absolute_url())),
+                self.doc2.get_absolute_url())
+
+        # Response to response. Should appear as anchor on doc2.
+        self.doc3.in_reply_to = self.doc2.reply_code
+        self.doc3.save()
+        self.assertEquals(
+            self.doc3.get_absolute_url(),
+            self.doc3.comment.get_absolute_url()
+        )
+        # Use 'get_standalone_url' here so we don't get doc2-as-a-comment.
+        self.assertRegExMatches(
+            "^{}#c\d+$".format(re.escape(self.doc2.get_standalone_url())),
+            self.doc3.get_absolute_url())
 
     def test_change_in_reply_to(self):
         self.doc3.in_reply_to = self.doc1.reply_code

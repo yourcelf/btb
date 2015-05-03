@@ -1,0 +1,54 @@
+{
+  "postcards": [
+    {
+      "sender": "Blog Crew\nPO Box 123\nCambridge, MA  12345", 
+      "recipient": "Franti\u0161ek Loukianos\n#69725379\n367 Cherry Tree Lane\nCity Name, NE  05397", 
+      "id": 14, 
+      "file": "postcards/frantisek-loukianos-waitlist14.jpg", 
+      "type": "waitlist", 
+      "slug": "frantisek-loukianos"
+    }
+  ], 
+  "letters": [
+    {
+      "sender": "Blog Crew\nPO Box 123\nCambridge, MA  12345", 
+      "recipient": "Franti\u0161ek Loukianos\n#69725379\n367 Cherry Tree Lane\nCity Name, NE  05397", 
+      "id": 10, 
+      "file": "letters/frantisek-loukianos-letter10.pdf", 
+      "type": "letter", 
+      "slug": "frantisek-loukianos"
+    }, 
+    {
+      "sender": "Blog Crew\nPO Box 123\nCambridge, MA  12345", 
+      "recipient": "Franti\u0161ek Loukianos\n#69725379\n367 Cherry Tree Lane\nCity Name, NE  05397", 
+      "id": 13, 
+      "file": "letters/frantisek-loukianos-consent_form13.pdf", 
+      "type": "consent_form", 
+      "slug": "frantisek-loukianos"
+    }, 
+    {
+      "sender": "Blog Crew\nPO Box 123\nCambridge, MA  12345", 
+      "recipient": "Franti\u0161ek Loukianos\n#69725379\n367 Cherry Tree Lane\nCity Name, NE  05397", 
+      "id": 18, 
+      "file": "letters/frantisek-loukianos-comments18.pdf", 
+      "type": "comments", 
+      "slug": "frantisek-loukianos"
+    }, 
+    {
+      "sender": "Other Crew\r\nPO Box 123\r\nCambridge, MA  12345", 
+      "recipient": "Valentin Rosemary\n#74271666\n642 Cherry Tree Lane\nCity Name, WY  70903", 
+      "id": 9, 
+      "file": "letters/valentin-rosemary-printout9.pdf", 
+      "type": "printout", 
+      "slug": "valentin-rosemary"
+    }, 
+    {
+      "sender": "Other Crew\r\nPO Box 123\r\nCambridge, MA  12345", 
+      "recipient": "Valentin Rosemary\n#74271666\n642 Cherry Tree Lane\nCity Name, WY  70903", 
+      "id": 16, 
+      "file": "letters/valentin-rosemary-first_post16.pdf", 
+      "type": "first_post", 
+      "slug": "valentin-rosemary"
+    } 
+  ]
+}

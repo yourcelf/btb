@@ -8,20 +8,21 @@ class TestModNotes(BtbLiveServerTestCase):
         b = self.selenium
         self.sign_in("testmod", "testmod")
         b.get(self.url(self.doc.get_edit_url()))
+        self.await_selector(".add-note")
         self.css(".add-note").click()
         self.css(".note-editor textarea[name=text]").send_keys("Here is a note")
 
         b.execute_script("$('input.save-note')[0].scrollIntoView()")
         self.css("input.save-note").click()
 
-        self.wait(lambda b: len(self.csss(".note-table .note .body")) > 0)
+        self.await_selector(".note-table .note .body")
         self.assertEquals(Note.objects.count(), 1)
         self.assertEquals(Note.objects.open_tickets().count(), 0)
         self.assertEquals(Note.objects.closed_tickets().count(), 1)
 
         self.assertTrue("Here is a note" in self.css(".note-table .note .body").text)
         self.css(".note-table .note .byline .edit-note").click()
-        self.wait(lambda b: len(self.csss(".save-note")) > 0)
+        self.await_selector(".save-note")
 
         self.css(".note-editor textarea[name=text]").send_keys(". Moar note.")
         self.css("input[name=important]").click()
@@ -36,7 +37,7 @@ class TestModNotes(BtbLiveServerTestCase):
 
         # And it appears in dashboard now..
         b.get(self.url("/moderation/"))
-        self.wait(lambda b: len(self.csss(".note-table .note .body")) > 0)
+        self.await_selector(".note-table .note .body")
         self.assertTrue("Here is a note. Moar note." in self.css(".note-table .note .body").text)
 
         # And we can mark it resolved.

@@ -17,7 +17,7 @@ from pyPdf.utils import PdfReadError
 
 from django.contrib.auth.models import User
 from django.conf import settings
-from celery.task import task
+from scanblog.celery import app
 from sorl.thumbnail import get_thumbnail
 
 from scanning.models import Scan, ScanPage, Document, DocumentPage, EditLock
@@ -25,7 +25,7 @@ from profiles.models import Organization
 
 logger = logging.getLogger(__name__)
 
-@task
+@app.task(name="scanning.tasks.update_document_images")
 def update_document_images(document_id=None, process_pages=True, 
         process_highlight=True, document=None, status=None):
     """
@@ -50,11 +50,12 @@ def update_document_images(document_id=None, process_pages=True,
     logger.debug("Update document images done.")
     return True
 
-@task
+@app.task(name="scanning.tasks.process_zip")
 def process_zip(filename, uploader_id, org_id, redirect=None):
     """
     Take a zip file, and process all PDFs that are in it as scans.
     """
+
     uploader = User.objects.get(pk=uploader_id)
     org = Organization.objects.get(pk=org_id)
     zipfh = zipfile.ZipFile(filename, 'r')
@@ -88,23 +89,24 @@ def process_zip(filename, uploader_id, org_id, redirect=None):
                 pdf=os.path.relpath(dest, settings.MEDIA_ROOT),
                 under_construction=True,
             ))
+
     finally:
         zipfh.close()
         os.remove(filename)
         shutil.rmtree(tmpdir)
 
-    for scan in scans_to_process:
-        split_scan(scan=scan)
-
+    chain = split_scan.map([s.id for s in scans_to_process])
+    chain()
     return redirect
 
-@task
+@app.task(name="scanning.tasks.process_scan_to_profile")
 def process_scan_to_profile(scan_id, redirect):
     """
     This scan processor is used by users who upload pdf's for their own
     profiles.
     """
-    split_scan(scan_id=scan_id, redirect=redirect)
+    split = split_scan.subtask(scan_id=scan_id, redirect=redirect)
+    split()
     scan = Scan.objects.get(pk=scan_id)
     doc = Document.objects.create(
         scan=scan, 
@@ -120,10 +122,11 @@ def process_scan_to_profile(scan_id, redirect):
             scan_page=page,
             order=page.order,
         )
-    update_document_images(document=doc)
+    up = update_document_images.subtask(document_id=doc.id)
+    up()
     return redirect
 
-@task
+@app.task(name="scanning.tasks.split_scan")
 def split_scan(scan_id=None, redirect=None, scan=None):
     """
     Split a Scan into ScanPage's
@@ -215,15 +218,16 @@ def split_scan(scan_id=None, redirect=None, scan=None):
     scan.scanpages = scanpages
 
     # update document images, if any.
+    chain = update_document_images.map([d.pk for d in scan.document_set.all()])
+    chain()
     for doc in scan.document_set.all():
-        update_document_images(document=doc)
         doc.under_construction = False
         doc.save()
     scan.under_construction = False
     scan.save()
     return redirect
 
-@task
+@app.task(name="scanning.tasks.merge_scans")
 def merge_scans(scan_id=None, filename=None, redirect=None):
     scan = Scan.objects.get(pk=scan_id)
     concatenated = _concatenate_pdfs(scan.pdf.path, filename)
@@ -232,11 +236,11 @@ def merge_scans(scan_id=None, filename=None, redirect=None):
     scan.pdf = os.path.relpath(dest, settings.MEDIA_ROOT)
     scan.under_construction = True
     scan.save()
-    split_scan(scan=scan)
+    split_scan.subtask(scan_id=scan.id)()
     os.remove(filename)
     return redirect
 
-@task
+@app.task(name="scanning.tasks.expire_editlock")
 def expire_editlock(editlock_id=None):
     EditLock.objects.filter(pk=editlock_id).delete()
     return "success"

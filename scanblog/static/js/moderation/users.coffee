@@ -62,6 +62,7 @@ class btb.UserAdd extends Backbone.View
             managed: $("input[name=managed]", scope).is(":checked")
             email: $("input[name=email]", scope).val()
             blog_name: $("input[name=blog_name]", scope).val()
+            comments_disabled: $("input[name=comments_disabled]", scope).is(":checked")
             org_id: $("[name=org_id]", scope).val()
         if not properties.mailing_address
             @errors.mailing_address = "Mailing address required"
@@ -691,6 +692,7 @@ class btb.UserDetail extends Backbone.View
             [@user, "display_name", $(".display-name", @el)]
             [@user, "mailing_address", $(".mailing-address", @el), "textarea"]
             [@user, "special_mail_handling", $(".special-mail-handling", @el), "textarea"]
+            [@user, "comments_disabled", $(".comments-disabled", @el), "checkbox"]
             [@user, "blog_name", $(".blog-name", @el)]
             [@user, "email", $(".email", @el)]
         ]

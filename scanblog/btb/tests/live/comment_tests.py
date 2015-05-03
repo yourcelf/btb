@@ -21,7 +21,9 @@ class TestComments(BtbLiveServerTestCase):
         s.find_element_by_xpath('//input[@type="submit"]').submit()
         self.wait(lambda s: not s.current_url.startswith(self.url("/accounts/login")))
 
-        self.assert_current_url_is(self.doc.get_absolute_url() + "#c1")
+        self.assertEquals(Comment.objects.count(), 1)
+        c = Comment.objects.get()
+        self.assert_current_url_is("{}#c{}".format(self.doc.get_absolute_url(), c.id))
         self.assertEquals(Comment.objects.count(), 1)
         self.assertTrue(
                 "My Unique 12345 comment" in self.css(".commentbody").text
@@ -82,8 +84,9 @@ class TestComments(BtbLiveServerTestCase):
 
         self.css(".favorite-button").click()
 
-        self.assertEquals(Favorite.objects.count(), 1)
-        fav = Favorite.objects.all()[0]
+        self.wait(lambda b: Favorite.objects.count() == 1)
+
+        fav = Favorite.objects.get()
         self.assertTrue(fav.document == self.doc)
         self.assertEquals(len(self.csss(".favorite-button.active")), 1)
         self.assertEquals(len(self.csss(".get-favorites")), 1)
@@ -94,8 +97,8 @@ class TestComments(BtbLiveServerTestCase):
         self.assertTrue("testuser's profile" in s.title)
         self.assertEquals(len(self.csss("li.favorite")), 1)
         self.css("li.favorite .favorites-control .favorite-button").click()
-        time.sleep(0.5)
-        self.assertEquals(Favorite.objects.count(), 0)
+
+        self.wait(lambda b: Favorite.objects.count() == 0)
 
         s.get(self.url("/people/show"))
         self.assertEquals(len(self.csss("li.favorite")), 0)

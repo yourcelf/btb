@@ -11,11 +11,10 @@ from profiles.models import Profile, Organization, Affiliation
 
 from scanning.models import Document, Scan
 from annotations.models import Note
-from btb.tests import BtbLoginTestCase, BtbLoginTransactionTestCase
+from btb.tests import BtbLoginTestCase
 from comments.models import Comment, Favorite
 
 class TestUrls(TestCase):
-    fixtures = ["initial_data.json"]
     def testAbsoluteUrls(self):
         u = User.objects.create(username="hoopla", pk=12345)
         u.profile.display_name = "Test User"
@@ -27,7 +26,6 @@ class TestUrls(TestCase):
 
 
 class TestProfileManager(TestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self):
         # Remove default user from fixture.
         User.objects.get(username='uploader').delete()
@@ -284,7 +282,6 @@ class TestProfileManager(TestCase):
         )
 
 class TestOrgPermissions(TestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self):
         self.orgs = []
         self.superuser = User.objects.create(username="superuser", is_superuser=True)
@@ -524,7 +521,7 @@ class TestDeleteAccount(BtbLoginTestCase):
         self.assertEquals(Comment.objects.count(), 0)
         self.assertEquals(Favorite.objects.count(), 0)
 
-class TestOrganizationsJSON(BtbLoginTransactionTestCase):
+class TestOrganizationsJSON(BtbLoginTestCase):
     def _denied(self):
         for method in ("get", "put", "post", "delete"):
             res = getattr(self.client, method)("/people/organizations.json")
@@ -550,8 +547,12 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
             'pagination': {'count': 1, 'per_page': 12, 'page': 1, 'pages': 1}}
         )
 
-        res = self.client.get("/people/organizations.json?id=1")
-        json_res = json.loads(res.content)
+        res = self.client.get("/people/organizations.json?id={}".format(org.pk))
+        try:
+            json_res = json.loads(res.content)
+        except Exception:
+            print res.content
+            raise
         self.assertEquals(json_res, org.to_dict())
 
     def test_put_org(self):
@@ -605,7 +606,7 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         self.assertEquals(Organization.objects.get(slug='second-org').name, "Second Org")
 
         # This should work.
-        org_dict['replacement_org'] = 1
+        org_dict['replacement_org'] = self.org.pk
         res = self.client.put("/people/organizations.json", json.dumps(org_dict))
         self.assertEquals(res.status_code, 200)
         org_dict.pop('replacement_org')
@@ -723,7 +724,7 @@ class TestOrganizationsJSON(BtbLoginTransactionTestCase):
         self.assertEquals(json.loads(res.content), org.to_dict())
 
         self.assertEquals(set(Organization.objects.all()), set([
-            Organization.objects.get(pk=1), Organization.objects.get(slug='second-org')
+            Organization.objects.get(pk=self.org.pk), Organization.objects.get(slug='second-org')
         ]))
         self.assertEquals(
             set(new_author.organization_set.all()),

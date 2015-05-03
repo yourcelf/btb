@@ -1,6 +1,6 @@
 from .base import BtbLiveServerTestCase, NoSuchElementException
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from profiles.models import Organization
 from scanning.models import Document
 from comments.models import Comment

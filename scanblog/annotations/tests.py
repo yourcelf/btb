@@ -11,7 +11,6 @@ from profiles.models import Organization
 from btb.tests import BtbMailTestCase
 
 class ReplyCodesTest(TestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self):
         self.author = User.objects.create(username="author")
         self.editor = User.objects.create(username="editor")
@@ -88,7 +87,6 @@ class ReplyCodesTest(TestCase):
         self.assertEquals(json.loads(res.content)['results'], [])
 
 class FlagTest(BtbMailTestCase):
-    fixtures = ["initial_data.json"]
     def setUp(self, *args, **kwargs):
         super(FlagTest, self).setUp(*args, **kwargs)
         self.author = User.objects.create(username="author")
