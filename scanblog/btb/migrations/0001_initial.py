@@ -19,6 +19,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Disabled in favor of fixtures, because
         migrations.RunPython(set_up_groups)
     ]
