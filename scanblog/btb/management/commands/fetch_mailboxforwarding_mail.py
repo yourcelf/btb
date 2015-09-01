@@ -55,7 +55,7 @@ class Command(BaseCommand):
         scans = {}
         packages = {}
         for a,b,date,c,kind,status,dl in data:
-            match = re.search("pdfdownload.php\?id=(\d+)", dl)
+            match = re.search("pdfview.php\?id=(\d+)", dl)
             if match:
                 id_ = match.group(1)
             else:
@@ -81,7 +81,7 @@ class Command(BaseCommand):
             print "Downloading", source_id
 
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as fh:
-                res = sess.get("{}manage/pdfdownload.php?id={}".format(base_url, id_))
+                res = sess.get("{}manage/pdfview.php?id={}".format(base_url, id_))
                 fh.write(res.content)
                 name = fh.name
 
