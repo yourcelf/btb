@@ -197,7 +197,7 @@ import djcelery
 djcelery.setup_loader()
 BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_TRACK_STARTED = True
-CELERY_IGNORE_RESULT = True
+CELERY_IGNORE_RESULT = False
 #CELERY_RESULT_BACKEND = 'amqp'
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
