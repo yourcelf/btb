@@ -134,8 +134,6 @@ class Command(BaseCommand):
             )
             tasks.split_scan(scan=scan)
 
-            return
-
         if packages:
             print "Manual action needed on the following at " \
                   "https://www.mailboxforwarding.com/:"
