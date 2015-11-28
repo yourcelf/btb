@@ -60,24 +60,27 @@ class Command(BaseCommand):
         scans = {}
         packages = {}
         for checkbox, date, envelope, type_status, dl in data:
+            details = {}
+            match = re.search("Type: <b>([^<]+)</b>.*Status: <b>([^<]+)</b>", type_status)
+            if not match:
+                raise Exception("Can't match type/status")
+            details['kind'] = match.group(1)
+            details['status'] = match.group(2)
+
+            if details['kind'] == "Letter" and details['status'] != "Scanned":
+                continue
+
             match = re.search("pdfview.php\?id=(\d+)", dl)
             if match:
                 id_ = match.group(1)
             else:
                 raise Exception("Can't find ID")
 
-            details = {}
-
             match = re.search("src=\"([^\"]+)\"", envelope)
             if not match:
                 raise Exception("Can't match envelope image")
             details['envelope'] = match.group(1)
 
-            match = re.search("Type: <b>([^<]+)</b>.*Status: <b>([^<]+)</b>", type_status)
-            if not match:
-                raise Exception("Can't match type/status")
-            details['kind'] = match.group(1)
-            details['status'] = match.group(2)
 
             if details['status'] == "Scanned":
                 scans[id_] = details
