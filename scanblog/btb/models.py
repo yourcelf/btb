@@ -53,7 +53,7 @@ if not settings.DISABLE_ADMIN_NOTIFICATIONS:
                         'document': instance,
                         'site': Site.objects.get_current(),
                     }))
-            elif instance.status in ("published", "ready_to_publish"):
+            elif instance.status in ("published", "ready_to_publish") and not instance.scan_id:
                 mail_managers("New post", render_to_string(
                     "btb/admin-unmanaged-post-notification.txt", {
                         'document': instance,
