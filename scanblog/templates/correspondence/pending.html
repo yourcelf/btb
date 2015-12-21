@@ -3,30 +3,34 @@
 {% block title %}{% trans "Manage correspondence" %}{% endblock %}
 
 {% block header %}
-<h2>Pending correspondence</h2>
+<h2>{% trans "Pending correspondence" %}</h2>
 <p>
     <form method='post'  action="{% url "correspondence.generate_process_letters" %}">{% csrf_token %}
-        <input type='submit' value='Update pending correspondence' /><br />
+        <input type='submit' value='{% trans "Update pending correspondence" %}' /><br />
     </form>
-    Refreshes all 'automatic' pending correspondence.
+    {% trans "Refreshes all 'automatic' pending correspondence." %}
 </p>
 <p>
     <form method='post' action='{% url "correspondence.add_unconsented_to_waitlist" %}'>{% csrf_token %}
-        <input type='submit' value='Waitlist consent requests' /><br />
+        <input type='submit' value='{% trans "Waitlist consent requests" %}' /><br />
     </form>
+    {% blocktrans %}
     Generates "waitlist" postcards for all consent requests that haven't received them.
+    {% endblocktrans %}
 </p>
 
 <form method='get' action='{% url "correspondence.collate_mailing" %}'>
     <table>
         <tr>
-            <th colspan='2'>Collated mailings:</th>
+            <th colspan='2'>{% trans "Collated mailings:" %}</th>
         </tr>
         <tr>
-            <td><label for='id_consent'>Include consent envelopes?</label></td>
+            <td><label for='id_consent'>{% trans "Include consent envelopes?" %}</label></td>
             <td>
                 <input id='id_consent' type='checkbox' name='consent' checked='checked' />
-                <label for='id_consent_cutoff'>Before date:</label> <input type='text' name='consent_cutoff' id='id_consent_cutoff' />
+                <label for='id_consent_cutoff'>
+                  {% trans "Before date" %}:
+                </label> <input type='text' name='consent_cutoff' id='id_consent_cutoff' />
                 <script type='text/javascript'>
                     $("#id_consent_cutoff").datepicker({"dateFormat": "yy-mm-dd"});
                 </script>
@@ -34,30 +38,46 @@
 
         </tr>
         <tr>
-            <td><label for='id_consent'>Include waitlist postcards?</label></td>
+            <td><label for='id_consent'>
+                {% trans "Include waitlist postcards?" %}
+            </label></td>
             <td><input id='id_consent' type='checkbox' name='waitlist' checked='checked' /></td>
         </tr>
         <tr>
-            <td><label for='id_complete'>Include "signup complete" letters?</label></td>
+            <td><label for='id_complete'>
+                {% blocktrans %}
+                Include "signup complete" letters?
+                {% endblocktrans %}
+            </label></td>
             <td><input id='id_complete' type='checkbox' name='complete' checked='checked' /></td>
         </tr>
         <tr>
-            <td><label for='id_first_post'>Include first posts?</label></td>
+            <td><label for='id_first_post'>
+                {% trans "Include first posts?" %}
+            </label></td>
             <td><input id='id_first_post' type='checkbox' name='first_post' checked='checked' /></td>
         </tr>
         <tr>
-            <td><label for='id_comments'>Include comments?</label></td>
+            <td><label for='id_comments'>
+                {% trans "Include comments?" %}
+            </label></td>
             <td><input id='id_comments' type='checkbox' name='comments' checked='checked' /></td>
         </tr>
         <tr>
-            <td><label for='id_letters'>Include personal letters?</label></td>
+            <td><label for='id_letters'>
+                {% trans "Include personal letters?" %}
+            </label></td>
             <td><input id='id_letters' type='checkbox' name='letters' checked='checked' /></td>
         </tr>
         <tr>
-            <td></td><td><input type='submit' name='collate' value='Build collated mailing' /></td>
+            <td></td>
+            <td>
+              <input type='submit' name='collate'
+                     value='{% trans "Build collated mailing" %}' />
+            </td>
         </tr>
     </table>
 </form>
 
-<h2>Mailings:</h2>
+<h2>{% trans "Mailings:" %}</h2>
 {% endblock %}

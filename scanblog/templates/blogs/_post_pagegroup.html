@@ -11,8 +11,13 @@
         <img src='{{ page.image.url|public_url }}' alt="{% trans 'Scanned page' %}" />
     </div>
     {% if forloop.last and documentpage_count > page.page_number %}
-        <a class='read-more' href='?minorder={{page.page_number}}#order{{ page.page_number }}' 
-           onclick='return load_more_pages({{page.page_number}}, this);'
-           >Read more{% if remaining %} ({{ remaining }} more page{{ remaining|pluralize }}){% endif %}</a>
+        <a class='read-more' href='?minorder={{page.page_number}}#order{{ page.page_number }}'
+           onclick='return load_more_pages({{page.page_number}}, this);'>
+          {% trans "Read more" %}
+          {% if remaining %}
+          {# FIXME don't know how to translate remaining w/ pluralize #}
+          ({{ remaining }} more page{{ remaining|pluralize }})
+          {% endif %}
+        </a>
     {% endif %}
 {% endfor %}

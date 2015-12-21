@@ -1,13 +1,14 @@
-A profile PDF was uploaded by user {{ document.author.profile }}:
+{% load i18n %}
+{% trans "A profile PDF was uploaded by user" %} {{ document.author.profile }}:
 
-View on site:
+{% trans "View on site" %}:
 http://{{ site.domain }}{{ document.author.profile.get_aboslute_url }}
 
-Edit user:
+{% trans "Edit user" %}:
 http://{{ site.domain }}{{ document.author.profile.get_edit_url }}
 
-Admin functions:
-Edit user in admin: 
+{% trans "Admin functions" %}:
+{% trans "Edit user in admin" %}:
 http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/
-Delete user: 
+{% trans "Delete user" %}:
 http://{{ site.domain }}/admin/auth/user/{{ comment.user.id }}/delete

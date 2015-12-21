@@ -1,8 +1,10 @@
-Greetings,
+{% load i18n %}
+
+{% trans "Greeting," %}
 
 {{ body }}
 
-Sincerely,
+{% trans "Sincerely," %}
 {% if not send_anonymously %}
 {{ from_name }}{% endif %}
 {{ letter.org.mailing_address }}

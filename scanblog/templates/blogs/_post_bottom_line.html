@@ -20,9 +20,9 @@
         |
         <span class='author'>
             {% if post.author.profile.blog_name %}
-                From <a href='{{post.author.profile.get_blog_url}}'>{{post.author.profile.blog_name}}</a>
+                {% trans "From" %} <a href='{{post.author.profile.get_blog_url}}'>{{post.author.profile.blog_name}}</a>
             {% endif %}
-            {% trans "by" %} 
+            {% trans "by" %}
             <a href='{{post.author.profile.get_blog_url}}'>{{post.author.profile}}</a
                 >{% with org=post.author.organization_set.get %}{% if org.public %}, {% trans "writing for" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}{% endwith %}
         </span>

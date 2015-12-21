@@ -1,22 +1,41 @@
 {% extends "blogs/base.html" %}
-{% block title %}Recent comments left for {{ letter.recipient.profile }}{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktrans with author=letter.recipient.profile %}Recent comments left for {{ author }}{% endblocktrans %}{% endblock %}
 {% block body %}
     <style type='text/css'>
         .post-title-line .controls {
             display: none !important;
         }
     </style>
-    <h2>Recent comments left for {{ letter.recipient.profile }}</h2>
+    <h2>
+      {% blocktrans with recipient_profile=letter.recipient.profile %}
+      Recent comments left for {{ recipient_profile }}
+      {% endblocktrans %}
+    </h2>
     {% for comment in comments %}
         {% with comment.document as post %}
             {% if post.status == "published" %}
                 {% ifchanged post %}
                     {% include "blogs/_post_title_line.html" %}
-                    <h3>Excerpt</h3>
+                    <h3>{% trans "Excerpt" %}</h3>
                     {% include "blogs/_post_highlight.html" %}
-                    <p>Reply ID: <b class='mono'>{{ post.reply_code.code }}</b></p>
-                    <p>To reply to these comments, please print the following &ldquo;reply ID&rdquo; at the top of the page: <b class='mono'>{{ post.reply_code.code }}</b>. This will allow us to notify the comment authors that you have written a response.  Please only include one reply ID at a time &ndash; to reply to more than one set of comments, use a separate page.</p>
-                    <div><h3>Comments</h3></div>
+                    <p>
+                      {% trans "Reply ID" %}:
+                      <b class='mono'>{{ post.reply_code.code }}</b>
+                    </p>
+                    <p>
+                      {% blocktrans %}
+                      To reply to these comments, please print the
+                      following &ldquo;reply ID&rdquo; at the top of
+                      the page: <b class='mono'>{{
+                      post.reply_code.code }}</b>. This will allow us
+                      to notify the comment authors that you have
+                      written a response.  Please only include one
+                      reply ID at a time &ndash; to reply to more than
+                      one set of comments, use a separate page.
+                      {% endblocktrans %}
+                    </p>
+                    <div><h3>{% trans "Comments" %}</h3></div>
                 {% endifchanged %}
                 {% include "comments/_comment.html" %}
             {% endif %}

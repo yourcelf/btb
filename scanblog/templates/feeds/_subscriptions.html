@@ -1,101 +1,105 @@
+{% load i18n %}
 <div class='feeds'>
-    <h2>Subscribe</h2>
-    <p>Get notifications when new letters or replies are posted!
+    <h2>{% trans "Subscribe" %}</h2>
+    <p>{% trans "Get notifications when new letters or replies are posted!" %}
     <table class='form'>
+        {% trans "Posts by" as posts_by %}
+        {% trans "Posts from" as posts_from %}
+        {% trans "Comments on" as comments_on %}
+        {% trans "Posts tagged with" as posts_tagged %}
         {% if feed_author %}
         <tr>
             <th>
-                Posts by {{ feed_author.profile }}:
+                {{ posts_by }} {{ feed_author.profile }}:
             </th>
             <td>
-                <a href='{% url "blogs.blog_feed" feed_author.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+                <a href='{% url "blogs.blog_feed" feed_author.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
-                <a href='{% url "subscriptions.author" feed_author.pk %}'>email me</a>
+                <a href='{% url "subscriptions.author" feed_author.pk %}'>{%trans "email me" %}</a>
             </td>
         </tr>
         {% endif %}
         {% if org and org.public %}
         <tr>
             <th>
-                Posts from <em>{{ org.name }}</em>:
+                {{ posts_from }} <em>{{ org.name }}</em>:
             </th>
             <td>
                 <a href='{% url "blogs.org_feed" org.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
-                <a href='{% url "subscriptions.org" org.pk %}'>email me</a>
-            </td>
-        </tr>
-        {% endif %}
-        {% if document.affiliation and document.affiliation.public %}
-        <tr>
-            <th>
-                Posts from <em>{{ document.affiliation.title }}</em>
-            </th>
-            <td>
-                <a href='{% url "blogs.affiliation_feed" document.affiliation.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
-            </td>
-            <td>
-                <a href='{% url "subscriptions.affiliation" document.affiliation.pk %}'>email me</a>
+                <a href='{% url "subscriptions.org" org.pk %}'>{% trans "email me" %}</a>
             </td>
         </tr>
         {% endif %}
         {% if comment_feed_obj %}
         <tr>
             <th>
-                Comments on &#147;{{ comment_feed_obj }}&#148;:
+                {{ comments_on }} &#147;{{ comment_feed_obj }}&#148;:
             </th>
             <td>
                 <a href='{% url "blogs.post_comments_feed" comment_feed_obj.pk %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
 
-                <a href='{% url "subscriptions.document" comment_feed_obj.pk %}'>email me</a>
+                <a href='{% url "subscriptions.document" comment_feed_obj.pk %}'>
+                  {% trans "email me" %}
+                </a>
             </td>
         </tr>
         {% endif %}
         {% if tag %}
         <tr>
             <th>
-                Posts tagged with &#147;{{ tag }}&#148;:
+                {{ posts_tagged }} &#147;{{ tag }}&#148;:
             </th>
             <td>
-                <a href='{% url "blogs.tagged_posts_feed" tag %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+                <a href='{% url "blogs.tagged_posts_feed" tag %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
-                <a href='{% url "subscriptions.tag" tag %}'>email me</a>
+                <a href='{% url "subscriptions.tag" tag %}'>{% trans "email me" %}</a>
             </td>
         </tr>
         {% endif %}
         {% if campaign %}
         <tr>
             <th>
-                Posts for &#147;{{ campaign.title }}&#148; campaign:
+                {% blocktrans with campaign_title=campaign.title %}
+                Posts for &#147;{{ campaign_title }}&#148; campaign:
+                {% endblocktrans %}
             </th>
             <td>
-                <a href='{% url "blogs.campaign_feed" campaign.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+                <a href='{% url "blogs.campaign_feed" campaign.slug %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
             </td>
             <td>
-                <a href='{% url "subscriptions.campaign" campaign.slug %}'>email me</a>
+                <a href='{% url "subscriptions.campaign" campaign.slug %}'>{% trans "email me" %}</a>
             </td>
         </tr>
         {% endif %}
         <tr>
-            <th>Featured posts:</th>
+            <th>{% trans "Featured posts" %}:</th>
             <td>
-                <a href='{% url "blogs.tagged_posts_feed" "featured" %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a> 
+                <a href='{% url "blogs.tagged_posts_feed" "featured" %}'>
+                  <img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS
+                </a>
             </td>
             <td>
-                <a href='{% url "subscriptions.tag" "featured" %}'>email me</a>
+                <a href='{% url "subscriptions.tag" "featured" %}'>
+                  {% trans "email me" %}
+                </a>
             </td>
         </tr>
         <tr>
             <th>
-                All <em>{{ site.name }}</em> posts:
+                {% blocktrans with site_name=site.name %}
+                All <em>{{ site_name }}</em> posts:
+                {% endblocktrans %}
             </th>
             <td>
-                <a href='{% url "blogs.all_posts_feed" %}'><img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS</a>
+                <a href='{% url "blogs.all_posts_feed" %}'>
+                  <img src='{{ STATIC_URL }}img/feed-icon-14x14.png' />RSS
+                </a>
             </td>
         </tr>
     </table>

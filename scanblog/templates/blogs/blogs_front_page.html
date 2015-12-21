@@ -1,16 +1,17 @@
 {% extends "blogs/base_post_list.html" %}
-{% block title %}Blogs from writers in prison{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Blogs from writers in prison" %}{% endblock %}
 {% block subnav %}
     {% with categories_open="open" %}{{ block.super }}{% endwith %}
 {% endblock %}
 {% block heading %}
-<h1>Recent posts by date
+<h1>{% trans "Recent posts by date" %}
   {% if transcribed == "complete" %}
-    (transcribed)
+    ({% trans "transcribed" %})
   {% elif transcribed == "partial" %}
-    (partially transcribed)
+    ({% trans "partially transcribed" %})
   {% elif transcribed == "none" %}
-    (not transcribed)
+    ({% trans "not transcribed" %})
   {% endif %}
 </h1>
 {% endblock %}

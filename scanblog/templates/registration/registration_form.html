@@ -11,10 +11,10 @@
 
 <p>
 {% blocktrans %}
-Registered users may leave comments and transcribe posts.  By registering, you
-are agreeing to abide by the 
-<a href='{{ terms }}'>Terms of Service</a> and 
-<a href='{{ privacy }}'>Privacy Policy</a>.
+%{ trans "Registered users may leave comments and transcribe posts.  By registering, you
+are agreeing to abide by the
+<a href='{{ terms }}'>Terms of Service</a> and
+<a href='{{ privacy }}'>Privacy Policy</a>." %}
 {% endblocktrans %}
 </p>
 <p>
@@ -22,7 +22,7 @@ are agreeing to abide by the
 <form action='' method='post'>{% csrf_token %}
     <table class='form'>
         {{ form }}
-        <tr><td></td><td><input type='submit' value='{% trans "Register" %}' /></td></tr>
+        <tr><td></td><td><input type='submit' value="{% trans 'Register' %}" /></td></tr>
     </table>
 </form>
 {% endblock %}

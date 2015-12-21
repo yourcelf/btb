@@ -1,23 +1,27 @@
+{% load i18n %}
 <!-- Process -->
 
 <script type='text/template' id="processManager">
-    <h1>Scans needing attention</h1>
+    <h1>{% trans "Scans needing attention" %}</h1>
     <div class="process-scan-list">
     </div>
-    <h1>Dcouments needing attention</h1>
+    <h1>{% trans "Documents needing attention" %}</h1>
     <div class="process-document-list">
     </div>
 </script>
 <script type='text/template' id="processItem">
     <li>
         <div class="date"><%= btb.formatDate(obj.created) %>
-        <a class='delete-scan' href='{% url "scanning.scan_delete" %}<%= obj.id %>' title='Delete scan'><span class='ui-icon ui-icon-trash'></span></a>
+        <a class='delete-scan' href='{% url "scanning.scan_delete" %}<%= obj.id %>' title='{% trans "Delete scan" %}'><span class='ui-icon ui-icon-trash'></span></a>
         <a class='scan' href='<%= obj.edit_url %>'>
             <% if (obj.lock) { %>
-                <span class='being-edited'><%= obj.lock.user.display_name %>
-                    started editing
-                    <%= btb.englishDateInterval(obj.lock.created, obj.lock.now) %> 
-                    ago.
+                <span class='being-edited'>
+                    {% blocktrans %}
+                      <%= obj.lock.user.display_name %>
+                      started editing
+                      <%= btb.englishDateInterval(obj.lock.created, obj.lock.now) %>
+                      ago.
+                    {% endblocktrans %}
                 </span>
             <% } %>
             <div class='img-holder'>
@@ -35,27 +39,27 @@
 </script>
 
 <script type="text/template" id="splitScanEditLockWarning">
-    <li>Warning: <b><%= name %></b> started editing this scan <%= btb.englishDateInterval(created, now) %> ago.  You might hold up a bit so that your changes don't conflict.</li>
+    <li>{% trans "Warning" %}: <b><%= name %></b> {% trans "started editing this scan <%= btb.englishDateInterval(created, now) %> ago.  You might hold up a bit so that your changes don't conflict." %}</li>
 </script>
 
 <script type="text/template" id="splitScan">
     <div class='split-scan'>
         <ul class='lock-warning'></ul>
-        <h1>Split Scan</h1>
-        <a href='<%= scan.pdf %>'>Original (pdf)</a>
+        <h1>{% trans "Split Scan" %}</h1>
+        <a href='<%= scan.pdf %>'>{% trans "Original (pdf)" %}</a>
         <div style='float: right;'>
             <a href='{% url "scanning.scan_delete" %}<%= scan.id %>'
                 class='delete-scan'
-                >Delete scan</a
+                >{% trans "Delete scan" %}</a
             ><a href='{% url "scanning.scan_replace" %}<%= scan.id %>'
                 class='replace-scan'
-                >Replace scan</a
+                >{% trans "Replace scan" %}</a
             ><!--<a href='{% url "scanning.scan_reimport" %}<%= scan.id %>'
                 class='reparse-scan'
-                >Re-parse scan</a
+                >{% trans "Re-parse scan" %}</a
             >--><a href='{% url "scanning.scan_merge" %}<%= scan.id %>'
                 class='merge-scan'
-                >Merge scans</a
+                >{% trans "Merge scans" %}</a
             >
         </div>
         <div style='clear: both;'></div>
@@ -85,14 +89,14 @@
             </div>
 
             <div class="choose-code">
-                Code: 
-                <input type='text' placeholder='Scan Code' 
+                {% trans "Code" %}: 
+                <input type='text' placeholder='{% trans "Scan Code" %}' 
                     <% if (scan.pendingscan_code) { %>
                         value='<%= scan.pendingscan_code %>'
                     <% } %>
                 />
             </div>
-            <div class="choose-user"><table><tr><td style='padding-right: 0.5em;'>Author:</td><td><div class='user-chooser-holder'></div></td></tr></table></div>
+            <div class="choose-user"><table><tr><td style='padding-right: 0.5em;'>{% trans "Author" %}:</td><td><div class='user-chooser-holder'></div></td></tr></table></div>
             <div class='page-scroller'>
                 <% for (var i = 0; i < scan.pages.length; i++) { %>
                     <div class='pagestatus page-<%= i %>' id='status<%= scan.pages[i].id %>' title='Jump to page <%= i + 1 %>'>
@@ -108,10 +112,11 @@
             </div>
             <ul class='ignore-choice'></ul>
             <ul class='type-list'></ul><br />
-            <span class='add-post'>Post</span><!--<span class='add-photo'>Photo</span>-->
+            <span class='add-post'>{% trans "Post" %}</span>
+            <!--<span class='add-photo'>{% trans "Photo" %}</span>-->
             <span style='float: right;'>
                 <div class='post-save-message'></div>
-                <span class='save'>Save</span><span class='switch-to-edit-documents'>Edit documents &raquo;</span>
+                <span class='save'>{% trans "Save" %}</span><span class='switch-to-edit-documents'>{% trans "Edit documents" %} &raquo;</span>
             </span>
         </div>
     </div>

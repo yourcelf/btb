@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 {% load firstof from future %}
-{% block title %}Remove comment{% endblock %}
+{% block title %}{% trans "Remove comment" %}{% endblock %}
 
 {% block css %}
   <style type='text/css'>
@@ -32,14 +33,18 @@
 {% block body %}
 {% with org=comment.document.author.organization_set.get %}
 
-<h1>Remove Comment</h1>
+<h1>{% trans "Remove Comment" %}</h1>
   {% if removal.pk %}
     <p>
-      <b>This comment has been removed.</b> You can edit the messages that haven't been sent below.
-      Changed your mind? <a href='{% url "comments.moderator_unremove" comment.pk %}'>Restore (unremove) this comment</a>.
+      <b>{% trans "This comment has been removed." %}</b>
+         {% trans "You can edit the messages that haven't been sent below.  Changed your mind?" %} <a href='{% url "comments.moderator_unremove" comment.pk %}'>{% trans "Restore (unremove) this comment" %}</a>.
     </p>
   {% else %}
-    <p>Remove the following comment by <em>{{ comment.user.profile }}</em>? (If this is spam, use <a href='{% url "comments.spam_can_comment" comment.pk %}'>this form</a> instead)</p>
+    <p>
+    {% url "comments.spam_can_comment" comment.pk as spam_comment_url %}
+    {% blocktrans with commenter=comment.user.profile %}
+    Remove the following comment by <em>{{ commenter }}</em>? (If this is spam, use <a href='{{ spam_comment_url }}'>this form</a> instead)</p>
+    {% endblocktrans %}
   {% endif %}
 
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on
@@ -55,15 +60,15 @@
 
     <hr>
     <h2>{{ form.reason.label }}</h2>
-    <p class='help-text'>What is the reason for removing this comment? This will set defaults for the notification messages as well.</p>
-    {{ form.reason }} {% if perms.change_removalreason %}<a href='/admin/comments/removalreason/'>edit reasons</a>{% endif %}
+    <p class='help-text'>{% trans "What is the reason for removing this comment? This will set defaults for the notification messages as well." %}</p>
+    {{ form.reason }} {% if perms.change_removalreason %}<a href='/admin/comments/removalreason/'>{% trans "edit reasons" %}</a>{% endif %}
     <h2>{{ form.web_message.label }}</h2>
     {% if form.comment_author_message.errors %}
       <div class='error'>
         {{ form.comment_author_message.errors }}
       </div>
     {% endif %}
-    <p>If blank, no removal message will appear on the web.</p>
+    <p>{% trans "If blank, no removal message will appear on the web." %}</p>
     {{ form.web_message }}
 
 
@@ -75,12 +80,12 @@
       </div>
     {% endif %}
     {% if not comment.user.email %}
-      Comment has no email address; no message can be sent.
+      {% trans "Comment has no email address; no message can be sent." %}
     {% else %}
       {% if commenter_notified %}
-        <em>The author has already been notified; this can't be changed</em>
+        <em>{% trans "The author has already been notified; this can't be changed" %}</em>
       {% else %}
-        <p>If left blank, the comment author will not be notified.</p>
+        <p>{% trans "If left blank, the comment author will not be notified." %}</p>
       {% endif %}
       <div class='faux-email'>
         <b>To:</b> {{ comment.user.email }}<br />
@@ -106,24 +111,31 @@
     {% if form.post_author_message.errors %}
       <div class='error'>
         <h3>
-          There was an error with the message body below; we couldn't
-          compile it into a letter.
+          {% trans "There was an error with the message body below; we couldn't compile it into a letter." %}
         </h3>
-        <p>The cryptic error message we got was:</p>
+        <p>{% trans "The cryptic error message we got was:" %}</p>
         <pre>{{ form.post_author_message.errors }}</pre>
         <br />
-        <p>Usually, errors are the result of special characters like &amp;, _, or % &ndash; try putting a "\" before them (e.g. \&amp;, \_, \%).  Contact <a href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a> if you don't understand how to fix this.</p>
+        <p>
+          {% blocktrans %} 
+          Usually, errors are the result of special characters like
+          &amp;, _, or % &ndash; try putting a "\" before them
+          (e.g. \&amp;, \_, \%).  Contact <a
+          href='mailto:info@betweenthebars.org'>info@betweenthebars.org</a>
+          if you don't understand how to fix this.
+          {% endblocktrans %}
+        </p>
       </div>
     {% endif %}
     {% if blogger_notified %}
-      <p><em>The post author has already been notified; this field can't be changed:</em></p>
+      <p><em>{% trans "The post author has already been notified; this field can't be changed:" %}</em></p>
     {% else %}
-      <p>If blank, no message will be sent to post author.  Format is raw <a href='https://en.wikipedia.org/wiki/LaTeX'>LaTeX</a>.</p>
+      <p>{% trans "If blank, no message will be sent to post author.  Format is raw <a href='https://en.wikipedia.org/wiki/LaTeX'>LaTeX</a>." %}</p>
     {% endif %}
 
     <div class='faux-letter'>
       <div class='to-address'>{{ comment.document.author.profile.full_address }}</div>
-      <p>Greetings,</p>
+      <p>{% trans "Greetings," %}</p>
       <br />
       <div style='white-space: pre-wrap;'>{% spaceless %}
         {% if blogger_notified %}
@@ -133,16 +145,16 @@
         {% endif %}
       {% endspaceless %}</div>
       <br />
-      <div class='sig'>Sincerely, <br /><br /> {{ org.personal_contact }}</div>
+      <div class='sig'>{% trans "Sincerely," %} <br /><br /> {{ org.personal_contact }}</div>
       <br />
       <br />
       {% if not blogger_notified and perms.correspondence.manage_correspondence %}
         <iframe id="letter_preview" src="{% url "correspondence.comment_removal_letter_preview_frame" comment.pk %}"></iframe>
-        <div><a href='#' class='preview-letter'>Preview rendered letter</a></div>
+        <div><a href='#' class='preview-letter'>{% trans "Preview rendered letter" %}</a></div>
       {% endif %}
     </div>
     <div>
-      <input type='submit' value='Remove comment and send notifications' class='anchor-button' />
+      <input type='submit' value='{% trans "Remove comment and send notifications" %}' class='anchor-button' />
     </div>
   </form>
 

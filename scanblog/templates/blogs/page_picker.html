@@ -1,6 +1,5 @@
 {% extends "blogs/base.html" %}
-
-{% block title %}By the page{% endblock %}
+{% load i18n %}
 
 {% block body %}
 <style type='text/css'>
@@ -41,13 +40,19 @@
     }
 </style>
 <noscript>
-    This page requires javsacript.  To browse Between the Bars without javascript, try <a href='{% url "blogs.home" %}'>blogs</a>.
+    {% url "blogs.home" as blogs_home_url %}
+    {% blocktrans with site_name=site.name %}
+    This page requires javascript. To browse {{ site_name }} without javascript, try <a href='{{ blogs_home_url }}'>the main blogs page</a>.
+    {% endblocktrans %}
 </noscript>
-<h1>Every page</h1>
+<h1>{% trans "Every page" %}</h1>
 <div id='pagepicker'></div>
-<div class='pagepicker-loading'><img src='{{ STATIC_URL }}img/spinner.gif'> Loading...</div>
+<div class='pagepicker-loading'>
+  <img src='{{ STATIC_URL }}img/spinner.gif'/> {% trans "Loading..." %}
+</div>
 <div class='helpusgrow' style='display: none; clear: both;'>
-    That's all so far &ndash; <a href='{% url "profiles.profile_list" "join" %}'>help us grow</a>.
+    {% trans "That's all so far" %} &ndash;
+    <a href='{% url "profiles.profile_list" "join" %}'>{% trans "help us grow" %}</a>.
 </div>
 {% endblock %}
 
@@ -89,8 +94,8 @@
                             "</td><td>",
                             "<a href='", data.url, "'>", data.title, "</a>",
                             "<br />",
-                            "<nobr>(", data.page_count, " page", 
-                                 data.page_count == 1 ? "" : "s", ")</nobr>", 
+                            "<nobr>(", data.page_count, " page",
+                                 data.page_count == 1 ? "" : "s", ")</nobr>",
                             "<br />",
                             "<b>",
                                 "<a href='", data.author_url, "'><nobr>", data.author, "</nobr></a>",
@@ -115,15 +120,15 @@
                             overTimeout = window.setTimeout(function() {
                                 showOverlay(event);
                             }, 500);
-                        }).mouseout(function() { 
-                            clearTimeout(overTimeout); 
+                        }).mouseout(function() {
+                            clearTimeout(overTimeout);
                         })
                     );
 
                 })(i);
             }
             $.get(dataset.datafile, function(data) {
-                pageData[manifestIndex] = data; 
+                pageData[manifestIndex] = data;
             });
             return manifestIndex;
         })(manifestIndex);

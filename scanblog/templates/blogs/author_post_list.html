@@ -1,7 +1,9 @@
 {% extends "blogs/base_post_list.html" %}
+{% load i18n %}
+{% trans "by" as by context "authored by" %} 
 {% block title %}
 {% if author.profile.blog_name %}
-    {{ author.profile.blog_name }} by {{ author.profile.display_name }}
+    {{ author.profile.blog_name }} {{ by }} {{ author.profile.display_name }}
 {% else %}
     {{ author.profile.display_name }}
 {% endif %}
@@ -9,7 +11,7 @@
 {% block heading %}
     {% if author.profile.blog_name %}
         <h1>{{ author.profile.blog_name }}</h1>
-        by {{ author.profile.display_name }}
+        {{ by }} {{ author.profile.display_name }}
     {% else %}
         <h1>{{ author.profile.display_name }}</h1>
     {% endif %}

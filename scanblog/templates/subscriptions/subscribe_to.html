@@ -1,23 +1,40 @@
 {% extends "profiles/base.html" %}
+{% load i18n %}
 
-{% block title %}Add subscription{% endblock %}
+{% block title %}{% trans "Add subscription" %}{% endblock %}
 
 {% block body %}
 
-<h1>Add subscription</h1>
-<p>Add a subscription to
-{% if tag %}posts tagged &ldquo;{{ tag }}&rdquo;?{% endif %}
-{% if author %}posts by {{ author.profile }}?{% endif %}
-{% if document %}comments on &ldquo;{{ document.get_title }}&rdquo; by {{ document.author.profile }}?{% endif %}
-{% if org %}posts from <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em> authors{% endif %}
-{% if campaign %}posts for the &ldquo;{{ campaign.title }}&rdquo; campaign?{% endif %}
-{% if affiliation %}posts in the group &ldquo;{{ affiliation.title }}&rdquo;?{% endif %}
-<form method='post' action=''>{% csrf_token %}<input type='submit' value='Sign me up!' /></form>
-<a href='{% url "subscriptions.settings" %}'>Subscription settings</a>
+<h1>{% trans "Add subscription" %}</h1>
+<p>
+{% if tag %}{% blocktrans %}
+  Add a subscription to posts tagged &ldquo;{{ tag }}&rdquo;?
+{% endblocktrans %}{% endif %}
+{% if author %}{% blocktrans with author_name=author.profile %}
+  Add a subscription to posts by {{ author_name }}?
+{% endblocktrans %}{% endif %}
+{% if document %}{% blocktrans with document_title=document.get_title %}
+  Add a subscription to comments on &ldquo;{{ document_title }}&rdquo;?
+{% endblocktrans %}{% endif %}
+{% if org %}{% blocktrans with org_name=org.name org_url=org.get_absolute_url %}
+  Add a subscription to posts from <em><a href='{{ org_url }}'>{{ org_name }}</a></em> authors?
+{% endblocktrans %}{% endif %}
+{% if campaign %}{% blocktrans with campaign_title=campaign.title %}
+  Add a subscription to posts for the &ldquo;{{ campaign_title }}&rdquo; campaign?
+{% endblocktrans %}{% endif %}
+{% if affiliation %}{% blocktrans with affiliation_title=affiliation.title %}
+  Add a subscription to posts in the group &ldquo;{{ affiliation_title }}&rdquo;?
+{% endblocktrans %}{% endif %}
+
+<form method='post' action=''>{% csrf_token %}<input type='submit' value='{% trans "Sign me up!" %}' /></form>
+<a href='{% url "subscriptions.settings" %}'>{% trans "Subscription settings" %}</a>
+
 </p>
 {% if not user.email %}
 <p>
-Note: you have no email address set in your profile, so you will only see notifications by logging into the site.  If you'd like to receive email notifications, please <a href='{{ user.profile.get_user_edit_url }}'>add an email address</a> in your profile.
+{% blocktrans with user_edit_url=user.profile.get_user_edit_url %}
+Note: you have no email address set in your profile, so you will only see notifications by logging into the site.  If you'd like to receive email notifications, please <a href='{{ user_edit_url }}'>add an email address</a> in your profile.
+{% endblocktrans %}
 </p>
 {% endif %}
 {% endblock %}

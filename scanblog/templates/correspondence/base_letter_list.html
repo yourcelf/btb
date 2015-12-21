@@ -45,11 +45,11 @@ function post_letter_sent(letter_id, checked) {
 </style>
 <table>
     <tr>
-        <th>Recipient</th>
-        <th>Sent</th>
-        <th>Letters</th>
-        <th>Date created</th>
-        <th>Sender</th>
+        <th>{% trans "Recipient" %}</th>
+        <th>{% trans "Sent" %}</th>
+        <th>{% trans "Letters" %}</th>
+        <th>{% trans "Date created" %}</th>
+        <th>{% trans "Sender" %}</th>
     </tr>
 {% for letter in letters %}
     {% with u=letter.recipient name=letter.recipient_name %}

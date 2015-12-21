@@ -1,16 +1,17 @@
 {% extends "moderation/base.html" %}
+{% load i18n %}
 {% block title %}Processing{% endblock %}
 
 {% block body %}
 
 
-<h2>Processing</h2>
+<h2>{% trans "Processing" %}</h2>
 <p class='info ui-state-highlight' style='padding: 1em;'>
 <span class="dots" style="display: none;">...</span>
-Waiting for processing to finish
+{% trans "Waiting for processing to finish" %}
 <span class="dots">...</span>
 <br />
-You will be redirected when we are finished.
+{% trans "You will be redirected when we are finished." %}
 </p>
 
 {% endblock %}
@@ -27,7 +28,7 @@ You will be redirected when we are finished.
                     if (data.task.result) {
                         window.location.href = data.task.result;
                     } else {
-                        $(".info").html("Invalid task.");
+                        $(".info").html("{% trans "Invalid task." %}");
                     }
                 } else if (data.task.status == "STARTED" || data.task.status == "PENDING") {
                     window.setTimeout(poll, 2000);
@@ -35,9 +36,9 @@ You will be redirected when we are finished.
                 } else if (data.task.status == "FAILURE") {
                     $(".info").addClass("error");
                     $('.info').removeClass('ui-state-highlight');
-                    $(".info").html("Task exited with errors.");
+                    $(".info").html("{% trans "Task exited with errors." %}");
                     {% if perms.scanning.change_scan %}
-                        $(".info").append("<a href='{% url "moderation.manage_tasks" %}'>View task</a>.")
+                        $(".info").append("<a href='{% url "moderation.manage_tasks" %}'>{% trans "View task" %}</a>.")
                     {% endif %}
                     document.title = "FAIL";
                     $("h2").html("FAIL");
@@ -46,7 +47,7 @@ You will be redirected when we are finished.
             error: function() {
                 $(".info").addClass("error");
                 $(".info").removeClass("ui-state-highlight");
-                $(".info").html("Error communicating with server.  Refresh page to retry.");
+                $(".info").html("{% trans "Error communicating with server.  Refresh page to retry." %}");
             }
         });
     }

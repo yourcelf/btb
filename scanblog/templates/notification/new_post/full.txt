@@ -1,13 +1,13 @@
-{% if document.scan_id %}{{ document.author.profile }} has sent a new letter to {{ current_site }}!
+{% load i18n %}{% if document.scan_id %}{% blocktrans with author=document.author.profile %}{{ author }} has sent a new letter to {{ current_site }}!{% endblocktrans %}
 
-You can read the letter here:
+{% trans "You can read the letter here" %}:
 http://{{ current_site }}{{ document.get_absolute_url }}
 {% else %}
-{{ document.author.profile }} has added a new blog post:
+{% blocktrans with author=document.author.profile %}{{ author }} has added a new blog post:{% endblocktrans %}
 
 {{ document.body|truncatewords:100 }}
 
-Read more here:
+{% trans "Read more here" %}:
 <http://{{current_site }}{{ document.get_absolute_url }}
 {% endif %}{% with document.tags.all as tags %}{% if tags %}
-Post categories: {{tags|join:", "}}{% endif %}{% endwith %}
+{% trans "Post categories:" %} {{tags|join:", "}}{% endif %}{% endwith %}

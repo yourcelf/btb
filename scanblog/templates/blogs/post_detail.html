@@ -6,7 +6,9 @@
 {% load public_url %}
 {% load favorites %}
 
-{% block title %}{% firstof post.title "Untitled" %} &mdash; {{post.author.profile}}{% endblock %}
+<!-- don't know how to trans 'Untitled' FIXME -->
+{% trans "Untitled" as untitled_i18n %}
+{% block title %}{% firstof post.title untitled_i18n %} &mdash; {{post.author.profile}}{% endblock %}
 
 {% block head %}
     {% with feed_author=post.author comment_feed_obj=post %}
@@ -28,13 +30,14 @@
 
         <div class='post-detail-author'>
             {% if post.author.profile.blog_name %}
-                From <a href='{{ post.author.profile.get_blog_url }}'><b>{{ post.author.profile.blog_name }}</b></a>
+                {% trans "From" %} <a href='{{ post.author.profile.get_blog_url }}'><b>{{ post.author.profile.blog_name }}</b></a>
             {% endif %}
-            by <a href='{{post.author.profile.get_blog_url}}'>{{ post.author.profile.display_name }}</a>
-            {% if post.author.profile.has_public_profile %} 
-                (author's <a href='{{ post.author.profile.get_absolute_url }}'>profile</a>)
+            {% trans "by" %} <a href='{{post.author.profile.get_blog_url}}'>{{ post.author.profile.display_name }}</a>
+            {% if post.author.profile.has_public_profile %}
+                {% blocktrans with profile_url=post.author.profile.get_absolute_url %}
+                (author's <a href='{{ profile_url }}'>profile</a>)
             {% endif %}
-            {% if org.public %}, writing for <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
+            {% if org.public %}, {% trans "writing for" %} <em><a href='{{ org.get_absolute_url }}'>{{ org.name }}</a></em>{% endif %}
             {% if org.public %}{{ org.footer|safe }}{% endif %}
         </div>
 
@@ -43,11 +46,17 @@
                 {% with in_reply_to=post.in_reply_to.document %}
                 {% thumbnail in_reply_to.documentpage_set.all.0.image.path "100" as im %}
                 <table><tr>
-                    <td><b>This post is in reply to comments on:</b>&nbsp;</td>
+                    <td><b>{% trans "This post is in reply to comments on" %}:</b>&nbsp;</td>
                     <td>
-                        <a href='{{ in_reply_to.get_absolute_url }}'
-                        ><img style='vertical-align: top;' src='{{ im.url|public_url }}' alt='{{ in_reply_to.get_title }} thumbnail' /></a><br />
-                        <a href='{{ in_reply_to.get_absolute_url }}'>{{ in_reply_to.get_title }}</a><br /> ({{ in_reply_to.date_written|naturalday }})
+                        <a href='{{ in_reply_to.get_absolute_url }}'>
+                          <img style='vertical-align: top;' src='{{ im.url|public_url }}' 
+                              alt='{{ in_reply_to.get_title }} thumbnail' />
+                        </a>
+                        <br />
+                        <a href='{{ in_reply_to.get_absolute_url }}'>
+                          {{ in_reply_to.get_title }}
+                        </a>
+                        <br /> ({{ in_reply_to.date_written|naturalday }})
                     </td>
                 </tr></table>
                 {% endthumbnail %}

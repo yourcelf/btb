@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load humanize %}
 {% load scanning_text_diffs %}
 <!doctype html>
@@ -21,19 +22,19 @@
 </style>
 </head>
 <body>
-<h1>BtB Comment/Transcription report</h1>
+<h1>{% trans "BtB Comment/Transcription report" %}</h1>
 {% if comments %}
-    <h2>Comments</h2>
+    <h2>{% trans "Comments" %}</h2>
     <table>
     {% for comment in comments %}
     {% with doc=comment.document %}
         <tr><td bgcolor='#eee'>
             <b>{{ comment.user.profile }}</b> {{ comment.modified|naturalday }} {{ comment.modified|date:"P" }}
-            on
+            {% trans "on" %}
             <a href='https://{{ site.domain }}{{ comment.get_absolute_url }}'>{{ doc.get_title }}</a> 
-            by <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
-            (<a href='https://{{ site.domain }}{% url "comments.moderator_remove" comment.pk %}'>remove</a>,
-             <a href='https://{{ site.domain }}{% url "comments.spam_can_comment" comment.pk %}'>spam</a>)
+            {% trans "by" %} <a href='https://{{ site.domain }}{{ doc.author.profile.get_edit_url }}'>{{ doc.author.profile }}</a>
+            (<a href='https://{{ site.domain }}{% url "comments.moderator_remove" comment.pk %}}'>{% trans "remove" %}</a>,
+             <a href='https://{{ site.domain }}{% url "comments.spam_can_comment" comment.pk %}'>{% trans "spam" %}</a>)
         </td></tr>
         <tr><td bgcolor='#ffe'>
             {{ comment.comment|linebreaksbr }}
@@ -43,7 +44,7 @@
     </table>
 {% endif %}
 {% if transcriptions %}
-    <h2>Transcriptions ({{ transcriptions|length }})</h2>
+    <h2>{% trans "Transcriptions" %} ({{ transcriptions|length }})</h2>
     {% for transcription, revs in transcriptions %}
     {% with doc=transcription.document %}
     {% with prev=revs.0 cur=revs.1 %}
@@ -51,16 +52,16 @@
         <tr><td bgcolor='#ddd'>
                 <h2>{{ forloop.counter }}</h2>
                 <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>{{ doc.type|title }}: {{ doc.get_title }}</a>
-                by {{ doc.author.profile }}
-                <span style='color: #666;'>(uploaded {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>edit transcription</a>,
-                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>view document</a>,
-                <a href='https://{{ site.domain }}{% url "scanning.revision_list" doc.pk %}'>full diff</a>.
+                {% trans "by" %} {{ doc.author.profile }}
+                <span style='color: #666;'>({% trans "uploaded" %} {{ doc.date_written|naturalday }})</span>.  <a href='https://{{ site.domain }}{% url "scanning.transcribe_document" doc.pk %}'>{% trans "edit transcription" %}</a>,
+                <a href='https://{{ site.domain }}{{ doc.get_absolute_url }}'>{% trans "view document" %}</a>,
+                <a href='https://{{ site.domain }}{% url "scanning.revision_list" doc.pk %}'>{% trans "full diff" %}</a>.
         </td></tr>
         <tr>
             <td bgcolor='#eee'>
-                By {{ cur.editor }}, {{ cur.modified|naturalday }} {{ cur.modified|date:"P" }}
-                (<a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/'>edit user</a>, 
-                <a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/delete'>delete user</a>)
+                {% trans "By" %} {{ cur.editor }}, {{ cur.modified|naturalday }} {{ cur.modified|date:"P" }}
+                (<a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/'>{% trans "edit user" %}</a>, 
+                <a href='https://{{ site.domain }}/admin/auth/user/{{ cur.editor.id }}/delete'>{% trans "delete user" %}</a>)
             </td>
         </tr>
         <tr>

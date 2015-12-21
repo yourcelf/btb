@@ -1,8 +1,16 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 {% block title %}Remove Spam{% endblock %}
 {% block body %}
-  <h1>Remove Spam</h1>
-  <p>Remove the following comment by <em>{{ comment.user.profile }}</em> as spam? (If this is a violation of guidelines or anything other than spam, use <a href='{% url "comments.moderator_remove" comment.pk %}'>this form</a> instead)</p>
+  <h1>{% trans "Remove Spam" %}</h1>
+  <p>
+    {% blocktrans with commenter=comment.user.profile %}
+   Remove the following comment by <em>{{ commenter }}</em>
+   as spam? (If this is a violation of guidelines or anything other
+   than spam, use <a href='{% url "comments.moderator_remove"
+   comment.pk %}'>this form</a> instead)
+    {% endblocktrans %}
+  </p>
   <p>posted <a href='{{ comment.get_absolute_url }}'>{{ comment.created|date }}</a> on 
             <a href='{{ comment.document.get_absolute_url }}'>{{ comment.document.get_title }}</a> by
             <a href='{{ comment.document.author.profile.get_blog_url }}'>{{ comment.document.author.profile }}</a>
@@ -14,10 +22,10 @@
     </form>
   </p>
   {% if can_del_user %}
-  <h2>Is the user a spambot?</h2>
-  <p> If the user is a spambot, remove the whole user instead.  This will delete all of the following, including the above comment:
+  <h2>{% trans "Is the user a spambot?" %}</h2>
+  <p>{% trans "If the user is a spambot, remove the whole user instead.  This will delete all of the following, including the above comment:" %}
   <ul class='bullets'>
-    <li>User: {{ comment.user }}</li>
+    <li>{% trans "User:" %} {{ comment.user }}</li>
     {% for name, instance in also_deleted %}
     <li>{{ name }}:
       {% if instance.get_absolute_url %}
@@ -30,7 +38,7 @@
   </ul>
   <form method='post' action=''>{% csrf_token %}
     <input type='hidden' name='delete_user' value='1' />
-    <input type='submit' value='Delete user and all their content' />
+    <input type='submit' value='{% trans "Delete user and all their content" %}' />
   </form>
   {% endif %}
 {% endblock %}

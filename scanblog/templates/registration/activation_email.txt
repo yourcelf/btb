@@ -1,6 +1,8 @@
+{% load i18n %}
+{% blocktrans with site_name=site.name %}
 Hello,
 
-Welcome to {{ site.name }}!  You've just joined a community of respectful
+Welcome to {{ site_name }}!  You've just joined a community of respectful
 people who value helping to give a voice to the voiceless.
 
 To complete your registration, follow this link:
@@ -8,7 +10,7 @@ To complete your registration, follow this link:
 
 This link will expire in {{ expiration_days }} days, so don't delay.
 
-See you on {{ site.name }}!
+See you on {{ site_name }}!
 
 Sincerely,
 

@@ -2,9 +2,10 @@
 {% load i18n %}
 
 {% block body %}
-<h1>Welcome!</h1>
+<h1>%{ trans "Welcome!" %}</h1>
 <p>
-Your registration is now complete.  You may now <a href='{% url "auth_login" %}'>login</a>.
+{% trans "Your registration is now complete." %}
+  {% trans "You may now" %} <a href='{% url "auth_login" %}'>{% trans "login" %}</a>.
 </p>
 
 {% endblock %}

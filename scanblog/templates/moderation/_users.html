@@ -1,48 +1,49 @@
+{% load i18n %}
 <!-- User management -->
 
 <script type='text/template' id="userAdd">
     <form class='add-user'>
-        <h2 style='float: left;'><span class='ui-icon ui-icon-circle-triangle-w cancel-add-user-link link-like'></span>Create new user</h2>
+        <h2 style='float: left;'><span class='ui-icon ui-icon-circle-triangle-w cancel-add-user-link link-like'></span>{% trans "Create new user" %}</h2>
         <table style='clear: both;'>
             <tr>
-                <th>Full name*</th>
+                <th>{% trans "Full name*" %}</th>
                 <td><input type='text' value='<%= defaults.display_name %>' name='display_name' 
-                     placeholder="e.g., John Smith (Do not include number here)" /></td>
+                     placeholder="{% trans "e.g., John Smith (Do not include number here)" %}" /></td>
             </tr>
             <tr>
                 <th>
-                    Mailing address*<br /><br />
+                    {% trans "Mailing address*" %}<br /><br />
                 </th>
                 <td class='<%= errors.mailing_address ? "ui-state-error" : "" %>'>
                     <%= errors.mailing_address ? errors.mailing_address + "<br />" : "" %>
                     <textarea name='mailing_address'
-                    placeholder="Prisoner number as first line.  Full address on next."><%= defaults.mailing_address %></textarea>
+                    placeholder="{% trans "Prisoner number as first line.  Full address on next." %}"><%= defaults.mailing_address %></textarea>
                 </td>
             </tr>
             <tr>
-                <th>Blogger?*</th>
+                <th>{% trans "Blogger?*" %}</th>
                 <td><input type='checkbox' 
                         <% if (defaults.blogger) { %>checked='checked'<% } %> 
                         name='blogger' />
                 </td>
             </tr>
             <tr>
-                <th>Managed?*</th>
+                <th>{% trans "Managed?*" %}</th>
                 <td><input type='checkbox' 
                         <% if (defaults.managed) { %>checked='checked'<% } %> 
                         name='managed' />
                     </td>
             </tr>
             <tr>
-                <th>Email&nbsp;</th>
+                <th>{% trans "Email&nbsp;" %}</th>
                 <td><input type='text' name='email' value='<%= defaults.email %>' placeholder='e.g., johnsmith@yahoo.com' /></td>
             </tr>
             <tr>
-                <th>Blog name&nbsp;</th>
+                <th>{% trans "Blog name&nbsp;" %}</th>
                 <td class='<%= errors.blog_name ? "ui-state-error" : "" %>'>
                     <%= errors.blog_name ? errors.blog_name + "<br />" : "" %>
                     <input type='text' name='blog_name' 
-                           value='<%= defaults.blog_name %>' placeholder='leave blank unless specified by user' />
+                           value='<%= defaults.blog_name %>' placeholder='{% trans "leave blank unless specified by user" %}' />
                 </td>
             </tr>
             <tr>
@@ -52,11 +53,12 @@
                     <label>
                       <input type='checkbox' name='comments_disabled'
                           <%= defaults.comments_disabled ? "checked='checked'" : "" %>>
-                      Disable comments
+                      {% trans "Disable comments" %}
                     </label>
                 </td>
+            </tr>
             <tr>
-                <th>Organization</th>
+                <th>{% trans "Organization" %}</th>
                 <td>
                     <select class='org' name='org_id'>
                         <% for (var i = 0; i < orgs.length; i++) { %>
@@ -66,8 +68,8 @@
                 </td>
             </tr>
             <tr>
-                <td><span class='link-like cancel-add-user-link'>Cancel</span></td>
-                <td><input type='submit' value='Create new user' onclick='return false;' class='save-new-user'/></td>
+                <td><span class='link-like cancel-add-user-link'>{% trans "Cancel" %}</span></td>
+                <td><input type='submit' value='{% trans "Create new user" %}' onclick='return false;' class='save-new-user'/></td>
             </tr>
         </table>
     </form>
@@ -78,7 +80,7 @@
         <form onsubmit='return false;'>
             <span class='ui-icon ui-icon-circle-triangle-w cancel-user-search link-like'></span>
             <input type='text' class='user-search' value='<%= term %>' maxlength='50' />
-            <span class='add-user-link'><span class='ui-icon ui-icon-plus'></span>Create new user?</span>
+            <span class='add-user-link'><span class='ui-icon ui-icon-plus'></span>{% trans "Create new user?" %}</span>
         </form>
         <div class='pagination'></div>
         <div class='results'></div>
@@ -86,7 +88,7 @@
     </div>
 </script>
 <script type='text/template' id="userSearchResultEmpty">
-    <div class='noresult'>No results.</div>
+    <div class='noresult'>{% trans "No results." %}</div>
 </script>
 <script type="text/template" id="inPlaceUserChooser">
   <span class='user-name'></span> <span class='user-state'></span>
@@ -99,17 +101,17 @@
         <label>
           <input type='radio' name='usertype' value='blogger'
             <%= filter.blogger ? "checked" : "" %>></input>
-            Bloggers
+            {% trans "Bloggers" %}
         </label>
         <label>
           <input type='radio' name='usertype' value='commenter'
             <%= filter.blogger ? "" : "checked" %>></input>
-            Commenters
+            {% trans "Commenters" %}
         </label>
       </td>
     </tr>
     <tr>
-      <th><label>Select user:</label> </th>
+      <th><label>{% trans "Select user:" %}</label> </th>
       <td><div class='user-chooser-holder'></div></td>
     </tr>
   </table>
@@ -118,31 +120,31 @@
 <script type='text/template' id='userState'>
     <%/* state */%>
     <% if (!user.is_active) { %>
-        Inactive
+        {% trans "Inactive" %}
     <% } %>
     <% if (user.blogger) { %>
-        Blogger:
+        {% trans "Blogger:" %}
         <% if (user.consent_form_received) { %>
             <% if (user.lost_contact) { %>
                 <span class='ui-icon ui-icon-alert' title='Hold Mail'></span>
-                Mail held
+                {% trans "Mail held" %}
             <% } else if (user.managed) { %>
                 <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
-                Managed
+                {% trans "Managed" %}
             <% } else { %>
                 <span class='ui-icon ui-icon-check' title='Fully enrolled'></span>
-                Unmanaged
+                {% trans "Unmanaged" %}
             <% } %>
         <% } else if (user.invited) { %>
-            invited
+            {% trans "invited" %}
         <% } else if (user.waitlisted) { %>
-            waitlisted
+            {% trans "waitlisted" %}
         <% } else if (user.waitlistable) { %>
-            waitlistable
+            {% trans "waitlistable" %}
         <% } %>
-      (<a href='<%= user.blog_url %>'>blog</a>)
+      (<a href='<%= user.blog_url %>'>{% trans "blog" %}</a>)
     <% } else { %>
-        Commenter
+        {% trans "Commenter" %}
     <% } %>
 </script>
 <script type='text/template' id='compactUser'>
@@ -152,18 +154,18 @@
         <div class='name-and-details'>
             <div class='display-name'>
                 <%| user.display_name %>
-                <a href='#/users/<%= user.id %>' title='Edit user'><span class='ui-icon ui-icon-person'></span></a>
+                <a href='#/users/<%= user.id %>' title='{% trans "Edit user" %}'><span class='ui-icon ui-icon-person'></span></a>
                 <% if (user.mailing_address) { %>
                     <a href='{% url "correspondence.print_envelope" %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
                 <% } %>
 
             </div>
             <% if (user.blog_name) { %><div class='blog-name'><%= user.blog_name %></div><% } %>
-            <div class='date-joined'>Joined: <%= btb.formatDate(user.date_joined) %></div>
+            <div class='date-joined'>{% trans "Joined:" %} <%= btb.formatDate(user.date_joined) %></div>
             <% if (user.blogger) { %>
-                <%= user.scans_authored != null ? user.scanns_authored + " letters" : "" %>
-                <a href='<%= user.blog_url %>'>blog</a>
-                <a href='<%= user.profile_url %>'>profile</a>
+                <%= user.scans_authored != null ? user.scanns_authored + " {% trans "letters" %}" : "" %>
+                <a href='<%= user.blog_url %>'>{% trans "blog" %}</a>
+                <a href='<%= user.profile_url %>'>{% trans "profile" %}</a>
             <% } %>
             <span class='user-id'><%| user.id %></span>
             <br />
@@ -177,11 +179,11 @@
 <script type='text/template' id="userStatusTable">
     <table>
         <tr>
-            <th>Active</th>
-            <th>Blogger</th>
-            <th>Managed</th>
-            <th>License signed</th>
-            <th>Hold Mail</th>
+            <th>{% trans "Active" %}</th>
+            <th>{% trans "Blogger" %}</th>
+            <th>{% trans "Managed" %}</th>
+            <th>{% trans "License signed" %}</th>
+            <th>{% trans "Hold Mail" %}</th>
         </tr>
         <tr>
             <td class='is-active'></td>
@@ -200,11 +202,11 @@
             <% if (user.email) { %>
                 <a href='mailto:<%= user.email %>'><%= user.email %></a>
             <% } else { %>
-                No email on file.
+                {% trans "No email on file." %}
             <% } %>
         </div>
         <div class='right-column'>
-            <h2>Notes</h2>
+            <h2>{% trans "Notes" %}</h2>
             <div class='notelist'></div>
         </div>
         <div style='clear: both;'></div>
@@ -214,27 +216,27 @@
 <script type='text/template' id='commenterStats'>
     <table>
         <tr>
-            <td style='font-size: 20px;'><a href='/people/show/<%= user_id %>'>Profile</a>
-            <td style='font-size: 20px;'><a href='/admin/auth/user/<%= user_id %>'>Admin</a>
+            <td style='font-size: 20px;'><a href='/people/show/<%= user_id %>'>{% trans "Profile" %}</a>
+            <td style='font-size: 20px;'><a href='/admin/auth/user/<%= user_id %>'>{% trans "Admin" %}</a>
         </tr>
     </table>
     <table>
         <tr>
-            <th>Joined</th>
+            <th>{% trans "Joined" %}</th>
             <td>
                 <%= btb.formatDate(joined) %>
                 <% var diff = new Date().getTime() - joined.getTime(); %>
                 (<%= parseInt(diff / (60 * 60 * 24 * 1000)) %> days ago)
             </td>
-            <th>Last login</th><td><%= btb.formatDate(last_login) %>
+            <th>{% trans "Last login" %}</th><td><%= btb.formatDate(last_login) %>
                 <% var diff = new Date().getTime() - last_login.getTime(); %>
                 (<%= parseInt(diff / (60 * 60 * 24 * 1000)) %> days ago)
             
             </td>
-            <th>Tagger</th>
+            <th>{% trans "Tagger" %}</th>
             <td>
                 <label for='id_can_tag'>
-                    May add tags to posts:
+                    {% trans "May add tags to posts:" %}
                     <input type='checkbox' name='can_tag' id='id_can_tag' <%= can_tag ? "checked" : "" %>/>
                 </label>
             </td>
@@ -243,14 +245,14 @@
     <p></p>
     <p></p>
     <% if (!histogram) { %>
-      <p>No activity.</p>
+      <p>{% trans "No activity." %}</p>
     <% } else { %>
-        <h3>Activity over time</h3>
+        <h3>{% trans "Activity over time" %}</h3>
         <table>
             <tr>
-                <th class='comments'>Comments</th><td><%= activity.comments.length %></td>
-                <th class='favorites'>Favorites</th><td><%= activity.favorites.length %></td>
-                <th class='transcriptions'>Transcriptions</th><td><%= activity.transcriptions.length %></td>
+                <th class='comments'>{% trans "Comments" %}</th><td><%= activity.comments.length %></td>
+                <th class='favorites'>{% trans "Favorites" %}</th><td><%= activity.favorites.length %></td>
+                <th class='transcriptions'>{% trans "Transcriptions" %}</th><td><%= activity.transcriptions.length %></td>
             </tr>
         </table>
         <div class='histogram-holder'>
@@ -283,8 +285,8 @@
         </div>
         <p></p>
         <p></p>
-        <h3>Relationships</h3>
-        <p>This commenter has interacted with the following bloggers:</p>
+        <h3>{% trans "Relationships" %}</h3>
+        <p>{% trans "This commenter has interacted with the following bloggers:" %}</p>
         <ul class='bullets'>
             <% for (var i=0; i < relationships.length; i++) { %>
                 <li>
@@ -311,60 +313,64 @@
             <div style='clear: left; vertical-align: bottom;'></div>
             <table class='user-info'>
                 <tr>
-                    <th>Name</th><td class='display-name'></td>
+                    <th>{% trans "Name" %}</th><td class='display-name'></td>
                 </tr>
                 <tr>
                     <th>
-                        Address
+                        {% trans "Address" %}
                         <% if (user.mailing_address) { %>
                             <a href='{% url "correspondence.print_envelope" %}<%= user.id %>'><span class='ui-icon ui-icon-mail-closed'></span></a>
                         <% } %>
                     </th>
                     <td class='mailing-address'></td>
                 </tr><tr>
-                    <th>Special mail handling</th>
+                    <th>{% trans "Special mail handling" %}</th>
                     <td class='special-mail-handling'></td>
                 </tr><tr>
-                    <th>Blog name</th><td class='blog-name'></td>
+                    <th>{% trans "Blog name" %}</th><td class='blog-name'></td>
                 </tr>
                 <tr>
+<<<<<<< HEAD
+                    <th>{% trans "Email" %}</th><td class='email'></td>
+=======
                   <th>Disable comments</th><td class='comments-disabled'></td>
                 </tr>
                 <tr>
                     <th>Email</th><td class='email'></td>
+>>>>>>> master
                 </tr>
                 <tr>
-                    <th>Status</th>
+                    <th>{% trans "Status" %}</th>
                     <td class='user-status-table'></td>
                 </tr>
                 <tr>
-                    <th>Joined</th>
+                    <th>{% trans "Joined" %}</th>
                     <td>
                         <%= btb.formatDate(user.date_joined) %>
                     </td>
                 </tr>
                 <tr>
-                    <th>Organization</th>
+                    <th>{% trans "Organization" %}</th>
                     <td><%= _.map(user.organizations, function(o) { return o.name }).join(", ") %>
             </table>
-            <h2>Profiles</h2>
+            <h2>{% trans "Profiles" %}</h2>
             <div class='profilelist'></div>
-            <h2>Posts</h2>
+            <h2>{% trans "Posts" %}</h2>
             <div class='postlist'></div>
-            <h2>Requests</h2>
+            <h2>{% trans "Requests" %}</h2>
             <div class='requestlist'></div>
-            <h2>Photos</h2>
+            <h2>{% trans "Photos" %}</h2>
             <div class='photolist'></div>
         </div>
         <div class='right-column'>
-            <h2>Notes</h2>
+            <h2>{% trans "Notes" %}</h2>
             <div class='notelist'></div>
-            <h2>Correspondence</h2>
+            <h2>{% trans "Correspondence" %}</h2>
             <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='letter-saving' />
             <div class='correspondencelist'></div>
-            <h2>Missing Scans</h2>
+            <h2>{% trans "Missing Scans" %}</h2>
             <div class='missingscanlist'></div>
-            <h2>License Agreement</h2>
+            <h2>{% trans "License Agreement" %}</h2>
             <div class='licenselist'></div>
         </div>
     </div>
@@ -378,17 +384,17 @@
 <script type='text/template' id="userDetailDocumentStatus">
     <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />
     <div class='error' style='display: none;'>
-        Server error! Changes not saved.  </div>
+        {% trans "Server error! Changes not saved." %}  </div>
     <form>
         <select class='status'>
             {% for state in document_states %}
                 <option value='{{ state.0 }}'>{{ state.1 }}</option>
             {% endfor %}
         </select><br />
-        Adult: <input type='checkbox' class='adult' <%| adult ? "checked: 'checked'" : "" %> />
+        {% trans "Adult:" %} <input type='checkbox' class='adult' <%| adult ? "checked: 'checked'" : "" %> />
     </form>
-    <span class='queue-printout'>Queue printout</span><br />
-    Reply ID: <span class='mono'><%= reply_id %></span>
+    <span class='queue-printout'>{% trans "Queue printout" %}</span><br />
+    {% trans "Reply ID:" %} <span class='mono'><%= reply_id %></span>
 </script>
 <script type='text/template' id="missingCheckbox">
     <img src='{{ STATIC_URL }}img/spinner.gif' style='display: none;' class='loading' />

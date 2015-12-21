@@ -1,25 +1,30 @@
 {% extends "blogs/base.html" %}
+{% load i18n %}
 {% load thumbnail %}
 {% load public_url %}
-
+{% trans "Recent Comments" as recent_comments %}
+{% trans "Posted on" as posted_on %}
+{% trans "by" as i18n_by %}
+{% trans "More comments" as more_comments %}
 {% block title %}Recent comments{% endblock %}
 {% block body %}
 
-<h1>Recent Comments</h1>
+<h1>{{ recent_comments }}</h1>
 
 <div class='comment-list'>
 {% for comment in page.object_list %}
     <div class='comment-list-item'>
         {% include "comments/_comment.html" %}
         {% with doc=comment.document %}
-        <div class='comment-list-foot'>Posted on <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> by {{ comment.document.author.profile }}</em>
+        <div class='comment-list-foot'>{{ posted_on }} <a href='{{ doc.get_absolute_url }}'>{{ doc.get_title }}</a> {{ i18n_by }} {{ comment.document.author.profile }}</em>
             {% thumbnail doc.documentpage_set.all.0.image.path "100" as im %}
-            <a href='{{ doc.get_absolute_url }}'
-                ><img src='{{ im.url|public_url }}'
+            <a href='{{ doc.get_absolute_url }}'>
+              <img src='{{ im.url|public_url }}'
                     width='{{ im.x }}'
                     height='{{ im.y }}'
                     title='{{ doc.get_title }}'
-                    alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/></a>
+                    alt='{{ doc.get_title }}' style='vertical-align: middle; margin-left: 1em; margin-bottom: 1em;'/>
+            </a>
             {% endthumbnail %}
         </div>
         {% endwith %}
@@ -28,7 +33,7 @@
 </div>
 
 {% if page.paginator.num_pages > 1 %}
-    More comments:
+    {{ more_comments }} :
     {% include "_pagination.html" %}
 {% endif %}
 

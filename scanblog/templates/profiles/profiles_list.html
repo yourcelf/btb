@@ -12,16 +12,16 @@
     {% for profile in authors %}
         <li class='person'>
             {% if profile.authored_posts_count > 0 %}
-                <a class='bloglink' 
+                <a class='bloglink'
                    href='{{ profile.get_blog_url }}'>{{ profile.display_name }}</a>
-                   ({{ profile.authored_posts_count }} 
-                    post{{ profile.authored_posts_count|pluralize }}, 
+                   ({{ profile.authored_posts_count }}
+                    post{{ profile.authored_posts_count|pluralize }},
                     latest {{ profile.latest_post|naturalday }})
             {% else %}
                 {{ profile.display_name }} &mdash;
             {% endif %}
             {% if profile.has_public_profile %}
-                <a class='profilelink' 
+                <a class='profilelink'
                    href='{{ profile.get_absolute_url }}'>profile</a>
             {% endif %}
         </li>

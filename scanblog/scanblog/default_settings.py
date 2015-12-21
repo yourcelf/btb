@@ -168,6 +168,7 @@ AUTHENTICATION_BACKENDS = (
 AUTH_USER_MODEL = "auth.User"
 
 CONTACT_EMAIL = "contact@betweenthebars.org"
+SITE_EMAIL = "info@betweenthebars.org"
 MAIL_DROP_ID = 1
 LOGIN_URL = "/accounts/login"
 #TODO: Go to something else after login.

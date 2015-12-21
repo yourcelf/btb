@@ -1,8 +1,10 @@
 {% extends "about/legal_base.html" %}
-{% block title %}Digital Millenium Copyright Act Policy{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Digital Millenium Copyright Act Policy" %}{% endblock %}
 {% block body %}
 <div class='terms'>
-<h2>{{ site.name }} Digital Millenium Copyright Act&nbsp;Policy</h2>
+{% blocktrans with site_name=site.name %}
+<h2>{{ site_name }} Digital Millenium Copyright Act&nbsp;Policy</h2>
 <p>
 Consistent with the Digital Millennium Copyright Act, if you believe that your
 copyrighted materials have been copied in a way that constitutes copyright
@@ -44,10 +46,11 @@ Cambridge, MA 02139</dd>
 
 <p>
 Note: the above contact information is provided exclusively for notifying
-Between the Bars that your copyrighted material may have been infringed. All
+{{ site_name }} that your copyrighted material may have been infringed. All
 other inquiries, (e.g., requests for technical assistance or customer service,
 reports of email abuse, and piracy reports), will not receive a response
 through this process.
 </p>
+{% endblocktrans %}
 </div>
 {% endblock %}

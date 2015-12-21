@@ -1,4 +1,5 @@
 {% load favorites %}
+{% load i18n %}
         <div class='comment{% if comment.removed %} removed{% endif %}'>
             <a name='c{{ comment.id }}'></a>
             <div class='commentbyline'>
@@ -6,17 +7,22 @@
                     <tr>
                         <td>
                           {% if comment.removed %}
-                            <em>[removed]</em>
+                            <em>[{% trans "removed" %}]</em>
                           {% else %}
                             <a href='{{ comment.user.profile.get_absolute_url }}'>{{ comment.user.profile }}</a>
                           {% endif %}
                         </td>
                         <td>
-                            <span class='comment-date'>Posted {{ comment.created|timesince }} ago.</span>
+                            <span class='comment-date'>
+                              {% blocktrans with time_since_created=comment.created|timesince %}
+                              Posted {{ time_since_created }} ago.
+                              {% endblocktrans %}
+                            </span>
                             {% if comment.letter_sent and not comment.removed %}
                                 <span class='comment-date-mailed'>
                                     &check;
-                                    Mailed {{ comment.letter_sent|timesince }} ago
+                                    {% blocktrans with time_since_sent=comment.letter_sent|timesince %}
+                                    Mailed {{ time_since_sent }} ago
                                 </span>
                             {% endif %}
                         </td>

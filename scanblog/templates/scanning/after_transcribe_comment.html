@@ -1,16 +1,19 @@
 {% extends "site_base.html" %}
+{% load i18n %}
 
-{% block title %}Leave a note{% endblock %}
+{% block title %}{% trans "Leave a note" %}{% endblock %}
 
 {% block body %}
 <p>
+{% blocktrans %}
 Thanks for updating the transcription.  Would you like to leave a note for the
 author so they know you've done the work?  Please take a moment to personalize
 it, now that you've read their work!
+{% endblocktrans %}
 </p>
 
 <p>
-<a href='{{ document.get_absolute_url }}#transcription' class='skip-reply-button'>No thanks, skip this</a>
+<a href='{{ document.get_absolute_url }}#transcription' class='skip-reply-button'>{% trans "No thanks, skip this" %}</a>
 </p>
 
 {% with comment_form=form post=document%}
