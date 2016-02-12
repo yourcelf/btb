@@ -43,11 +43,11 @@ class Click2MailBatch(object):
         return E("returnAddress",
             E("name", "Between the Bars"),
             E("organization", ""),
-            E("address1", "PO Box 425103"),
+            E("address1", "2885 Sanford Ave SW # 30428"),
             E("address2", ""),
-            E("city", "Cambridge"),
-            E("state", "MA"),
-            E("postalCode", "02142"),
+            E("city", "Grandville"),
+            E("state", "MI"),
+            E("postalCode", "49418"),
         )
 
     @classmethod
