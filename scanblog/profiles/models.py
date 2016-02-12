@@ -171,6 +171,21 @@ class ProfileManager(OrgManager):
             )
         return self.none()
 
+    def recently_active(self, days=2*365):
+        """
+        All bloggers with whom we haven't lost contact, are enrolled or have
+        been invited, and have sent us something within the last N days.
+        """
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
+        return self.bloggers().filter(
+                lost_contact=False
+            ).filter(
+                Q(consent_form_received=True) |
+                Q(user__received_letters__type="consent_form")
+            ).filter(
+                user__documents_authored__created__gte=cutoff
+            ).distinct()
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     display_name = models.CharField(max_length=50)
