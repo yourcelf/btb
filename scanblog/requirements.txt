@@ -1,9 +1,13 @@
 django<1.9
 psycopg2
 django-registration-redux
-amqp
+
+# Celery
 Celery
 django-celery
+amqp
+anyjson
+
 pyPdf
 pillow
 fabric
