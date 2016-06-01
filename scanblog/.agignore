@@ -1,0 +1,6 @@
+venv
+media
+site_static/CACHE
+btb/management/commands/collective_nouns.json
+btb/management/commands/obscure.txt
+deploy

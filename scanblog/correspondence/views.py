@@ -512,8 +512,10 @@ def get_mailing_file(request, mailing_id):
             ])
             proc.communicate()
 
-        if settings.X_SENDFILE_ENABLED:
+        if settings.X_SENDFILE_ENABLED: # Apache
             response['X-Sendfile'] = filename
+        elif settings.X_ACCEL_REDIRECT_ENABLED: # Nginx
+            response['X-Accel-Redirect'] = filename
         else:
             with open(mailing.get_file()) as fh:
                 response.write(fh.read())

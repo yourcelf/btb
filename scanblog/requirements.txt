@@ -1,6 +1,7 @@
 django<1.9
 psycopg2
 django-registration-redux
+amqp
 Celery
 django-celery
 pyPdf

@@ -185,9 +185,10 @@ CACHE_MIDDLEWARE_SECONDS = 60 * 10
 # django-registration
 ACCOUNT_ACTIVATION_DAYS = 2
 
-# Allows sending of very large files in low memory with apache; doesn't work
-# with devserver.
-X_SENDFILE_ENABLED = False
+# Allows sending of very large files in low memory; doesn't work with
+# devserver.
+X_SENDFILE_ENABLED = False # Apache only
+X_ACCEL_REDIRECT_ENABLED = False # Nginx only
 
 UPLOAD_LIMIT = 20971520 # 20MB
 SCAN_PAGES_PER_PAGE = 6
