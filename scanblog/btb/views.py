@@ -32,7 +32,7 @@ def private_media(request, path):
         response = HttpResponse()
         response['X-Sendfile'] = os.path.join(settings.MEDIA_ROOT, path)
         return response
-    elif settingx.X_ACCEL_REDIRECT:
+    elif settings.X_ACCEL_REDIRECT_ENABLED:
         response = HttpResponse()
         response['X-Accel-Redirect'] = path
         return response
