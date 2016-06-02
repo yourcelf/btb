@@ -28,5 +28,12 @@ def private_media(request, path):
     if "thumbnail" in request.GET:
         im = get_thumbnail(os.path.join(settings.MEDIA_ROOT, path), request.GET['thumbnail'])
         path = im.name
+    if settings.X_SENDFILE_ENABLED:
+        response = HttpResponse()
+        response['X-Sendfile'] = os.path.join(settings.MEDIA_ROOT, path)
+        return response
+    elif settingx.X_ACCEL_REDIRECT:
+        response = HttpResponse()
+        response['X-Accel-Redirect'] = path
+        return response
     return serve(request, path=path, document_root=settings.MEDIA_ROOT)
-
