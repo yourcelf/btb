@@ -26,7 +26,7 @@ def home(request):
 @permission_required("scanning.change_scan")
 def private_media(request, path):
     if "thumbnail" in request.GET:
-        im = get_thumbnail(os.path.join(settings.MEDIA_ROOT, path), request.GET['thumbnail'])
+        im = get_thumbnail(path, request.GET['thumbnail'])
         path = im.name
     if settings.X_SENDFILE_ENABLED:
         response = HttpResponse()
@@ -34,6 +34,7 @@ def private_media(request, path):
         return response
     elif settings.X_ACCEL_REDIRECT_ENABLED:
         response = HttpResponse()
+        del response['Content-Type'] # let nginx infer content type
         response['X-Accel-Redirect'] = "/private_media_serve/{}".format(path)
         return response
     return serve(request, path=path, document_root=settings.MEDIA_ROOT)

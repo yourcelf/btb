@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
 from btb.log_filter import skip_unreadable_post
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 TEST_RUNNER = 'btb.test_runner.BtbTestRunner'
 

@@ -517,6 +517,7 @@ def get_mailing_file(request, mailing_id):
         elif settings.X_ACCEL_REDIRECT_ENABLED: # Nginx
             response['X-Accel-Redirect'] = "/private_media_serve/{}".format(
                     os.path.relpath(settings.MEDIA_ROOT, filename))
+            del response['Content-Type']
         else:
             with open(mailing.get_file()) as fh:
                 response.write(fh.read())
