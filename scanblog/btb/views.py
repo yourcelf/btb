@@ -34,6 +34,6 @@ def private_media(request, path):
         return response
     elif settings.X_ACCEL_REDIRECT_ENABLED:
         response = HttpResponse()
-        response['X-Accel-Redirect'] = path
+        response['X-Accel-Redirect'] = "/private_media_serve/{}".format(path)
         return response
     return serve(request, path=path, document_root=settings.MEDIA_ROOT)
