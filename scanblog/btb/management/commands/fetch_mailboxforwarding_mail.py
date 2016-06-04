@@ -74,7 +74,9 @@ class Command(BaseCommand):
             if match:
                 id_ = match.group(1)
             else:
-                raise Exception("Can't find ID")
+                # TODO: Handle packages correctly
+                continue
+                #raise Exception("Can't find ID")
 
             match = re.search("src=\"([^\"]+)\"", envelope)
             if not match:
