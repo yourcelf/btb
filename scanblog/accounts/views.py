@@ -79,7 +79,7 @@ def welcome(request):
 class OptionalEmailRegistrationView(RegistrationView):
     form_class = OptionalEmailForm
 
-    def get_success_url(self, request, user):
+    def get_success_url(self, request, user=None):
         if 'after_login' in request.session:
             return request.session.pop('after_login')
         return reverse("accounts-post-registration")
