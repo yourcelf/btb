@@ -1,6 +1,7 @@
 django<1.9
 psycopg2
 django-registration-redux==1.2
+django-registration==1.0
 
 # Celery
 Celery
