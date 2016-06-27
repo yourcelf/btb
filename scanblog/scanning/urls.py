@@ -19,6 +19,7 @@ urlpatterns = patterns('scanning.views',
     url(r'^merge/{0}?$'.format(scan_id), 'scan_merge', name='scanning.scan_merge'),
     url(r'^delete_doc/{0}?$'.format(document_id), 'doc_delete', name='scanning.delete_doc'),
     url(r'^flag/{0}?$'.format(document_id), 'flag_document', name='scanning.flag_document'),
+    url(r'^recent$', 'recent_scans', name='scanning.recent_scans'),
 
     url(r'^transcribe/{0}$'.format(document_id), 'transcribe_document', name='scanning.transcribe_document'),
     url(r'^transcribe/{0}/list$'.format(document_id), 'revision_list', name='scanning.revision_list'), 

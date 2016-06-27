@@ -1,0 +1,42 @@
+{% extends "moderation/base.html" %}
+{% load compress %}
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-sass" href="{{STATIC_URL}}css/moderation.sass" />
+    {% endcompress %}
+{% endblock %}
+{% block title %}Recent scans {% endblock %}
+{% block body %}
+<h1>Recent Scans</h1>
+{% load thumbnail %}
+<div class='recentscans'>
+  {% for item in items %}
+    {% ifchanged item.scan.id %}
+      {% if forloop.counter0 > 0 %}
+      </div> <!-- class='scan' -->
+      {% endif %}
+      <div class='scan'>
+        <div class='author'>
+          {% if scan.processing_complete %}
+            <span class='success'>&check;</span>
+          {% else %}
+            <span class='error'>&times;</span>
+          {% endif %}
+          <a href='{{ item.scan.author.profile.get_edit_url }}'>{{ item.scan.author.profile }}</a>
+          <span class='date'><a href='{{ item.scan.get_edit_url }}'>&#x270e; {{ item.scan.created|date:"Y b j" }}</a></span>
+        </div>
+    {% endifchanged %}
+    <span class='page'>
+      <a href='{{ item.page.image.url }}' target='_blank'>
+        <img class='scanpage' src='{{ item.page.image.url }}?thumbnail=300' />
+      </a>
+      <div class='documents'>
+        {% for document in item.documents %}
+          <a class='document' href='{{ document.get_edit_url }}'>{{ document.type }} {{ document.status }} {{ document.pk }}</a>
+        {% endfor %}
+      </div>
+    </span>
+  {% endfor %}
+  </div> <!-- class='scan' -->
+</div> <!-- class='scans' -->
+{% endblock %}

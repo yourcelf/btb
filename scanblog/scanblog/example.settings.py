@@ -134,21 +134,6 @@ MAILBOX_FORWARDING = {
 
 # Uncomment the following to enable django debug toolbar. You'll need to
 # install it first with e.g. `pip install django-debug-toolbar`
-# if DEBUG:
-#    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-#    INSTALLED_APPS += ('debug_toolbar',)
-#    DEBUG_TOOLBAR_CONFIG = {
-#            'INTERCEPT_REDIRECTS': False,
-#    }
-#    DEBUG_TOOLBAR_PANELS = (
-#            'debug_toolbar.panels.version.VersionDebugPanel',
-#            'debug_toolbar.panels.timer.TimerDebugPanel',
-#            'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-#            'debug_toolbar.panels.headers.HeaderDebugPanel',
-#            'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-#            'debug_toolbar.panels.sql.SQLDebugPanel',
-#            'debug_toolbar.panels.template.TemplateDebugPanel',
-#            'debug_toolbar.panels.signals.SignalDebugPanel',
-#            'debug_toolbar.panels.logger.LoggingPanel',
-#            'debug_toolbar.panels.cache.CacheDebugPanel',
-#    )
+#if DEBUG:
+#   MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+#   INSTALLED_APPS += ('debug_toolbar',)

@@ -603,7 +603,6 @@ def doc_delete(request, document_id=None):
     return redirect(reverse("moderation.home") + "#/process")
 
 
-
 @permission_required('scanning.change_scan')
 def scan_reimport(request, scan_id=None):
     try:
@@ -620,6 +619,37 @@ def scan_reimport(request, scan_id=None):
                     "#/process/scan/%s" % scan.id
     ).task_id
     return redirect("moderation.wait_for_processing", task_id)
+
+@permission_required('scanning.change_scan')
+def recent_scans(request):
+    scans = Scan.objects.org_filter(
+        request.user
+    ).order_by('-created')
+    scan_ids = [s.id for s in scans]
+
+    scan_pages = ScanPage.objects.filter(
+        scan_id__in=scan_ids
+    ).order_by(
+        'scan__author',
+        'scan__created',
+        'order',
+    )
+
+    items = []
+    for scan_page in scan_pages:
+        document_pages = scan_page.documentpage_set.all()
+        documents = {}
+        for doc_page in document_pages:
+            documents[doc_page.document.id] = doc_page.document
+        items.append({
+            'scan': scan_page.scan,
+            'page': scan_page,
+            'documents': list(documents.values())
+        })
+
+    return render(request, "scanning/recent_scans.html", {
+        'items': items
+    })
 
 #
 # Transcriptions
