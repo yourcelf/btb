@@ -632,8 +632,8 @@ def recent_scans(request):
     ).select_related(
         'scan', 'scan__author', 'scan__author__profile'
     ).order_by(
-        'scan__author',
-        'scan__created',
+        '-scan__created',
+        'scan',
         'order',
     ).prefetch_related(
         Prefetch('documentpage_set',
