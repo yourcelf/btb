@@ -36,6 +36,13 @@
         {% endfor %}
       </div>
     </span>
+      {% if item.has_more %}
+        <span class='page' style='height: 100px; width: 78px;'>
+          <div class='documents'>
+            <a href='{{ item.scan.get_edit_url }}'>More...</a>
+          </div>
+        </span>
+      {% endif %}
   {% endfor %}
   </div> <!-- class='scan' -->
 </div> <!-- class='scans' -->

@@ -650,6 +650,7 @@ def recent_scans(request):
         else:
             cur_scan_count += 1
         if cur_scan_count > 15:
+            items[-1]['has_more'] = True
             continue
         document_pages = scan_page.documentpage_set.all()
         documents = {}
