@@ -24,7 +24,7 @@
           {% endif %}
           <a href='{{ item.scan.author.profile.get_edit_url }}'>{{ item.scan.author.profile }}</a>
           <span class='date'><a href='{{ item.scan.get_edit_url }}'>&#x270e; {{ item.scan.created|date:"Y b j" }}</a></span>
-          {{ scan.source_id }}
+          {{ item.scan.source_id }}
         </div>
     {% endifchanged %}
     <span class='page'>
