@@ -643,12 +643,15 @@ def recent_scans(request):
     items = []
     cur_scan = None
     cur_scan_count = 0
+    cur_is_first = False
     for scan_page in scan_pages:
         if scan_page.scan != cur_scan:
             cur_scan = scan_page.scan
             cur_scan_count = 1
+            cur_is_first = True
         else:
             cur_scan_count += 1
+            cur_is_first = False
         if cur_scan_count > 15:
             items[-1]['has_more'] = True
             continue
@@ -656,7 +659,9 @@ def recent_scans(request):
         documents = {}
         for doc_page in document_pages:
             documents[doc_page.document.id] = doc_page.document
+
         items.append({
+            'first': cur_is_first,
             'scan': scan_page.scan,
             'page': scan_page,
             'documents': list(documents.values())
