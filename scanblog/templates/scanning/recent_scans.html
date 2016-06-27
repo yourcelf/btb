@@ -17,7 +17,7 @@
       {% endif %}
       <div class='scan'>
         <div class='author'>
-          {% if scan.processing_complete %}
+          {% if item.scan.processing_complete %}
             <span class='success'>&check;</span>
           {% else %}
             <span class='error'>&times;</span>
@@ -32,7 +32,7 @@
       </a>
       <div class='documents'>
         {% for document in item.documents %}
-          <a class='document' href='{{ document.get_edit_url }}'>{{ document.type }} {{ document.status }} {{ document.pk }}</a>
+        <a class='document {{document.type}}' href='{{ document.get_edit_url }}'>{{ document.type }} {{ document.status }} {{ document.pk }}12324</a>
         {% endfor %}
       </div>
     </span>
