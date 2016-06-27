@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import ugettext as _
 from django.http import Http404, HttpResponseBadRequest
@@ -629,14 +629,28 @@ def recent_scans(request):
 
     scan_pages = ScanPage.objects.filter(
         scan_id__in=scan_ids
+    ).select_related(
+        'scan', 'scan__author', 'scan__author__profile'
     ).order_by(
         'scan__author',
         'scan__created',
         'order',
+    ).prefetch_related(
+        Prefetch('documentpage_set',
+            queryset=DocumentPage.objects.select_related('document'))
     )
 
     items = []
+    cur_scan = None
+    cur_scan_count = 0
     for scan_page in scan_pages:
+        if scan_page.scan != cur_scan:
+            cur_scan = scan_page.scan
+            cur_scan_count = 1
+        else:
+            cur_scan_count += 1
+        if cur_scan_count > 15:
+            continue
         document_pages = scan_page.documentpage_set.all()
         documents = {}
         for doc_page in document_pages:
