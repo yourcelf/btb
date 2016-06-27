@@ -624,7 +624,7 @@ def scan_reimport(request, scan_id=None):
 def recent_scans(request):
     scans = Scan.objects.org_filter(
         request.user
-    ).order_by('-created')
+    ).order_by('-created')[0:100]
     scan_ids = [s.id for s in scans]
 
     scan_pages = ScanPage.objects.filter(
