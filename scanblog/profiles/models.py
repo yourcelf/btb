@@ -232,7 +232,6 @@ class Profile(models.Model):
             'is_public': self.is_public(),
         }
 
-
     def to_dict(self):
         scans_authored = getattr(self, "user__scans_authored", None)
         dct = self.light_dict()
@@ -300,6 +299,32 @@ class Profile(models.Model):
         chars = set(string.ascii_uppercase + string.digits)
         char_gen = (c for c in itertools.imap(os.urandom, itertools.repeat(1)) if c in chars)
         self.user.set_password(''.join(itertools.islice(char_gen, None, 32)))
+
+    def all_published_posts_as_latex_list(self):
+        from correspondence.utils import tex_escape
+        posts = self.user.documents_authored.public().order_by('date_written')
+        parts = [ur'\begin{itemize}']
+        for post in posts:
+            if post.in_reply_to:
+                try:
+                    orig = posts.get(reply_code=post.in_reply_to)
+                except Document.DoesNotExist:
+                    title = post.get_title()
+                else:
+                    title = u'{} (in reply to {})'.format(
+                        post.get_title(),
+                        orig.get_title()
+                    )
+            else:
+                title = post.get_title()
+
+            parts.append(ur'  \item %s (\emph{%s})' % (
+                tex_escape(title), 
+                post.date_written.strftime('%Y-%m-%d')
+            ))
+        parts.append(ur'\end{itemize}')
+        return u"\n".join(parts)
+
 
 class OrganizationManager(OrgManager):
     def public(self):
