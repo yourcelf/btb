@@ -15,7 +15,7 @@ class Command(BaseCommand):
                         settings.PUBLIC_MEDIA_ROOT):
             print dirname
             # files: -rw-rw-r--
-            os.system('sudo chmod -R 0664 "%s"' % dirname)
+            os.system('sudo chmod -R u=rwX,g=rwX,o=rX "%s"' % dirname)
             os.system('sudo chown -R www-data.btb "%s"' % dirname)
             # directories: -rwxrwsr-x
-            os.system('sudo find "%s" -type d -exec sudo chmod 2775 {} \\;' % dirname)
+            os.system('sudo find "%s" -type d -exec sudo chmod g+s {} \\;' % dirname)
