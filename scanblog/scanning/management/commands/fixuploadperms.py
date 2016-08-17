@@ -18,4 +18,4 @@ class Command(BaseCommand):
             os.system('sudo chmod -R u=rwX,g=rwX,o=rX "%s"' % dirname)
             os.system('sudo chown -R www-data.btb "%s"' % dirname)
             # directories: -rwxrwsr-x
-            os.system('sudo find "%s" -type d -exec sudo chmod g+s {} ;' % dirname)
+            os.system('sudo find "%s" -type d -exec sudo chmod g+s {} \\;' % dirname)
