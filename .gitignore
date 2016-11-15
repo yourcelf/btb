@@ -13,6 +13,7 @@ dev.db
 *.htpasswd
 scanblog/bin/*
 scanblog/venv/
+venv/
 !scanblog/bin/install.sh
 scanblog/deploy/*
 !scanblog/deploy/.gitkeep
