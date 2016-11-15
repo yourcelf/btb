@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import json
+import subprocess
 from collections import defaultdict
 
 from utils import UnicodeReader, slugify, count_pages, combine_pdfs, parser
@@ -108,12 +109,20 @@ def run_batch(args, files, jobs):
 
 def main():
     args = parser.parse_args()
+    if args.directory.endswith(".zip"):
+        directory = os.path.abspath(args.directory[0:-len(".zip")])
+        if not os.path.exists(directory):
+            subprocess.check_call([
+                "unzip", args.directory, "-d", os.path.dirname(args.directory)
+            ])
+    else:
+        directory = args.directory
 
-    with open(os.path.join(args.directory, "manifest.json")) as fh:
+    with open(os.path.join(directory, "manifest.json")) as fh:
         manifest = json.load(fh)
 
     if manifest["letters"]:
-        lfiles, ljobs, lpage = collate_letters(args.directory, manifest["letters"], 1)
+        lfiles, ljobs, lpage = collate_letters(directory, manifest["letters"], 1)
         print "Found", len(ljobs), "letter jobs"
         if ljobs:
             run_batch(args, lfiles, ljobs)
