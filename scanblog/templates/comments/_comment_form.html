@@ -1,7 +1,9 @@
 {% load i18n %}
 <div class='commentform'>
     <a name='commentform'></a>
-  {% if post.author.profile.comments_disabled %}
+  {% if post.comments_disabled %}
+    <p><b>Comments disabled.</b></p>
+  {% elif post.author.profile.comments_disabled %}
     <p><b>Comments disabled by author.</b></p>
   {% else %}
     <h3>

@@ -278,6 +278,7 @@ class Document(models.Model):
     status = models.CharField(max_length=20, choices=STATES, 
                               db_index=True, default="unknown")
     adult = models.BooleanField(default=False)
+    comments_disabled = models.BooleanField(default=False)
 
     tags = models.ManyToManyField('annotations.Tag', blank=True)
     reply_code = models.OneToOneField('annotations.ReplyCode')
