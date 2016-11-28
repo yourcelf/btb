@@ -34,7 +34,7 @@ class Click2MailBatch(object):
             E("productionTime", "Next Day"),
             E("envelope", ""),
             E("color", "Black and White"),
-            E("paperType", "White Matte"),
+            E("paperType", "White Uncoated"),
             E("printOption", "Printing both sides"),
             E("mailClass", "First Class"))
 

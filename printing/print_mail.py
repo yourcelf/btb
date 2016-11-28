@@ -10,6 +10,8 @@ import addresscleaner
 from click2mail import Click2MailBatch
 
 parser.add_argument("directory", help="Path to downloaded mail batch")
+parser.add_argument("--skip-letters", action='store_true', default=False)
+parser.add_argument("--skip-postcards", action='store_true', default=False)
 
 def fix_lines(address):
     """
@@ -121,13 +123,13 @@ def main():
     with open(os.path.join(directory, "manifest.json")) as fh:
         manifest = json.load(fh)
 
-    if manifest["letters"]:
+    if manifest["letters"] and not args.skip_letters:
         lfiles, ljobs, lpage = collate_letters(directory, manifest["letters"], 1)
         print "Found", len(ljobs), "letter jobs"
         if ljobs:
             run_batch(args, lfiles, ljobs)
 
-    if manifest["postcards"]:
+    if manifest["postcards"] and not args.skip_postcards:
         pfiles, pjobs, ppage = collate_postcards(manifest["postcards"], 1)
         print "Found", len(pjobs), "postcard jobs"
         if pjobs:
