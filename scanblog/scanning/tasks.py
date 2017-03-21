@@ -105,7 +105,7 @@ def process_scan_to_profile(scan_id, redirect):
     This scan processor is used by users who upload pdf's for their own
     profiles.
     """
-    split = split_scan.subtask(scan_id=scan_id, redirect=redirect)
+    split = split_scan.s(scan_id=scan_id, redirect=redirect)
     split()
     scan = Scan.objects.get(pk=scan_id)
     doc = Document.objects.create(
@@ -122,7 +122,7 @@ def process_scan_to_profile(scan_id, redirect):
             scan_page=page,
             order=page.order,
         )
-    up = update_document_images.subtask(document_id=doc.id)
+    up = update_document_images.s(document_id=doc.id)
     up()
     return redirect
 
@@ -236,7 +236,7 @@ def merge_scans(scan_id=None, filename=None, redirect=None):
     scan.pdf = os.path.relpath(dest, settings.MEDIA_ROOT)
     scan.under_construction = True
     scan.save()
-    split_scan.subtask(scan_id=scan.id)()
+    split_scan.s(scan_id=scan.id)()
     os.remove(filename)
     return redirect
 
