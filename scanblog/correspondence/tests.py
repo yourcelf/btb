@@ -15,6 +15,10 @@ class TextLatexCompilation(TestCase):
             utils.tex_escape('Line one\n\nLine three'),
             'Line one\\\\\n~\\\\\nLine three'
         )
+        self.assertEquals(
+            utils.tex_escape('Line one\r\nLine two\r\nLine three'),
+            'Line one\\\\\nLine two\\\\\nLine three'
+        )
 
 class TestStockResponses(BtbLoginTestCase):
     def test_get_stock_response(self):

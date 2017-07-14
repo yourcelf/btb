@@ -100,7 +100,7 @@ def tex_escape(string):
     string = re.sub(r'(")([^"]*)(")', r"``\2''", string)
     # any straggling quotes
     string = re.sub(r'"', "''", string)
-    lines = [line if line != "" else u"~" for line in string.split("\n")]
+    lines = [line if line != "" else u"~" for line in re.split("\r?\n", string)]
     string = u"\\\\\n".join(lines)
     # The rest
     return mark_safe("".join(latex_equivalents.get(ord(c), c) for c in string))

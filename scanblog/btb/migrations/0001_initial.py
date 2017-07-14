@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         ("comments", "0002_auto_20150429_1353"),
         ("correspondence", "0003_auto_20150429_1721"),
         ("profiles", "0001_initial"),
-        ("scanning", "0002_auto_20150429_1721"),
+        ("scanning", "0003_document_comments_disabled")
     ]
 
     operations = [
