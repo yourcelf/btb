@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <ul>
+    <li><a id='all'>Copy Em</a></li>
+  </ul>
+</body>
+<script>
+  const all = `
+    (function() {
+      let msg;
+      if (/corrlinks.com/.test(document.location.href)) {
+        const p = '#ctl00_mainContentPlaceHolder_';
+        const date = document.querySelector(p + 'dateTextBox').value;
+        const subject = document.querySelector(p + 'subjectTextBox').value;
+        const body = document.querySelector(p + 'messageTextBox').value;
+        msg = ['Date: ' + date, 'Subject: ' + subject, '', body].join('\\n');
+      } else if (/jpay.com/.test(document.location.href)) {
+        const date = document.querySelector("#lblDate").innerHTML;
+        let body = document.querySelector("#lblLetter").innerHTML.trim();
+        body = body.replace(/\\s*<br ?\\/?>\\s*/g, "\\n");
+        msg = ['Date: ' + date, '', body].join('\\n');
+      } else if (/connectnetwork.com/.test(document.location.href)) {
+        const p = '#messageForm fieldset ';
+        const date = document.querySelector(p + '.form-group:nth-child(3) label:nth-child(2)').innerText;
+        const subject = document.querySelector(p + '.form-group:nth-child(4) label:nth-child(2)').innerText;
+        const body = document.querySelector(p + '.form-group:nth-child(6)').innerText;
+        msg = ['Date: ' + date, 'Subject: ' + subject, '', body].join('\\n');
+      } else {
+        alert("Not on the right site?");
+        return;
+      }
+      const button = document.createElement('button');
+      document.body.appendChild(button);
+      button.innerHTML = "Copy";
+      button.style = "position: fixed; top: 0; left: 0; padding: 5em; z-index: 100000";
+      button.addEventListener("click", function(e) {
+        e.preventDefault();
+        console.log("wat");
+        navigator.clipboard.writeText(msg)
+        .then(() => console.log("success"), () => console.log("error", arguments));
+        document.body.removeChild(button);
+      }, false);
+    })()
+  `;
+  document.querySelector("#all").href = "javascript:" + encodeURIComponent(all);
+
+</script>
+</html>

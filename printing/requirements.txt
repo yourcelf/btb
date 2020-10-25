@@ -1,3 +1,4 @@
 lxml
 requests
 -e git+https://github.com/yourcelf/btb-address-cleaner.git#egg=addresscleaner
+PyPDF2

@@ -5,6 +5,7 @@ import argparse
 import unicodedata
 import tempfile
 import subprocess
+from PyPDF2 import PdfFileReader, PdfFileWriter
 
 try:
     import conf
@@ -29,13 +30,20 @@ def count_pages(pdf):
     return int(match.group(1))
 
 def combine_pdfs(filenames):
+    handles = [open(fn, 'rb') for fn in filenames]
+    readers = [PdfFileReader(handle) for handle in handles]
     with tempfile.NamedTemporaryFile(suffix="combined.pdf", delete=False) as fh:
+        writer = PdfFileWriter()
+        for reader in readers:
+            for page_num in range(reader.getNumPages()):
+                writer.addPage(reader.getPage(page_num))
+        writer.write(fh)
         name = fh.name
+    for handle in handles:
+        handle.close()
 
-    res = subprocess.check_call(
-            ["pdftk"] + filenames + ["cat", "output", name])
+    #res = subprocess.check_call(["pdftk"] + filenames + ["cat", "output", name])
     return name 
-
 
 def slugify(value):
     # Taken from django.utils.text
