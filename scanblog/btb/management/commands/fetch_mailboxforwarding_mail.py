@@ -61,11 +61,11 @@ class Command(BaseCommand):
         packages = {}
         for checkbox, date, envelope, type_status, dl in data:
             details = {}
-            match = re.search("Type: <b>([^<]+)</b>.*Status: <b>([^<]+)</b>", type_status)
+            match = re.search("Status: <b>([^<]+)</b>.*Type: <b>([^<]+)</b>", type_status)
             if not match:
                 raise Exception("Can't match type/status")
-            details['kind'] = match.group(1)
-            details['status'] = match.group(2)
+            details['kind'] = match.group(2)
+            details['status'] = match.group(1)
 
             if details['kind'] == "Letter" and details['status'] != "Scanned":
                 continue
