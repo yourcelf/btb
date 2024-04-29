@@ -11,7 +11,7 @@ class Click2MailBatch(object):
         self.password = password
         self.filename = filename
         self.jobs = jobs
-        self.base_url = u"https://{}batch.click2mail.com/v1/batches".format(
+        self.base_url = "https://{}batch.click2mail.com/v1/batches".format(
                 "stage-" if staging else "")
 
     @classmethod
@@ -77,7 +77,7 @@ class Click2MailBatch(object):
                 E("recipients", *[self.recipient_xml(r) for r in job["recipients"]]),
             ))
         
-        xml = u'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        xml = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
         return xml + etree.tostring(E("batch",
             E("username", self.username),
             E("password", self.password),
@@ -94,7 +94,7 @@ class Click2MailBatch(object):
         try:
             root = etree.fromstring(res.text.encode('utf-8'))
         except Exception as e:
-            print res.text
+            print(res.text)
             raise
         results = {
             "id": root.xpath('//id/text()')[0],
@@ -111,9 +111,9 @@ class Click2MailBatch(object):
 
     def create_batch(self, dry=False):
         url = self.base_url
-        print url
+        print(url)
         if dry:
-            print "POST", url
+            print("POST", url)
             self.batch_id = "<id>"
         else:
             res = requests.post(url, auth=(self.username, self.password))
@@ -122,10 +122,10 @@ class Click2MailBatch(object):
 
     def upload_batch_xml(self, dry=False):
         url = "{}/{}".format(self.base_url, self.batch_id)
-        print "PUT", url
+        print("PUT", url)
         xml = self.build_batch_xml()
         if dry:
-            print xml
+            print(xml)
         else:
             res = requests.put(url, data=xml,
                     headers={"Content-Type": "application/xml"},
@@ -136,9 +136,9 @@ class Click2MailBatch(object):
         with open(self.filename, 'rb') as fh:
             pdf = fh.read()
         url = "{}/{}".format(self.base_url, self.batch_id)
-        print "PUT", url
+        print("PUT", url)
         if dry:
-            print "<%s bytes binary pdf data>" % len(pdf)
+            print("<%s bytes binary pdf data>" % len(pdf))
         else:
             res = requests.put(url, data=pdf,
                     headers={"Content-Type": "application/pdf"},
@@ -147,21 +147,21 @@ class Click2MailBatch(object):
 
     def submit_job(self, dry=False):
         url = "{}/{}".format(self.base_url, self.batch_id)
-        print "POST", url
+        print("POST", url)
         if not dry:
             res = requests.post(url, auth=(self.username, self.password))
             results = self.check_res(res)
 
     def poll_job_complete(self, dry=False):
         url = "{}/{}".format(self.base_url, self.batch_id)
-        print "GET polling", url
+        print("GET polling", url)
         if not dry:
             while True:
                 res = requests.get(url, auth=(self.username, self.password))
                 results = self.check_res(res, 201)
                 if results['completedAt']:
-                    print res.text
-                    print "Done"
+                    print(res.text)
+                    print("Done")
                     return True
                 time.sleep(20)
 
@@ -180,4 +180,4 @@ if __name__ == "__main__":
         {"startingPage": 5, "endingPage": 9, "recipient": ["Jane Dough", "23456", "Oak tree lane", "PO Box 99", "This, OT 23456"]},
     ])
 
-    print batch.build_batch_xml()
+    print(batch.build_batch_xml())

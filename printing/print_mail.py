@@ -5,7 +5,7 @@ import json
 import subprocess
 from collections import defaultdict
 
-from utils import UnicodeReader, slugify, count_pages, combine_pdfs, parser
+from utils import count_pages, combine_pdfs, parser
 import addresscleaner
 from click2mail import Click2MailBatch
 
@@ -50,7 +50,7 @@ def collate_letters(mailing_dir, letters, page=1):
     # Assemble list of files and jobs.
     files = []
     jobs = {}
-    for (recipient, sender), letters in recipient_letters.iteritems():
+    for (recipient, sender), letters in recipient_letters.items():
         count = 0
         for letter in letters:
             filename = os.path.join(mailing_dir, letter["file"])
@@ -67,7 +67,7 @@ def collate_letters(mailing_dir, letters, page=1):
         
         page = end
 
-    vals = jobs.values()
+    vals = list(jobs.values())
     vals.sort(key=lambda j: j['startingPage'])
     return files, vals, page
 
@@ -80,7 +80,7 @@ def collate_postcards(postcards, page=1):
 
     files = []
     jobs = []
-    for (postcard_type, sender), letters in type_sender_postcards.iteritems():
+    for (postcard_type, sender), letters in type_sender_postcards.items():
         files.append(os.path.join(
             os.path.dirname(__file__),
             "postcards",
@@ -99,7 +99,7 @@ def collate_postcards(postcards, page=1):
 
 def run_batch(args, files, jobs):
     filename = combine_pdfs(files)
-    print "Building job with", filename
+    print("Building job with", filename)
     batch = Click2MailBatch(
             username=args.username,
             password=args.password,
@@ -125,13 +125,13 @@ def main():
 
     if manifest["letters"] and not args.skip_letters:
         lfiles, ljobs, lpage = collate_letters(directory, manifest["letters"], 1)
-        print "Found", len(ljobs), "letter jobs"
+        print("Found", len(ljobs), "letter jobs")
         if ljobs:
             run_batch(args, lfiles, ljobs)
 
     if manifest["postcards"] and not args.skip_postcards:
         pfiles, pjobs, ppage = collate_postcards(manifest["postcards"], 1)
-        print "Found", len(pjobs), "postcard jobs"
+        print("Found", len(pjobs), "postcard jobs")
         if pjobs:
             run_batch(args, pfiles, pjobs)
 
