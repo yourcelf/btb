@@ -1,3 +1,6 @@
+# /// script
+# dependencies = ["lxml", "requests", "addresscleaner @ git+https://github.com/yourcelf/btb-address-cleaner.git", "PyPDF2==2.12.1"]
+# ///
 import os
 import sys
 import glob
