@@ -9,6 +9,7 @@ from scanning.models import Scan, Document
 from comments.models import Comment
 
 class TestTranscriptions(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         super(TestTranscriptions, self).setUp()
 

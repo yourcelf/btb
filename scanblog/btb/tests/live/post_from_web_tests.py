@@ -2,6 +2,7 @@
 from .base import BtbLiveServerTestCase
 
 class TestPostFromWeb(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def _add_post(self, status):
         self.selenium.get(self.url("/blogs/"))
         self.selenium.find_element_by_link_text("✍ Compose").click()

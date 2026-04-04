@@ -12,6 +12,7 @@ from comments.models import Comment, CommentRemoval, RemovalReason, Favorite
 from correspondence.models import Letter
 
 class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         super(TestCommentRemovalMessages, self).setUp()
 
@@ -296,6 +297,7 @@ class TestCommentRemovalMessages(BtbLoginTestCase, BtbMailTestCase):
 
 
 class TestFavorites(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def test_login_redirect(self):
         self.assertRedirectsToLogin(reverse("comments.mark_favorite"))
         self.assertRedirectsToLogin(reverse("comments.unmark_favorite"))

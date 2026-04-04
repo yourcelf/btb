@@ -1,4 +1,5 @@
 from default_settings import *
+import os
 from btb.log_filter import skip_unreadable_post
 
 
@@ -10,7 +11,7 @@ DISABLE_NOTIFICATIONS = False
 DISABLE_ADMIN_NOTIFICATIONS = False
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'W^X~>p2j+u9XmNfNyt<9;ffaIVo{2vsfI-?_o8z893V8t$<[7\\'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 #DATABASES = {
 #    'default': {
@@ -24,12 +25,18 @@ SECRET_KEY = 'W^X~>p2j+u9XmNfNyt<9;ffaIVo{2vsfI-?_o8z893V8t$<[7\\'
 #}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'btb',  # Or path to database file if using sqlite3.
-        'USER': 'btb',                      # Not used with sqlite3.
-        'PASSWORD': 'btb',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ["POSTGRES_DB"],
+        'USER': os.environ["POSTGRES_USER"],
+        'PASSWORD': os.environ["POSTGRES_PASSWORD"],
+        'HOST': os.environ["POSTGRES_HOST"],
+        'PORT': os.environ["POSTGRES_PORT"],
+    }
+}
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': os.environ["MEMCACHED_LOCATION"],
     }
 }
 

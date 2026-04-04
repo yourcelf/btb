@@ -5,6 +5,7 @@ class TestFrontend(BtbLiveServerTestCase):
     """
     Test that basic page access and navigation proceeds without errors.
     """
+    fixtures = ["groups.json"]
     def test_blogs(self):
         b = self.selenium
         b.get(self.url("/"))

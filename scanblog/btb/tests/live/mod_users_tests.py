@@ -4,6 +4,7 @@ from .base import BtbLiveServerTestCase
 from django.contrib.auth.models import User
 
 class TestModUsers(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def search_for_user(self, name):
         b = self.selenium
         b.get(self.url("/moderation/"))

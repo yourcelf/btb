@@ -4,6 +4,7 @@ from .base import BtbLiveServerTestCase
 from annotations.models import Note
 
 class TestModNotes(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_create_ticket(self):
         b = self.selenium
         self.sign_in("testmod", "testmod")

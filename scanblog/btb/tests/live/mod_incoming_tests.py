@@ -6,6 +6,7 @@ from .base import BtbLiveServerTestCase
 from scanning.models import PendingScan
 
 class TestModIncoming(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_add_and_manage_pending_scans(self):
         b = self.selenium
         assert PendingScan.objects.count() == 0

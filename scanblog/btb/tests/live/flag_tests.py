@@ -4,6 +4,7 @@ from comments.models import Comment
 from django.contrib.auth.models import User
 
 class TestFlags(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_flag_a_post(self):
         s = self.selenium
         s.get(self.url("/accounts/logout/"))

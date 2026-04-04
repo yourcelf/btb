@@ -12,6 +12,7 @@ from scanning.models import Scan, PendingScan, Document, DocumentPage
 from django.contrib.auth.models import User
 
 class TestModScans(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_process_scan_with_pending(self):
         # NOTE: This one is a might lengthy; but it's easier than mocking.
         # Might be better refactored into 2 or 3 separate tests.
@@ -119,9 +120,9 @@ class TestModScans(BtbLiveServerTestCase):
         for i, ptype in enumerate(page_types):
             if ptype is None:
                 continue
+            self.await_selector(".pagestatus.page-%s" % i)
             self.css(".pagestatus.page-%s" % i).click()
             time.sleep(0.5)
-            choices = {}
             for el in self.csss(".page-type-choice"):
                 if ptype in el.text.strip():
                     el.click()
@@ -149,7 +150,7 @@ class TestModScans(BtbLiveServerTestCase):
         self.await_selector("input.user-search")
         self.css("input.user-search").send_keys("est Author")
         self.wait(lambda b: self.css(".user-chooser .display-name").text == "Test Author")
-        self.css(".user-chooser .display-name").click()
+        self.css("input.user-search").send_keys(Keys.ENTER)
         self._classify_pages(["ignore", "post", "profile", "ignore", "ignore", "ignore"])
         self._save_split()
         self.wait(lambda b: len(self.csss(".post-save-message.success")) > 0)
@@ -171,7 +172,7 @@ class TestModScans(BtbLiveServerTestCase):
         self.await_selector("input.user-search")
         self.css("input.user-search").send_keys("est Author")
         self.wait(lambda b: self.css(".user-chooser .display-name").text == "Test Author")
-        self.css(".user-chooser .display-name").click()
+        self.css("input.user-search").send_keys(Keys.ENTER)
         self._classify_pages(["ignore", "post", "profile", "ignore", "ignore", "ignore"])
         self._save_split()
         self.wait(lambda b: "disabled" not in self.css(".switch-to-edit-documents").get_attribute("class"))
@@ -187,9 +188,13 @@ class TestModScans(BtbLiveServerTestCase):
         chain.release(None)
         chain.perform()
         # Rotate a page.
+        time.sleep(1)
         self.css(".rotate270", doc_el).click()
+        time.sleep(1)
         self.css(".save-doc", doc_el).click()
-        time.sleep(0.5)
+        self.wait(
+            lambda s: Document.objects.filter(highlight_transform__isnull=False).exists()
+        )
 
         # Get a doc we just created.
         doc = Document.objects.filter(type='post').order_by('-modified')[0]

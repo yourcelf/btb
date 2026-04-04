@@ -13,6 +13,7 @@ from scanning.management.commands.publish_queued import publish_ready, \
         next_by_pressure, calculate_pressure, calculate_interval
 
 class TestScanJson(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def json_response_contains(self, url, list_of_scans):
         c = self.client
         self.assertTrue(c.login(username="moderator", password="moderator"))
@@ -80,6 +81,7 @@ class TestScanJson(BtbLoginTestCase):
                 [not_finished_no_user, not_finished_managed])
 
 class TestInReplyTo(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def assertRegExMatches(self, regex, testString):
         self.assertTrue(re.match(regex, testString) is not None,
             "\"{}\" does not match /{}/".format(testString, regex))
@@ -169,6 +171,7 @@ class TestInReplyTo(BtbLoginTestCase):
             reverse("blogs.post_show", args=[self.doc1.pk, self.doc1.get_slug()]))
 
 class TestPublishQueued(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         super(TestPublishQueued, self).setUp()
         # Add more test users to test ready-queue sorting with

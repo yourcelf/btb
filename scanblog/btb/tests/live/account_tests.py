@@ -6,6 +6,7 @@ from scanning.models import Document
 from comments.models import Comment
 
 class TestAccounts(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_sign_in(self):
         self.sign_in("testuser", "testuser")
 
@@ -77,6 +78,7 @@ class TestAccounts(BtbLiveServerTestCase):
         if comments_too:
             s.find_element_by_name("delete_comments").click()
         s.find_element_by_xpath('//input[@type="submit"]').submit()
+        self.await_selector(".message")
         self.assertTrue("successfully deleted" in self.css(".message").text)
 
     def test_delete_account_leaving_comments(self):

@@ -15,6 +15,7 @@ from btb.tests import BtbLoginTestCase
 from comments.models import Comment, Favorite
 
 class TestUrls(TestCase):
+    fixtures = ["groups.json"]
     def testAbsoluteUrls(self):
         u = User.objects.create(username="hoopla", pk=12345)
         u.profile.display_name = "Test User"
@@ -26,6 +27,7 @@ class TestUrls(TestCase):
 
 
 class TestProfileManager(TestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         # Remove default user from fixture.
         User.objects.get(username='uploader').delete()
@@ -282,6 +284,7 @@ class TestProfileManager(TestCase):
         )
 
 class TestOrgPermissions(TestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         self.orgs = []
         self.superuser = User.objects.create(username="superuser", is_superuser=True)
@@ -459,6 +462,7 @@ class TestOrgPermissions(TestCase):
             set([member0.pk]))
 
 class TestDeleteAccount(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         super(TestDeleteAccount, self).setUp()
         self.doc = Document.objects.create(
@@ -522,6 +526,7 @@ class TestDeleteAccount(BtbLoginTestCase):
         self.assertEquals(Favorite.objects.count(), 0)
 
 class TestOrganizationsJSON(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def _denied(self):
         for method in ("get", "put", "post", "delete"):
             res = getattr(self.client, method)("/people/organizations.json")
@@ -749,6 +754,7 @@ class TestOrganizationsJSON(BtbLoginTestCase):
 
 
 class TestAffiliationsJSON(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     required_keys = ['title', 'slug', 'list_body', 'detail_body',
                      'public', 'order', 'organizations']
 
@@ -897,6 +903,7 @@ class TestAffiliationsJSON(BtbLoginTestCase):
         self.assertFalse(Affiliation.objects.all().exists())
 
 class TestCommenterStatsJSON(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     def test_get_stats(self):
         user = User.objects.get(username='reader')
         def get():

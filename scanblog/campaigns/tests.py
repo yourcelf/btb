@@ -11,6 +11,7 @@ from profiles.models import Organization
 from scanning.models import Document
 
 class TestCampaignsJSON(BtbLoginTestCase):
+    fixtures = ["groups.json"]
     url = "/campaigns/campaigns.json"
     required_keys = ["title", "slug", "body", "organizations",
                      "reply_code", "public", "ended"]

@@ -8,6 +8,7 @@ from scanning.models import Scan
 from django.contrib.auth.models import User
 
 class TestModUploads(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def setUp(self):
         super(TestModUploads, self).setUp()
         self.applied_tasks = []

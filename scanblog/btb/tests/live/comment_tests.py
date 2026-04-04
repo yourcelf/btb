@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from comments.models import Comment, Favorite
 
 class TestComments(BtbLiveServerTestCase):
+    fixtures = ["groups.json"]
     def test_comment_while_not_signed_in(self):
         s = self.selenium
         s.get(self.url("/accounts/logout/"))
@@ -40,7 +41,8 @@ class TestComments(BtbLiveServerTestCase):
         s.find_element_by_xpath('//input[@type="submit"]').submit()
 
         self.wait(lambda s: s.current_url.startswith(self.url(self.doc.get_absolute_url())))
-        self.assertEquals(Comment.objects.count(), 1)
+        self.wait(lambda s: Comment.objects.count() == 1)
+        self.await_selector(".commentbody")
         self.assertTrue("My Unique 54321 comment" in self.css(".commentbody").text)
 
     def test_edit_my_comment(self):

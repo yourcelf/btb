@@ -1,0 +1,87 @@
+services:
+  scanblog:
+    ports:
+      - "8000:8000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        - "UID=${UID:-1000}"
+        - "GID=${GID:-1000}"
+    stdin_open: true
+    tty: true
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      PORT: 8000
+    volumes:
+      - ./scanblog/media:/opt/app/media
+      - ./:/opt/app:delegated
+    depends_on:
+      postgres:
+        condition: service_started
+      memcached:
+        condition: service_started
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - ./:/opt/app:delegated
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  memcached:
+    ports:
+      - "11211:11211"
+    image: memcached
+    networks:
+      - app-network
+
+  selenium:
+    profiles:
+      - selenium
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: selenium
+      args:
+        - "UID=${UID:-1000}"
+        - "GID=${UID:-1000}"
+    stdin_open: true
+    tty: true
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./scanblog/media:/opt/app/media
+      - ./:/opt/app:delegated
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:/tmp/${WAYLAND_DISPLAY}
+    environment:
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp
+      - "UID=${UID:-1000}"
+      - "GID=${UID:-1000}"
+    user: "${UID:-1000}:${GID:-1000}"
+    security_opt:
+      - seccomp=unconfined
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  pgdata:
+  
+networks:
+  app-network:
+    driver: bridge
