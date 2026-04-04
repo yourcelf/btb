@@ -34,15 +34,16 @@ class LetterManager(OrgManager):
         return self.filter(sent__isnull=False)
 
 class Letter(models.Model):
-    TYPES = ("letter", 
-            "consent_form", 
-            "signup_complete", 
-            "first_post", 
+    TYPES = ("letter",
+            "consent_form",
+            "signup_complete",
+            "first_post",
             "printout",
-            "comments", 
+            "comments",
             "waitlist",
             "returned_original",
-            "refused_original")
+            "refused_original",
+            "post_list")
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="authored_letters", blank=True)
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, 

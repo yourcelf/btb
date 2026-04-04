@@ -7,6 +7,7 @@ import subprocess
 import datetime
 from collections import defaultdict
 
+from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -27,12 +28,13 @@ def generate_file(letter):
         'refused_original': refused_original,
         'returned_original': returned_original,
         'comment_removal': comment_removal,
+        'post_list': post_list_letter,
     }
     if not letter.type:
         return None
     # Edge case: can't re-generate letters for people who have been made
     # inactive since the letter was created.
-    if letter.type in ("first_post", "comments", "printout") and \
+    if letter.type in ("first_post", "comments", "printout", "post_list") and \
             (not letter.recipient.is_active or 
              not letter.recipient.profile.consent_form_received):
         return None
@@ -185,6 +187,38 @@ def comment_removal(letter):
             'comment': letter.comments.get(),
             'message': letter.body,
         })
+
+def post_list_letter(letter):
+    posts = Document.objects.filter(
+        author=letter.recipient,
+        type="post",
+        status="published",
+    ).annotate(
+        comment_count=models.Count('comments')
+    ).order_by('date_written')
+
+    # Build display titles, annotating replies per existing convention
+    # in Profile.all_published_posts_as_latex_list.
+    post_rows = []
+    for post in posts:
+        title = post.get_title()
+        if post.in_reply_to:
+            try:
+                orig = posts.get(reply_code=post.in_reply_to)
+            except Document.DoesNotExist:
+                pass
+            else:
+                title = u'{} (in reply to {})'.format(title, orig.get_title())
+        post_rows.append({
+            'date_written': post.date_written,
+            'title': title,
+            'comment_count': post.comment_count,
+        })
+
+    return utils.render_tex_to_pdf("correspondence/post-list-letter.tex", {
+        'letter': letter,
+        'posts': post_rows,
+    })
 
 def generate_colation(mailing):
     """

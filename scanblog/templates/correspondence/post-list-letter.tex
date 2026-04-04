@@ -1,0 +1,19 @@
+{% extends "correspondence/generic-letter.tex" %}
+{% load tex_tags %}
+{% block body %}
+Here is a listing of all your published blog posts as of today.
+
+\begin{quote}
+\url{ {{ letter.recipient.profile.get_bare_blog_url|absolute_url|tex_escape }} }
+\end{quote}
+
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\begin{longtable}{@{}l p{3.5in} r@{}}
+\textbf{Date} & \textbf{Title} & \textbf{Comments} \\
+\hline
+\endhead
+{% for post in posts %}{{ post.date_written|date:"Y-m-d" }} & {{ post.title|tex_escape }} & {{ post.comment_count }} \\
+{% endfor %}\end{longtable}
+{% endblock %}
+{% block signature %} {{ letter.org.personal_contact|tex_escape }} {% endblock %}

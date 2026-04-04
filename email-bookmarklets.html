@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html>
-<body>
-  <ul>
-    <li><a id='all'>Copy Em</a></li>
-  </ul>
-</body>
+<html><body><a id='all'>Copy Em</a></body>
 <script>
   const all = `
     (function() {
       let msg;
       if (/corrlinks.com/.test(document.location.href)) {
-        const p = '#ctl00_mainContentPlaceHolder_';
-        const date = document.querySelector(p + 'dateTextBox').value;
-        const subject = document.querySelector(p + 'subjectTextBox').value;
-        const body = document.querySelector(p + 'messageTextBox').value;
+        const p = "#detailsSection form ";
+        const date = document.querySelector(p + '.form-item:nth-child(2) input').value;
+        console.log("date", date);
+        const subject = document.querySelector(p + '.form-item:nth-child(3) input').value;
+        console.log("date", subject);
+        const body = document.querySelector(p + 'textarea').value;
+        console.log("bODY", body);
         msg = ['Date: ' + date, 'Subject: ' + subject, '', body].join('\\n');
       } else if (/jpay.com/.test(document.location.href)) {
         const date = document.querySelector("#lblDate").innerHTML;
@@ -26,6 +24,30 @@
         const subject = document.querySelector(p + '.form-group:nth-child(4) label:nth-child(2)').innerText;
         const body = document.querySelector(p + '.form-group:nth-child(6)').innerText;
         msg = ['Date: ' + date, 'Subject: ' + subject, '', body].join('\\n');
+      } else if (/visit.telmate.com/.test(document.location.href)) {
+        const p = '.messageContent ';
+        const date = document.querySelector(p + '.hTimestampDate').innerHTML.trim();
+        const subject = (
+          document.querySelector(p + '.subject')
+          .innerText
+          .trim()
+          .replace(/^Subject:/, "")
+          .trim()
+        );
+        let body = document.querySelector(p + '.messageBody').innerText.trim();
+        body = body.replace(/(\\w\\.)(\\w)/g, "$1\\n$2");
+        const msgParts = ["Date: " + date];
+        subject && msgParts.push("Subject: " + subject);
+        msgParts.push('');
+        msgParts.push(body);
+        msg = msgParts.join("\\n");
+      } else if (/securustech.online/.test(document.location.href)) {
+        const c = "scrs-message-view ";
+        const header = c + ".grid-x:nth-child(1) ";
+        const subject = document.querySelector(header + "> .cell:nth-child(1) > .grid-x > p:nth-child(3)").innerText.trim();
+        const date = document.querySelector(header + "> .cell:nth-child(2) > .grid-x > p:nth-child(1)").innerText.trim();
+        const body = document.querySelector(c + ".message").innerText.trim();
+        msg = ["Date: " + date, "Subject: " + subject, "", "", body].join('\\n');
       } else {
         alert("Not on the right site?");
         return;
@@ -33,7 +55,7 @@
       const button = document.createElement('button');
       document.body.appendChild(button);
       button.innerHTML = "Copy";
-      button.style = "position: fixed; top: 0; left: 0; padding: 5em; z-index: 100000";
+      button.style = "position: fixed; top: 0; left: 0; padding: 5em; z-index: 100000; background-color: #DDD;";
       button.addEventListener("click", function(e) {
         e.preventDefault();
         console.log("wat");
