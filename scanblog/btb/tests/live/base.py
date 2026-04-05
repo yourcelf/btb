@@ -5,6 +5,7 @@ from django.test import LiveServerTestCase
 from django.conf import settings
 
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -21,7 +22,10 @@ class BtbLiveServerTestCase(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.selenium = webdriver.Firefox()
+        options = Options()
+        if os.environ.get('HEADLESS') == '1':
+            options.add_argument('--headless')
+        cls.selenium = webdriver.Firefox(options=options)
         cls.selenium.implicitly_wait(4)
         cls.selenium.set_window_size(1400, 1200)
         super(BtbLiveServerTestCase, cls).setUpClass()

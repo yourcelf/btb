@@ -28,8 +28,8 @@ class TestModUploads(BtbLiveServerTestCase):
         self.assertEquals(self.css("h1").text, "Upload Scans")
         el = self.css("#id_file")
         el.send_keys(path)
-        self.css(".upload-submit").submit()
-        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")))
+        self.css(".upload-submit").click()
+        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")), timeout=30)
 
         while b.current_url.startswith(self.url("/moderation/wait")):
             try:

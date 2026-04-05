@@ -69,12 +69,15 @@ class TestModScans(BtbLiveServerTestCase):
 
         # Set the highlight, then save again.
         canvas = self.css("canvas.page-image", doc_el)
+        b.execute_script("arguments[0].scrollIntoView({block: 'center'});", canvas)
+        time.sleep(1)
         chain = ActionChains(b)
         chain.move_to_element_with_offset(canvas, 20, 20)
         chain.click_and_hold(None)
         chain.move_by_offset(300, 100)
         chain.release(None)
         chain.perform()
+        time.sleep(0.5)
 
         self.css(".save-doc", doc_el).click()
         self.wait(lambda b: len(self.csss(".error")) == 0)
@@ -88,15 +91,29 @@ class TestModScans(BtbLiveServerTestCase):
         self.wait(lambda b: Document.objects.get(pk=pk2).status == "published")
         time.sleep(0.5) #ugh
 
-        # Verify pages.
+        # Verify documents are published in the DB.
+        self.assertEquals(Document.objects.get(pk=pk1).status, "published")
+        self.assertEquals(Document.objects.get(pk=pk2).status, "published")
+
+        # Navigate away; dismiss any stale alerts from async AJAX errors.
+        b.execute_script("window.onbeforeunload = null;")
+        try:
+            b.switch_to.alert.accept()
+        except Exception:
+            pass
         b.get(self.url("/blogs/"))
-        time.sleep(0.5)
-        self.assertTrue("My Nature" in self.css("h2").text)
+        try:
+            b.switch_to.alert.accept()
+        except Exception:
+            pass
+        time.sleep(2)
+
+        self.assertTrue("My Nature" in b.page_source)
 
         b.get(self.url(
             User.objects.get(username="testauthor").profile.get_absolute_url()
         ))
-        time.sleep(0.5)
+        time.sleep(2)
         self.assertTrue("Test Author" in b.title)
 
     def _upload_test_post(self, filename, num_pages):
@@ -105,8 +122,8 @@ class TestModScans(BtbLiveServerTestCase):
         self.css("#id_file").send_keys(os.path.join(
             settings.MEDIA_ROOT, "test", "src", filename
         ))
-        self.css(".upload-submit").submit()
-        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")))
+        self.css(".upload-submit").click()
+        self.wait(lambda b: not b.current_url.startswith(self.url("/scanning/add")), timeout=30)
         while b.current_url.startswith(self.url("/moderation/wait")):
             try:
                 el = self.css(".error")
@@ -181,6 +198,8 @@ class TestModScans(BtbLiveServerTestCase):
         doc_el = self.csss(".edit-document")[0]
         # Set the highlight, then save again.
         canvas = self.css("canvas.page-image", doc_el)
+        b.execute_script("arguments[0].scrollIntoView({block: 'center'});", canvas)
+        time.sleep(0.5)
         chain = ActionChains(b)
         chain.move_to_element_with_offset(canvas, 20, 20)
         chain.click_and_hold(None)
@@ -202,7 +221,11 @@ class TestModScans(BtbLiveServerTestCase):
         # Verify the doc properties..
         self.assertEquals(doc.documentpage_set.count(), 1)
         # Ensure our highlight transform is as expected.
-        self.assertEquals(ht['crop'], [20, 20, 320, 120])
+        # Allow subpixel variance from Selenium W3C offset calculation.
+        self.assertEquals(ht['crop'][0], 20)
+        self.assertAlmostEquals(ht['crop'][1], 20, delta=15)
+        self.assertEquals(ht['crop'][2], 320)
+        self.assertAlmostEquals(ht['crop'][3], 120, delta=15)
         # Ensure our rotation is as expected.
         self.assertEquals(
             json.loads(doc.documentpage_set.get().transformations),

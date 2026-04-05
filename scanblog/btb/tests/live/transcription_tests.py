@@ -59,13 +59,16 @@ class TestTranscriptions(BtbLiveServerTestCase):
         # Do the transcription.
         b.get(self.url(self.scan_doc.get_absolute_url()))
         self.css(".transcribe-top-button").click()
+        self.await_selector("#id_body")
         self.css("#id_body").send_keys("This is a transcription")
-        b.find_element_by_xpath('//input[@type="submit"]').submit()
+        b.find_element_by_xpath('//input[@type="submit"]').click()
 
         # Post transcription comment
-        self.wait(lambda b: not b.current_url.startswith("/scanning/transcribe"))
+        self.wait(lambda b: "/transcribe/" in b.current_url and
+                  b.current_url.endswith("/comment"))
+        self.await_selector("#id_comment")
         self.assertTrue("Thanks for writing!" in self.css("#id_comment").text)
-        b.find_element_by_xpath('//input[@type="submit"]').submit()
+        b.find_element_by_xpath('//input[@type="submit"]').click()
         self.wait(lambda b: b.current_url.startswith(self.url(self.scan_doc.get_absolute_url())))
 
         # Verify.
@@ -93,9 +96,10 @@ class TestTranscriptions(BtbLiveServerTestCase):
         # Do the transcription.
         b.get(self.url(self.scan_doc.get_absolute_url()))
         self.css(".transcribe-top-button").click()
+        self.await_selector("#id_body")
         self.css("#id_body").send_keys("This is a complete transcription")
         self.set_checkbox(b.find_element_by_name("complete"), True)
-        b.find_element_by_xpath('//input[@type="submit"]').submit()
+        b.find_element_by_xpath('//input[@type="submit"]').click()
 
         # Since there's a previous comment, skip the post-transcription comment.
         self.wait(lambda b: b.current_url.startswith(self.url(self.scan_doc.get_absolute_url())))

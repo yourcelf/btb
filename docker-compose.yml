@@ -69,6 +69,7 @@ services:
       - XDG_RUNTIME_DIR=/tmp
       - "UID=${UID:-1000}"
       - "GID=${UID:-1000}"
+      - "HEADLESS=${HEADLESS:-0}"
     user: "${UID:-1000}:${GID:-1000}"
     security_opt:
       - seccomp=unconfined
